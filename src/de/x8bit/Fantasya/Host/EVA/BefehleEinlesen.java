@@ -46,6 +46,10 @@ import java.util.Set;
  */
 public class BefehleEinlesen extends EVABase
 {
+	private static String inboxDirectory = "befehle-inbox";
+	private static String befehleDirectory = "befehle";
+
+
 	public BefehleEinlesen()
 	{
 		super("lese Befehle der Spieler ein");
@@ -76,7 +80,8 @@ public class BefehleEinlesen extends EVABase
 		for (Partei p : check.getParteien()) {
 			if (check.hasValidBefehle(p)) {
 				// okay, Datei kopieren:
-				kopieren(check.getCleanBefehle(p).getAbsolutePath(), "befehle/" + p.getNummerBase36() + ".mail");
+				kopieren(check.getCleanBefehle(p).getAbsolutePath(), 
+						befehleDirectory + "/" + p.getNummerBase36() + ".mail");
 			} else {
 				// Partei hat Befehle eingeschickt, aber keine gültigen:
 				new Fehler("Falsches Passwort (oder falsche Parteinummer)!", p);
@@ -148,18 +153,18 @@ public class BefehleEinlesen extends EVABase
 	
 
 	/**
-	 * @return Alle Dateien, die sich im Ordner "befehle-inbox" befinden und die Endung .mail haben
+	 * @return Alle Dateien, die sich im Ordner inboxDirectory befinden und die Endung .mail haben
 	 */
 	public List<File> getBefehlsInbox() {
         List<File> retval = new ArrayList<File>();
 
-		File src = new File("befehle-inbox");
+		File src = new File(inboxDirectory);
         if (!src.exists()) {
-            new SysMsg("Warnung: Der Ordner befehle-inbox existiert nicht.");
+            new SysMsg("Warnung: Der Ordner " + inboxDirectory + " existiert nicht.");
             return retval;
         }
 
-		File file[] = new File("befehle-inbox").listFiles();
+		File file[] = new File(inboxDirectory).listFiles();
 		for(int i = 0; i < file.length; i++) {
 			if (file[i].toString().toLowerCase().endsWith(".mail")) {
 				retval.add(file[i]);
@@ -193,34 +198,36 @@ public class BefehleEinlesen extends EVABase
 	}
 
 	/**
-     * <p>Löscht nach dem Einlesen der Befehle alle Quelldateien in "befehle-inbox" - 
-     * NICHT in "befehle", die Dateien dort bleiben also für eine mögliche Wiederhoung der AW
+     * <p>Löscht nach dem Einlesen der Befehle alle Quelldateien in inboxDirectory
+     * NICHT in befehleDirectory, die Dateien dort bleiben also für eine mögliche Wiederhoung der AW
      * erhalten.</p>
      */
     private void InboxLeeren() {
-        File src = new File("befehle-inbox");
+        File src = new File(inboxDirectory);
         if (!src.exists()) {
-            new SysMsg("Warnung: Der Ordner befehle-inbox existiert nicht.");
+            new SysMsg("Warnung: Der Ordner " + inboxDirectory + " existiert nicht.");
             return;
         }
 
-        File file[] = new File("befehle-inbox").listFiles();
+        File file[] = new File(inboxDirectory).listFiles();
         for(int i = 0; i < file.length; i++) {
             boolean success = file[i].delete();
-			if (!success) new SysErr("Konnte Befehlsdatei " + file[i].getAbsolutePath() + " nicht löschen!");
+			if (!success) {
+				new SysErr("Konnte Befehlsdatei " + file[i].getAbsolutePath() + " nicht löschen!");
+			}
         }
 	}
 
 
     /** liest alle Befehle ein */
 	private void LoadBefehle() {
-		File file[] = new File("befehle/" + GameRules.getRunde()).listFiles();
+		File file[] = new File(befehleDirectory + "/" + GameRules.getRunde()).listFiles();
 		if (file == null)
 		{
-			new SysErr("keine Befehle für aktuelle Runde " + GameRules.getRunde() + " gefunden. (in ./befehle/" + GameRules.getRunde() + ")");
-			file = new File("befehle").listFiles();
+			new SysErr("keine Befehle für aktuelle Runde " + GameRules.getRunde() + " gefunden. (in " + befehleDirectory + "/" + GameRules.getRunde() + ")");
+			file = new File(befehleDirectory).listFiles();
 			if (file == null) {
-				new SysErr("Auch in ./befehle keine Dateien gefunden!");
+				new SysErr("Auch in "+ befehleDirectory + " keine Dateien gefunden!");
 				return;
 			}
 		}
@@ -368,21 +375,21 @@ public class BefehleEinlesen extends EVABase
 		
 		// miserabler Hack um erstmal die kurze Zeit die Befehle parallel einlesen
 		// zu können ( ZAT & Beta -> *.mail & *.cmd)
-		if (cleanFile.toString().toLowerCase().endsWith(".cmd"))
-		{
-			try {
-				// im neuen Modus muss erstmal die partei vorgeladen werden ... sonst werden die Befehle nicht akzeptiert
-				String name = new File(cleanFile).getName();
-				int idx = name.indexOf(".");
-				int nummer = Integer.parseInt(name.substring(0, idx), 36);
-				unit = Unit.Load(nummer);
-				partei = Partei.getPartei(unit.getOwner());
-				partei.setNMR(GameRules.getRunde());
-			} catch(Exception ex)
-			{
-				new Fehler("konnte Einheitennummer nicht erkennen '" + cleanFile + "'");
-			}
-		}
+//		if (cleanFile.toString().toLowerCase().endsWith(".cmd"))
+//		{
+//			try {
+//				// im neuen Modus muss erstmal die partei vorgeladen werden ... sonst werden die Befehle nicht akzeptiert
+//				String name = new File(cleanFile).getName();
+//				int idx = name.indexOf(".");
+//				int nummer = Integer.parseInt(name.substring(0, idx), 36);
+//				unit = Unit.Load(nummer);
+//				partei = Partei.getPartei(unit.getOwner());
+//				partei.setNMR(GameRules.getRunde());
+//			} catch(Exception ex)
+//			{
+//				new Fehler("konnte Einheitennummer nicht erkennen '" + cleanFile + "'");
+//			}
+//		}
 		
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(cleanFile), "UTF8"));
