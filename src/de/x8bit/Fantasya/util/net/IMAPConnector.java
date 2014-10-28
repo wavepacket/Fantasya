@@ -61,10 +61,8 @@ public class IMAPConnector {
 		// open the mailbox
         Folder fya = store.getFolder("Fya");
         fya.open(Folder.READ_WRITE);
-        if (fya != null) {
-            log.add("opened folder Fya: " + fya.getMessageCount() + " messages.");
-            System.out.println("Verbunden - es gibt " + fya.getMessageCount() + " Nachrichten.");
-        }
+        log.add("opened folder Fya: " + fya.getMessageCount() + " messages.");
+        System.out.println("Verbunden - es gibt " + fya.getMessageCount() + " Nachrichten.");
 
 		// loop through the messages
         Message[] messages = fya.getMessages();
@@ -96,7 +94,7 @@ public class IMAPConnector {
                 processMultipart((Multipart)o, 1);
                 
             } else if (o instanceof InputStream) {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append("**This is an InputStream message**\n");
                 InputStream is = (InputStream)o;
                 // Assumes character content (not binary images)

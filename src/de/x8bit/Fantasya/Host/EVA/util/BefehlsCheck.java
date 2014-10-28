@@ -28,7 +28,9 @@ public class BefehlsCheck {
 	}
 
 	public void addFile(File f) {
-		if (!f.exists()) throw new RuntimeException("Befehlsdatei " + f + " existiert nicht.");
+		if (!f.exists()) {
+			throw new RuntimeException("Befehlsdatei " + f + " existiert nicht.");
+		}
 
 		BefehlsCheckInfo bci = new BefehlsCheckInfo(f);
 
@@ -44,7 +46,7 @@ public class BefehlsCheck {
 		BefehleEinlesen.cleanBefehle(basename, cleanname);
 		bci.setCleanFile(new File(cleanname));
 
-		Partei p = null;
+		Partei p;
 		try {
 			p = BefehleEinlesen.getPartei(cleanname);
 			bci.setPartei(p);

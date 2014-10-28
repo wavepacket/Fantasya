@@ -109,7 +109,7 @@ public class Main
 	{
 		Object value = getFlag(name, 0);
 		if (value == null) return 0;
-		int number = 0;
+		int number;
 		try { number = Integer.parseInt(value.toString()); } catch(Exception ex) { return 0; }
 		return number;
 	}
@@ -316,8 +316,9 @@ public class Main
 			ZATMode.SetCurrentMode(ZATMode.MODE_NORMAL());
 			if (args_debug) {
 				ZATMode.CurrentMode().setDebug(true);
-				ZATMode.CurrentMode().setSendReportMails(false);
 			}
+			// for now: disable sending of emails
+			ZATMode.CurrentMode().setSendReportMails(false);
 			try{
 				EVABase.ZAT();
 			} catch(Exception ex) {
@@ -632,8 +633,7 @@ public class Main
 		ResultSet rs = db.Select();
 		try	{
 			while(rs.next()) {
-				String adresse = rs.getString("email");
-                adresse = "hapebe@gmx.de";
+				String adresse = "hapebe@gmx.de";
                 email.setEmpfaenger(adresse);
 				email.Send();
 				new SysMsg("e-Mail an '" + rs.getString("name") + "'");

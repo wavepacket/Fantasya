@@ -125,8 +125,7 @@ public class Paket
 	
 	private static Paket FindClass(String paket, String name)
 	{
-		List<Paket> alp = null;	// die Package-Liste
-		alp = packages.get(paket);
+		List<Paket> alp = packages.get(paket);
 		name = name.toLowerCase();
 		for(int i = 0; i < alp.size(); i++)
 		{

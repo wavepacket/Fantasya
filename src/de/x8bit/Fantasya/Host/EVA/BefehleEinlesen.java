@@ -100,8 +100,9 @@ public class BefehleEinlesen extends EVABase
 			List<Partei> ignoreList = new ArrayList<Partei>();
 			ignoreList.addAll(Partei.PROXY);
 			for (Partei p : check.getParteien()) {
-				if (!check.hasValidBefehle(p)) continue;
-				ignoreList.remove(p);
+				if (check.hasValidBefehle(p)) {
+					ignoreList.remove(p);
+				}
 			}
 			for (Partei p : ignoreList) {
 				ZATMode.CurrentMode().setIgnore(p);
@@ -117,7 +118,9 @@ public class BefehleEinlesen extends EVABase
 		LoadBefehle();
 
 		
-		for (BefehlsMuster pattern : getMuster()) addTemplate(pattern.getRegex());
+		for (BefehlsMuster pattern : getMuster()) {
+			addTemplate(pattern.getRegex());
+		}
 	}
 
     public static List<BefehlsMuster> getMuster() {
@@ -149,6 +152,7 @@ public class BefehleEinlesen extends EVABase
 	/**
 	 * Funktion wird nicht verwendet
 	 */
+	@Override
 	public boolean DoAction(Unit u, String befehl[]) { return true;	}
 	
 
@@ -235,8 +239,6 @@ public class BefehleEinlesen extends EVABase
 		for(int i = 0; i < file.length; i++) {
 			// *.mail sind die alten Formate ... *.cmd ist für jede einzelne Einheit
 			if (file[i].toString().toLowerCase().endsWith(".mail") || file[i].toString().toLowerCase().endsWith(".cmd")) {
-                // Datei "reinigen" und überschreiben:
-//                cleanBefehle(file[i].toString(), file[i].toString());
                 // Befehle ins Objekt-Modell einlesen:
                 readBefehle(file[i].toString());
             }
@@ -372,24 +374,6 @@ public class BefehleEinlesen extends EVABase
 		
 		Partei partei = null;
 		Unit unit = null;
-		
-		// miserabler Hack um erstmal die kurze Zeit die Befehle parallel einlesen
-		// zu können ( ZAT & Beta -> *.mail & *.cmd)
-//		if (cleanFile.toString().toLowerCase().endsWith(".cmd"))
-//		{
-//			try {
-//				// im neuen Modus muss erstmal die partei vorgeladen werden ... sonst werden die Befehle nicht akzeptiert
-//				String name = new File(cleanFile).getName();
-//				int idx = name.indexOf(".");
-//				int nummer = Integer.parseInt(name.substring(0, idx), 36);
-//				unit = Unit.Load(nummer);
-//				partei = Partei.getPartei(unit.getOwner());
-//				partei.setNMR(GameRules.getRunde());
-//			} catch(Exception ex)
-//			{
-//				new Fehler("konnte Einheitennummer nicht erkennen '" + cleanFile + "'");
-//			}
-//		}
 		
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(cleanFile), "UTF8"));
@@ -554,7 +538,7 @@ public class BefehleEinlesen extends EVABase
 	 * @param line - Befehlszeile (like "EINHEIT bla")
 	 */
 	private Unit holeEinheit(Partei partei, String line) {
-		Unit retval = null;
+		Unit retval;
 
 		String befehl[] = line.split("\\ ");
 		if (befehl.length < 2) return null; // still und leise
@@ -577,8 +561,12 @@ public class BefehleEinlesen extends EVABase
 		return retval;
 	}
 
+	@Override
 	public void PostAction() { }
+	@Override
 	public void PreAction() { }
+	@Override
 	public void DoAction(Region r, String befehl) { }
+	@Override
     public void DoAction(Einzelbefehl eb) { }
 }
