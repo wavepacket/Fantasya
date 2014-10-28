@@ -15,6 +15,10 @@ import org.slf4j.LoggerFactory;
  * annoying. As soon as the table layout is fixed (the required key "id" has to
  * be removed without replacement, and "partei" should be renamed to "id"), this
  * class can be removed without harm.
+ *
+ * Further annoying issue: For the beta, the property_parteien actually has a
+ * NULL value for the partei field. Whatever that is supposed to mean, but it
+ * needs to be caught as well...
  */
 public class ParteienPropertySerializer implements ObjectSerializer<Partei> {
 
@@ -42,6 +46,10 @@ public class ParteienPropertySerializer implements ObjectSerializer<Partei> {
 
 	@Override
 	public Partei load(Map<String, String> mapping) {
+		if (mapping.get("partei") == null) {
+			return null;
+		}
+
 		int id = Integer.decode(mapping.get("partei"));
 
 		for (Partei entry : parteiList) {
