@@ -47,6 +47,11 @@ public class Kartografieren extends EVABase implements NotACommand {
         final int runde = GameRules.getRunde();
         
         for (Partei partei : Partei.PROXY) {
+			// capture potential errors with parties that have no units
+			if (partei.getKnownRegions(false).isEmpty()) {
+				continue;
+			}
+			
             for (RegionsSicht rs : partei.getKnownRegions(false)) {
                 Region r = Region.Load(rs.getCoords());
                 rs.copyStrassen(r);
@@ -68,7 +73,7 @@ public class Kartografieren extends EVABase implements NotACommand {
                     }
                 }
             }
-            
+
             partei.setProperty(Partei.PROPERTY_ATLAS, partei.atlas.asCodes());
         }
     }
