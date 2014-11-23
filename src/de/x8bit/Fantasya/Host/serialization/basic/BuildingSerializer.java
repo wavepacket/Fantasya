@@ -107,7 +107,9 @@ public class BuildingSerializer implements ObjectSerializer<Building> {
 		mapping.put("owner", String.valueOf(object.getOwner()));
 
 		// log errors
-		if (unitList.get(object.getOwner()) == null) {
+		// note that it is perfectly natural for a building to have owner 0,
+		// meaning noone owns this building.
+		if (object.getOwner() != 0 && unitList.get(object.getOwner()) == null) {
 			logger.warn("Owner \"{}\" of building \"{}\" does not exist.",
 					object.getOwner(),
 					object.getNummer());

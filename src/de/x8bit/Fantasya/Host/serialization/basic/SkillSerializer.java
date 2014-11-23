@@ -83,9 +83,13 @@ public class SkillSerializer implements ObjectSerializer<Unit> {
 
 		for (Skill skill : object.getSkills()) {
 			if (skill.getLerntage() <= 0) {
-				logger.warn("Error saving skill \"{}\" of unit \"{}\": Non-positive lerntage.",
-						skill.getClass().getSimpleName(),
-						object.getNummer());
+				// the current code effectively produces a skill object for each
+				// skill and attaches it to each unit. Most of them are zero,
+				// because the unit simply does not have the skill, so this
+				// logging produces too much output currently.
+//				logger.warn("Error saving skill \"{}\" of unit \"{}\": Non-positive lerntage.",
+//						skill.getClass().getSimpleName(),
+//						object.getNummer());
 				continue;
 			}
 

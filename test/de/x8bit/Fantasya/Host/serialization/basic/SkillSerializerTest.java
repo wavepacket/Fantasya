@@ -113,10 +113,11 @@ public class SkillSerializerTest {
 	public void warnAndReturnOnSavingBadLerntage() {
 		for (int lerntage = -2; lerntage <= 0; lerntage++) {
 			unit.setSkill(Wahrnehmung.class, lerntage);
-			FakeAppender.reset();
+			// see the code for an explanation why this is commented out.
+//			FakeAppender.reset();
 
 			assertTrue( serializer.save(unit).isEmpty() );
-			assertTrue( FakeAppender.receivedWarningMessage() );
+//			assertTrue( FakeAppender.receivedWarningMessage() );
 		}
 	}
 }

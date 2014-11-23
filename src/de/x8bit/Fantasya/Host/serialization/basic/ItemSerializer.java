@@ -99,9 +99,12 @@ public class ItemSerializer implements ObjectSerializer<Unit> {
 
 		for (Item item : object.getItems()) {
 			if (item.getAnzahl() <= 0) {
-				logger.warn("Unit {} contained item {} with zero count; not saving entry.",
-						object.getNummer(),
-						item.getClass().getSimpleName());
+				// does not work: in the code, basically all items are attached
+				// to each unit, most of which have amount zero. so this log statement
+				// produces too much output.
+//				logger.warn("Unit {} contained item {} with zero count; not saving entry.",
+//						object.getNummer(),
+//						item.getClass().getSimpleName());
 				continue;
 			}
 

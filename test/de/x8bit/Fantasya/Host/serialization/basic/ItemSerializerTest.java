@@ -112,10 +112,11 @@ public class ItemSerializerTest {
 	public void warnAndSaveNothingOnItemCountZeroOrLess() {
 		for (int count = -2; count <= 0; count++) {
 			unit.addItem(Schwert.class, count);
-			FakeAppender.reset();
-
+			// see the code for an explanation why this is commented out.
+//			FakeAppender.reset();
+//
 			assertTrue( serializer.save(unit).isEmpty() );
-			assertTrue( FakeAppender.receivedWarningMessage() );
+//			assertTrue( FakeAppender.receivedWarningMessage() );
 		}
 	}
 }
