@@ -56,31 +56,31 @@ public class eMail
 				in = new Scanner(socket.getInputStream());
 				out = new PrintWriter(socket.getOutputStream());
 				read(); // SMTP-Status/Server
-				send("EHLO Fantasya");
+				writeLine("EHLO Fantasya");
 				read();
 			} catch(Exception ex) { new SysErr(ex.getMessage()); socket = null; return; }
 		}
 		
-		send("MAIL FROM:<" + getSender() + ">");
+		writeLine("MAIL FROM:<" + getSender() + ">");
 		read();
-		send("RCPT TO:<" + getEmpfaenger() + ">");
+		writeLine("RCPT TO:<" + getEmpfaenger() + ">");
 		read();
-		send("DATA");
+		writeLine("DATA");
 		read();
-		send("To: " + getEmpfaenger());
-		send("From: " + getSender());
-		send("Subject: " + getSubject());
+		writeLine("To: " + getEmpfaenger());
+		writeLine("From: " + getSender());
+		writeLine("Subject: " + getSubject());
         // TODO: Zeichenmüll verhindern?
         // send("Content-Transfer-Encoding: 8bit");
         // send("Content-Type: text/plain; charset=ISO-8859-1");
         // send("X-Mailer: Fantasya PbEM Host v" + Main.FANTAVERSION + " (http://www.fantasya-pbem.de/)");
-		send("");
-		for(int i = 0; i < Text.size(); i++) send(Text.get(i));
-		send(".");
+		writeLine("");
+		for(int i = 0; i < Text.size(); i++) writeLine(Text.get(i));
+		writeLine(".");
 		read();
 	}
 	
-	private void send(String msg)
+	private void writeLine(String msg)
 	{
 		new SysMsg(5, "<<< " + checkMsg(msg));
         try {

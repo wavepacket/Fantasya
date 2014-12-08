@@ -170,9 +170,8 @@ public class Zipping
                     }
                 }
 
-                Region r = null;
                 if (msg.getCoords() != null) {
-                    r = Region.Load(msg.getCoords());
+                    Region r = Region.Load(msg.getCoords());
                     if (!p.canAccess(r)) continue; // die Region ist für p nicht sichtbar
                     if (Unit.CACHE.getAll(r.getCoords(), p.getNummer()).isEmpty()) {
 						// niemand hier
