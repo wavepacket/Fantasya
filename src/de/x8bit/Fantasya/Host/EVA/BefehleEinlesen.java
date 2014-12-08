@@ -170,9 +170,9 @@ public class BefehleEinlesen extends EVABase
 
 		File file[] = new File(inboxDirectory).listFiles();
 		for(int i = 0; i < file.length; i++) {
-			if (file[i].toString().toLowerCase().endsWith(".mail")) {
+//			if (file[i].toString().toLowerCase().endsWith(".mail")) {
 				retval.add(file[i]);
-			}
+//			}
 		}
 		return retval;
 	}
