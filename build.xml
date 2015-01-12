@@ -1,4 +1,4 @@
-<project name="Freelords" default="build" basedir=".">
+<project name="Fantasya" default="build" basedir=".">
 	<description>
 		Fantasya
 	</description>
