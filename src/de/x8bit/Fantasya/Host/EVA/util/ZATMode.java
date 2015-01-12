@@ -6,6 +6,7 @@ import de.x8bit.Fantasya.Host.EVA.Belagerung;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
 import de.x8bit.Fantasya.Host.EVA.Kriege;
 import de.x8bit.Fantasya.Host.EVA.BefehlsCheckMeldungen;
+import de.x8bit.Fantasya.Host.EVA.BefehlsFazit;
 import de.x8bit.Fantasya.Host.EVA.Reporte;
 import de.x8bit.Fantasya.Host.Main;
 import java.util.HashSet;
@@ -217,6 +218,7 @@ public class ZATMode {
         retval.setSkip(Kriege.class);
         retval.setSkip(Belagerung.class);
         retval.setSkip(Reporte.class);
+		retval.setSkip(BefehlsFazit.class);
 
         retval.dontSkip(BefehlsCheckMeldungen.class);
 
