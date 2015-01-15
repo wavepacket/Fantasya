@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Host.EVA;
 
 import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
-import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
@@ -29,10 +28,6 @@ public class BefehlsCheckMeldungen extends EVABase implements NotACommand {
         ZATMode zatMode = ZATMode.CurrentMode();
 
 		if (zatMode.getSkip(this.getClass())) return;
-
-        if (!zatMode.getSendMailMethode().equals(SMTPConnector.class.getSimpleName())) {
-            new BigError("BefehlsCheckMeldungen funktioniert nur mit E-Mail-Versand via SMTPConnector.");
-        }
 
         boolean dbEnabled = Datenbank.isEnabled();
         if (!dbEnabled) Datenbank.Enable();

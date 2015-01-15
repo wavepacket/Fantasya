@@ -3,7 +3,6 @@ package de.x8bit.Fantasya.Atlantis.Messages;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.SMSKaufen;
-import de.x8bit.Fantasya.Host.eMail;
 
 /**
  * sollte irgend wann mal eine Instanz von der Klasse auftauchen, dann gab es ernsthafte Probleme  
@@ -12,18 +11,6 @@ import de.x8bit.Fantasya.Host.eMail;
 public class BigError extends de.x8bit.Fantasya.Atlantis.Message
 {
 	private static int count = 0;
-	
-	
-	
-	/** TRUE wenn eine e-mail beim Crash gesendet werden soll*/
-	private static boolean email = false;
-	public static boolean getEMail() { return email; }
-	public static void setEMail(boolean value) { email = value; } 
-	
-	/** Empfänge für Crash-Email */
-	private static String empfaenger = "user@example.com";
-	public static void setEmpfaenger(String value) { empfaenger = value; }
-	public static String getEmpfaenger() { return empfaenger; }
 	
 	/**
 	 * Konstruktor für die Instantiierung via Reflection beim Laden aus der DB
@@ -92,19 +79,6 @@ public class BigError extends de.x8bit.Fantasya.Atlantis.Message
 	
 		Datenbank.ListQueryStack();
 
-		if (email)
-		{
-			eMail e = new eMail();
-			e.setEmpfaenger(empfaenger);
-			e.setSubject("CRASH");
-			e.Text.add(text + " -- " + lastMessage);
-			e.Send();
-			
-			Datenbank db = new Datenbank("BigError");
-			db.SaveSettings("zatstatus.text", "Game Over! - CRASH");
-			db.Close();
-		}
-		
 		SMSKaufen.sendSMS(text);
 	}
 }

@@ -455,9 +455,6 @@ abstract public class EVABase {
 		if (Main.getBFlag("IMAP")) {
 			ZATMode.CurrentMode().setImapAbrufen(true);
 		}
-		if (Main.getBFlag("andermail")) {
-			ZATMode.CurrentMode().setSendMailMethode(SMTPConnector.class.getSimpleName());
-		}
 
 		new SysMsg("Modus:\n" + ZATMode.CurrentMode().toString());
 

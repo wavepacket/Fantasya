@@ -177,12 +177,8 @@ public class Main
 	 * <tr><td>benutzer [name]</td><td>&nbsp;-&nbsp;</td><td>legt den Benutzer fest (default fantasya)</td></tr>
 	 * <tr><td>passwort [passwort]</td><td>&nbsp;-&nbsp;</td><td>legt das Passwort für den Benutzer fest (default fantasya)</td></tr>
 	 * <tr><td>newplayers</td><td>&nbsp;-&nbsp;</td><td>setzt neue Spieler aus</td></tr>
-	 * <tr><td>bigerror [mich]</td><td>&nbsp;-&nbsp;</td><td>sende e-Mail an [mich] bei einem System-Crash</td></tr>
-	 * <tr><td>sender [e-Mail]</td><td>&nbsp;-&nbsp;</td><td>Absender für e-Mails an User</td></tr>
-	 * <tr><td>smtp [ip]</td><td>&nbsp;-&nbsp;</td><td>SMTP-Server (default 127.0.0.1)</td></tr>
 	 * <tr><td>reporte</td><td>&nbsp;-&nbsp;</td><td>schreibt die ReporteSchreiben für alle Spieler neu, dabei wird aber keine e-Mail an die Spieler verschickt</td></tr>
 	 * <tr><td>email</td><td>&nbsp;-&nbsp;</td><td>falls beim Neuschreiben der ReporteSchreiben doch e-mails verschickt werden sollen, dann muss diese Option angeben werden</td></tr>
-	 * <tr><td>rundschreiben [pfad]</td><td>&nbsp;-&nbsp;</td><td>ein nettes kleines Rundschreiben an alle Spieler, die erste Zeile in der mit Pfad angegebenen Datei (default <b>nicht</b> definiert!!) wird als Subject verwendet</td></tr>
 	 * <tr><td>crmap</td><td>&nbsp;-&nbsp;</td><td>erstellt einen CR mit den aktuellen Regionen</td></tr>
 	 * <tr><td>gameid</td><td>&nbsp;-&nbsp;</td><td>&uuml;bergibt die GameID f&uuml;r das Spiel</td></tr>
 	 * <tr><td>bugfix</td><td>&nbsp;-&nbsp;</td><td>korregiert einen Fehler oder macht etwas anderes Unanständiges :)</td></tr>
@@ -230,9 +226,6 @@ public class Main
 			if (args[i].compareToIgnoreCase("-passwort") == 0) Datenbank.SetPasswort(args[i + 1]);
 			if (args[i].compareToIgnoreCase("-newplayers") == 0) args_newplayers = true;
 			if (args[i].compareToIgnoreCase("-testcase") == 0) new TestCase();
-			if (args[i].compareToIgnoreCase("-sender") == 0) eMail.setSender(args[i + 1]);
-			if (args[i].compareToIgnoreCase("-smtp") == 0) eMail.setServer(args[i + 1]);
-			if (args[i].compareToIgnoreCase("-bigerror") == 0) { BigError.setEMail(true); BigError.setEmpfaenger(args[i + 1]); }
 			if (args[i].compareToIgnoreCase("-reporte") == 0) args_reporte = true;
 			if (args[i].compareToIgnoreCase("-email") == 0) args_email = true;
 			if (args[i].compareToIgnoreCase("-rundschreiben") == 0) { args_rundschreiben = true; rundschreiben = args[i + 1]; }
@@ -310,7 +303,6 @@ public class Main
 			}
 		}
 		if (args_reporte) Reporte();
-		if (args_rundschreiben) Rundschreiben();
 		if (args_crmap) CRMap();
 		if (args_zat) {
 			ZATMode.SetCurrentMode(ZATMode.MODE_NORMAL());
@@ -376,9 +368,6 @@ public class Main
 				  "                     werden (siehe auch E-Mail-Konfiguration)\n");
 		sb.append("befehlscheck         prüft neu eingegangene Befehle mittels eines ZAT-\n" +
 				  "                     Trockenlaufs (Read-Only)\n");
-		sb.append("rundschreiben [pfad] ein nettes kleines Rundschreiben an alle Spieler, die\n" +
-				  "                     erste Zeile in der mit Pfad angegebenen Datei  (default\n" +
-				  "                     NICHT definiert!!) wird als Subject verwendet\n");
 		sb.append("gameid [gameid]      legt die GameID für den Download-Link der Auswertung fest\n");
 		sb.append("\n");
 		sb.append("Datenbank-Konfiguration (MySQL):\n");
@@ -390,11 +379,6 @@ public class Main
 		sb.append("initdb               initialisiert die Datenbank - legt die Tabellen an,\n" +
 				  "                     schreibt einige fundamentale Konfigurationswerte und\n");
 		sb.append("                     legt eine fantasysiche Startwelt an.\n");
-		sb.append("\n");
-		sb.append("E-Mail-Konfiguration:\n");
-		sb.append("smtp [ip]            SMTP-Server (default 127.0.0.1)\n");
-		sb.append("sender [e-Mail]      Absender für e-Mails an User\n");
-		sb.append("bigerror [mich]      sende e-Mail an [mich] bei einem System-Crash\n");
 		sb.append("\n");
 		sb.append("SMSKaufen.de:\n");
 		sb.append("smsuser              Benutzeraccount für SMSKaufen.de\n");
@@ -605,43 +589,6 @@ public class Main
 		new ReportXML(new Partei());
 		
 		new SysMsg("SYSTEM Quit - CR-Map -> 'world.cr'");
-	}
-	
-	/**
-	 * versendet die Rundschreiben
-	 */
-	private static void Rundschreiben()
-	{
-		new SysMsg("SYSTEM Start - versende Rundschreiben '" + rundschreiben + "'");
-		
-		eMail email = new eMail();
-		try
-		{
-			Charset charset = EncodingDetector.guess(new File(rundschreiben));
-			if (charset == null) charset = Charset.forName("UTF-8");
-            
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(rundschreiben), charset));
-			email.setSubject(br.readLine());
-			String hs = br.readLine();
-			while(hs != null) { email.Text.add(hs); hs = br.readLine(); }
-			br.close();
-		} catch(Exception ex) { new BigError(ex); }
-		
-		// jetzt noch alle Spieler abklappern
-		Datenbank db = new Datenbank("Rundschreiben");
-		db.myQuery = "SELECT email, name FROM partei";
-		ResultSet rs = db.Select();
-		try	{
-			while(rs.next()) {
-				String adresse = "hapebe@gmx.de";
-                email.setEmpfaenger(adresse);
-				email.Send();
-				new SysMsg("e-Mail an '" + rs.getString("name") + "'");
-                break;
-			}
-		} catch(Exception ex) { new BigError(ex); }
-		
-		new SysMsg("SYSTEM Quit - Rundschreiben versendet");
 	}
 	
 	/**

@@ -148,10 +148,6 @@ public class ZATMode {
         return sendMailMethode;
     }
 
-    public void setSendMailMethode(String sendMailMethode) {
-        this.sendMailMethode = sendMailMethode;
-    }
-
 
     public boolean isWorldReadOnly() {
         return worldReadOnly;
@@ -181,7 +177,6 @@ public class ZATMode {
 		sb.append("IMAP-Mails holen:           " + (this.isImapAbrufen()?"ja":"nein") + "\n");
 		sb.append("Befehle einlesen:           " + (this.isBefehleLesen()?"ja":"nein") + "\n");
 		sb.append("Reporte verschicken:        " + (this.isSendReportMails()?"ja":"nein") + "\n");
-        if (this.isSendReportMails()) sb.append("   Methode:                 " + (this.getSendMailMethode()) + "\n");
 		sb.append("Testlauf (nicht Speichern): " + (this.isWorldReadOnly()?"ja":"nein") + "\n");
 		if (this.skipPhasen.size() > 0) {
 			sb.append("Es werden ZAT-Phasen übersprungen: ");
