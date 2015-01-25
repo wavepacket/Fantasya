@@ -1,11 +1,6 @@
 package de.x8bit.Fantasya.Host;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -24,7 +19,6 @@ import de.x8bit.Fantasya.Host.GUI.MainFrame;
 import de.x8bit.Fantasya.Host.ManualTests.TestWorld;
 import de.x8bit.Fantasya.Host.Reports.ReportXML;
 import de.x8bit.Fantasya.Host.Reports.Zipping;
-import de.x8bit.Fantasya.util.io.EncodingDetector;
 
 
 
@@ -49,7 +43,6 @@ import de.x8bit.Fantasya.util.io.EncodingDetector;
 
 public class Main
 {
-	private static String rundschreiben = "rundschreiben.txt";
 	private static boolean args_gui = false;
 	private static boolean args_zat = false;
 	private static boolean args_befehlscheck = false;
@@ -62,7 +55,6 @@ public class Main
 	private static boolean args_reporte = false;
 	private static boolean args_email = false;
 	private static boolean args_newplayers = false;
-	private static boolean args_rundschreiben = false;
 	private static boolean args_crmap = false;
 	private static boolean args_bugfix = false;
 	private static boolean args_config = false;
@@ -228,7 +220,6 @@ public class Main
 			if (args[i].compareToIgnoreCase("-testcase") == 0) new TestCase();
 			if (args[i].compareToIgnoreCase("-reporte") == 0) args_reporte = true;
 			if (args[i].compareToIgnoreCase("-email") == 0) args_email = true;
-			if (args[i].compareToIgnoreCase("-rundschreiben") == 0) { args_rundschreiben = true; rundschreiben = args[i + 1]; }
 			if (args[i].compareToIgnoreCase("-crmap") == 0) args_crmap = true;
 			if (args[i].compareToIgnoreCase("-bugfix") == 0) args_bugfix = true;
 			if (args[i].compareToIgnoreCase("-config") == 0) args_config = true;

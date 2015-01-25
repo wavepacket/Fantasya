@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.util.net;
 
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Host.Datenbank;
-import de.x8bit.Fantasya.Host.Main;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -136,13 +135,7 @@ public class IMAPConnector {
         String password = db.ReadSettings("befehle.password", DEFAULT_PASSWORD);
         db.Close();
 
-        if (Main.getSFlag("imap_pwd").length() > 0) {
-            password = Main.getSFlag("imap_pwd");
-        }
-
-        Properties sessionProps = new Properties();
-
-        Session session = Session.getDefaultInstance(sessionProps);
+        Session session = Session.getDefaultInstance(new Properties());
 
         Store store = null;
         System.out.println("auth: " + protocol + "://" + username + ":" + password + "@" + host);

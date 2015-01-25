@@ -113,10 +113,6 @@ public class ZATMode {
         return befehleLesen;
     }
 
-    public void setBefehleLesen(boolean befehleLesen) {
-        this.befehleLesen = befehleLesen;
-    }
-
 	public boolean isBefehlsCheck() {
 		return befehlsCheck;
 	}

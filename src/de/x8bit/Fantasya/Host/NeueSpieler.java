@@ -116,8 +116,6 @@ public class NeueSpieler
 	@SuppressWarnings("unchecked")
 	private static void NeueEinheiten(Region region, Partei volk, String tarnung, int holz, int steine, int eisen)
 	{
-		Unit u = null;
-        
         // Bonus-Faktor für Spätstarter:
         // 1% pro Runde, multiplikativ
         // 1 - 1,00
@@ -151,7 +149,7 @@ public class NeueSpieler
 		volk.setUrsprung(region.getCoords());
 		
 		// Wahrnehmung
-		u = NeueEinheitErzeugen(region.getCoords(), volk, tarnung, 1);
+		Unit u = NeueEinheitErzeugen(region.getCoords(), volk, tarnung, 1);
 		u.setSkill(Wahrnehmung.class, 630 + (int)(180d*faktor/1.01d));
 		// linear mit der Runde mehr Silber:
         // 1 - 10100
