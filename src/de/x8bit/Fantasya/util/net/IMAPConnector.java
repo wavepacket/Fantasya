@@ -30,20 +30,27 @@ import javax.mail.internet.MimeBodyPart;
  */
 public class IMAPConnector {
 
-    private static String DEFAULT_PROTOCOL = "imaps";
-    private static String DEFAULT_HOST = "foo.bar";
-    private static String DEFAULT_USERNAME = "fantasya@foo.bar";
-    private static String DEFAULT_PASSWORD = "unset";
+    private String protocol = "imaps";
+    private String host = "foo.bar";
+    private String username = "fantasya@foo.bar";
+    private String password = "unset";
+	private String folder = "Fya";
 
     private String content;
-    private List<String> log;
+    private List<String> log = new ArrayList<String>();
 
     public IMAPConnector() {
-        this.log = new ArrayList<String>();
+		Datenbank db = new Datenbank("IMAPConnector - IMAP auth data");
+        protocol = db.ReadSettings("befehle.protocol", protocol);
+        host = db.ReadSettings("befehle.host", host);
+        username = db.ReadSettings("befehle.username", username);
+        password = db.ReadSettings("befehle.password", password);
+		folder = db.ReadSettings("befehle.folder", folder);
+        db.Close();
     }
 
     /**
-     * Durchsucht den Ordner "Fya" der IMAP-Mailbox nach Mails mit "fantasya beta" im Betreff und
+     * Durchsucht einen Ordner der IMAP-Mailbox nach Mails mit "fantasya beta" im Betreff und
      * speichert ggf. deren text/plain-Inhalt im Ordner befehle-inbox. Die Mails werden dann gelöscht.
      * @return Anzahl der gefundenen Mails
      * @throws MessagingException
@@ -51,20 +58,15 @@ public class IMAPConnector {
      */
     @SuppressWarnings("resource")
 	public int befehleHolen() throws MessagingException, IOException {
-		// Connect to the server
+		// Connect to the server and open the mailbox
         Store store = openStore();
-        if (!store.isConnected()) {
-			throw new MessagingException("IMAPConnector - Verbindung nicht erfolgreich.");
-		}
-
-		// open the mailbox
-        Folder fya = store.getFolder("Fya");
-        fya.open(Folder.READ_WRITE);
-        log.add("opened folder Fya: " + fya.getMessageCount() + " messages.");
-        System.out.println("Verbunden - es gibt " + fya.getMessageCount() + " Nachrichten.");
+        Folder messageFolder = store.getFolder(folder);
+        messageFolder.open(Folder.READ_WRITE);
+        log.add("opened folder Fya: " + messageFolder.getMessageCount() + " messages.");
+        System.out.println("Verbunden - es gibt " + messageFolder.getMessageCount() + " Nachrichten.");
 
 		// loop through the messages
-        Message[] messages = fya.getMessages();
+        Message[] messages = messageFolder.getMessages();
         int validCount = 0;
         for (Message m : messages) {
             content = null;
@@ -119,7 +121,7 @@ public class IMAPConnector {
         } // next message
 
         // "true" actually deletes flagged messages from folder
-        fya.close(true);
+        messageFolder.close(true);
         store.close();
 
         writeLog();
@@ -128,13 +130,6 @@ public class IMAPConnector {
     }
 
     private Store openStore() throws MessagingException {
-        Datenbank db = new Datenbank("IMAPConnector - IMAP auth data");
-        String protocol = db.ReadSettings("befehle.protocol", DEFAULT_PROTOCOL);
-        String host = db.ReadSettings("befehle.host", DEFAULT_HOST);
-        String username = db.ReadSettings("befehle.username", DEFAULT_USERNAME);
-        String password = db.ReadSettings("befehle.password", DEFAULT_PASSWORD);
-        db.Close();
-
         Session session = Session.getDefaultInstance(new Properties());
 
         Store store = null;
@@ -146,6 +141,10 @@ public class IMAPConnector {
             new BigError(ex);
         }
         
+        if (store == null || !store.isConnected()) {
+			throw new MessagingException("IMAPConnector - Verbindung nicht erfolgreich.");
+		}
+
         return store;
     }
 

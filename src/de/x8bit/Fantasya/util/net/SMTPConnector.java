@@ -31,7 +31,6 @@ public class SMTPConnector {
     private String SMTP_PORT = "465";
     private String USERNAME = "defaultUser";
     private String PASSWORD = "defaultPassword";
-    private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
     public SMTPConnector() {
         Datenbank db = new Datenbank("SMTPConnector auth settings");
