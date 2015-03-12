@@ -34,7 +34,7 @@ public class IMAPConnector {
     private String host = "foo.bar";
     private String username = "fantasya@foo.bar";
     private String password = "unset";
-	private String folder = "Fya";
+	private String folder = "INBOX";
 
     private String content;
     private List<String> log = new ArrayList<String>();
