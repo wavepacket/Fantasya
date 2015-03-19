@@ -38,7 +38,6 @@ import de.x8bit.Fantasya.Host.EVA.util.EVAFastSaver;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.ComplexName;
-import de.x8bit.Fantasya.util.net.SMTPConnector;
 import de.x8bit.Fantasya.util.comparator.UnitSortierungComparator;
 import java.util.Collections;
 import java.util.HashSet;

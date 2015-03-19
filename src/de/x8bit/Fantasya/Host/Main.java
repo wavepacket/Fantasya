@@ -12,6 +12,7 @@ import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
+import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
 import de.x8bit.Fantasya.Host.EVA.util.EVAFastLoader;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
@@ -525,8 +526,11 @@ public class Main
 //		-- mogel (21.10.2012) -- new ZATMsg("Runde auf " + GameRules.getRunde() + " zurückgedreht.");
 		
 		// die ReporteSchreiben schreiben
-		new ReporteSchreiben();
-		
+		new ZATMsg("erstelle Reporte");
+		GameRules.setRunde(GameRules.getRunde() - 1); // Report von der vorigen Runde erzeugen
+        new de.x8bit.Fantasya.Host.EVA.Reporte();
+		new ReportXML(new Partei());	// "world.xml" erzeugen
+
 		// falls irgend wann mal der GC Blödsinn wieder aufhört
 		// und ein Destruktor existiert
 //		-- mogel (21.10.2012) -- GameRules.setRunde(GameRules.getRunde() + 1);
