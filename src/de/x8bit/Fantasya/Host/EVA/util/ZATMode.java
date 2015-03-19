@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.EVA.util;
 
-import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.EVA.Belagerung;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
@@ -26,7 +25,6 @@ public class ZATMode {
     boolean befehleLesen;
 	boolean befehlsCheck;
     boolean worldReadOnly;
-    boolean sendReportMails;
     String sendMailMethode;
 
     Set<Partei> ignoreParteien;
@@ -63,7 +61,6 @@ public class ZATMode {
 
         this.worldReadOnly = false;
 
-        this.sendReportMails = true;
         this.sendMailMethode = "classic";
     }
 
@@ -129,31 +126,15 @@ public class ZATMode {
         this.debug = debug;
     }
 
-    public boolean isSendReportMails() {
-        return sendReportMails;
-    }
-
-    public void setSendReportMails(boolean sendReportMails) {
-		if (this.isWorldReadOnly() && sendReportMails) {
-			throw new IllegalStateException("Im ZATMode Read-Only können keine Reporte verschickt werden.");
-		}
-        this.sendReportMails = sendReportMails;
-    }
-
     public String getSendMailMethode() {
         return sendMailMethode;
     }
-
 
     public boolean isWorldReadOnly() {
         return worldReadOnly;
     }
 
     public void setWorldReadOnly(boolean worldReadOnly) {
-		if (this.isSendReportMails() && worldReadOnly) {
-			new SysMsg("WARNUNG: Der ZATMode Read-Only ist aktiviert worden; es werden also keine Reporte verschickt.");
-			this.setSendReportMails(false);
-		}
         this.worldReadOnly = worldReadOnly;
     }
 
@@ -172,7 +153,6 @@ public class ZATMode {
 		sb.append("Debug-Modus:                " + (this.isDebug()?"an":"aus") + "\n");
 		sb.append("IMAP-Mails holen:           " + (this.isImapAbrufen()?"ja":"nein") + "\n");
 		sb.append("Befehle einlesen:           " + (this.isBefehleLesen()?"ja":"nein") + "\n");
-		sb.append("Reporte verschicken:        " + (this.isSendReportMails()?"ja":"nein") + "\n");
 		sb.append("Testlauf (nicht Speichern): " + (this.isWorldReadOnly()?"ja":"nein") + "\n");
 		if (this.skipPhasen.size() > 0) {
 			sb.append("Es werden ZAT-Phasen übersprungen: ");

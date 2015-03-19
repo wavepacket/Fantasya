@@ -64,9 +64,6 @@ public class SMTPConnector {
 			"\n" +
 			"hier kommt die Fantasya-Auswertung für " + p + ".\n" +
 			"\n" +
-			"Die Befehle gehen mit Betreff \"fantasya beta\" an hapebe@gmail.com .\n" +
-			"ZAT ist - irgendwann!\n" +
-			"\n" +
 			"Schöne Grüße, die Fantasyasten.";
 
         BodyPart bp0 = new MimeBodyPart();
@@ -94,9 +91,6 @@ public class SMTPConnector {
         props.put("mail.smtps.host", SMTP_HOST_NAME);
         props.put("mail.smtps.auth", "true");
         props.put("mail.smtps.port", SMTP_PORT);
-//        props.put("mail.smtps.socketFactory.port", SMTP_PORT);
-//        props.put("mail.smtps.socketFactory.class", SSL_FACTORY);
-//        props.put("mail.smtps.socketFactory.fallback", "false");
         Session session = Session.getInstance(props, new MyAuthenticator());
 
 		// construct the message

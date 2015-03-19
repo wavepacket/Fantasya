@@ -171,7 +171,6 @@ public class Main
 	 * <tr><td>passwort [passwort]</td><td>&nbsp;-&nbsp;</td><td>legt das Passwort für den Benutzer fest (default fantasya)</td></tr>
 	 * <tr><td>newplayers</td><td>&nbsp;-&nbsp;</td><td>setzt neue Spieler aus</td></tr>
 	 * <tr><td>reporte</td><td>&nbsp;-&nbsp;</td><td>schreibt die ReporteSchreiben für alle Spieler neu, dabei wird aber keine e-Mail an die Spieler verschickt</td></tr>
-	 * <tr><td>email</td><td>&nbsp;-&nbsp;</td><td>falls beim Neuschreiben der ReporteSchreiben doch e-mails verschickt werden sollen, dann muss diese Option angeben werden</td></tr>
 	 * <tr><td>crmap</td><td>&nbsp;-&nbsp;</td><td>erstellt einen CR mit den aktuellen Regionen</td></tr>
 	 * <tr><td>gameid</td><td>&nbsp;-&nbsp;</td><td>&uuml;bergibt die GameID f&uuml;r das Spiel</td></tr>
 	 * <tr><td>bugfix</td><td>&nbsp;-&nbsp;</td><td>korregiert einen Fehler oder macht etwas anderes Unanständiges :)</td></tr>
@@ -220,7 +219,6 @@ public class Main
 			if (args[i].compareToIgnoreCase("-newplayers") == 0) args_newplayers = true;
 			if (args[i].compareToIgnoreCase("-testcase") == 0) new TestCase();
 			if (args[i].compareToIgnoreCase("-reporte") == 0) args_reporte = true;
-			if (args[i].compareToIgnoreCase("-email") == 0) args_email = true;
 			if (args[i].compareToIgnoreCase("-crmap") == 0) args_crmap = true;
 			if (args[i].compareToIgnoreCase("-bugfix") == 0) args_bugfix = true;
 			if (args[i].compareToIgnoreCase("-config") == 0) args_config = true;
@@ -301,8 +299,6 @@ public class Main
 			if (args_debug) {
 				ZATMode.CurrentMode().setDebug(true);
 			}
-			// for now: disable sending of emails
-			ZATMode.CurrentMode().setSendReportMails(false);
 			try{
 				EVABase.ZAT();
 			} catch(Exception ex) {
@@ -312,7 +308,6 @@ public class Main
 		if (args_befehlscheck) {
 			ZATMode.SetCurrentMode(ZATMode.MODE_BEFEHLE_CHECKEN());
 			if (args_debug) ZATMode.CurrentMode().setDebug(true);
-            if (!args_email) ZATMode.CurrentMode().setSendReportMails(false);
 			try {
 				EVABase.ZAT();
 			} catch (Exception ex) {
@@ -353,11 +348,7 @@ public class Main
 				  "                     ACHTUNG: Vorher besser die aktuellen Daten sichern!\n" +
 				  "                     In Verbindung mit 'debug' kann die Auswertung getestet\n" +
 				  "                     werden, ohne dass Reporte an die Spieler geschickt werden.\n");
-		sb.append("reporte              schreibt die Reporte für alle Spieler neu, dabei wird aber\n" +
-				  "                     keine e-Mail an die Spieler verschickt\n");
-		sb.append("email                falls beim Neuschreiben der Reporte doch e-mails\n" +
-				  "                     verschickt werden sollen, dann muss diese Option angeben\n" +
-				  "                     werden (siehe auch E-Mail-Konfiguration)\n");
+		sb.append("reporte              schreibt die Reporte für alle Spieler neu\n");
 		sb.append("befehlscheck         prüft neu eingegangene Befehle mittels eines ZAT-\n" +
 				  "                     Trockenlaufs (Read-Only)\n");
 		sb.append("gameid [gameid]      legt die GameID für den Download-Link der Auswertung fest\n");
@@ -512,18 +503,7 @@ public class Main
             new BigError(ex);
         }
 
-        new SysMsg("SYSTEM Start - Reporte erneut schreiben - " + (args_email ? "mit" : "ohne") + " e-Mail Information");
-		
 		Zipping.salz = Datenbank.Select("SELECT value FROM settings WHERE name = 'game.salt'", "00");
-		ZATMode.CurrentMode().setSendReportMails(args_email);
-		
-		
-		// weil ja eigentlich schon die nächste Runde existiert
-		
-		// kann sein das das ausblenden hier Blödsinn ist, weil der ZAT ja vor dem Rundenhochzählen
-		// abgestorben ist.
-//		-- mogel (21.10.2012) -- GameRules.setRunde(GameRules.getRunde() - 1);
-//		-- mogel (21.10.2012) -- new ZATMsg("Runde auf " + GameRules.getRunde() + " zurückgedreht.");
 		
 		// die ReporteSchreiben schreiben
 		new ZATMsg("erstelle Reporte");
@@ -531,11 +511,6 @@ public class Main
         new de.x8bit.Fantasya.Host.EVA.Reporte();
 		new ReportXML(new Partei());	// "world.xml" erzeugen
 
-		// falls irgend wann mal der GC Blödsinn wieder aufhört
-		// und ein Destruktor existiert
-//		-- mogel (21.10.2012) -- GameRules.setRunde(GameRules.getRunde() + 1);
-//		-- mogel (21.10.2012) -- new ZATMsg("Runde " + GameRules.getRunde() + " wieder als aktuell markiert.");
-		
 		new SysMsg("SYSTEM Quit - Reporte neu geschrieben");
 	}
 	
