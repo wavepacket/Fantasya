@@ -54,7 +54,6 @@ public class Main
 	private static boolean args_verify = false;
 	private static boolean args_clrmessages = false;
 	private static boolean args_reporte = false;
-	private static boolean args_email = false;
 	private static boolean args_newplayers = false;
 	private static boolean args_crmap = false;
 	private static boolean args_bugfix = false;
