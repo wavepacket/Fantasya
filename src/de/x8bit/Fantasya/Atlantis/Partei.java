@@ -12,6 +12,7 @@ import java.util.Set;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Buildings.Leuchtturm;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
+import de.x8bit.Fantasya.Atlantis.Items.Greif;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
@@ -19,6 +20,12 @@ import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Magie;
 import de.x8bit.Fantasya.Atlantis.Skills.Tarnung;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
+import de.x8bit.Fantasya.Atlantis.Units.Goblin;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+import de.x8bit.Fantasya.Atlantis.util.atlas.FactionAtlas;
+import de.x8bit.Fantasya.Atlantis.util.atlas.NPCFactionAtlas;
+import de.x8bit.Fantasya.Atlantis.util.atlas.OmniFactionAtlas;
+import de.x8bit.Fantasya.Atlantis.util.atlas.PlayerFactionAtlas;
 import de.x8bit.Fantasya.Host.EVA.util.Atlas;
 import de.x8bit.Fantasya.Host.EVA.util.ParteiInselAnker;
 import de.x8bit.Fantasya.Host.GameRules;
@@ -32,31 +39,91 @@ import de.x8bit.Fantasya.util.UnitList;
  * @author  mogel
  */
 public class Partei extends Atlantis {
+	
+	public enum FactionWay { UNKNOWN, OMNI, PLAYER, MONSTER, ANIMAL;
+	
+	public static int getWayInt(FactionWay factionWay) {
+		return factionWay.ordinal() - 1;
+	}
+	
+	public static FactionWay getFactionWayForWayInt(int wayInt) {
+		wayInt++;
+		for (FactionWay way : FactionWay.values()) {
+			if (way.ordinal() == wayInt)
+				return way;
+		}
+		return FactionWay.UNKNOWN;
+	}
+}
+
+	public static final Partei OMNI_FACTION = new Partei(0, FactionWay.OMNI);
+	public static final Partei MONSTER_FACTION = new Partei(620480, FactionWay.MONSTER); // Partei dark
+	public static final Partei ANIMAL_FACTION = new Partei(1376883, FactionWay.ANIMAL); // Partei tier
+
+	public static final List<Partei> PLAYER_FACTION_LIST = new ArrayList<Partei>();
+	private static final List<Partei> NON_PLAYER_FACTION_LIST = new ArrayList<Partei>();
 
 	static {
-		PROXY = new ArrayList<Partei>();
+		MONSTER_FACTION.Rasse = Goblin.class.getSimpleName();
+		ANIMAL_FACTION.Rasse = Greif.class.getSimpleName();
+		NON_PLAYER_FACTION_LIST.add(OMNI_FACTION);
+		NON_PLAYER_FACTION_LIST.add(MONSTER_FACTION);
+		NON_PLAYER_FACTION_LIST.add(ANIMAL_FACTION);
 	}
-	public static final ArrayList<Partei> PROXY;
 	private String Rasse = "Mensch";
 	private String EMail = "";
 	private String Website = "";
 	private String Password = "empty";
 	private int NMR = 0;
-	private Coords Ursprung = new Coords(0, 0, 0);
+	private Coordinates Ursprung = Coordinates.create(0, 0, 0);
 	private int Alter = 0;
 	private int Defaultsteuer = 0;
-	private int Monster = 0;
 	private Map<Integer, Allianz> allianzen = new HashMap<Integer, Allianz>();
 	private ArrayList<Steuer> steuern = new ArrayList<Steuer>();
 	private int cheats = 0;
+	private final FactionWay factionWay;
+	private final FactionAtlas factionAtlas;
 
-	/** Muss noch mit Leben gefuellt werden... */
-	public Partei() {
+	private Partei(int id, FactionWay factionWay) {
+		if (factionWay == null) throw new IllegalArgumentException("Faction way is 'NULL', what kind of faction is it?");
+		this.setNummer(id);
+		this.factionWay = factionWay;
+		switch (factionWay) {
+			case OMNI:
+				this.factionAtlas = new OmniFactionAtlas(this);
+				break;
+			case PLAYER:
+				this.factionAtlas = new PlayerFactionAtlas(this);
+				break;
+			case MONSTER:
+			case ANIMAL:
+				this.factionAtlas = new NPCFactionAtlas(this);
+				break;
+			default:
+				this.factionAtlas = new NPCFactionAtlas(this);
+				break;
+		}
 	}
+	
+	/** Muss noch mit Leben gefuellt werden... */
+	//public Partei() {
+	//}
 
 	/** Erzeugt eine Partei mit verschiedenen Setupwerten. */
-	public Partei(int Alter) {
-		this.Alter = Alter;
+	//public Partei(int Alter) {
+	//	this.Alter = Alter;
+	//}
+	
+	public FactionAtlas getFactionAtlas() {
+		return factionAtlas;
+	}
+	
+	public FactionWay getFactionWay() {
+		return factionWay;
+	}
+	
+	public boolean isPlayerFaction() {
+		return this.factionWay == FactionWay.PLAYER;
 	}
 
 	public void setCheats(int value) {
@@ -71,7 +138,7 @@ public class Partei extends Atlantis {
 	 * für die Partei sichtbar sind.
 	 * Verwendung für die Reporte (CR, XML ?)
 	 */
-	final protected Map<Coords, RegionsSicht> knownRegions = new HashMap<Coords, RegionsSicht>();
+	final protected Map<Coordinates, RegionsSicht> knownRegions = new HashMap<Coordinates, RegionsSicht>();
 	/**
 	 * speichert(Koordinaten der) Regionen, die DER VERGANGENHEIT 
 	 * für die Partei sichtbar waren.
@@ -85,9 +152,9 @@ public class Partei extends Atlantis {
 	/**
 	 * speichert das Wissen / die Namen und IDs der Inseln, die dieser Partei bekannt sind.
 	 */
-	final protected Map<Coords, ParteiInselAnker> inselAnker = new HashMap<Coords, ParteiInselAnker>();
+	final protected Map<Coordinates, ParteiInselAnker> inselAnker = new HashMap<Coordinates, ParteiInselAnker>();
 
-	public Map<Coords, ParteiInselAnker> getInselAnker() {
+	public Map<Coordinates, ParteiInselAnker> getInselAnker() {
 		return inselAnker;
 	}
 
@@ -155,11 +222,13 @@ public class Partei extends Atlantis {
 		NMR = nmr;
 	}
 
-	public void setUrsprung(Coords value) {
-		Ursprung = new Coords(value);
+	public void setUrsprung(Coordinates value) {
+		if (value == null)
+			throw new IllegalArgumentException(getClass().getSimpleName() + " [" + getNummer() + "] cannot have origin coordinates of 'NULL'.");
+		Ursprung = value;
 	}
 
-	public Coords getUrsprung() {
+	public Coordinates getUrsprung() {
 		return Ursprung;
 	}
 
@@ -173,34 +242,6 @@ public class Partei extends Atlantis {
 
 	public void setDefaultsteuer(int rate) {
 		Defaultsteuer = rate;
-	}
-
-	public boolean isMonster() {
-		return Monster != 0;
-	}
-
-	/**
-	 * liefert den Status der Partei f�r das Monsterdasein
-	 * 1 -> kein weitere World XML-Report
-	 * 2 -> nur der GEO XML-Report
-	 * 3 -> der komplette World XML-Report
-	 * @return
-	 * @see isMonster()
-	 */
-	public int getMonster() {
-		return Monster;
-	}
-
-	/**
-	 * liefert den Status der Partei f�r das Monsterdasein
-	 * 1 -> kein weitere World XML-Report
-	 * 2 -> nur der GEO XML-Report
-	 * 3 -> der komplette World XML-Report
-	 * @return
-	 * @see isMonster()
-	 */
-	public void setMonster(int value) {
-		this.Monster = value;
 	}
 
 	/**
@@ -281,10 +322,10 @@ public class Partei extends Atlantis {
 			return true; // omniszient!
 		}
 
-		Region r = Region.Load(other.getCoords());
+		Region r = Region.Load(other.getCoordinates());
 		// ist überhaupt jemand von uns da?
 		if (r.getUnits(this.getNummer()).isEmpty()) {
-			RegionsSicht rs = this.getRegionsSicht(other.getCoords());
+			RegionsSicht rs = this.getRegionsSicht(other.getCoordinates());
 			if ((rs != null) && (rs.hasDetails())) {
 				if (rs.getQuelle() != Leuchtturm.class) {
 					new Debug(
@@ -312,7 +353,7 @@ public class Partei extends Atlantis {
 			}
 
 			// Allianzen prüfen
-			if (Partei.getPartei(other.getOwner()).hatAllianz(this.getNummer(), AllianzOption.Kontaktiere)) {
+			if (Partei.getFaction(other.getOwner()).hatAllianz(this.getNummer(), AllianzOption.Kontaktiere)) {
 				return true;
 			}
 
@@ -408,7 +449,7 @@ public class Partei extends Atlantis {
 	public int getPersonen() {
 		int retval = 0;
 		for (Unit u : getEinheiten()) {
-			if (u.getCoords().getWelt() != 0) {
+			if (u.getCoordinates().getZ() != 0) {
 				retval += u.getPersonen();
 			}
 		}
@@ -497,26 +538,114 @@ public class Partei extends Atlantis {
 		return moeglich;
 	}
 
+	public static boolean isNonPlayerFaction(int id) {
+		for (Partei possibleFaction : NON_PLAYER_FACTION_LIST)
+			if (id == possibleFaction.getNummer()) return true;
+		return false;
+	}
+	
+	private static Partei getNonPlayerFaction(int id) {
+		for (Partei possibleFaction : NON_PLAYER_FACTION_LIST)
+			if (id == possibleFaction.getNummer()) return possibleFaction;
+		return null;
+	}
+	
+	public static void clearPlayerFactionList() {
+		PLAYER_FACTION_LIST.clear();
+	}
+	
 	/**
-	 * erzeugt einen neuen Spieler
+	 * returns only player factions
+	 * @return player factions
 	 */
-	public static Partei Create() {
-		Partei p = new Partei();
+	
+	public static List<Partei> getPlayerFactionList() {
+		return Collections.unmodifiableList(PLAYER_FACTION_LIST);
+	}
+	
+	/**
+	 * returns only non player factions
+	 * @return non player factions
+	 */
+	
+	public static List<Partei> getNonPlayerFactionList() {
+		return Collections.unmodifiableList(NON_PLAYER_FACTION_LIST);
+	}
+	
+//	/**
+//	 * Returns all factions
+//	 * @return all factions
+//	 */
+//	
+//	public static List<Partei> getAllFactionList() {
+//		List<Partei> allFactionList = new ArrayList<Partei>();
+//		allFactionList.addAll(PLAYER_FACTION_LIST);
+//		allFactionList.addAll(NON_PLAYER_FACTION_LIST);
+//		return Collections.unmodifiableList(allFactionList);
+//	}
+	
+	public static boolean removePlayerFaction(Partei faction) {
+		if (PLAYER_FACTION_LIST.contains(faction)) return PLAYER_FACTION_LIST.remove(faction);
+		return false;
+	}
+	
+	public static boolean removePlayerFaction(int id) {
+		for (Partei possibleFaction : PLAYER_FACTION_LIST) {
+			if (possibleFaction.getNummer() == id) {
+				return PLAYER_FACTION_LIST.remove(possibleFaction);
+			}
+		}
+		// loggen
+		return false;
+	}
+	
+	/**
+	 * Sucht und gibt eine Partei zur�ck. Wenn es die Partei nicht gibt, wird UNKNOWN_FACTION zur�ckgegeben.
+	 */
+	public static Partei getFaction(int id) {
+		Partei faction = getNonPlayerFaction(id);
+		if (faction != null) return faction;
+		for (Partei possibleFaction : PLAYER_FACTION_LIST)
+			if (possibleFaction.getNummer() == id)
+				return possibleFaction;
+		return null;
+	}
+	
+	/**
+	 * erzeugt eine neue Spielerpartei
+	 */
+	public static Partei createNewPlayerFaction() {
+		// Nummer und Art der Partei vergeben
+		Partei faction = new Partei(FreieNummern.freieNummer(PLAYER_FACTION_LIST), FactionWay.PLAYER);
 
 		// das Alter der Volkes setzen
-		p.Alter = GameRules.getRunde();
+		faction.Alter = GameRules.getRunde();
+		faction.setNMR(GameRules.getRunde());
 
 		// ein sicheres Passwort erzeugen ... wird am
-		// Ende aber wieder vom Management überschrieben
-		p.GeneratePasswort();
+		// Ende aber wieder vom Management �berschrieben
+		faction.GeneratePasswort();
+		faction.setPassword(faction.Password);
+		
+		PLAYER_FACTION_LIST.add(faction);
 
-		// Nummer vergeben
-		p.setNummer(FreieNummern.freieNummer(PROXY));
-		p.setEMail("fantasya@x8bit.de");
-		p.setRasse("Mensch");
-		p.setPassword(p.Password);
+		return faction;
+	}
 
-		return p;
+	/**
+	 * erzeugt eine Spielerpartei
+	 */
+	public static Partei createPlayerFaction(int id, int alter) {
+		// Nummer und Art der Partei vergeben
+		Partei faction = new Partei(id, FactionWay.PLAYER);
+
+		// das Alter der Volkes setzen
+		faction.Alter = alter;
+		
+		// Wird durch den Serializer hinzugefügt -> AENDERN!!!!!!!!!
+		// PROXY.add(faction);
+
+		return faction;
 	}
 
 	/**
@@ -530,30 +659,14 @@ public class Partei extends Atlantis {
 		}
 	}
 
-	/**
-	 * läd einen Spieler aus der Datenbank
-	 * @param nummer - Nummer des Spielers
-	 */
-	public static Partei getPartei(int nummer) {
-		for (int i = 0; i < PROXY.size(); i++) {
-			if (PROXY.get(i) != null && PROXY.get(i).getNummer() == nummer) {
-				return PROXY.get(i);
-			}
-		}
-
-		return null;
-	}
-
 	@Deprecated
 	public static Partei fromResultSet(ResultSet rs) {
 		Partei p = null;
 
 		try {
-			p = new Partei();
-			p.Alter = rs.getInt("age");
+			p = Partei.createPlayerFaction(rs.getInt("nummer"), rs.getInt("age"));
 			p.setName(rs.getString("name"));
 			p.setBeschreibung(rs.getString("beschreibung"));
-			p.setNummer(rs.getInt("nummer"));
 			p.EMail = rs.getString("email");
 			p.Rasse = rs.getString("rasse");
 			// p.Sprache = rs.getString("sprache");
@@ -561,9 +674,8 @@ public class Partei extends Atlantis {
 			p.Website = rs.getString("website");
 			p.NMR = rs.getInt("nmr");
 			// TODO Eigentlich müsste der Parteien-Ursprung auch die Welt bezeichnen - oder?
-			p.setUrsprung(new Coords(rs.getInt("originx"), rs.getInt("originy"), 1));
+			p.setUrsprung(Coordinates.create(rs.getInt("originx"), rs.getInt("originy"), 1));
 			p.setCheats(rs.getInt("cheats"));
-			p.Monster = rs.getInt("monster");
 			p.setRasse(rs.getString("rasse"));
 			p.setDefaultsteuer(rs.getInt("steuern"));
 		} catch (Exception ex) {
@@ -593,7 +705,6 @@ public class Partei extends Atlantis {
 		fields.put("cheats", getCheats());
 		fields.put("rasse", getRasse());
 		fields.put("steuern", getDefaultsteuer());
-		fields.put("monster", this.getMonster());
 
 		return fields;
 	}
@@ -652,7 +763,7 @@ public class Partei extends Atlantis {
 		for (int partnerNr : allianzen.keySet()) {
 			Allianz allianz = allianzen.get(partnerNr);
 			new Debug("Partei.Delete(): " + allianz.toString());
-			Partei partner = Partei.getPartei(partnerNr);
+			Partei partner = Partei.getFaction(partnerNr);
 			if (partner != null) {
 				partner.setAllianz(this.getNummer(), AllianzOption.Alles, false);
 			} else {
@@ -676,7 +787,7 @@ public class Partei extends Atlantis {
 
 		// Inselnamen und -beschreibungen:
 		ParteiInselAnker.Initialisieren(this);
-		for (Coords c : this.getInselAnker().keySet()) {
+		for (Coordinates c : this.getInselAnker().keySet()) {
 			ParteiInselAnker.Entfernen(this, c);
 		}
 		ParteiInselAnker.Initialisieren(this);
@@ -689,14 +800,14 @@ public class Partei extends Atlantis {
 	}
 
 	public void addKnownRegion(Region r, boolean details, Class<? extends Atlantis> quelle) {
-		addKnownRegion(r.getCoords(), details, quelle);
+		addKnownRegion(r.getCoordinates(), details, quelle);
 	}
 
 	/**
 	 * @param c globale Koordinaten
 	 * @param details
 	 */
-	public void addKnownRegion(Coords c, boolean details, Class<? extends Atlantis> quelle) {
+	public void addKnownRegion(Coordinates c, boolean details, Class<? extends Atlantis> quelle) {
 		RegionsSicht rs = new RegionsSicht(GameRules.getRunde(), c, details, quelle);
 
 		// wenn diese Region schon bekannt ist, wird sie nur aufgenommen, wenn sie detailliert ist.
@@ -720,7 +831,7 @@ public class Partei extends Atlantis {
 	 * eine Regionssicht vollständig entfernen
 	 * @param c
 	 */
-	public void removeKnownRegion(Coords c) {
+	public void removeKnownRegion(Coordinates c) {
 		this.knownRegions.remove(c);
 	}
 
@@ -730,9 +841,9 @@ public class Partei extends Atlantis {
 	 */
 	public Set<RegionsSicht> getKnownRegions(boolean mitUnsichtbaren) {
 		Set<RegionsSicht> retval = new HashSet<RegionsSicht>();
-		for (Coords c : knownRegions.keySet()) {
+		for (Coordinates c : knownRegions.keySet()) {
 			if (!mitUnsichtbaren) {
-				Region r = Region.Load(knownRegions.get(c).getCoords());
+				Region r = Region.Load(knownRegions.get(c).getCoordinates());
 				if (!this.canAccess(r)) {
 					continue;
 				}
@@ -744,9 +855,9 @@ public class Partei extends Atlantis {
 
 	/**
 	 * @param c
-	 * @return Das RegionsSicht-Objekt dieser Partei an Coords c - oder null, wenn keinerlei Sicht
+	 * @return Das RegionsSicht-Objekt dieser Partei an Coordinates c - oder null, wenn keinerlei Sicht
 	 */
-	public RegionsSicht getRegionsSicht(Coords c) {
+	public RegionsSicht getRegionsSicht(Coordinates c) {
 		if (!knownRegions.containsKey(c)) {
 			return null;
 		}
@@ -757,7 +868,7 @@ public class Partei extends Atlantis {
 		Set<Partei> retval = new HashSet<Partei>();
 
 		if (this.getNummer() == 0) { // omniszient:
-			retval.addAll(PROXY);
+			retval.addAll(PLAYER_FACTION_LIST);
 			return retval;
 		}
 
@@ -765,14 +876,14 @@ public class Partei extends Atlantis {
 			if (!rs.hasDetails()) {
 				continue;
 			}
-			Region r = Region.Load(rs.getCoords());
+			Region r = Region.Load(rs.getCoordinates());
 			if (r == null) {
-				new SysErr("Nicht-existenten Region in knownRegions @ " + rs.getCoords() + "?");
+				new SysErr("Nicht-existenten Region in knownRegions @ " + rs.getCoordinates() + "?");
 				continue;
 			}
 			for (Unit u : r.getUnits()) {
 				// -- 03.10.2011 -- Partei p = Partei.Load(u.getOwner());
-				Partei p = Partei.getPartei(u.getTarnPartei());	// es darf nur die Parteitarnung verwendet werden
+				Partei p = Partei.getFaction(u.getTarnPartei());	// es darf nur die Parteitarnung verwendet werden
 				// sonst fällt die Parteitarnung
 				// -- 03.10.2011 -- auch Monster-Parteien sind wichtig -- if (p.isMonster()) continue;
 				// -- 03.10.2011 -- eigene Partei ist auch wichtig -- if (u.getOwner() == this.getNummer()) continue;
@@ -784,28 +895,28 @@ public class Partei extends Atlantis {
 	}
 
 	@Override
-	public Coords getCoords() {
-		throw new UnsupportedOperationException("Partei.getCoords() sollte niemals ausgewertet werden.");
+	public Coordinates getCoordinates() {
+		throw new UnsupportedOperationException("Partei.getCoordinates() sollte niemals ausgewertet werden.");
 	}
 
 	@Override
-	public void setCoords(Coords value) {
-		throw new UnsupportedOperationException("Partei.setCoords() sollte niemals verwendet werden.");
+	public void setCoordinates(Coordinates value) {
+		throw new UnsupportedOperationException("Partei.setCoordinates() sollte niemals verwendet werden.");
 	}
 
-	public Coords getPrivateCoords(Coords global) {
-		return new Coords(
+	public Coordinates getPrivateCoordinates(Coordinates global) {
+		return Coordinates.create(
 				global.getX() - this.getUrsprung().getX(),
 				global.getY() - this.getUrsprung().getY(),
-				global.getWelt());
+				global.getZ());
 
 	}
 
-	public Coords getGlobalCoords(Coords privat) {
-		return new Coords(
+	public Coordinates getGlobalCoordinates(Coordinates privat) {
+		return Coordinates.create(
 				privat.getX() + this.getUrsprung().getX(),
 				privat.getY() + this.getUrsprung().getY(),
-				privat.getWelt());
+				privat.getZ());
 
 	}
 }

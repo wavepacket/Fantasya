@@ -38,6 +38,7 @@ import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Regions.Sandstrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Wald;
 import de.x8bit.Fantasya.Atlantis.Ships.Boot;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.Host.Paket;
@@ -58,10 +59,10 @@ import de.x8bit.Fantasya.util.StringUtils;
  * @author  mogel
  */
 @SuppressWarnings("rawtypes")
-public abstract class Region extends Atlantis {
+public abstract class Region extends Atlantis implements Comparable<Region> {
 
 	static {
-		CACHE = new TreeMap<Coords, Region>();
+		CACHE = new TreeMap<Coordinates, Region>();
 	}
 
 	/**
@@ -70,8 +71,12 @@ public abstract class Region extends Atlantis {
 	 * @param coords - Koordinaten der neuen Region
 	 * @return eine neue Region
 	 */
-	public static Region Create(String typ, Coords coords) {
-		return Create(typ, coords.getX(), coords.getY(), coords.getWelt());
+	public static Region Create(String typ, Coordinates coords) {
+		return Create(typ, coords.getX(), coords.getY(), coords.getZ());
+	}
+	
+	public static boolean hasRegion(Coordinates coordinates) {
+		return (Region.CACHE.containsKey(coordinates));
 	}
 
 	/**
@@ -89,7 +94,7 @@ public abstract class Region extends Atlantis {
 		try {
 			// pauschal anlegen
 			r = (Region) Class.forName("de.x8bit.Fantasya.Atlantis.Regions." + typ).newInstance();
-			r.setCoords(new Coords(x, y, welt));
+			r.setCoordinates(Coordinates.create(x, y, welt));
 			r.setEnstandenIn(GameRules.getRunde() - 5); // vgl. Partei::cansee() wieso hier minus 5
 			r.RenameRegion();
 
@@ -97,7 +102,7 @@ public abstract class Region extends Atlantis {
 			r.Init();
 
 			if (Main.getBFlag("EVA")) {
-				Region.CACHE.put(r.getCoords(), r);
+				Region.CACHE.put(r.getCoordinates(), r);
 			}
 
 			// jetzt aus DB laden und zur��ck liefern ... wenn die
@@ -116,8 +121,8 @@ public abstract class Region extends Atlantis {
 	 * @param coords - die Koordinaten
 	 * @return eine bekannte Region, ggf. Chaos wenn die Region noch nicht existiert
 	 */
-	public static Region Load(Coords coords) {
-		return Load(coords.getX(), coords.getY(), coords.getWelt());
+	public static Region Load(Coordinates coords) {
+		return Load(coords.getX(), coords.getY(), coords.getZ());
 	}
 
 	/**
@@ -128,7 +133,7 @@ public abstract class Region extends Atlantis {
 	 * @return eine bekannte Region, ggf. Chaos wenn die Region (noch) nicht existiert
 	 */
 	public static Region Load(int x, int y, int welt) {
-		Coords c = new Coords(x, y, welt);
+		Coordinates c = Coordinates.create(x, y, welt);
 
 		if (Region.CACHE.containsKey(c)) {
 			return Region.CACHE.get(c);
@@ -152,8 +157,8 @@ public abstract class Region extends Atlantis {
 			String typ = rs.getString("typ");
 			r = (Region) Class.forName("de.x8bit.Fantasya.Atlantis.Regions." + typ).newInstance();
 
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
-			r.setCoords(c);
+			Coordinates c = Coordinates.create(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			r.setCoordinates(c);
 
 			r.setBauern(rs.getInt("bauern"));
 			r.setName(rs.getString("name"));
@@ -171,12 +176,12 @@ public abstract class Region extends Atlantis {
 		return r;
 	}
 	/** (EVA) Map ALLER Regionen, Schl��ssel sind ihre Koordinaten */
-	public final static Map<Coords, Region> CACHE;
+	public final static Map<Coordinates, Region> CACHE;
 	public static boolean USE_TOPTW_CACHE = false;
 
 	@Override
 	public int getNummer() {
-		return this.getCoords().asRegionID(true);
+		return this.getCoordinates().hashCode();
 	}
 
 	/** alle Einheiten in dieser Region */
@@ -185,7 +190,7 @@ public abstract class Region extends Atlantis {
 	 * @return alle Einheiten in dieser Region
 	 */
 	public Set<Unit> getUnits() {
-		return Unit.CACHE.getAll(getCoords());
+		return Unit.CACHE.getAll(getCoordinates());
 	}
 
 	/**
@@ -213,7 +218,7 @@ public abstract class Region extends Atlantis {
 	public Set<Partei> anwesendeParteien() {
 		Set<Partei> parteien = new HashSet<Partei>();
 		for (Unit unit : getUnits()) {
-			Partei p = Partei.getPartei(unit.getOwner());
+			Partei p = Partei.getFaction(unit.getOwner());
 			if (p == null) {
 				throw new IllegalStateException("Eine anwesende Partei in Region " + this + " ist null: Partei [" + p + "].");
 			}
@@ -228,7 +233,7 @@ public abstract class Region extends Atlantis {
 	 * @return Alle Geb��ude in dieser Region, unabh��ngig von Art, Insassen und Zustand.
 	 */
 	public Set<Building> getBuildings() {
-		return Building.PROXY.getAll(getCoords());
+		return Building.PROXY.getAll(getCoordinates());
 	}
 
 	public Nachfrage getNachfrage(Class<? extends Item> luxus) {
@@ -292,7 +297,7 @@ public abstract class Region extends Atlantis {
 		if (Region.USE_TOPTW_CACHE) {
 			// gecachte Abk��rzung, wird in Reporte() verwendet,
 			// wg. Partei.cansee(Unit) / Unit.cansee(Unit)
-			return Reporte.TopSkillCache.topUnit(this.getCoords(), partei, skill);
+			return Reporte.TopSkillCache.topUnit(this.getCoordinates(), partei, skill);
 		}
 
 		Unit tu = null;
@@ -323,9 +328,9 @@ public abstract class Region extends Atlantis {
 	public Map<String, Object> getStrassenDBValues(Richtung richtung) {
 		Map<String, Object> fields = new HashMap<String, Object>();
 
-		fields.put("koordx", this.getCoords().getX());
-		fields.put("koordy", this.getCoords().getY());
-		fields.put("welt", this.getCoords().getWelt());
+		fields.put("koordx", this.getCoordinates().getX());
+		fields.put("koordy", this.getCoordinates().getY());
+		fields.put("welt", this.getCoordinates().getZ());
 		fields.put("richtung", richtung.name());
 		fields.put("anzahl", getStrassensteine(richtung));
 
@@ -354,9 +359,9 @@ public abstract class Region extends Atlantis {
 		fields.put("insel", this.getInselKennung());
 		fields.put("typ", this.getClass().getSimpleName());				// Typ ist ��ber zauberspruch ��nderbar !
 		fields.put("silber", this.getSilber());
-		fields.put("koordx", this.getCoords().getX());
-		fields.put("koordy", this.getCoords().getY());
-		fields.put("welt", this.getCoords().getWelt());
+		fields.put("koordx", this.getCoordinates().getX());
+		fields.put("koordy", this.getCoordinates().getY());
+		fields.put("welt", this.getCoordinates().getZ());
 		fields.put("luxus", luxus);
 		fields.put("lohn", this.getLohn());
 
@@ -445,7 +450,7 @@ public abstract class Region extends Atlantis {
 				lastChar %= 2;
 			} else {
 				// sonst ein Apostroph
-				if (getCoords().getWelt() >= 0) {
+				if (getCoordinates().getZ() >= 0) {
 					name.append('\'');
 				} else {
 					name.append('-');	// Unterwelt
@@ -803,7 +808,7 @@ public abstract class Region extends Atlantis {
 	 */
 	public boolean hatStrasse(Richtung richtung) {
 		// Nachbarregion holen
-		Region hr = Region.Load(getCoords().shift(richtung));
+		Region hr = Region.Load(getCoordinates().shiftDirection(richtung));
 		// Richtung umdrehen
 		Richtung back = richtung.invert();
 		// Strasse nur wenn in beiden Regionen in die passende Richtung fertig
@@ -822,7 +827,7 @@ public abstract class Region extends Atlantis {
 	public boolean istBewacht(Unit unit, AllianzOption ao) {
 		boolean bewacht = false;
 
-		Partei owner = Partei.getPartei(unit.getOwner());
+		Partei owner = Partei.getFaction(unit.getOwner());
 		if (owner == null) {
 			new BigError("Einheit ohne Parteizugeh��rigkeit!");
 		}
@@ -830,7 +835,7 @@ public abstract class Region extends Atlantis {
 		for (Unit other : getUnits()) {
 			// eigene Einheiten sind egal ... nicht wachende auch
 			if (other.getOwner() != unit.getOwner() && other.getBewacht()) {
-				Partei o = Partei.getPartei(other.getOwner());
+				Partei o = Partei.getFaction(other.getOwner());
 				// wenn die Partei jetzt nicht HELFE <Option> gesetzt hat -> schlecht ... es wird bewacht
 				if (!o.hatAllianz(unit.getOwner(), ao)) {
 					bewacht = true;
@@ -850,7 +855,7 @@ public abstract class Region extends Atlantis {
 		for (Unit other : getUnits()) {
 			// eigene Einheiten sind egal ... nicht wachende auch
 			if ((other.getOwner() != u.getOwner()) && other.getBewacht()) {
-				Partei o = Partei.getPartei(other.getOwner());
+				Partei o = Partei.getFaction(other.getOwner());
 				// wenn die Partei jetzt nicht HELFE <Option> gesetzt hat -> schlecht ... es wird bewacht
 				if (!o.hatAllianz(u.getOwner(), AllianzOption.Kontaktiere)) {
 					bewacher.add(o);
@@ -866,7 +871,7 @@ public abstract class Region extends Atlantis {
 				}
 
 				if (u.hatKontakt(other, AllianzOption.Kontaktiere)) {
-					Partei o = Partei.getPartei(other.getOwner());
+					Partei o = Partei.getFaction(other.getOwner());
 					bewacher.remove(o);
 				}
 			}
@@ -1020,7 +1025,7 @@ public abstract class Region extends Atlantis {
 			}
 		}
 
-		// new Debug(this + " - " + getBauern() + " Bauern - neu: " + nachwuchs + " - rate: " + NumberFormat.getPercentInstance().format(rate), getCoords());
+		// new Debug(this + " - " + getBauern() + " Bauern - neu: " + nachwuchs + " - rate: " + NumberFormat.getPercentInstance().format(rate), getCoordinates());
 	}
 
 	protected void Wachstum_Kraeuter() {
@@ -1028,7 +1033,7 @@ public abstract class Region extends Atlantis {
 
 	/** die Bauern wollen auch etwas essen */
 	private void BauernUnterhalt() {
-		// new Info("In " + this + " " + getCoords() + " wollen " + getBauern() + " Bauern essen, es gibt " + getSilber() + " Silber.", 0);
+		// new Info("In " + this + " " + getCoordinates() + " wollen " + getBauern() + " Bauern essen, es gibt " + getSilber() + " Silber.", 0);
 		int bedarf = getBauern() * 10; // soviel n��tig
 		if (bedarf < getSilber()) {
 			setSilber(getSilber() - bedarf);
@@ -1040,7 +1045,7 @@ public abstract class Region extends Atlantis {
 			}
 			if (tot > 0) {
 				Environment.VerhungerteBauern().put(this, tot);
-//				new Debug("In " + this + " " + getCoords() + " hungern " + hungern + " Bauern, davon sind " + tot + " verhungert.", 0);
+//				new Debug("In " + this + " " + getCoordinates() + " hungern " + hungern + " Bauern, davon sind " + tot + " verhungert.", 0);
 				new Info("In " + this + " hungern " + hungern + " Bauern, davon sind " + tot + " verhungert.", this);
 				setBauern(getBauern() - tot);
 			}
@@ -1055,10 +1060,10 @@ public abstract class Region extends Atlantis {
 	 * @return die neue Region, wo die Einheit nun steht
 	 */
 	public Region Movement(Richtung richtung, Unit unit) {
-		Region r = Region.Load(this.getCoords().shift(richtung));
+		Region r = Region.Load(this.getCoordinates().shiftDirection(richtung));
 
 		// F��r uns nicht!!
-		if (!Partei.getPartei(unit.getOwner()).canAccess(r)) {
+		if (!Partei.getFaction(unit.getOwner()).canAccess(r)) {
 			new Fehler(unit + " hat Angst vor " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN + "-Regionen.", unit);
 			return null;
 		}
@@ -1089,7 +1094,7 @@ public abstract class Region extends Atlantis {
 		unit.setBewegungspunkte(unit.getBewegungspunkte() - bewegungspunkte);
 
 		Unit.CACHE.remove(unit);
-		unit.setCoords(r.getCoords());
+		unit.setCoordinates(r.getCoordinates());
 		Unit.CACHE.add(unit);
 
 
@@ -1106,10 +1111,10 @@ public abstract class Region extends Atlantis {
 		Unit kapitaen = Unit.Load(ship.getOwner());
 
 		// in diese Region soll gesegelt werden
-		Region next = Region.Load(this.getCoords().shift(richtung));
+		Region next = Region.Load(this.getCoordinates().shiftDirection(richtung));
 
 		// F��r uns nicht!!
-		if (!Partei.getPartei(kapitaen.getOwner()).canAccess(next)) {
+		if (!Partei.getFaction(kapitaen.getOwner()).canAccess(next)) {
 			new Fehler(kapitaen + " hat Angst vor " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN + "-Regionen.", kapitaen);
 			return null;
 		}
@@ -1154,7 +1159,7 @@ public abstract class Region extends Atlantis {
 							if (building.hatFunktion()) {
 								Unit buildingowner = Unit.Load(building.getOwner());
 								if (buildingowner != null) {
-									Partei besitzerVolk = Partei.getPartei(buildingowner.getOwner());
+									Partei besitzerVolk = Partei.getFaction(buildingowner.getOwner());
 									Allianz allianz = besitzerVolk.getAllianz(kapitaen.getOwner());
 									if (kapitaen.getOwner() != besitzerVolk.getNummer()) {
 										if (!allianz.getOption(AllianzOption.Kontaktiere)) {
@@ -1204,13 +1209,13 @@ public abstract class Region extends Atlantis {
 		for (Unit unit : mannschaft) {
 
 			Unit.CACHE.remove(unit);
-			unit.setCoords(next.getCoords());
+			unit.setCoordinates(next.getCoordinates());
 			Unit.CACHE.add(unit);
 
 		}
 
 		// Koordinaten des Schiffs anpassen
-		ship.setCoords(next.getCoords());
+		ship.setCoordinates(next.getCoordinates());
 		this.getShips().remove(ship);
 		next.getShips().add(ship);
 
@@ -1238,7 +1243,7 @@ public abstract class Region extends Atlantis {
 
 		// Die Region ist zu neu bzw. die Partei sieht diese Region
 		// aus irgendwelchen anderen Gr��nden nicht.
-		if (!Partei.getPartei(unit.getOwner()).canAccess(this)) {
+		if (!Partei.getFaction(unit.getOwner()).canAccess(this)) {
 			return false;
 		}
 
@@ -1246,9 +1251,9 @@ public abstract class Region extends Atlantis {
 	}
 
 	/** eine Liste aller Nachbar-Regionen. Gibt ggf. auch Chaos mit zur��ck, wo keine Regionen existieren. */
-	public List<Region> getNachbarn() {
+	public List<Region> getNeighbours() {
 		List<Region> retval = new ArrayList<Region>();
-		for (Coords c : getCoords().getNachbarn()) {
+		for (Coordinates c : getCoordinates().getNeighbours()) {
 			retval.add(Region.Load(c));
 		}
 		return retval;
@@ -1278,26 +1283,26 @@ public abstract class Region extends Atlantis {
         if (zuJung) kurz = true;
 		if (omniszienz) kurz = false; // 0 sieht alles.
 
-		Coords my = partei.getPrivateCoords(getCoords());
+		Coordinates my = partei.getPrivateCoordinates(getCoordinates());
         if (!zuJung) {
-            writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getWelt() + " ");
+            writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getZ() + " ");
             writer.wl(getName(), "Name");
 			String terrain = this.getClass().getSimpleName();
 			writer.wl(terrain, "Terrain");
-			writer.wl(this.getCoords().asRegionID(false), "id");
+			writer.wl(this.getCoordinates().hashCode(), "id");
 		} else {
-			writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getWelt() + " ");
+			writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getZ() + " ");
 			writer.wl(GameRules.TERRAIN_UNSICHTBARER_REGIONEN, "Terrain");
-			writer.wl(this.getCoords().asRegionID(false), "id");
+			writer.wl(this.getCoordinates().hashCode(), "id");
 		}
 //		if (this instanceof Ozean) writer.wl( ((Ozean)this).getSturmValue(), "Sturmvalue");
 		if (!kurz) {
 			{
 				InselVerwaltung iv = InselVerwaltung.getInstance();
-				InselVerwaltung.ParteiReportDaten prd = iv.getParteiReportDaten(partei);
-				if ((!prd.getRegionenOhneInsel().contains(getCoords()))
-						&& (!prd.getNachbarnOhneInsel().contains(getCoords()))) {
-					int inselId = iv.getPrivateInselNummer(partei, getCoords());
+				InselVerwaltung.ParteiReportDaten prd = iv.getFactionReportDaten(partei);
+				if ((!prd.getRegionenOhneInsel().contains(getCoordinates()))
+						&& (!prd.getNachbarnOhneInsel().contains(getCoordinates()))) {
+					int inselId = iv.getPrivateInselNummer(partei, getCoordinates());
 					if (inselId != -1) {
 						writer.wl(inselId, "Insel");
 					}
@@ -1327,13 +1332,14 @@ public abstract class Region extends Atlantis {
 				Set<Partei> parteien = new HashSet<Partei>();
 				parteien.add(partei);
 				if (omniszienz) {
-					parteien.addAll(Partei.PROXY);
+					parteien.addAll(Partei.getPlayerFactionList());
+					parteien.addAll(Partei.getNonPlayerFactionList());
 				}
 
 				for (Partei p : parteien) {
-					if (p.getInselAnker().keySet().contains(getCoords())) {
+					if (p.getInselAnker().keySet().contains(getCoordinates())) {
 						// hier liegt ein PIA:
-						ParteiInselAnker pia = ParteiInselAnker.FindOrCreateFor(p, getCoords());
+						ParteiInselAnker pia = ParteiInselAnker.FindOrCreateFor(p, getCoordinates());
 						writer.wl(pia.toString(), "inselanker_" + p.getNummerBase36());
 					}
 				}
@@ -1421,9 +1427,9 @@ public abstract class Region extends Atlantis {
 			}
 		} else {
 			if (ZATMode.CurrentMode().isDebug()) {
-				if (partei.getInselAnker().keySet().contains(getCoords())) {
+				if (partei.getInselAnker().keySet().contains(getCoordinates())) {
 					// hier liegt ein PIA:
-					ParteiInselAnker pia = ParteiInselAnker.FindOrCreateFor(partei, getCoords());
+					ParteiInselAnker pia = ParteiInselAnker.FindOrCreateFor(partei, getCoordinates());
 					writer.wl(pia.toString(), "inselanker");
 				}
 			}
@@ -1457,16 +1463,16 @@ public abstract class Region extends Atlantis {
 		if (!hidden) {
 			xml.ElementStart("region");
 			xml.ElementAttribute("ref", this.getClass().getSimpleName());
-			xml.ElementAttribute("x", (getCoords().getX() - partei.getUrsprung().getX()));
-			xml.ElementAttribute("y", (getCoords().getY() - partei.getUrsprung().getY()));
-			xml.ElementAttribute("welt", getCoords().getWelt());
+			xml.ElementAttribute("x", (getCoordinates().getX() - partei.getUrsprung().getX()));
+			xml.ElementAttribute("y", (getCoordinates().getY() - partei.getUrsprung().getY()));
+			xml.ElementAttribute("welt", getCoordinates().getZ());
 			xml.ElementShort("name", getName());
 		} else {
 			xml.ElementStart("region");
 			xml.ElementAttribute("ref", GameRules.TERRAIN_UNSICHTBARER_REGIONEN);
-			xml.ElementAttribute("x", (getCoords().getX() - partei.getUrsprung().getX()));
-			xml.ElementAttribute("y", (getCoords().getY() - partei.getUrsprung().getY()));
-			xml.ElementAttribute("welt", getCoords().getWelt());
+			xml.ElementAttribute("x", (getCoordinates().getX() - partei.getUrsprung().getX()));
+			xml.ElementAttribute("y", (getCoordinates().getY() - partei.getUrsprung().getY()));
+			xml.ElementAttribute("welt", getCoordinates().getZ());
 		}
 
 		if (kurz) {
@@ -1633,8 +1639,8 @@ public abstract class Region extends Atlantis {
 			new BigError(ex);
 		}
 
-		// NICHT MEHR? (mit dem sp��ten Setzen der Coords tricksen wir den oben genannten Mechanismus aus.)
-		kopie.setCoords(this.getCoords());
+		// NICHT MEHR? (mit dem sp��ten Setzen der Coordinates tricksen wir den oben genannten Mechanismus aus.)
+		kopie.setCoordinates(this.getCoordinates());
 
 		kopie.setName(this.getName());
 		kopie.setBeschreibung(this.getBeschreibung());
@@ -1673,22 +1679,31 @@ public abstract class Region extends Atlantis {
 		return kopie;
 	}
 
-	@Override
+	/*@Override
 	public int hashCode() {
-		return this.getCoords().hashCode() - 1;
-	}
+		return this.getCoordinates().hashCode() - 1;
+	}*/
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
 		final Region other = (Region) obj;
 
-		return this.getCoords().equals(other.getCoords());
+		return this.getCoordinates().equals(other.getCoordinates());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getCoordinates().hashCode();
+	}
+	
+	@Override
+	public int compareTo(Region compareRegion) {
+		Coordinates compareCoordinates = compareRegion.getCoordinates();
+		Coordinates thisCoordinates = this.getCoordinates();
+
+		return thisCoordinates.compareTo(compareCoordinates);
 	}
 
 	public boolean containsRace(Class<? extends Unit> clazz) {
