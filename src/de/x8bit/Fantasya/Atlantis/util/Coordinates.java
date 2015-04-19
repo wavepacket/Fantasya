@@ -33,13 +33,13 @@ public final class Coordinates implements Comparable {
 	
 	private Coordinates(int x, int y, int z) {
 		if ((x < DefaultConstantsFactory.MIN_COORDINATES_XY) || (x > DefaultConstantsFactory.MAX_COORDINATES_XY)) {
-			throw new IllegalArgumentException("Der Koordinatenbereich für x ist -8192 bis 8191 - versucht " + x);
+			throw new IllegalArgumentException("Der Koordinatenbereich fuer x ist -8192 bis 8191 - versucht " + x);
 		}
 		if ((y < DefaultConstantsFactory.MIN_COORDINATES_XY) || (y > DefaultConstantsFactory.MAX_COORDINATES_XY)) {
-			throw new IllegalArgumentException("Der Koordinatenbereich für y ist -8192 bis 8191 - versucht " + y);
+			throw new IllegalArgumentException("Der Koordinatenbereich fuer y ist -8192 bis 8191 - versucht " + y);
 		}
 		if ((z < DefaultConstantsFactory.MIN_COORDINATES_Z) || (z > DefaultConstantsFactory.MAX_COORDINATES_Z)) {
-			throw new IllegalArgumentException("Der Koordinatenbereich für Welt ist -4 bis +3 - versucht " + z);
+			throw new IllegalArgumentException("Der Koordinatenbereich fuer Welt ist -4 bis +3 - versucht " + z);
 		}
 
 		this.x = x;
@@ -90,7 +90,7 @@ public final class Coordinates implements Comparable {
 	}
 	
 	/**
-	 * @return alle direkten Nachbarkoordinaten - also alle, für die
+	 * @return alle direkten Nachbarkoordinaten - also alle, fuer die
 	 * getDistance() 1 liefert.
 	 */
 	public Set<Coordinates> getNeighbours() {
@@ -233,10 +233,10 @@ public final class Coordinates implements Comparable {
 	// -----------------------------------------------------------
 
 	/**
-	 * liefert die WHERE-Klausel für diese Koordinaten<br/>
+	 * liefert die WHERE-Klausel fuer diese Koordinaten<br/>
 	 * <i>koordx = $X AND koordy = $Y AND welt = $W</i>
 	 * @param lang - ob die kurzen Koordinaten (also nur Koordinaten) oder die langen (in Verbindung mit anderen)
-	 * @return SQL-String für die DB-Abfrage
+	 * @return SQL-String fuer die DB-Abfrage
 	 */
 	public String Where(boolean lang) {
 		return "koordx=" + x + " AND koordy=" + y + " AND welt=" + z;
@@ -244,10 +244,10 @@ public final class Coordinates implements Comparable {
 
 	public Richtung getRichtungNach(Coordinates ziel) {
 		if (ziel.getZ() != this.getZ()) {
-			throw new UnsupportedOperationException("Die Koordinaten liegen nicht in der gleichen Welt - getRichtungNach() ist damit derzeit nicht möglich.");
+			throw new UnsupportedOperationException("Die Koordinaten liegen nicht in der gleichen Welt - getRichtungNach() ist damit derzeit nicht moeglich.");
 		}
 		if (ziel.getX() == getX() && ziel.getY() == getY()) {
-			throw new IllegalArgumentException("Die Koordinaten müssen verschieden sein.");
+			throw new IllegalArgumentException("Die Koordinaten muessen verschieden sein.");
 		}
 
 		int deltaX = ziel.getX() - this.getX();
@@ -280,7 +280,7 @@ public final class Coordinates implements Comparable {
 			return Richtung.Westen;
 		}
 
-		throw new RuntimeException("Das ist unmöglich!");
+		throw new RuntimeException("Das ist unmoeglich!");
 	}
 
 	public static Coordinates fromString(String s) {
@@ -303,7 +303,7 @@ public final class Coordinates implements Comparable {
 			c = create(x, y, z);
 
 		} catch (NumberFormatException ex) {
-			throw new IllegalArgumentException("Coords aus '" + s + "' ist nicht möglich - " + ex.getMessage());
+			throw new IllegalArgumentException("Coords aus '" + s + "' ist nicht moeglich - " + ex.getMessage());
 		}
 		return c;
 	}
