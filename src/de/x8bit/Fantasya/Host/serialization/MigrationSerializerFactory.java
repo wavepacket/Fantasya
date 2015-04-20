@@ -123,10 +123,6 @@ public class MigrationSerializerFactory {
 		// additional post-processors
 		Map<String,PostProcessor> processorMap = new HashMap<String,PostProcessor>();
 		
-		// For (the current) legacy code: make sure that a party with id zero exists,
-		// even if not defined in the table.
-		// Partei 0 wird statisch erstellt.
-		// processorMap.put("partei", new LegacyParteiZeroProcessor(Partei.PROXY));
 		// not sure if it is needed: initialise the luxus goods in all regions.
 		processorMap.put("regionen", new RegionInitHandelProcessor(Region.CACHE));
 
