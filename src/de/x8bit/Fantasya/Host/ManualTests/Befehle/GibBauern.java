@@ -45,7 +45,7 @@ public class GibBauern extends TestBase {
 			u.setItem(Eisen.class, 1000);
 			u.setItem(Stein.class, 1000);
 			u.setItem(Holz.class, 2000);
-            u.setName(this.getName()+" 01 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 01 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("GIB Bauern 2000000 Silber");
 			u.Befehle.add("GIB Bauern 1000 Pferde");
 			u.Befehle.add("GIB Bauern 1000 Elefanten");
@@ -76,7 +76,7 @@ public class GibBauern extends TestBase {
 			u.setItem(Eisen.class, 1000);
 			u.setItem(Stein.class, 1000);
 			u.setItem(Holz.class, 2000);
-            u.setName(this.getName()+" 03 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 03 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("GIB Bauern Silber");
 			u.Befehle.add("GIB Bauern Pferde");
 			u.Befehle.add("GIB Bauern Elefanten");
@@ -166,7 +166,7 @@ public class GibBauern extends TestBase {
 					if (b.contains("@gib") && b.contains("//dies ist ein kommentar")) found = true;
 				}
 				if (!found) retval = fail(tokens[1] + ": Mit @ oder // im Befehl hat etwas nicht geklappt.");
-//                messages = Message.Retrieve(p, u.getCoords(), u);
+//                messages = Message.Retrieve(p, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();
@@ -187,7 +187,7 @@ public class GibBauern extends TestBase {
 				}
 
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -229,7 +229,7 @@ public class GibBauern extends TestBase {
 					retval = fail("03: Holz ist an die Bauern gegangen und jetzt zu fällen!");
 				}
 
-//                messages = Message.Retrieve(p, u.getCoords(), u);
+//                messages = Message.Retrieve(p, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();

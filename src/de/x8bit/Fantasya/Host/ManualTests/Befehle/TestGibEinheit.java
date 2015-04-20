@@ -154,7 +154,7 @@ public class TestGibEinheit extends TestBase {
             String[] tokens = u.getName().split("\\ ");
 			String uRef = tokens[1] + "[" + u.getNummerBase36() + "] von [" + Codierung.toBase36(u.getOwner()) + "] - ";
 
-            messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+            messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
             boolean found = false;
 
             // unit 02 - Empfänger des Migranten
@@ -173,7 +173,7 @@ public class TestGibEinheit extends TestBase {
 				}
 
 				/*
-				messages = Message.Retrieve(Partei.Load(u.getOwner()), u.getCoords(), u);
+				messages = Message.Retrieve(Partei.Load(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getMessage().toLowerCase();

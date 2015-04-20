@@ -80,7 +80,7 @@ public class DefaultBefehl extends EVABase
 
                     Einzelbefehl inhalt = null;
 					try {
-						inhalt = new Einzelbefehl(u, u.getCoords(), eb.getTokens()[1], -1);
+						inhalt = new Einzelbefehl(u, u.getCoordinates(), eb.getTokens()[1], -1);
 					} catch(IllegalArgumentException ex) {
 						new Debug("DEFAULT-PreAction() - Fehler: " + ex.getMessage());
 						continue;
@@ -102,7 +102,7 @@ public class DefaultBefehl extends EVABase
 
     @Override
     public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -112,7 +112,7 @@ public class DefaultBefehl extends EVABase
 
             // FAULENZE ...
             if (eb.getVariante() == 1) {
-                if (u.getCoords().getWelt() != 0) new Fehler(u + " faulenzt.", u);
+                if (u.getCoordinates().getZ() != 0) new Fehler(u + " faulenzt.", u);
                 eb.setPerformed();
                 continue;
             }
@@ -133,7 +133,7 @@ public class DefaultBefehl extends EVABase
 
 				Einzelbefehl inhalt = null;
 				try {
-					inhalt = new Einzelbefehl(u, u.getCoords(), eb.getTokens()[1], -1);
+					inhalt = new Einzelbefehl(u, u.getCoordinates(), eb.getTokens()[1], -1);
 				} catch(IllegalArgumentException ex) {
                     eb.setError();
 					new Debug("DEFAULT-Verarbeitung-Fehler: " + ex.getMessage());
@@ -173,7 +173,7 @@ public class DefaultBefehl extends EVABase
                 try {
                     u.BefehleExperimental.add(u, inhalt.getBefehlCanonical());
                 } catch(IllegalArgumentException ex) {
-                    new Fehler("DEFAULT-Befehl: " + ex.getMessage(), u, u.getCoords());
+                    new Fehler("DEFAULT-Befehl: " + ex.getMessage(), u, u.getCoordinates());
                 }
 				u.BefehleExperimental.last().setPerformed();  // Sollte diese Runde ja nicht abgearbeitet werden.
 				u.BefehleExperimental.last().setKeep(true);  // Aber behalten wollen wir ihn.

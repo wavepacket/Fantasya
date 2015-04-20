@@ -37,10 +37,10 @@ public class LangbootUndSteg extends TestBase {
 			if (maybe.getClass() == Ebene.class) continue;
 			if (maybe.getClass() == Wald.class) continue;
 			// wir suchen zweimal Ozean im NW
-			Region r1 = Region.Load(maybe.getCoords().shift(Richtung.Nordwesten));
+			Region r1 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Nordwesten));
 			if (r1 == null) continue;
 			if (!(r1 instanceof Ozean)) continue;
-			Region r2 = Region.Load(r1.getCoords().shift(Richtung.Nordwesten));
+			Region r2 = Region.Load(r1.getCoordinates().shiftDirection(Richtung.Nordwesten));
 			if (r2 == null) continue;
 			if (!(r2 instanceof Ozean)) continue;
 
@@ -55,12 +55,12 @@ public class LangbootUndSteg extends TestBase {
         {
             // Segler...
 			Unit u = this.createKapitaen(p, start, Langboot.class.getSimpleName());
-            u.setName(this.getName()+" 01 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 01 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("NACH so so");
 
 			//... und Stegbauer.
 			// zuerst brauchen wir eine große Burg:
-			Building burg = Building.Create(new Burg().getName(), r.getCoords());
+			Building burg = Building.Create(new Burg().getName(), r.getCoordinates());
 			burg.setSize(500);
 
 			u = this.createUnit(p, r);
@@ -73,7 +73,7 @@ public class LangbootUndSteg extends TestBase {
 			u.setItem(Silber.class, 10000);
 			u.Befehle.add("MACHE Steg");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -107,7 +107,7 @@ public class LangbootUndSteg extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = fail(tokens[1] + ": Langboot ist nicht in der erwarteten Region.");
                 }
             }

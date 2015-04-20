@@ -85,7 +85,7 @@ public class Zwerg extends Unit // SKILL
 		// und jetzt noch spezifisch nach Terrain -
 		// Zwerge bekommen +1 auf Taktik in Bergen und auf Gletschern
 		if (skill.getClass().equals(Taktik.class))	{
-			Region r = Region.Load(this.getCoords());
+			Region r = Region.Load(this.getCoordinates());
 			if (r.getTyp().equals(Berge.class.getSimpleName())) tw +=  1;
 			if (r.getTyp().equals(Gletscher.class.getSimpleName())) tw +=  1;
 		}

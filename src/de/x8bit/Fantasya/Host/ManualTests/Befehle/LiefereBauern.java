@@ -45,7 +45,7 @@ public class LiefereBauern extends TestBase {
 			u.setItem(Eisen.class, 1000);
 			u.setItem(Stein.class, 1000);
 			u.setItem(Holz.class, 2000);
-            u.setName(this.getName()+" 01 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 01 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("LIEFERE Bauern 2000000 Silber");
 			u.Befehle.add("LIEFERE Bauern 1000 Pferde");
 			u.Befehle.add("LIEFERE Bauern 1000 Elefanten");
@@ -60,7 +60,7 @@ public class LiefereBauern extends TestBase {
 			u.setName(this.getName() + " 02");
 			u.Befehle.add("LIEFERE Bauern ALLES");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
 		r = this.getTestWorld().nurBetretbar(getRegions()).get(0);
@@ -76,7 +76,7 @@ public class LiefereBauern extends TestBase {
 			u.setItem(Eisen.class, 1000);
 			u.setItem(Stein.class, 1000);
 			u.setItem(Holz.class, 2000);
-            u.setName(this.getName()+" 03 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 03 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("LIEFERE Bauern Silber");
 			u.Befehle.add("LIEFERE Bauern Pferde");
 			u.Befehle.add("LIEFERE Bauern Elefanten");
@@ -92,7 +92,7 @@ public class LiefereBauern extends TestBase {
 			u.setName(this.getName() + " 04");
 			u.Befehle.add("LIEFERE Bauern PERSONEN");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
     }
@@ -159,7 +159,7 @@ public class LiefereBauern extends TestBase {
 					retval = fail("01: Holz ist an die Bauern gegangen und jetzt zu fällen!");
 				}
 
-//                messages = Message.Retrieve(p, u.getCoords(), u);
+//                messages = Message.Retrieve(p, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();
@@ -180,7 +180,7 @@ public class LiefereBauern extends TestBase {
 				}
 
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -222,7 +222,7 @@ public class LiefereBauern extends TestBase {
 					retval = fail("03: Holz ist an die Bauern gegangen und jetzt zu fällen!");
 				}
 
-//                messages = Message.Retrieve(p, u.getCoords(), u);
+//                messages = Message.Retrieve(p, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();

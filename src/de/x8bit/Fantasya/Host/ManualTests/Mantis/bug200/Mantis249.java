@@ -63,7 +63,7 @@ public class Mantis249 extends TestBase {
             u.setSkill(Steinbau.class, 90 * u.getPersonen());
             u.Befehle.add("MACHE Stein");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -102,7 +102,7 @@ public class Mantis249 extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

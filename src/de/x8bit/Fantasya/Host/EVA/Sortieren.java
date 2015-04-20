@@ -77,14 +77,14 @@ public class Sortieren extends EVABase {
 
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
 
 			// Angaben über die "Akteure" selbst:
 			Unit u = eb.getUnit();
-			Partei p = Partei.getPartei(u.getOwner());
+			Partei p = Partei.getFaction(u.getOwner());
 			Unit targetUnit = null;
 
 			// auf jeden Fall:
@@ -95,24 +95,24 @@ public class Sortieren extends EVABase {
 				targetUnit = Unit.Load(Codierung.fromBase36(eb.getTargetUnit()));
 				if (targetUnit == null) {
 					eb.setError();
-					new Fehler("'" + eb.getBefehlCanonical() + "' - Einheit nicht gefunden.", u, u.getCoords());
+					new Fehler("'" + eb.getBefehlCanonical() + "' - Einheit nicht gefunden.", u, u.getCoordinates());
 					continue;
 				}
-				if (!targetUnit.getCoords().equals(u.getCoords())) {
+				if (!targetUnit.getCoordinates().equals(u.getCoordinates())) {
 					eb.setError();
 					if (targetUnit.getOwner() == u.getOwner()) {
-						new Fehler("SORTIERE - Einheit " + targetUnit + " ist nicht hier.", u, u.getCoords());
+						new Fehler("SORTIERE - Einheit " + targetUnit + " ist nicht hier.", u, u.getCoordinates());
 					} else {
-						new Fehler("'" + eb.getBefehlCanonical() + "' - Einheit nicht gefunden.", u, u.getCoords());
+						new Fehler("'" + eb.getBefehlCanonical() + "' - Einheit nicht gefunden.", u, u.getCoordinates());
 					}
 					continue;
 				}
 				if (targetUnit.getOwner() != u.getOwner()) {
 					eb.setError();
 					if (u.cansee(targetUnit)) {
-						new Fehler("SORTIERE - Einheit " + targetUnit + " gehört nicht zu uns.", u, u.getCoords());
+						new Fehler("SORTIERE - Einheit " + targetUnit + " gehört nicht zu uns.", u, u.getCoordinates());
 					} else {
-						new Fehler("'" + eb.getBefehlCanonical() + "' - Einheit nicht gefunden.", u, u.getCoords());
+						new Fehler("'" + eb.getBefehlCanonical() + "' - Einheit nicht gefunden.", u, u.getCoordinates());
 					}
 					continue;
 				}

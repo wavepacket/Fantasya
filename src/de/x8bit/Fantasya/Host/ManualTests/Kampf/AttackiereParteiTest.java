@@ -60,11 +60,11 @@ public class AttackiereParteiTest extends TestBase {
             ub.setItem(Schwert.class, ub.getPersonen() /* - 1 */);
             ub.setItem(Kriegselefant.class, 1);
             ub.setKampfposition(Kampfposition.Vorne);
-            b.setUrsprung(r.getCoords());
+            b.setUrsprung(r.getCoordinates());
 
             ub.Befehle.add("ATTACKIERE PARTEI " + a.getNummerBase36());
             
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

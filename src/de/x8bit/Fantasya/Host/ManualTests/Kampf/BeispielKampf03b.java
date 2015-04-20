@@ -81,7 +81,7 @@ public class BeispielKampf03b extends TestBase {
             u.Befehle.add("ATTACKIERE " + idB);
             schuetzen.Befehle.add("ATTACKIERE GEZIELT " + idKatapultschuetze);
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

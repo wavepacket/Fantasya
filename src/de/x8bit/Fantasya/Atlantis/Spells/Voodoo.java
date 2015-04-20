@@ -28,7 +28,7 @@ public class Voodoo extends Spell {
 
 	@Override
 	public int ExecuteSpell(Unit mage, String[] param) {
-		new Fehler("Die Welt ist noch nicht reif für " + getName() + ".", mage, mage.getCoords());
+		new Fehler("Die Welt ist noch nicht reif für " + getName() + ".", mage, mage.getCoordinates());
 		return 0;
 
 		// Stufe festlegen

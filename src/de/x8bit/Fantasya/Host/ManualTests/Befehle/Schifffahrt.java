@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -28,6 +27,7 @@ import de.x8bit.Fantasya.Atlantis.Ships.Langboot;
 import de.x8bit.Fantasya.Atlantis.Ships.Tireme;
 import de.x8bit.Fantasya.Atlantis.Skills.Burgenbau;
 import de.x8bit.Fantasya.Atlantis.Units.Mensch;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
@@ -43,7 +43,7 @@ public class Schifffahrt extends TestBase {
     protected void mySetupTest() {
         Partei p = getTestWorld().createPartei(Mensch.class);
 		p.setName(getName() + "-Partei");
-        p.setUrsprung(new Coords(0,0,1));
+        p.setUrsprung(Coordinates.create(0,0,1));
 
         // enthält NACH und ROUTE
 		this.setupEinfacheReisen(); // Einheiten 01 .. 09
@@ -92,7 +92,7 @@ public class Schifffahrt extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = this.fail(uRef + "ist nicht in der erwarteten Region.");
                 }
                 boolean found = false;
@@ -104,10 +104,10 @@ public class Schifffahrt extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = this.fail(uRef + "Ist nicht in der erwarteten Region.");
                 }
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();
@@ -121,7 +121,7 @@ public class Schifffahrt extends TestBase {
                     || (tokens[1].equals("05")) || (tokens[1].equals("06"))
                     || (tokens[1].equals("07")) || (tokens[1].equals("08"))
 					|| (tokens[1].equals("09")) ) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = fail(uRef + "Ist nicht in der erwarteten Region.");
                 }
 
@@ -138,7 +138,7 @@ public class Schifffahrt extends TestBase {
 			if ( (tokens[1].equals("11")) || (tokens[1].equals("12"))
                     || (tokens[1].equals("13")) || (tokens[1].equals("15"))
 					|| (tokens[1].equals("17")) ) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = fail(uRef + "Ist nicht in der erwarteten Region.");
                 }
             }
@@ -154,14 +154,14 @@ public class Schifffahrt extends TestBase {
      */
     private void setupEinfacheReisen() {
         Partei p = getTestWorld().createPartei(Mensch.class);
-		p.setUrsprung(new Coords(0,0,1));
+		p.setUrsprung(Coordinates.create(0,0,1));
         List<Region> regs = new ArrayList<Region>();
 
         for (Region maybe : this.getTestWorld().nurTerrain(getRegions(), Ozean.class)) {
             Region step = maybe;
             for (int i = 1; i < 10; i++) {
                 regs.add(step);
-                Region neighbor = Region.Load(step.getCoords().shift(Richtung.Nordosten));
+                Region neighbor = Region.Load(step.getCoordinates().shiftDirection(Richtung.Nordosten));
                 if (!(neighbor instanceof Ozean)) {
                     regs.clear();
                     break;
@@ -178,42 +178,42 @@ public class Schifffahrt extends TestBase {
         Region r = regs.get(0);
         {
             Unit u = this.createKapitaen(p, r, Boot.class.getSimpleName());
-            u.setName( this.getName() + " 01 " + regs.get(1).getCoords().getX() + " " + regs.get(1).getCoords().getY() );
+            u.setName( this.getName() + " 01 " + regs.get(1).getCoordinates().getX() + " " + regs.get(1).getCoordinates().getY() );
             u.Befehle.add("NACH no PAUSE no PAUSE no NO");
 
             u = this.createKapitaen(p, r, Boot.class.getSimpleName());
-            u.setName( this.getName() + " 02 " + regs.get(2).getCoords().getX() + " " + regs.get(2).getCoords().getY() );
+            u.setName( this.getName() + " 02 " + regs.get(2).getCoordinates().getX() + " " + regs.get(2).getCoordinates().getY() );
             u.Befehle.add("NACH no no no NO");
 
             u = this.createKapitaen(p, r, Langboot.class.getSimpleName());
-            u.setName( this.getName() + " 03 " + regs.get(4).getCoords().getX() + " " + regs.get(4).getCoords().getY() );
+            u.setName( this.getName() + " 03 " + regs.get(4).getCoordinates().getX() + " " + regs.get(4).getCoordinates().getY() );
             u.Befehle.add("NACH no no no no no");
 
             u = this.createKapitaen(p, r, Drachenschiff.class.getSimpleName());
-            u.setName( this.getName() + " 04 " + regs.get(5).getCoords().getX() + " " + regs.get(5).getCoords().getY() );
+            u.setName( this.getName() + " 04 " + regs.get(5).getCoordinates().getX() + " " + regs.get(5).getCoordinates().getY() );
             u.Befehle.add("NACH no no no no no");
 
             u = this.createKapitaen(p, r, Galeone.class.getSimpleName());
-            u.setName( this.getName() + " 05 " + regs.get(5).getCoords().getX() + " " + regs.get(5).getCoords().getY() );
+            u.setName( this.getName() + " 05 " + regs.get(5).getCoordinates().getX() + " " + regs.get(5).getCoordinates().getY() );
             u.Befehle.add("NACH no no no no no PAUSE sw sw sw sw sw");
 
             u = this.createKapitaen(p, r, Karavelle.class.getSimpleName());
-            u.setName( this.getName() + " 06 " + regs.get(6).getCoords().getX() + " " + regs.get(6).getCoords().getY() );
+            u.setName( this.getName() + " 06 " + regs.get(6).getCoordinates().getX() + " " + regs.get(6).getCoordinates().getY() );
             u.Befehle.add("NACH no no no no no no no");
 
             u = this.createKapitaen(p, r, Tireme.class.getSimpleName());
-            u.setName( this.getName() + " 07 " + regs.get(8).getCoords().getX() + " " + regs.get(8).getCoords().getY() );
+            u.setName( this.getName() + " 07 " + regs.get(8).getCoordinates().getX() + " " + regs.get(8).getCoordinates().getY() );
             u.Befehle.add("NACH no no no no no no no no no");
 
             u = this.createKapitaen(p, r, Drachenschiff.class.getSimpleName());
-            u.setName( this.getName() + " 08 " + regs.get(3).getCoords().getX() + " " + regs.get(3).getCoords().getY() );
+            u.setName( this.getName() + " 08 " + regs.get(3).getCoordinates().getX() + " " + regs.get(3).getCoordinates().getY() );
             u.Befehle.add("NACH no no no");
 
             u = this.createKapitaen(p, r, Drachenschiff.class.getSimpleName());
-            u.setName( this.getName() + " 09 " + regs.get(3).getCoords().getX() + " " + regs.get(3).getCoords().getY() );
+            u.setName( this.getName() + " 09 " + regs.get(3).getCoordinates().getX() + " " + regs.get(3).getCoordinates().getY() );
             u.Befehle.add("ROUTE no no no PAUSE no PAUSE sw sw sw sw");
 
-            new Info(this.getName() + " Setup in " + r + " (" + r.getCoords() + ").", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + " (" + r.getCoordinates() + ").", u, u.getCoordinates());
         }
     }
 
@@ -221,13 +221,13 @@ public class Schifffahrt extends TestBase {
      */
     private void setupHafenZeugs() {
         Partei p = this.getTestWorld().createPartei(Mensch.class);
-		p.setUrsprung(new Coords(0,0,1));
+		p.setUrsprung(Coordinates.create(0,0,1));
         List<Region> regs = new ArrayList<Region>();
 
         // Berg-Region suchen, die SO und SW Ozean als Nachbarn hat
         for (Region maybe : this.getTestWorld().nurTerrain(getRegions(), Berge.class)) {
-            Region so = Region.Load(maybe.getCoords().shift(Richtung.Suedosten));
-            Region sw = Region.Load(maybe.getCoords().shift(Richtung.Suedwesten));
+            Region so = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Suedosten));
+            Region sw = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Suedwesten));
 
             if ((so instanceof Ozean) && (sw instanceof Ozean)) {
                 // gotcha!
@@ -247,17 +247,17 @@ public class Schifffahrt extends TestBase {
         {
             // Bootseise, okay.
             Unit u = this.createKapitaen(p, r, Boot.class.getSimpleName());
-            u.setName( this.getName() + " 11 " + so.getCoords().getX() + " " + so.getCoords().getY() );
+            u.setName( this.getName() + " 11 " + so.getCoordinates().getX() + " " + so.getCoordinates().getY() );
             u.Befehle.add("NACH sw o");
 
             // Bootsreise, Problem mit der Küste
             u = this.createKapitaen(p, so, Boot.class.getSimpleName());
-            u.setName( this.getName() + " 12 " + r.getCoords().getX() + " " + r.getCoords().getY() );
+            u.setName( this.getName() + " 12 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY() );
             u.Befehle.add("NACH nw sw o");
 
             // Bootsreise, Problem mit der Küste
             u = this.createKapitaen(p, r, Drachenschiff.class.getSimpleName());
-            u.setName( this.getName() + " 13 " + sw.getCoords().getX() + " " + sw.getCoords().getY() );
+            u.setName( this.getName() + " 13 " + sw.getCoordinates().getX() + " " + sw.getCoordinates().getY() );
             u.Befehle.add("NACH sw no");
         }
 
@@ -268,8 +268,8 @@ public class Schifffahrt extends TestBase {
 
         // Berg-Region suchen, die SO und SW Ozean als Nachbarn hat
         for (Region maybe : this.getTestWorld().nurTerrain(getRegions(), Berge.class)) {
-            so = Region.Load(maybe.getCoords().shift(Richtung.Suedosten));
-            sw = Region.Load(maybe.getCoords().shift(Richtung.Suedwesten));
+            so = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Suedosten));
+            sw = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Suedwesten));
 
             if ((so instanceof Ozean) && (sw instanceof Ozean)) {
                 // gotcha!
@@ -288,7 +288,7 @@ public class Schifffahrt extends TestBase {
         so = regs.get(1);
         sw = regs.get(2);
         {
-			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setSize(100);
 
 			Unit u = this.createUnit(p, r);
@@ -303,7 +303,7 @@ public class Schifffahrt extends TestBase {
 
 			// Bootsreise, Problem ohne Hafen
             u = this.createKapitaen(p, r, Drachenschiff.class.getSimpleName());
-            u.setName( this.getName() + " 15 " + r.getCoords().getX() + " " + r.getCoords().getY() );
+            u.setName( this.getName() + " 15 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY() );
             u.Befehle.add("NACH sw o nw");
 
             u = this.createUnit(p, r);
@@ -314,7 +314,7 @@ public class Schifffahrt extends TestBase {
 			Partei p2 = this.getTestWorld().createPartei(Mensch.class);
 			// Bootsreise, Problem mit Seehafen
             u = this.createKapitaen(p2, sw, Boot.class.getSimpleName());
-            u.setName( this.getName() + " 17 " + sw.getCoords().getX() + " " + sw.getCoords().getY() );
+            u.setName( this.getName() + " 17 " + sw.getCoordinates().getX() + " " + sw.getCoordinates().getY() );
             u.Befehle.add("NACH no");
         }
 

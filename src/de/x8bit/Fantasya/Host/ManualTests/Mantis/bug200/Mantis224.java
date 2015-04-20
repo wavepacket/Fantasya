@@ -52,7 +52,7 @@ public class Mantis224 extends TestBase {
             u.Befehle.add("REKRUTIERE 10");
             u.Befehle.add("MACHE Wagen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -94,7 +94,7 @@ public class Mantis224 extends TestBase {
                     fail(tokens[1] + ": Es sind nicht 26, sondern " + u.getItem(Wagen.class).getAnzahl() + " Wagen produziert worden.");
                 }
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

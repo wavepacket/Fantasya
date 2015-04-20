@@ -58,16 +58,16 @@ public class FeuerwalzenKampf extends TestBase {
             ub.setItem(Schwert.class, ub.getPersonen());
             ub.setKampfposition(Kampfposition.Vorne);
 
-            b.setUrsprung(r.getCoords());
+            b.setUrsprung(r.getCoordinates());
 
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
             
             Unit uc = this.createUnit(c, r);
             uc.setName(this.getName()+" 03");
             uc.setPersonen(1);
-            c.setUrsprung(r.getCoords());
+            c.setUrsprung(r.getCoordinates());
 
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

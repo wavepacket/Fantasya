@@ -61,7 +61,7 @@ public class Kontaktierungen extends EVABase {
 	
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -101,7 +101,7 @@ public class Kontaktierungen extends EVABase {
                 continue;
             }
 
-            if (!targetUnit.getCoords().equals(u.getCoords())) {
+            if (!targetUnit.getCoordinates().equals(u.getCoordinates())) {
                 eb.setError();
                 new Fehler("Einheit " + eb.getTargetUnit() + " nicht gefunden.", u);
                 continue;

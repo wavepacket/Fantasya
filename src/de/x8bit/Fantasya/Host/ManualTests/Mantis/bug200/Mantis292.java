@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.ManualTests.Mantis.bug200;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Host.ManualTests.*;
+
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Message;
@@ -12,6 +12,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Magie;
 import de.x8bit.Fantasya.Atlantis.Units.Aquaner;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 
 /**
@@ -41,7 +42,7 @@ public class Mantis292 extends TestBase {
 			u.setSkill(Magie.class, 0);
 			u.Befehle.add("LERNE Magie");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -73,7 +74,7 @@ public class Mantis292 extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), (Coords)null, null); // Unit und Coords sind egal.
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), (Coordinates)null, null); // Unit und Coordinates sind egal.
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

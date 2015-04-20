@@ -1,6 +1,7 @@
 package de.x8bit.Fantasya.Atlantis;
 
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +17,13 @@ import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Burgenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.Reports.Writer.CRWriter;
 import de.x8bit.Fantasya.Host.Reports.Writer.XMLWriter;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.FreieNummern;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -89,7 +92,7 @@ public abstract class Building extends Dingens implements NamedItem
             b = (Building) Class.forName("de.x8bit.Fantasya.Atlantis.Buildings." + typ).newInstance();
 
             b.setNummer(rs.getInt("nummer"));
-			b.setCoords( new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")) );
+			b.setCoordinates( Coordinates.create(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")) );
             b.setName(rs.getString("name"));
             b.setBeschreibung(rs.getString("beschreibung"));
             b.setSize(rs.getInt("size"));
@@ -102,7 +105,7 @@ public abstract class Building extends Dingens implements NamedItem
 		return b;
     }
 
-    public static Building Create(String type, Coords coords) {
+    public static Building Create(String type, Coordinates coords) {
 		Building b = null;
 		
 		try	{
@@ -111,7 +114,7 @@ public abstract class Building extends Dingens implements NamedItem
 		
 		// diverse Vorbereitungen
 		b.setNummer(FreieNummern.freieNummer(PROXY));
-		b.setCoords(coords);
+		b.setCoordinates(coords);
 		b.setName(b.getTyp() + " " + b.getNummerBase36());
 
 		// Proxy nicht vergessen
@@ -129,9 +132,9 @@ public abstract class Building extends Dingens implements NamedItem
 		fields.put("nummer", getNummer());
 		fields.put("id", this.getNummerBase36());
 		fields.put("name", getName());
-		fields.put("koordx", getCoords().getX());
-		fields.put("koordy", getCoords().getY());
-		fields.put("welt", getCoords().getWelt());
+		fields.put("koordx", getCoordinates().getX());
+		fields.put("koordy", getCoordinates().getY());
+		fields.put("welt", getCoordinates().getZ());
 		fields.put("beschreibung", getBeschreibung());
 		fields.put("monument", "");
 		fields.put("size", getSize());
@@ -167,7 +170,7 @@ public abstract class Building extends Dingens implements NamedItem
 	public Unit istBelagert()
 	{
 		List<Unit> belagerer = new ArrayList<Unit>();
-		Region region = Region.Load(this.getCoords());
+		Region region = Region.Load(this.getCoordinates());
 		for(Unit unit : region.getUnits()) if (unit.getBelagert() == this.getNummer()) belagerer.add(unit);
 		
 		if (belagerer.isEmpty()) return null;
@@ -268,7 +271,7 @@ public abstract class Building extends Dingens implements NamedItem
         Building.PROXY.remove(this);
 		
 		// alle Einheiten aus dem Gebäude rausschmeißen
-		Region r = Region.Load(u.getCoords());
+		Region r = Region.Load(u.getCoordinates());
 		for(Unit hu : r.getUnits()) {
             if (hu.getGebaeude() == getNummer()) {
                 hu.setGebaeude(0);
@@ -322,7 +325,7 @@ public abstract class Building extends Dingens implements NamedItem
 				if (useritem.getAnzahl() < anzahl * item.getAnzahl())
 				{
 					anzahl = useritem.getAnzahl() / item.getAnzahl();
-					new Fehler(u + " - nur " + useritem + " vorhanden, kürze Produktion auf " + anzahl + " Größenpunkte.", u, u.getCoords());
+					new Fehler(u + " - nur " + useritem + " vorhanden, kürze Produktion auf " + anzahl + " Größenpunkte.", u, u.getCoordinates());
 				}
 			}
 			// -- jetzt existiert die max. Anzahl von dem was hergestellt werden kann, also machen wir es mal ^^
@@ -394,7 +397,7 @@ public abstract class Building extends Dingens implements NamedItem
 		}
 		
 		// jetzt noch die Einheiten zu diesem Gebäude speichern
-		Region region = Region.Load(getCoords());
+		Region region = Region.Load(getCoordinates());
 		boolean header = false;
 		for(Unit unit : region.getUnits())
 		{
@@ -431,7 +434,7 @@ public abstract class Building extends Dingens implements NamedItem
 	 */
 	public SortedSet<Unit> getUnits() {
 		SortedSet<Unit> units = new TreeSet<Unit>();
-		for(Unit unit : Unit.CACHE.getAll(this.getCoords())) {
+		for(Unit unit : Unit.CACHE.getAll(this.getCoordinates())) {
 			if (unit.getGebaeude() == this.getNummer()) {
 				units.add(unit);
 			}
@@ -445,7 +448,7 @@ public abstract class Building extends Dingens implements NamedItem
     public Set<Partei> getBewohnerParteien() {
         Set<Partei> retval = new HashSet<Partei>();
         for (Unit u : getBewohner()) {
-            retval.add(Partei.getPartei(u.getOwner()));
+            retval.add(Partei.getFaction(u.getOwner()));
         }
         return retval;
     }

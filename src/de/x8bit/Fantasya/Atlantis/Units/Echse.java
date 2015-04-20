@@ -107,7 +107,7 @@ public class Echse extends Unit // SKILL
 		boolean hunger = super.actionUnterhalt();
 		
 		// dann erst die Bauern
-		Region region = Region.Load(getCoords());
+		Region region = Region.Load(getCoordinates());
 		int bauern = region.getBauern();
 		int needed = ((getPersonen() - 1) / 10) + 1; // 9E -> 1B ... 10E -> 1B ... 11E -> 2B
 		
@@ -202,7 +202,7 @@ public class Echse extends Unit // SKILL
 			if (getPersonen() > 0) {
 				new EchsenNews(msg.toString(), this);
 			} else {
-				new EchsenNews(msg.toString(), Partei.getPartei(this.getOwner()));
+				new EchsenNews(msg.toString(), Partei.getFaction(this.getOwner()));
 			}
 		}
 		

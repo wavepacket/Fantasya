@@ -1,6 +1,7 @@
 package de.x8bit.Fantasya.Atlantis;
 
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +17,13 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Schiffbau;
 import de.x8bit.Fantasya.Atlantis.Units.Aquaner;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.Host.Reports.Writer.XMLWriter;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.FreieNummern;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -43,7 +46,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 	
 	public static final ArrayList<Ship> PROXY = new ArrayList<Ship>();
 	
-	public static Ship Create(String type, Coords coords) {
+	public static Ship Create(String type, Coordinates coords) {
 		Ship s = null;
 
 		try	{
@@ -52,13 +55,13 @@ public abstract class Ship extends Dingens implements NamedItem {
 
 		// diverse Vorbereitungen
 		s.setNummer(FreieNummern.freieNummer(Ship.PROXY));
-		s.setCoords(coords);
+		s.setCoordinates(coords);
 
 		// Nicht-EVA-Version: In die DB schreiben:
 		s.setName("Schiff " + s.getNummerBase36());
 
 		PROXY.add(s);
-		Region.Load(s.getCoords()).getShips().add(s);
+		Region.Load(s.getCoordinates()).getShips().add(s);
 
 		return s;
 	}
@@ -86,7 +89,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 
             // die einfachen Dinge setzen
             s.setNummer(rs.getInt("nummer"));
-            s.setCoords(new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
+            s.setCoordinates(Coordinates.create(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
             s.setName(rs.getString("name"));
             s.setBeschreibung(rs.getString("beschreibung"));
             s.setOwner(rs.getInt("kapitaen"));
@@ -109,9 +112,9 @@ public abstract class Ship extends Dingens implements NamedItem {
 
 		fields.put("name", getName());
 		fields.put("id", this.getNummerBase36());
-		fields.put("koordx", getCoords().getX());
-		fields.put("koordy", getCoords().getY());
-		fields.put("welt", getCoords().getWelt());
+		fields.put("koordx", getCoordinates().getX());
+		fields.put("koordy", getCoordinates().getY());
+		fields.put("welt", getCoordinates().getZ());
 		fields.put("beschreibung", getBeschreibung());
 		fields.put("groesse", getGroesse());
 		fields.put("type", this.getClass().getSimpleName());
@@ -161,7 +164,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 	public int getKapazitaet() { return kapazitaet; }
 	public int getKapazitaetFree() {
 		int gewicht = 0;
-		Region r = Region.Load(getCoords());
+		Region r = Region.Load(getCoordinates());
 		for(Unit u : r.getUnits()) {
 			if (u.getSchiff() == getNummer()) {
 				gewicht += u.getGewicht();
@@ -231,16 +234,16 @@ public abstract class Ship extends Dingens implements NamedItem {
 			count++;
 		}
 		msg +=" durch die Zerstörung von '" + this + "'.";
-		new Info(msg, u, u.getCoords());
+		new Info(msg, u, u.getCoordinates());
 
 		setGroesse(0);
 
 		// alle Einheiten aus dem Schiff rausschmeißen
-		Region r = Region.Load(u.getCoords());
+		Region r = Region.Load(u.getCoordinates());
 		for(Unit hu : r.getUnits()) {
             if (hu.getSchiff() == getNummer()) {
                 hu.setSchiff(0);
-                new Info("Das Schiff '" + this + "' wurde zerstört.", hu, hu.getCoords());
+                new Info("Das Schiff '" + this + "' wurde zerstört.", hu, hu.getCoordinates());
             }
         }
 
@@ -260,7 +263,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 	 */
 	public SortedSet<Unit> getUnits() {
 		SortedSet<Unit> units = new TreeSet<Unit>();
-		for(Unit unit : Unit.CACHE.getAll(this.getCoords())) {
+		for(Unit unit : Unit.CACHE.getAll(this.getCoordinates())) {
 			if (unit.getSchiff() == this.getNummer()) {
 				units.add(unit);
 			}
@@ -305,7 +308,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 		if (getGroesse() == getConstructionSize()) setFertig(true);		// das Schiff ist fertig
 		
 		// Meldung
-		new Info(unit + " baut für " + punkte + " Punkte an " + this + " weiter", unit, unit.getCoords());
+		new Info(unit + " baut für " + punkte + " Punkte an " + this + " weiter", unit, unit.getCoordinates());
 		
 		return;
 	}
@@ -343,7 +346,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 		}
 		
 		// jetzt noch die Einheiten zu diesem Schiff speichern
-		Region region = Region.Load(getCoords());
+		Region region = Region.Load(getCoordinates());
 		boolean header = false;
 		for(Unit unit : region.getUnits())
 		{

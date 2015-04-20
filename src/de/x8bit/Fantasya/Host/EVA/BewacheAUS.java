@@ -34,7 +34,7 @@ public class BewacheAUS extends EVABase
     }
 	
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -44,13 +44,13 @@ public class BewacheAUS extends EVABase
 
 			// COMMAND BEWACHE NICHT
 			if (u.getBewacht() == false) {
-				new Fehler(u + " hat bisher gar nichts bewacht.", u, u.getCoords());
+				new Fehler(u + " hat bisher gar nichts bewacht.", u, u.getCoordinates());
 				eb.setError();
 				continue;
 			}
 
 			u.setBewacht(false);
-			new Info(u + " bewacht die Region " + r + " NICHT mehr.", u, u.getCoords());
+			new Info(u + " bewacht die Region " + r + " NICHT mehr.", u, u.getCoordinates());
 			eb.setPerformed();
 		}
 	}

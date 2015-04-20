@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Message;
@@ -15,8 +14,10 @@ import de.x8bit.Fantasya.Atlantis.Skills.Tarnung;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
 import de.x8bit.Fantasya.Atlantis.Units.Troll;
 import de.x8bit.Fantasya.Atlantis.Units.Zwerg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
+
 import java.util.Collection;
 
 /**
@@ -57,7 +58,7 @@ public class Diebstahl extends TestBase {
 
 
 
-			new Info(this.getName() + " Setup in " + r + ".", u1, u1.getCoords());
+			new Info(this.getName() + " Setup in " + r + ".", u1, u1.getCoordinates());
         }
     }
 
@@ -94,7 +95,7 @@ public class Diebstahl extends TestBase {
 				if (u.getItem(Silber.class).getAnzahl() <= 990) {
 					retval = fail(tokens[1] + ": Hat nichts erbeutet.");
 				}
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -108,7 +109,7 @@ public class Diebstahl extends TestBase {
 				if (u.getItem(Silber.class).getAnzahl() >= 990) {
 					retval = fail(tokens[1] + ": Ist nicht bestohlen worden.");
 				}
-                messages = Message.Retrieve(null, (Coords)null, u);
+                messages = Message.Retrieve(null, (Coordinates)null, u);
                 boolean found = false;
 				String s = null;
                 for (Message msg : messages) {
@@ -126,7 +127,7 @@ public class Diebstahl extends TestBase {
 				if (u.getItem(Silber.class).getAnzahl() < 990) {
 					retval = fail(tokens[1] + ": Ist bestohlen worden.");
 				}
-                messages = Message.Retrieve(null, (Coords)null, u);
+                messages = Message.Retrieve(null, (Coordinates)null, u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

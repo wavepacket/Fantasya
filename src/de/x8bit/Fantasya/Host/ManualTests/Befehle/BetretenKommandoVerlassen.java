@@ -33,10 +33,10 @@ public class BetretenKommandoVerlassen extends TestBase {
 			Region r = tw.nurNachbarVon(tw.nurBetretbar(getRegions()), Ozean.class).get(0);
 			getRegions().remove(r);
 			
-			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			b.setSize(50);
 
-			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoords());
+			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(s.getConstructionSize());
 			s.setFertig(true);
 
@@ -50,7 +50,7 @@ public class BetretenKommandoVerlassen extends TestBase {
 			u.Befehle.add("BETRETE SCHIFF " + s.getNummerBase36());
 			u.Befehle.add("LERNE Segeln");
 
-            new Info(this.getName() + "-Betreten Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-Betreten Setup in " + r + ".", u, u.getCoordinates());
 
 			fernesSchiff = s.getNummerBase36();
         }
@@ -59,10 +59,10 @@ public class BetretenKommandoVerlassen extends TestBase {
 			Region r = tw.nurNachbarVon(tw.nurBetretbar(getRegions()), Ozean.class).get(0);
 			getRegions().remove(r);
 
-			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			b.setSize(50);
 
-			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoords());
+			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(s.getConstructionSize());
 			s.setFertig(true);
 
@@ -95,7 +95,7 @@ public class BetretenKommandoVerlassen extends TestBase {
 			u.Befehle.add("BETRETE SCHIFF " + fernesSchiff);
 			u.Befehle.add("// BETRETE SCHIFF " + fernesSchiff);
 
-            new Info(this.getName() + "-Verlassen Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-Verlassen Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -110,10 +110,10 @@ public class BetretenKommandoVerlassen extends TestBase {
             if (r == null) throw new IllegalStateException("Keine passende Region für " + this.getClass().getSimpleName() + " (TEMP-Übergaben) gefunden - einfach nochmal probieren...");
 			getRegions().remove(r);
 
-			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			b.setSize(50);
 
-			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoords());
+			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(s.getConstructionSize());
 			s.setFertig(true);
 
@@ -145,7 +145,7 @@ public class BetretenKommandoVerlassen extends TestBase {
 			u.Befehle.add("GIB TEMP def 500 Silber");
 			u.Befehle.add("LERNE Speerkampf");
 
-            new Info(this.getName() + "-Gib-Kommando Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-Gib-Kommando Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

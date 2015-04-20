@@ -22,6 +22,6 @@ public class ZATMsg extends Message
 		lastMessage = msg;
 		
 		// durch System reichen
-		print(0, msg, Partei.getPartei(0));
+		print(0, msg, Partei.getFaction(0));
 	}
 }

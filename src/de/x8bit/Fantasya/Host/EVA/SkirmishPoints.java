@@ -54,13 +54,13 @@ public class SkirmishPoints extends EVABase implements NotACommand {
 	 * allg. Punkteberechnung - erstmal hart codiert
 	 */
 	private void calcPointsMain() {
-		for(Partei partei : Partei.PROXY) {
-			if (partei.isMonster()) continue;							// Monster ohne Punkte
+		for(Partei partei : Partei.getPlayerFactionList()) {
+			// if (partei.isMonster()) continue;							// Monster ohne Punkte
 			int punkte = 0;
 			Set<RegionsSicht> liste = partei.getKnownRegions(false);	// alle bekannten Regionen des Volkes
 			for(RegionsSicht rs : liste) {
-				Region region = Region.Load(rs.getCoords());
-				Partei owner = Partei.getPartei(region.getOwner());
+				Region region = Region.Load(rs.getCoordinates());
+				Partei owner = Partei.getFaction(region.getOwner());
 				if (owner == null) continue;							// der steht zwar da, aber hat keine Macht und Punkte gibt es nur bei Macht
 				if (owner.getNummer() == 0) continue;					// Partei 0
 				
@@ -107,8 +107,8 @@ public class SkirmishPoints extends EVABase implements NotACommand {
 	private void saveHistory() {
 		Datenbank.Enable();
 		Datenbank db = new Datenbank("Skirmishpunkte sichern");
-		for(Partei partei : Partei.PROXY) {
-			if (partei.isMonster()) continue;							// Monster ohne Punkte
+		for(Partei partei : Partei.getPlayerFactionList()) {
+			// if (partei.isMonster()) continue;							// Monster ohne Punkte
 			String query = "INSERT INTO history (runde, base10, krieg, ende, total, name) VALUES (";
 			query += GameRules.getRunde() + ", ";
 			query += partei.getNummer() + ", ";

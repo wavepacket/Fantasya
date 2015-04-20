@@ -3,7 +3,6 @@ package de.x8bit.Fantasya.Host;
 import java.util.ArrayList;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -31,10 +30,12 @@ import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.*;
 import de.x8bit.Fantasya.Atlantis.Skills.*;
 import de.x8bit.Fantasya.Atlantis.Units.Ork;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.EVA.util.NeuerSpieler;
 import de.x8bit.Fantasya.Host.Terraforming.AltInsel;
 import de.x8bit.Fantasya.Host.Terraforming.ProtoInsel;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.List;
 
 public class NeueSpieler
@@ -52,13 +53,12 @@ public class NeueSpieler
 	public static void NeueSpielerAussetzen() {
 		for (NeuerSpieler n : NeuerSpieler.PROXY) {
 			// jetzt den Spieler anlegen
-			Partei f = Partei.Create();
+			Partei f = Partei.createNewPlayerFaction();
 			f.setName("Volk " + f.getNummerBase36());
 			f.setEMail(n.getEmail());
 			f.setRasse(n.getRasse().getSimpleName());
-			f.setNMR(GameRules.getRunde());
 			f.setDefaultsteuer(10);
-			Partei.PROXY.add(f);
+			// Partei.PROXY.add(f); -> schon in der Partei.createNewPlayerFaction()
 			new SysMsg("neuen Spieler erzeugt - " + f);
 
 			// *juhu* ... ein neuer Spieler ... der braucht seine Einheiten
@@ -146,10 +146,10 @@ public class NeueSpieler
 		
 		
 		// Ursprung für Spieler setzen:
-		volk.setUrsprung(region.getCoords());
+		volk.setUrsprung(region.getCoordinates());
 		
 		// Wahrnehmung
-		Unit u = NeueEinheitErzeugen(region.getCoords(), volk, tarnung, 1);
+		Unit u = NeueEinheitErzeugen(region.getCoordinates(), volk, tarnung, 1);
 		u.setSkill(Wahrnehmung.class, 630 + (int)(180d*faktor/1.01d));
 		// linear mit der Runde mehr Silber:
         // 1 - 10100
@@ -167,7 +167,7 @@ public class NeueSpieler
 		
 		// Treiben & Unterhaltung
         int n = (int)Math.round(10d * faktor);
-		u = NeueEinheitErzeugen(region.getCoords(), volk, tarnung, n);
+		u = NeueEinheitErzeugen(region.getCoordinates(), volk, tarnung, n);
 		u.setSkill(Speerkampf.class, 300 * n);
 		u.setSkill(Hiebwaffen.class, 300 * n);
 		u.setSkill(Unterhaltung.class, 300 * n);
@@ -194,12 +194,12 @@ public class NeueSpieler
 		
 		n = (int) (Math.pow(faktor, 0.3333333d) * 3d); // 
         for (int i = 0; i < n; i++)	{
-			Coords c = null;
+			Coordinates c = null;
 			boolean ende = false;
 
 			// zufällige Region auswählen
 			while (!ende) {
-				c = region.getCoords().shift(Richtung.random());
+				c = region.getCoordinates().shiftDirection(Richtung.random());
 				if (Region.Load(c).istBetretbar(null)) ende = true;
 			}
 
@@ -245,7 +245,7 @@ public class NeueSpieler
 	 * @param personen - Anzahl der Person für diese Einheit
 	 * @return neue Einheit die Erzeugt wurde
 	 */
-	private static Unit NeueEinheitErzeugen(Coords coords, Partei volk, String tarnung, int personen)
+	private static Unit NeueEinheitErzeugen(Coordinates coords, Partei volk, String tarnung, int personen)
 	{
 		Unit u;
 		u = Unit.CreateUnit(volk.getRasse(), volk.getNummer(), coords);
@@ -300,7 +300,7 @@ public class NeueSpieler
 			while (d1 == d2) d2 = Random.rnd(0, nachbarn.size());
 
 			// -- Ebene
-			Region or = Region.Load(r.getCoords());
+			Region or = Region.Load(r.getCoordinates());
 
 			Region hr = or.cloneAs(Ebene.class);
 			hr.RenameRegion();
@@ -311,11 +311,11 @@ public class NeueSpieler
 			hr.Init();
 			hr.setNachfrage(luxus, n.getNachfrage());
 			terraforming.add(hr);
-			Region.CACHE.put(hr.getCoords(), hr);
+			Region.CACHE.put(hr.getCoordinates(), hr);
 			new SysMsg(3, "Terraforming (E) für " + hr);
 
 			// -- Wald
-			or = Region.Load(nachbarn.get(d1).getCoords());
+			or = Region.Load(nachbarn.get(d1).getCoordinates());
 
 			hr = or.cloneAs(Wald.class);
 			hr.RenameRegion();
@@ -326,11 +326,11 @@ public class NeueSpieler
 			hr.Init();
 			hr.setNachfrage(luxus, n.getNachfrage());
 			terraforming.add(hr);
-			Region.CACHE.put(hr.getCoords(), hr);
+			Region.CACHE.put(hr.getCoordinates(), hr);
 			new SysMsg(3, "Terraforming (W) für " + hr);
 
 			// -- Berg
-			or = Region.Load(nachbarn.get(d2).getCoords());
+			or = Region.Load(nachbarn.get(d2).getCoordinates());
 
 			hr = or.cloneAs(Berge.class);
 			hr.RenameRegion();
@@ -341,13 +341,13 @@ public class NeueSpieler
 			hr.Init();
 			hr.setNachfrage(luxus, n.getNachfrage());
 			terraforming.add(hr);
-			Region.CACHE.put(hr.getCoords(), hr);
+			Region.CACHE.put(hr.getCoordinates(), hr);
 			new SysMsg(3, "Terraforming (B) für " + hr);
 		}
 
 		// alle Regionen als bekannt & betreten markieren
 		r.setAlter(10);
-		for(Region n : r.getNachbarn())	n.setAlter(9);
+		for(Region n : r.getNeighbours())	n.setAlter(9);
 
 		// neue Region zurück liefern
 		return r;
@@ -360,7 +360,7 @@ public class NeueSpieler
 	 * @return true wenn Region zum Aussetzen geeignet
 	 */
 	public static List<Region> GuteNachbarRegionen(Region r) {
-		new SysMsg(2, "überprüfe Region - " + r + r.getCoords());
+		new SysMsg(2, "überprüfe Region - " + r + r.getCoordinates());
 		
 		List<Region> nachbarn = new ArrayList<Region>();
 		// erstmal alle freien Nachbarn zählen ... dazu muss
@@ -368,7 +368,7 @@ public class NeueSpieler
 		// beim Aussetzen wird das Alter der Region auf 9 gesetzt ... daher
 		// kann hier auf kleiner 1 getestet werden ... die Region ist also
 		// theoretisch eine Runde lang noch nicht betreten worden
-		for (Region n : r.getNachbarn()) {
+		for (Region n : r.getNeighbours()) {
 			// new Debug("Nachbar - " + (Atlantis) n + " (Alter: " + n.getAlter() + ")");
 			new SysMsg(4, "Nachbar - " + (Atlantis) n + " (Alter: " + n.getAlter() + ")");
 			if ((n.getAlter() <= 0) && (n.istBetretbar(null))) nachbarn.add(n);
@@ -382,7 +382,7 @@ public class NeueSpieler
 
 		Region irgendeine = null;
         for (Region maybe : Region.CACHE.values()) {
-            if (maybe.getCoords().getWelt() > 0) { irgendeine = maybe; break; }
+            if (maybe.getCoordinates().getZ() > 0) { irgendeine = maybe; break; }
         }
 		if (irgendeine == null) {
 			new BigError(new NullPointerException("Es gibt noch keine Regionen in der Oberwelt - diesen Status unterstützt die April2011-Methode in dieser Phase nicht."));
@@ -393,7 +393,7 @@ public class NeueSpieler
 			kandidaten.clear();
 
 			// jedesmal wieder die komplette (möglicherweise ja gewachsene) Welt betrachten:
-			ProtoInsel vorhanden = new AltInsel(irgendeine.getCoords().getWelt());
+			ProtoInsel vorhanden = new AltInsel(irgendeine.getCoordinates().getZ());
 			for (StartPosition sp : vorhanden.findeStartPositionen()) {
 				kandidaten.add(Region.Load(sp.getZentrum()));
 			}
@@ -445,7 +445,7 @@ public class NeueSpieler
 			regions = new ArrayList<Region>();
 
 			for (Region r : Region.CACHE.values()) {
-				if (r.getCoords().getWelt() != 1) continue;
+				if (r.getCoordinates().getZ() != 1) continue;
 				
 				if (r instanceof Ozean) continue;
 				if (r.getInselKennung() != insel) continue;

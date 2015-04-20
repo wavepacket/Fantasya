@@ -73,7 +73,7 @@ public class ParteiAngaben extends TestBase {
         }
 
 		// burg wird auch für #18 gebraucht
-		Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+		Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 		{ // BENENNE REGION und GEBAEUDE
 			burg.setSize(2);
 
@@ -86,7 +86,7 @@ public class ParteiAngaben extends TestBase {
         }
 
 		{ // BENENNE SCHIFF
-			Ship s = Ship.Create(Boot.class.getSimpleName(), r.getCoords());
+			Ship s = Ship.Create(Boot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(5);
 			s.setFertig(true);
 
@@ -117,7 +117,7 @@ public class ParteiAngaben extends TestBase {
         }
 
 		{ // BESCHREIBE SCHIFF
-			Ship s = Ship.Create(Boot.class.getSimpleName(), r.getCoords());
+			Ship s = Ship.Create(Boot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(5);
 			s.setFertig(true);
 
@@ -133,7 +133,7 @@ public class ParteiAngaben extends TestBase {
         boolean retval = true;
 		Collection<Unit> units = Unit.CACHE;
         Partei p = null;
-		for (Partei maybe : Partei.PROXY) {
+		for (Partei maybe : Partei.getPlayerFactionList()) {
 			if (maybe.getName().equals("Biester")) {
 				p = maybe;
 				break;
@@ -166,7 +166,7 @@ public class ParteiAngaben extends TestBase {
             if (tokens[1].equals("01")) {
                 if (!p.getEMail().equals("test@foo.bar")) retval = fail(tokens[1] + ": E-Mail nicht korrekt geändert - " + p.getEMail());
                 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     if (msg.getText().toLowerCase().contains("test@foo.bar")) found = true;
@@ -176,7 +176,7 @@ public class ParteiAngaben extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     if (msg.getText().toLowerCase().contains("http://www.foo.bar/02")) found = true;
@@ -188,7 +188,7 @@ public class ParteiAngaben extends TestBase {
             if (tokens[1].equals("03")) {
                 if (!p.getWebsite().equals("http://www.foo.bar/03")) retval = fail(tokens[1] + ": Website nicht korrekt geändert - " + p.getWebsite());
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     if (msg.getText().toLowerCase().contains("http://www.foo.bar/03")) found = true;
@@ -205,7 +205,7 @@ public class ParteiAngaben extends TestBase {
 					retval = fail(tokens[1] + ": Y-Koordinate des Ursprungs stimmt nicht.");
 				}
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     if (msg.getText().toLowerCase().contains("ursprung")) found = true;
@@ -217,7 +217,7 @@ public class ParteiAngaben extends TestBase {
             if (tokens[1].equals("05")) {
                 if (!p.getPassword().equals("asdf")) retval = fail(tokens[1] + ": Passwort nicht korrekt geändert - " + p.getPassword());
 				
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     if (msg.getText().toLowerCase().contains("asdf")) found = true;
@@ -237,7 +237,7 @@ public class ParteiAngaben extends TestBase {
 
             // unit 08
             if (tokens[1].equals("08")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
                 if (!r.getName().equals("Biestingen")) retval = fail(tokens[1] + ": Regions-Name nicht korrekt geändert - " + r.getName());
 
 				Building b = Building.getBuilding(u.getGebaeude());
@@ -271,7 +271,7 @@ public class ParteiAngaben extends TestBase {
 
             // unit 18
             if (tokens[1].equals("18")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
                 if (!r.getBeschreibung().equals("Ja, ja - Biestingen")) retval = fail(tokens[1] + ": Regions-Beschreibung nicht korrekt geändert - " + r.getBeschreibung());
 
 				Building b = Building.getBuilding(u.getGebaeude());

@@ -1,7 +1,6 @@
 package de.x8bit.Fantasya.Host.ManualTests.Mantis.bug100;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -13,6 +12,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Skills.Schiffbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Segeln;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
 
@@ -20,13 +20,13 @@ public class Mantis138 extends TestBase {
 
 	@Override
 	protected void mySetupTest() {
-		Partei partei = Partei.getPartei(1);
+		Partei partei = Partei.getFaction(1);
         Region region = null;
 		Richtung r = Richtung.Suedwesten;
 
         for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-            if (Region.Load(maybe.getCoords().shift(r)) instanceof Ozean) {
-                if (Region.Load(maybe.getCoords().shift(r).shift(r)) instanceof Ozean) {
+            if (Region.Load(maybe.getCoordinates().shiftDirection(r)) instanceof Ozean) {
+                if (Region.Load(maybe.getCoordinates().shiftDirection(r).shiftDirection(r)) instanceof Ozean) {
                     // gotcha!
                     region = maybe;
                 }
@@ -35,12 +35,12 @@ public class Mantis138 extends TestBase {
         if (region == null) throw new IllegalStateException("Keine passende Region für " + this.getClass().getSimpleName() + " gefunden - einfach nochmal probieren...");
         getRegions().remove(region);
 
-        Coords start = region.getCoords();
+        Coordinates start = region.getCoordinates();
 		
-		Building werft = Building.Create("Schiffswerft", region.getCoords());
+		Building werft = Building.Create("Schiffswerft", region.getCoordinates());
 		werft.setSize(500);
 
-		Ship ship = Ship.Create("Tireme", region.getCoords());
+		Ship ship = Ship.Create("Tireme", region.getCoordinates());
 		ship.setGroesse(200);
 		ship.setFertig(true);
 
@@ -58,7 +58,7 @@ public class Mantis138 extends TestBase {
 		werft.setOwner(unit.getNummer());
 		
 		Unit matrosen = this.createUnit(partei, region);
-        Coords ziel = region.getCoords().shift(r).shift(r);
+        Coordinates ziel = region.getCoordinates().shiftDirection(r).shiftDirection(r);
         matrosen.setName(this.getClass().getSimpleName() + " 02 " + ziel.getX() + " " + ziel.getY());
         matrosen.setBeschreibung("Erwartet: Reisen nach " + Region.Load(ziel) + ".");
 		matrosen.Befehle.add("NACH " + r.toString() + " " + r.toString());
@@ -88,7 +88,7 @@ public class Mantis138 extends TestBase {
             if (GameRules.getRunde() == 2) {
                 // unit 01 - muss noch am Ausgangspunkt und in der Werft sein
                 if (tokens[1].equals("01")) {
-                    if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                    if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                         retval = fail(testName + "-Test " + tokens[1] + ": " + u + " ist nicht mehr in der Startregion.");
                     }
 
@@ -100,7 +100,7 @@ public class Mantis138 extends TestBase {
 
                 // unit 02 - muss in ihrer Zielregion sein und Kapitän sein.
                 if (tokens[1].equals("02")) {
-                    if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                    if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                         retval = fail(testName + "-Test " + tokens[1] + ": " + u + " ist nicht in der Zielregion angekommen.");
                     }
 

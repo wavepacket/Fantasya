@@ -43,7 +43,7 @@ public class GibNull extends TestBase {
 			u.setItem(Eisen.class, 1000);
 			u.setItem(Stein.class, 1000);
 			u.setItem(Holz.class, 2000);
-            u.setName(this.getName()+" 01 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 01 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("GIB 0 2000000 Silber");
 			u.Befehle.add("GIB 0 1000 Pferde");
 			u.Befehle.add("GIB 0 1000 Elefanten");
@@ -62,7 +62,7 @@ public class GibNull extends TestBase {
 			}
 			u.Befehle.add("GIB 0 ALLES");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
 		r = this.getTestWorld().nurBetretbar(getRegions()).get(0);
@@ -78,7 +78,7 @@ public class GibNull extends TestBase {
 			u.setItem(Eisen.class, 1000);
 			u.setItem(Stein.class, 1000);
 			u.setItem(Holz.class, 2000);
-            u.setName(this.getName()+" 03 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 03 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("GIB 0 Silber");
 			u.Befehle.add("GIB 0 Pferde");
 			u.Befehle.add("GIB 0 Elefanten");
@@ -145,7 +145,7 @@ public class GibNull extends TestBase {
         for (Unit u:units) {
             // "fremde" Einheiten überspringen.
             if (!u.getName().startsWith(this.getName())) continue;
-			Partei p = Partei.getPartei(u.getOwner());
+			Partei p = Partei.getFaction(u.getOwner());
 
             String[] tokens = u.getName().split("\\ ");
 
@@ -186,7 +186,7 @@ public class GibNull extends TestBase {
 				if (u.getItem(Eisen.class).getAnzahl() > 0) retval = fail(tokens[1] + ": Eisen vorhanden");
 				if (u.getItem(Stein.class).getAnzahl() > 0) retval = fail(tokens[1] + ": Stein vorhanden");
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -241,7 +241,7 @@ public class GibNull extends TestBase {
 				if (u.getItem(Eisen.class).getAnzahl() > 0) retval = fail(tokens[1] + ": Eisen vorhanden");
 				if (u.getItem(Stein.class).getAnzahl() > 0) retval = fail(tokens[1] + ": Stein vorhanden");
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

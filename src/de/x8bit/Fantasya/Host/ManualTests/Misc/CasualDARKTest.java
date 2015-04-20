@@ -64,11 +64,11 @@ public class CasualDARKTest extends TestBase {
 
 			for (Unit maybe : Unit.CACHE) {
 				if (maybe.getRasse().equals("Goblin")) {
-					new TestMsg("Goblin in " + Region.Load(maybe.getCoords()) + " belebt: " + maybe);
+					new TestMsg("Goblin in " + Region.Load(maybe.getCoordinates()) + " belebt: " + maybe);
 					goblinCnt++;
 				}
 				if (maybe.getRasse().equals("Kobold")) {
-					new TestMsg("Kobold in " + Region.Load(maybe.getCoords()) + " belebt: " + maybe);
+					new TestMsg("Kobold in " + Region.Load(maybe.getCoordinates()) + " belebt: " + maybe);
 					koboldCnt++;
 				}
 			}
@@ -81,8 +81,8 @@ public class CasualDARKTest extends TestBase {
 		}
 
 		// Die Krönung: Einen künstlichen Goblin in der Region von 01 erzeugen:
-		Partei dark = Partei.getPartei(Codierung.fromBase36("dark"));
-		Unit goblin = Unit.CreateUnit("Goblin", dark.getNummer(), r.getCoords());
+		Partei dark = Partei.getFaction(Codierung.fromBase36("dark"));
+		Unit goblin = Unit.CreateUnit("Goblin", dark.getNummer(), r.getCoordinates());
 		goblin.setName(getName() + "-Mustergoblin");
 		goblin.Befehle.add("TARNE einheit");
 		goblin.Befehle.add("KAEMPFE nicht");

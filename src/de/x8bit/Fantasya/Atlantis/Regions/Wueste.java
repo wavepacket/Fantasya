@@ -25,7 +25,7 @@ public class Wueste extends Region
 		super.Init();
 		
 		
-		if (this.getCoords().getWelt() > 0) {
+		if (this.getCoordinates().getZ() > 0) {
 			// Wüsten in der Oberwelt:
 			if (getBauern() == 0) setBauern(Random.W(200) - 1);
 			
@@ -56,8 +56,8 @@ public class Wueste extends Region
 	 */
 	@Override
 	public int freieArbeitsplaetze() {
-		if (getCoords() == null) return 0;
-		if (getCoords().getWelt() > 0) {
+		if (getCoordinates() == null) return 0;
+		if (getCoordinates().getZ() > 0) {
 			// Oberwelt:
 			return 500 - super.benutzteArbeitsplaetze();
 		} else {

@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Atlantis.Units;
 
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Ship;
@@ -12,10 +11,12 @@ import de.x8bit.Fantasya.Atlantis.Helper.Monster;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Weapons.MKrakenarm;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.ArrayList;
 
 public class Krake extends Monster {
@@ -56,17 +57,17 @@ public class Krake extends Monster {
 	public void planMonster() {
 		Befehle.clear();	// alten Befehle löschen
 		
-		Coords coords = this.getCoords();
+		Coordinates coords = this.getCoordinates();
 		
 //		new SysMsg(" - Bewegung für Krake " + this);
 		// Kraken schwimmen immer gerade aus - bis sie auf Festland treffen ... dann
 		// wählen sie ein zufällige neue Richtung
 		String direction = getStringProperty("richtung", Richtung.random().getShortcut() );
-		Region destination = Region.Load(coords.shift(Richtung.getRichtung(direction)));
+		Region destination = Region.Load(coords.shiftDirection(Richtung.getRichtung(direction)));
 		int versuche = 0;
 		while(!(destination instanceof Ozean)) {
 			direction = Richtung.random().getShortcut();
-			destination = Region.Load(coords.shift(Richtung.getRichtung(direction)));
+			destination = Region.Load(coords.shiftDirection(Richtung.getRichtung(direction)));
 			if (versuche++ > 20) {
 				new SysMsg(this + " hat keine Richtung auswählen können -> abgebrochen");
 				return;
@@ -77,7 +78,7 @@ public class Krake extends Monster {
 		
 //		new SysMsg(" - Richtung gesetzt");
 		
-		Region region = Region.Load(this.getCoords());
+		Region region = Region.Load(this.getCoordinates());
 		if (!region.getShips().isEmpty()) {
 			int value = Random.rnd(0, GameRules.Monster.DARK.Krake.AttackMax());
 			value = 0;
@@ -120,7 +121,7 @@ public class Krake extends Monster {
 	
 	public static Krake spawn(Region region)
 	{
-		Krake krake = (Krake) Unit.CreateUnit("Krake", Codierung.fromBase36("dark"), region.getCoords());
+		Krake krake = (Krake) Unit.CreateUnit("Krake", Codierung.fromBase36("dark"), region.getCoordinates());
 		krake.setPersonen(Random.rnd(GameRules.Monster.DARK.Krake.PersonMin(), GameRules.Monster.DARK.Krake.PersonsMax()));
 		krake.setTarnPartei(0);
 		krake.setName("Kraken");

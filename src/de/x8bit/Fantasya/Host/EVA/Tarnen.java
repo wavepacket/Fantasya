@@ -79,7 +79,7 @@ public class Tarnen extends EVABase
 	
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -147,7 +147,7 @@ public class Tarnen extends EVABase
                 // COMMAND TARNE VOLK <volk>
                 int nr = 0;
                 try { nr = Codierung.fromBase36(eb.getTargetId()); } catch(Exception ex) { };
-                Partei partei = Partei.getPartei(nr);
+                Partei partei = Partei.getFaction(nr);
                 if (partei != null) {
                     u.setTarnPartei(nr);
                     new Info(u + " tarnt sich als Angehöriger von '" + partei + "'.", u);

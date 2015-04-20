@@ -42,7 +42,7 @@ public class Verlasse extends EVABase
 
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -52,7 +52,7 @@ public class Verlasse extends EVABase
 			// testen wovon wir die Befehlsgewalt für irgendwas haben
 			if (u.getSchiff() == 0 && u.getGebaeude() == 0) {
 				eb.setError();
-				new Fehler(u + " - wir sind weder auf einem Schiff noch in einem Gebäude!", u, u.getCoords());
+				new Fehler(u + " - wir sind weder auf einem Schiff noch in einem Gebäude!", u, u.getCoordinates());
 				continue;
 			}
 

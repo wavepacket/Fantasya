@@ -1,9 +1,10 @@
 package de.x8bit.Fantasya.Host.Terraforming;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
+
 import java.util.Map;
 
 /**
@@ -23,11 +24,11 @@ public class AltInsel extends ProtoInsel {
 
 		boolean hatUrsprung = false;
 		for (Region r : Region.CACHE.values()) {
-			Coords c = r.getCoords();
-			if (c.getWelt() == welt) {
+			Coordinates c = r.getCoordinates();
+			if (c.getZ() == welt) {
 				try {
 					Region copy = r.getClass().newInstance();
-					copy.setCoords(c);
+					copy.setCoordinates(c);
 					copy.setName(r.getName());
 					copy.setAlter(r.getAlter());
 					copy.setInselKennung(r.getInselKennung());

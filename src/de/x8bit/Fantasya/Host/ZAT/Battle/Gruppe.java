@@ -27,7 +27,7 @@ public class Gruppe implements Comparable {
         this.tarnParteiNr = tarnParteiNr;
     }
 
-    public int getParteiNr() {
+    public int getFactionNr() {
         return parteiNr;
     }
 
@@ -123,7 +123,7 @@ public class Gruppe implements Comparable {
             return false;
         }
         Gruppe other = (Gruppe) obj;
-        if (this.getParteiNr() == other.getParteiNr() && (this.getTarnParteiNr() == other.getTarnParteiNr())) {
+        if (this.getFactionNr() == other.getFactionNr() && (this.getTarnParteiNr() == other.getTarnParteiNr())) {
             return true;
         }
         return super.equals(obj);
@@ -146,10 +146,10 @@ public class Gruppe implements Comparable {
             throw new IllegalStateException("Kann eine Gruppe nicht mit " + o.getClass().getCanonicalName() + " vergleichen.");
         }
         Gruppe g2 = (Gruppe) o;
-        if (this.getParteiNr() < g2.getParteiNr()) {
+        if (this.getFactionNr() < g2.getFactionNr()) {
             return -1;
         }
-        if (this.getParteiNr() > g2.getParteiNr()) {
+        if (this.getFactionNr() > g2.getFactionNr()) {
             return +1;
         }
         if (this.getTarnParteiNr() < g2.getTarnParteiNr()) {
@@ -166,13 +166,13 @@ public class Gruppe implements Comparable {
 
     public String beschreibeFuerPartei(Partei p) {
         if (istAuthentisch()) {
-            return Partei.getPartei(getParteiNr()).toString();
+            return Partei.getFaction(getFactionNr()).toString();
         } else {
             if (p.getNummer() == 0) {
-                return "Gruppe von (" + Partei.getPartei(parteiNr) + " getarnt als) " + Partei.getPartei(tarnParteiNr);
+                return "Gruppe von (" + Partei.getFaction(parteiNr) + " getarnt als) " + Partei.getFaction(tarnParteiNr);
             }
             if (getTarnParteiNr() == 0) {
-                if (this.getParteiNr() == p.getNummer()) {
+                if (this.getFactionNr() == p.getNummer()) {
                     String desc = "eine Gruppe von uns, die ihre Herkunft verschweigt";
                     if (getUnits().size() == 1) {
                         desc = getHauptUnit() + " (verheimlicht, zu uns zu gehören)";
@@ -189,10 +189,10 @@ public class Gruppe implements Comparable {
                 }
                 return desc;
             } else {
-                if (this.getParteiNr() == p.getNummer()) {
-                    String desc = "eine Gruppe von uns, die sich als Angeh\u00f6rige von " + Partei.getPartei(this.getTarnParteiNr()) + " ausgibt";
+                if (this.getFactionNr() == p.getNummer()) {
+                    String desc = "eine Gruppe von uns, die sich als Angeh\u00f6rige von " + Partei.getFaction(this.getTarnParteiNr()) + " ausgibt";
                     if (getUnits().size() == 1) {
-                        desc = getHauptUnit() + " (geben sich als Angehörige von " + Partei.getPartei(this.getTarnParteiNr()) + " aus)";
+                        desc = getHauptUnit() + " (geben sich als Angehörige von " + Partei.getFaction(this.getTarnParteiNr()) + " aus)";
                     } else {
                         desc += " (um " + getHauptUnit() + ")";
                     }
@@ -208,13 +208,13 @@ public class Gruppe implements Comparable {
                     return desc;
                 }
                 // TODO: Allianzen berücksichtigen - wenn sie sich als Alliierte ausgeben, es aber nicht sind --> melden.
-                return Partei.getPartei(tarnParteiNr).toString();
+                return Partei.getFaction(tarnParteiNr).toString();
             }
         }
     }
 
     public String microDesc() {
-        return "[" + Codierung.toBase36(getParteiNr()) + "][" + Codierung.toBase36(getTarnParteiNr()) + "]";
+        return "[" + Codierung.toBase36(getFactionNr()) + "][" + Codierung.toBase36(getTarnParteiNr()) + "]";
     }
 
     public String shortDesc() {
@@ -238,7 +238,7 @@ public class Gruppe implements Comparable {
      * @return true, wenn Partei und Tarnpartei übereinstimmen
      */
     public boolean istAuthentisch() {
-        return getParteiNr() == getTarnParteiNr();
+        return getFactionNr() == getTarnParteiNr();
     }
     
 }

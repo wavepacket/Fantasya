@@ -15,15 +15,15 @@ public class Mantis206 extends TestBase {
 	protected void mySetupTest() {
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 
-		Unit unit = this.createUnit(Partei.getPartei(1), region);
+		Unit unit = this.createUnit(Partei.getFaction(1), region);
 		unit.setItem(Schwert.class, 20);
 		unit.setPersonen(20);
 		
-		Building building = Building.Create("Burg", region.getCoords());
+		Building building = Building.Create("Burg", region.getCoordinates());
 		building.setSize(20);
 		unit.setGebaeude(building.getNummer());
 		
-		unit = this.createUnit(Partei.getPartei(Codierung.fromBase36("dark")), region);
+		unit = this.createUnit(Partei.getFaction(Codierung.fromBase36("dark")), region);
 		unit.setPersonen(10);
 		unit.setItem(Eisen.class, 5);
 	}

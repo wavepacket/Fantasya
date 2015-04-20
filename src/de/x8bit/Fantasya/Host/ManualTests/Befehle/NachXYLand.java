@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -11,6 +10,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Reiten;
 import de.x8bit.Fantasya.Atlantis.Units.Mensch;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
@@ -34,11 +34,11 @@ public class NachXYLand extends TestBase {
         Region r = null; Region o = null; Region no = null; Region oo = null; Region noo = null; Region r_2_1 = null;
 
 		for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-			o = Region.Load(maybe.getCoords().shift(Richtung.Osten));
-			no = Region.Load(maybe.getCoords().shift(Richtung.Nordosten));
-			oo = Region.Load(o.getCoords().shift(Richtung.Osten));
-			noo = Region.Load(no.getCoords().shift(Richtung.Osten));
-			r_2_1 = Region.Load(noo.getCoords().shift(Richtung.Osten));
+			o = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
+			no = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Nordosten));
+			oo = Region.Load(o.getCoordinates().shiftDirection(Richtung.Osten));
+			noo = Region.Load(no.getCoordinates().shiftDirection(Richtung.Osten));
+			r_2_1 = Region.Load(noo.getCoordinates().shiftDirection(Richtung.Osten));
 
 			if (!o.istBetretbar(null)) continue;
 			if (!oo.istBetretbar(null)) continue;
@@ -55,11 +55,11 @@ public class NachXYLand extends TestBase {
 		getRegions().remove(r_2_1);
 
 		r.setName(getName()+"-Startregion");
-		Coords c = r.getCoords();
+		Coordinates c = r.getCoordinates();
 
         { // ANFANG NACH
             Unit u = this.createUnit(p, r);
-            u.setName(this.getName() + " 01 " + noo.getCoords().getX() + " " + noo.getCoords().getY());
+            u.setName(this.getName() + " 01 " + noo.getCoordinates().getX() + " " + noo.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.setItem(Pegasus.class, u.getPersonen());
 			u.setSkill(Reiten.class, u.getPersonen() * 1650);
@@ -72,13 +72,13 @@ public class NachXYLand extends TestBase {
 
             u = this.createUnit(p, r);
             String befehl = "NACH (1 1)";
-			u.setName(this.getName() + " 03 " + o.getCoords().getX() + " " + o.getCoords().getY());
+			u.setName(this.getName() + " 03 " + o.getCoordinates().getX() + " " + o.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.Befehle.add(befehl);
 			u.setBeschreibung("Befehl war: " + befehl);
 
             u = this.createUnit(p, r);
-            u.setName(this.getName() + " 04 " + r_2_1.getCoords().getX() + " " + r_2_1.getCoords().getY());
+            u.setName(this.getName() + " 04 " + r_2_1.getCoordinates().getX() + " " + r_2_1.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.setItem(Pegasus.class, u.getPersonen());
 			u.setSkill(Reiten.class, u.getPersonen() * 1650);
@@ -86,7 +86,7 @@ public class NachXYLand extends TestBase {
 			u.setBeschreibung("Befehl war: " + u.Befehle.get(u.Befehle.size() - 1));
 
             u = this.createUnit(p, r);
-            u.setName(this.getName() + " 05 " + r_2_1.getCoords().getX() + " " + r_2_1.getCoords().getY());
+            u.setName(this.getName() + " 05 " + r_2_1.getCoordinates().getX() + " " + r_2_1.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.setItem(Pegasus.class, u.getPersonen());
 			u.setSkill(Reiten.class, u.getPersonen() * 1650);
@@ -94,7 +94,7 @@ public class NachXYLand extends TestBase {
 			u.setBeschreibung("Befehl war: " + u.Befehle.get(u.Befehle.size() - 1));
 
             u = this.createUnit(p, r);
-            u.setName(this.getName() + " 06 " + oo.getCoords().getX() + " " + oo.getCoords().getY());
+            u.setName(this.getName() + " 06 " + oo.getCoordinates().getX() + " " + oo.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.setItem(Pegasus.class, u.getPersonen());
 			u.setSkill(Reiten.class, u.getPersonen() * 1650);
@@ -102,12 +102,12 @@ public class NachXYLand extends TestBase {
 			u.setBeschreibung("Befehl war: " + u.Befehle.get(u.Befehle.size() - 1));
 
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         } // Ende NACH
 
         { // Anfang ROUTE
             Unit u = this.createUnit(p, r);
-            u.setName(this.getName() + " 11 " + o.getCoords().getX() + " " + o.getCoords().getY());
+            u.setName(this.getName() + " 11 " + o.getCoordinates().getX() + " " + o.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.setItem(Pegasus.class, u.getPersonen());
 			u.setSkill(Reiten.class, u.getPersonen() * 1650);
@@ -115,7 +115,7 @@ public class NachXYLand extends TestBase {
 			u.setBeschreibung("Befehl war: " + u.Befehle.get(u.Befehle.size() - 1));
 
             u = this.createUnit(p, r);
-            u.setName(this.getName() + " 12 " + o.getCoords().getX() + " " + o.getCoords().getY());
+            u.setName(this.getName() + " 12 " + o.getCoordinates().getX() + " " + o.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.setItem(Pegasus.class, u.getPersonen());
 			u.setSkill(Reiten.class, u.getPersonen() * 1650);
@@ -154,12 +154,12 @@ public class NachXYLand extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
             }
 
             // unit 03
             if (tokens[1].equals("03")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equals("NACH (1 1)")) found = true;
@@ -169,15 +169,15 @@ public class NachXYLand extends TestBase {
 
             // unit 04 - Pegasus nach (2, 1)
             if (tokens[1].equals("04")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
             }
             // unit 05 - Pegasus nach (2, 1) aber über (2, 0)
             if (tokens[1].equals("05")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
             }
             // unit 06 - Pegasus nach (2, 1) aber über (2, 0) PAUSE !!!
             if (tokens[1].equals("06")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equals("NACH (2 1)")) found = true;
@@ -191,11 +191,11 @@ public class NachXYLand extends TestBase {
 
             // unit 11 - bedauernswerter Pegasus auf der Route (1 0) <-> (0 0)
             if (tokens[1].equals("11")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
             }
             // unit 12
             if (tokens[1].equals("12")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equalsIgnoreCase("ROUTE (0 0) PAUSE (1 0) PAUSE")) found = true;

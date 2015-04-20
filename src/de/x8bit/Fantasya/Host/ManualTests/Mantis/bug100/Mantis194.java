@@ -39,7 +39,7 @@ public class Mantis194 extends TestBase {
 		elf2.setSkill(Tarnung.class, 30);
 		elf2.setBeschreibung("Erwartet: T2 in Wahrnehmung und Tarnung.");
 
-		new Info("Mantis #194 Setup (Elfen) in " + wald + " " + wald.getCoords() + " und " + ebene + " " + ebene.getCoords() +  ".", elfen);
+		new Info("Mantis #194 Setup (Elfen) in " + wald + " " + wald.getCoordinates() + " und " + ebene + " " + ebene.getCoordinates() +  ".", elfen);
 
 
 		Partei zwerge = this.getTestWorld().createPartei(Zwerg.class);

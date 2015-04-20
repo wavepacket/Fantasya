@@ -40,7 +40,7 @@ public class TestInselBenennen extends TestBase {
             u.Befehle.add("BENENNE INSEL Kruximuxl");
             u.Befehle.add("BESCHREIBE INSEL Hier ist die Heimat des berühmten Volkes der ... äh, ...., ja also - ach ich weiß doch auch nicht!");
             
-            Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
             b.setName(this.getName()+"-Burg");
             b.setSize(50);
             
@@ -87,7 +87,7 @@ public class TestInselBenennen extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

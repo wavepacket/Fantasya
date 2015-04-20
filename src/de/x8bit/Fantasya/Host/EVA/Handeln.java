@@ -125,7 +125,7 @@ public class Handeln extends EVABase
 		// wird bei Expand$$$ benötigt
 		region = r;
 
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), region.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), region.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -273,7 +273,7 @@ public class Handeln extends EVABase
 		Item item = getWants(unit, luxury, liste);
 		if (item == null) {
 			eb.setError();
-			new Fehler(unit + " - Handelsgut '" + luxury.getSimpleName() + "' nicht erkannt.", unit, unit.getCoords());
+			new Fehler(unit + " - Handelsgut '" + luxury.getSimpleName() + "' nicht erkannt.", unit, unit.getCoordinates());
 			return;
 		}
 

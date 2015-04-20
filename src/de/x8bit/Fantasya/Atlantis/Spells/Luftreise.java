@@ -1,7 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Spells;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Spell;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -10,6 +9,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Regions.Chaos;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 
 
@@ -56,9 +56,9 @@ public class Luftreise extends Spell {
 		try { destinationX = Integer.parseInt(param[2]); } catch(Exception ex) { new Fehler("Die Zielregion konnte nicht gefunden werden.", mage); return 0; }
 		try { destinationY = Integer.parseInt(param[3]); } catch(Exception ex) { new Fehler("Die Zielregion konnte nicht gefunden werden.", mage); return 0; }
 
-        Partei p = Partei.getPartei(mage.getOwner());
-		Coords here = mage.getCoords();
-		Region r = Region.Load(here.getX() + destinationX, here.getY() + destinationY, here.getWelt());
+        Partei p = Partei.getFaction(mage.getOwner());
+		Coordinates here = mage.getCoordinates();
+		Region r = Region.Load(here.getX() + destinationX, here.getY() + destinationY, here.getZ());
 		if (r instanceof Chaos) {
 			new Fehler(mage + " vermutet, dass dort " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN + " ist und will nicht zaubern.", mage);
 			return 0;
@@ -69,7 +69,7 @@ public class Luftreise extends Spell {
 		}
 		
 		// Entfernung und damit die Stufe berechnen
-		int moves = here.getDistance(r.getCoords());
+		int moves = here.getDistance(r.getCoordinates());
 
 		// mögliche Aura überprüfen
 		int stufe = moves / 3 + 1;	// Wunschstufe zum Zaubern
@@ -84,7 +84,7 @@ public class Luftreise extends Spell {
 		Region current = Region.Load(here);
 
 		Unit.CACHE.remove(mage);
-		mage.setCoords(r.getCoords());
+		mage.setCoordinates(r.getCoordinates());
 		Unit.CACHE.add(mage);
 
 		// ggf. Gebäude & Schiff verlassen

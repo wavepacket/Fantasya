@@ -1,11 +1,11 @@
 package de.x8bit.Fantasya.Host.ManualTests;
 
 import de.x8bit.Fantasya.Atlantis.Skills.Magie;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Ship;
@@ -27,6 +27,8 @@ import de.x8bit.Fantasya.Atlantis.Skills.Schiffbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Segeln;
 import de.x8bit.Fantasya.Atlantis.Skills.Waffenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Wagenbau;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+
 import java.util.Collection;
 
 /**
@@ -77,7 +79,7 @@ public abstract class TestBase {
      * @param c Die tatsächlichen Koordinaten
      * @return true, falls die Erwartungen und die Realität übereinstimmen - sonst false
      */
-    protected boolean verifyUnitCoords(String[] tokens, Coords c) {
+    protected boolean verifyUnitCoordinates(String[] tokens, Coordinates c) {
         int x = Integer.parseInt(tokens[2]);
         int y = Integer.parseInt(tokens[3]);
         if ( (x != c.getX()) || (y != c.getY()) ) {
@@ -131,7 +133,7 @@ public abstract class TestBase {
 	}
 
 	public Unit createUnit(Partei p, Region r, String rasse) {
-		Unit u = Unit.CreateUnit(rasse, p.getNummer(), r.getCoords());
+		Unit u = Unit.CreateUnit(rasse, p.getNummer(), r.getCoordinates());
 		u.setPersonen(1);
 		u.setItem(Silber.class, 1000);
 		return u;
@@ -145,7 +147,7 @@ public abstract class TestBase {
 	 * @return der neue Kapitän
 	 */
 	public Unit createKapitaen(Partei p, Region r, String schiffstyp) {
-		Ship schiff = Ship.Create(schiffstyp, r.getCoords());
+		Ship schiff = Ship.Create(schiffstyp, r.getCoordinates());
 		schiff.setGroesse(schiff.getConstructionSize());
 		schiff.setFertig(true);
 
@@ -171,10 +173,10 @@ public abstract class TestBase {
 		Building b = null;
 		if (inBuilding) {
 			// zuerst brauchen wir eine große Burg:
-			Building burg = Building.Create(new Burg().getName(), r.getCoords());
+			Building burg = Building.Create(new Burg().getName(), r.getCoordinates());
 			burg.setSize(500);
 
-			b = Building.Create(bType, r.getCoords());
+			b = Building.Create(bType, r.getCoordinates());
 			b.setSize(10);
 		}
 

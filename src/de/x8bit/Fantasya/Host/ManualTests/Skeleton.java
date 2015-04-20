@@ -66,7 +66,7 @@ public class Skeleton extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

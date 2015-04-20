@@ -1,10 +1,10 @@
 package de.x8bit.Fantasya.Atlantis.Spells;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.Elementar;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.Magie;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Spell;
@@ -37,7 +37,7 @@ public class Fernsicht extends Spell {
 	public String getCRSyntax() { return "r"; }
 
 	public int ExecuteSpell(Unit mage, String[] param) {
-		Coords globalTarget = null;
+		Coordinates globalTarget = null;
 
 		try {
 			param[2] = param[2].replaceAll("\\+", "");
@@ -46,11 +46,11 @@ public class Fernsicht extends Spell {
 			int privateX = Integer.parseInt(param[2]);
 			int privateY = Integer.parseInt(param[3]);
 			
-			Coords privateTarget = new Coords(privateX, privateY, mage.getCoords().getWelt());
+			Coordinates privateTarget = Coordinates.create(privateX, privateY, mage.getCoordinates().getZ());
 
-			Partei p = Partei.getPartei(mage.getOwner());
+			Partei p = Partei.getFaction(mage.getOwner());
 
-			globalTarget = p.getGlobalCoords(privateTarget);
+			globalTarget = p.getGlobalCoordinates(privateTarget);
 		} catch(Exception ex) {
 			new Fehler("Was genau soll ich televisionieren? (" + param[2] + " " + param[3] + "?)", mage);
 			return 0;
@@ -61,7 +61,7 @@ public class Fernsicht extends Spell {
 			return 0;
 		}
 
-		int distance = globalTarget.getDistance(mage.getCoords());
+		int distance = globalTarget.getDistance(mage.getCoordinates());
 		int stufe = (distance - 1) / 3 + 1; // d.h. von 0-3 Stufe 1, von 4-6 Stufe 2 usw.
 		if (stufe <= 0) stufe = 1;
 
@@ -74,15 +74,15 @@ public class Fernsicht extends Spell {
 		}
 
 		// do it!
-		Partei p = Partei.getPartei(mage.getOwner());
+		Partei p = Partei.getFaction(mage.getOwner());
 		p.addKnownRegion(globalTarget, true, Fernsicht.class);
 		Region ziel = Region.Load(globalTarget);
-		for (Region nachbar: ziel.getNachbarn()) {
+		for (Region nachbar: ziel.getNeighbours()) {
 			p.addKnownRegion(nachbar, false, Fernsicht.class);
 		}
 
 		String zielText = ziel.toString();
-		if (!ziel.istBetretbar(null)) zielText += " " + p.getPrivateCoords(ziel.getCoords()).xy();
+		if (!ziel.istBetretbar(null)) zielText += " " + p.getPrivateCoordinates(ziel.getCoordinates()).toString(false);
 
 		new Magie(mage + " lässt seinen Blick " + distance + " Regionen weit (" + stufe + ". Stufe) in die Ferne schweifen und erkennt " + zielText + ".", mage);
 

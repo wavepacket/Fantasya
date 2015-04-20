@@ -9,13 +9,15 @@ import de.x8bit.Fantasya.Atlantis.Ship;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.basic.*;
 import de.x8bit.Fantasya.Host.serialization.complex.*;
-import de.x8bit.Fantasya.Host.serialization.postprocess.LegacyParteiZeroProcessor;
 import de.x8bit.Fantasya.Host.serialization.postprocess.PostProcessor;
 import de.x8bit.Fantasya.Host.EVA.util.NeuerSpieler;
 import de.x8bit.Fantasya.Host.serialization.postprocess.RegionInitHandelProcessor;
 import de.x8bit.Fantasya.Host.serialization.postprocess.UnitIDPoolProcessor;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SerializerFactory {
@@ -27,16 +29,16 @@ public class SerializerFactory {
 		// Load Parteien and their data first.
 		handlerMap.put("partei", new CacheFillerHandler<Partei>(
 				new ParteiSerializer(),
-				Partei.PROXY));
+				Partei.PLAYER_FACTION_LIST));
 		handlerMap.put("allianzen", new CacheLooperHandler<Partei>(
-				new AllianzSerializer(Partei.PROXY),
-				Partei.PROXY));
+				new AllianzSerializer(Partei.PLAYER_FACTION_LIST),
+				Partei.PLAYER_FACTION_LIST));
 		handlerMap.put("steuern", new CacheLooperHandler<Partei>(
-				new SteuerSerializer(Partei.PROXY),
-				Partei.PROXY));
+				new SteuerSerializer(Partei.PLAYER_FACTION_LIST),
+				Partei.PLAYER_FACTION_LIST));
 		handlerMap.put("property_parteien", new CacheLooperHandler<Partei>(
-				new ParteienPropertySerializer(Partei.PROXY),
-				Partei.PROXY));
+				new ParteienPropertySerializer(Partei.PLAYER_FACTION_LIST),
+				Partei.PLAYER_FACTION_LIST));
 		
 		// Load regions and their associated data
 		handlerMap.put("regionen", new MapCacheHandler<Region>(
@@ -55,6 +57,12 @@ public class SerializerFactory {
 				new PropertySerializer<Region>(Region.CACHE.values()),
 				Region.CACHE.values()));
 		
+		// load historic regions
+		handlerMap.put("HistoricRegions", new CacheLooperHandler<Partei>(
+				new HistoricRegionSerializer(), Partei.PLAYER_FACTION_LIST));
+		handlerMap.put("HistoricRegionRoads", new CacheLooperHandler<Partei>(
+				new HistoricRegionRoadSerializer(), Partei.PLAYER_FACTION_LIST));
+		
 		// Load buildings and ships
 		handlerMap.put("gebaeude", new CacheFillerHandler<Building>(
 				new BuildingSerializer(Region.CACHE.keySet(), Unit.CACHE),
@@ -68,7 +76,7 @@ public class SerializerFactory {
 		
 		// load units and their various attributes
 		handlerMap.put("einheiten", new CacheFillerHandler<Unit>(
-				new EinheitenSerializer(Partei.PROXY, Region.CACHE.keySet()),
+				new EinheitenSerializer(Region.CACHE.keySet()),
 				Unit.CACHE));
 		handlerMap.put("items", new CacheLooperHandler<Unit>(
 				new ItemSerializer(Unit.CACHE),
@@ -99,7 +107,7 @@ public class SerializerFactory {
 //				new BefehleSerializer(Unit.CACHE),
 //				Unit.CACHE));
 		handlerMap.put("meldungen", new CacheFillerHandler<Message>(
-				new MessageSerializer(Partei.PROXY, Region.CACHE.keySet(), Unit.CACHE),
+				new MessageSerializer(Region.CACHE.keySet(), Unit.CACHE),
 				Message.Cache()));
 		handlerMap.put("neuespieler", new CacheFillerHandler<NeuerSpieler>(
 				new NeuerSpielerSerializer(),
@@ -109,9 +117,10 @@ public class SerializerFactory {
 		// additional post-processors
 		Map<String,PostProcessor> processorMap = new HashMap<String,PostProcessor>();
 
+		// Partei 0 wird statisch erstellt
 		// For (the current) legacy code: make sure that a party with id zero exists,
 		// even if not defined in the table.
-		processorMap.put("partei", new LegacyParteiZeroProcessor(Partei.PROXY));
+		//processorMap.put("partei", new LegacyParteiZeroProcessor(Partei.PROXY));
 		// not sure if it is needed: initialise the luxus goods in all regions.
 		processorMap.put("regionen", new RegionInitHandelProcessor(Region.CACHE));
 		// clean the cache of free unit id's

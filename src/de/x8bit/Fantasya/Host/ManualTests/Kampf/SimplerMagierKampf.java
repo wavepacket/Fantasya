@@ -48,7 +48,7 @@ public class SimplerMagierKampf extends TestBase {
             ub.setPersonen(3);
             ub.setSkill(Hiebwaffen.class, 300 * ub.getPersonen());
             ub.setItem(Schwert.class, ub.getPersonen() - 1);
-            b.setUrsprung(r.getCoords());
+            b.setUrsprung(r.getCoordinates());
 
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
             

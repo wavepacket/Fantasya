@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -16,6 +15,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Hiebwaffen;
 import de.x8bit.Fantasya.Atlantis.Skills.Speerkampf;
 import de.x8bit.Fantasya.Atlantis.Units.Troll;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
 
@@ -33,7 +33,7 @@ public class BasisKampf extends TestBase {
         Partei p = this.getTestWorld().getSpieler1();
 		Partei p2 = this.getTestWorld().createPartei(Troll.class);
 		p2.setName(this.getName() + "-Trolle");
-		p2.setUrsprung(r.getCoords());
+		p2.setUrsprung(r.getCoordinates());
 
 
         {
@@ -62,7 +62,7 @@ public class BasisKampf extends TestBase {
 
 			gegner.Befehle.add("LERNE Hiebwaffen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         r = this.getTestWorld().nurBetretbar(getRegions()).get(0);
@@ -105,7 +105,7 @@ public class BasisKampf extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, (Coords)null, null);
+                messages = Message.Retrieve(p, (Coordinates)null, null);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

@@ -508,7 +508,7 @@ public class Main
 		new ZATMsg("erstelle Reporte");
 		GameRules.setRunde(GameRules.getRunde() - 1); // Report von der vorigen Runde erzeugen
         new de.x8bit.Fantasya.Host.EVA.Reporte();
-		new ReportXML(new Partei());	// "world.xml" erzeugen
+		new ReportXML(Partei.OMNI_FACTION);	// "world.xml" erzeugen
 
 		new SysMsg("SYSTEM Quit - Reporte neu geschrieben");
 	}
@@ -555,7 +555,7 @@ public class Main
 		} catch(Exception ex) { new BigError(ex); }
 		
 		new SysMsg("erzeuge XML-Map");
-		new ReportXML(new Partei());
+		new ReportXML(Partei.OMNI_FACTION);
 		
 		new SysMsg("SYSTEM Quit - CR-Map -> 'world.cr'");
 	}

@@ -32,7 +32,7 @@ public class Kamel extends Item implements AnimalResource {
 //	/** das Kamel von der Gegend abziehen */
 //	protected void Make(Unit u, int anzahl)
 //	{
-//		Region region = Region.Load(u.getCoords()); 
+//		Region region = Region.Load(u.getCoordinates()); 
 //		Item resource = region.getResource(this.getClass());
 //		
 //		// Sicherheitscheck
@@ -49,7 +49,7 @@ public class Kamel extends Item implements AnimalResource {
 	public void actionWachstum(Region r)
 	{
 		// kein Wachstum in der Unterwelt:
-		if (r.getCoords().getWelt() < 1) return;
+		if (r.getCoordinates().getZ() < 1) return;
 		
 		int rnd = Random.rnd(0, 2);
 		int jz[] = new int[] { rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd };
@@ -71,7 +71,7 @@ public class Kamel extends Item implements AnimalResource {
 		
 		if (r.freieArbeitsplaetze() < neu) return;	// nue wachsen wenn noch freie Abreitsplätze da sind
 		
-		// new Debug(this + " - " + anzahl + " Kamele - neu: " + neu, getCoords());
+		// new Debug(this + " - " + anzahl + " Kamele - neu: " + neu, getCoordinates());
 		anzahl += neu;
 		
 		if (anzahl < 0) anzahl = 0;

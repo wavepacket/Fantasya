@@ -91,7 +91,7 @@ public class Elf extends Unit // SKILL
 		// und jetzt noch spezifisch nach Terrain -
 		// Elfen bekommen +1 auf Wahrnenmung und Tarnung in Wäldern
 		if (skill.getClass().equals(Wahrnehmung.class) || skill.getClass().equals(Tarnung.class)) {
-			Region r = Region.Load(this.getCoords());
+			Region r = Region.Load(this.getCoordinates());
 			if (r.getTyp().equals(Wald.class.getSimpleName())) tw +=  1;
 		}
 

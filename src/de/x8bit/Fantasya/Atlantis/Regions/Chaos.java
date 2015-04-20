@@ -1,12 +1,11 @@
 package de.x8bit.Fantasya.Atlantis.Regions;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Unit;
 
 import java.awt.image.BufferedImage;
 
-
 import de.x8bit.Fantasya.Atlantis.Region;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 
 public class Chaos extends Region
 {
@@ -18,7 +17,7 @@ public class Chaos extends Region
 	public Chaos(int x, int y, int welt)
 	{
 		this();
-        this.setCoords(new Coords(x, y, welt));
+        this.setCoordinates(Coordinates.create(x, y, welt));
 	}
 	
 	@Override

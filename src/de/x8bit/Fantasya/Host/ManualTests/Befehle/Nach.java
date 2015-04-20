@@ -34,9 +34,9 @@ public class Nach extends TestBase {
         Region r2 = null;
 
         for (Region maybe : tw.nurBetretbar(getRegions())) {
-            r1 = Region.Load(maybe.getCoords().shift(Richtung.Osten));
+            r1 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
             if (!r1.istBetretbar(null)) continue;
-            r2 = Region.Load(r1.getCoords().shift(Richtung.Osten));
+            r2 = Region.Load(r1.getCoordinates().shiftDirection(Richtung.Osten));
             if (!r2.istBetretbar(null)) continue;
 
             // gotcha!
@@ -49,21 +49,21 @@ public class Nach extends TestBase {
         getRegions().remove(r2);
 
         Unit u = this.createUnit(p, r);
-        u.setName(this.getName() + " 01 " + r1.getCoords().getX() + " " + r1.getCoords().getY() + " Wanderer 1");
+        u.setName(this.getName() + " 01 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY() + " Wanderer 1");
         String befehl = "NACH o o";
         u.setItem(Silber.class, 500);
         u.Befehle.add(befehl);
 		u.setBeschreibung("Befehl war: " + befehl);
 
         u = this.createUnit(p, r1);
-        u.setName(this.getName() + " 02 " + r2.getCoords().getX() + " " + r2.getCoords().getY() + " Wanderer 2");
+        u.setName(this.getName() + " 02 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY() + " Wanderer 2");
         befehl = "NACH o";
         u.setItem(Silber.class, 500);
         u.Befehle.add(befehl);
 		u.setBeschreibung("Befehl war: " + befehl);
 
         u = this.createUnit(p, r1);
-        u.setName(this.getName() + " 03 " + r.getCoords().getX() + " " + r.getCoords().getY() + " Reiter 1");
+        u.setName(this.getName() + " 03 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY() + " Reiter 1");
         befehl = "NACH w PAUSE o PAUSE";
         u.setItem(Silber.class, 500);
         u.setItem(Pferd.class, 1);
@@ -72,7 +72,7 @@ public class Nach extends TestBase {
 		u.setBeschreibung("Befehl war: " + befehl);
 
         u = this.createUnit(p, r);
-        u.setName(this.getName() + " 04 " + r2.getCoords().getX() + " " + r2.getCoords().getY() + " Reiter 2");
+        u.setName(this.getName() + " 04 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY() + " Reiter 2");
         befehl = "NACH o o w w";
         u.setItem(Silber.class, 500);
         u.setItem(Pferd.class, 1);
@@ -107,14 +107,14 @@ public class Nach extends TestBase {
 
             String[] tokens = u.getName().split("\\ ");
 
-            boolean verifyCoords = false;
-            if (tokens[1].equals("01")) verifyCoords = true;
-            if (tokens[1].equals("02")) verifyCoords = true;
-            if (tokens[1].equals("03")) verifyCoords = true;
-            if (tokens[1].equals("04")) verifyCoords = true;
+            boolean verifyCoordinates = false;
+            if (tokens[1].equals("01")) verifyCoordinates = true;
+            if (tokens[1].equals("02")) verifyCoordinates = true;
+            if (tokens[1].equals("03")) verifyCoordinates = true;
+            if (tokens[1].equals("04")) verifyCoordinates = true;
 
-            if (verifyCoords) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+            if (verifyCoordinates) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = this.fail(tokens[1] + ": Ist nicht in der erwarteten Region.");
                 }
             }

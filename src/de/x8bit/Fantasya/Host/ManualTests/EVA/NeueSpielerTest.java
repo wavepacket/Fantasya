@@ -19,12 +19,14 @@ public class NeueSpielerTest extends TestBase {
 		GameRules.SetOption(GameRules.NEUE_INSEL_METHODE, "April2011");
 		GameRules.Save();
 
-		Partei zero = Partei.Create();
+		// Partei p0 = Partei.OMNI_FACTION;
+		/*
+		Partei zero = Partei.CreateNewPlayerFaction();
 		Partei.PROXY.remove(zero);
 		zero.setNummer(0);
 		zero.setMonster(1);
 		Partei.PROXY.add(zero);
-		
+		*/
         {
             for (int i=1; i<=200; i++) {
 				NeuerSpieler n = new NeuerSpieler();

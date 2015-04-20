@@ -60,11 +60,11 @@ public class TestSteuertuerme extends TestBase {
 			Partei p2 = this.getTestWorld().createPartei(Mensch.class);
 			p2.setName(this.getName() + "-Finanzbeamte");
 
-			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setSize(50);
 			burg.setName(this.getName() + "-Burg");
 
-			Building turm = Building.Create(Steuerturm.class.getSimpleName(), r.getCoords());
+			Building turm = Building.Create(Steuerturm.class.getSimpleName(), r.getCoordinates());
 			turm.setSize(20);
 			turm.setName(this.getName() + "-Finanzamt");
 
@@ -96,7 +96,7 @@ public class TestSteuertuerme extends TestBase {
 
 
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -131,7 +131,7 @@ public class TestSteuertuerme extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -144,7 +144,7 @@ public class TestSteuertuerme extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -157,7 +157,7 @@ public class TestSteuertuerme extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -168,7 +168,7 @@ public class TestSteuertuerme extends TestBase {
 
             // unit 04
             if (tokens[1].equals("04")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -186,7 +186,7 @@ public class TestSteuertuerme extends TestBase {
 
             // unit 05
             if (tokens[1].equals("05")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

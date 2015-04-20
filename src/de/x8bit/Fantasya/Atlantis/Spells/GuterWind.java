@@ -39,7 +39,7 @@ public class GuterWind extends Spell {
 	@Override
 	public int ExecuteSpell(Unit mage, String[] param) {
 		if (param.length < 3) {
-			new Fehler(mage + " muss für den Zauber eine Zieleinheit aussuchen. ("+this.getSpruch()+")", mage, mage.getCoords());
+			new Fehler(mage + " muss für den Zauber eine Zieleinheit aussuchen. ("+this.getSpruch()+")", mage, mage.getCoordinates());
 			return 0;
 		}
 		
@@ -51,12 +51,12 @@ public class GuterWind extends Spell {
 		// Opfer holen
 		Unit victim = Unit.Load(Codierung.fromBase36(param[2]));
 		if (victim == null) {
-			new Fehler(mage + " macht mächtig Wind - aber der geht ins Leere, denn Einheit [" + param[2] + "] ist beim besten Willen nicht zu finden.", mage, mage.getCoords());
+			new Fehler(mage + " macht mächtig Wind - aber der geht ins Leere, denn Einheit [" + param[2] + "] ist beim besten Willen nicht zu finden.", mage, mage.getCoordinates());
 			return 0;
 		}
 		if (victim.getSchiff() == 0)
 		{
-			new Fehler(mage + " kann nicht \"Guter Wind\" zaubern, " + victim + " ist auf keinem Schiff.", mage, mage.getCoords());
+			new Fehler(mage + " kann nicht \"Guter Wind\" zaubern, " + victim + " ist auf keinem Schiff.", mage, mage.getCoordinates());
 			return 0;
 		}
 		
@@ -64,7 +64,7 @@ public class GuterWind extends Spell {
 		if (ship == null) new BigError("Schiff existiert nicht!");
 		if (ship.getOwner() != victim.getNummer())
 		{
-			new Fehler(mage + " kann nicht \"Guter Wind\" zaubern, " + victim + " ist kein Kapitän.", mage, mage.getCoords());
+			new Fehler(mage + " kann nicht \"Guter Wind\" zaubern, " + victim + " ist kein Kapitän.", mage, mage.getCoordinates());
 			return 0;
 		}
 

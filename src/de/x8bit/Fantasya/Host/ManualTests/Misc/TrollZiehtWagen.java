@@ -29,7 +29,7 @@ public class TrollZiehtWagen extends TestBase {
         
         Region r = null;
         for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-            Region r2 = Region.Load(maybe.getCoords().shift(Richtung.Osten));
+            Region r2 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
             if (r2.istBetretbar(null)) {
                 r = maybe;
                 break;
@@ -46,7 +46,7 @@ public class TrollZiehtWagen extends TestBase {
             u.setItem(Stein.class, 23);
             u.Befehle.add("NACH o");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -80,7 +80,7 @@ public class TrollZiehtWagen extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

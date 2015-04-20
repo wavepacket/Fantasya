@@ -18,7 +18,7 @@ public class RegionsMachtComparator implements Comparator<Unit> {
 
 	public RegionsMachtComparator(Region r) {
 		for (Unit u : r.getUnits()) {
-			Partei p = Partei.getPartei(u.getOwner());
+			Partei p = Partei.getFaction(u.getOwner());
 
 			if (!parteien.containsKey(p)) {
 				ManpowerRecord mpr = new ManpowerRecord(p);
@@ -30,8 +30,8 @@ public class RegionsMachtComparator implements Comparator<Unit> {
 	}
 
 	public int compare(Unit u1, Unit u2) {
-		Partei p1 = Partei.getPartei(u1.getOwner());
-		Partei p2 = Partei.getPartei(u2.getOwner());
+		Partei p1 = Partei.getFaction(u1.getOwner());
+		Partei p2 = Partei.getFaction(u2.getOwner());
 
 		if (parteien.get(p1).getPersonen() > parteien.get(p2).getPersonen()) return -1;
 		if (parteien.get(p1).getPersonen() < parteien.get(p2).getPersonen()) return 1;
@@ -50,7 +50,7 @@ public class RegionsMachtComparator implements Comparator<Unit> {
 		}
 
 		@SuppressWarnings("unused")
-		public Partei getPartei() {
+		public Partei getFaction() {
 			return partei;
 		}
 

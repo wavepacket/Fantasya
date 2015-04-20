@@ -1,6 +1,7 @@
 package de.x8bit.Fantasya.Atlantis;
 
 import de.x8bit.Fantasya.Atlantis.Items.LuxusGood;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Chaos;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.Paket;
@@ -17,6 +19,7 @@ import de.x8bit.Fantasya.Host.Terraforming.Kontinent;
 import de.x8bit.Fantasya.Host.Terraforming.ProtoInsel;
 import de.x8bit.Fantasya.Host.Terraforming.UnterweltKegelInsel;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.List;
 
 public class Welt {
@@ -261,9 +264,9 @@ public class Welt {
 				// 0 - Norden .. 1 - Osten .. 2 - Süden .. 3 - Westen
 				for (int richtung = 0; richtung < 4; richtung++) {
 					// schneller Zugriff auf die Koordinaten
-					int x = start.getCoords().getX();
-					int y = start.getCoords().getY();
-					int w = start.getCoords().getWelt();
+					int x = start.getCoordinates().getX();
+					int y = start.getCoordinates().getY();
+					int w = start.getCoordinates().getZ();
 
 					new SysMsg(2, " - verarbeite Richtung '" + "NOSW".substring(richtung, richtung + 1) + "'");
 					ende = false;
@@ -310,7 +313,7 @@ public class Welt {
 
 			List<Region> vorhanden = new ArrayList<Region>();
 			for (Region r : Region.CACHE.values()) {
-				if (r.getCoords().getWelt() == welt) {
+				if (r.getCoordinates().getZ() == welt) {
 					vorhanden.add(r);
 				}
 			}
@@ -328,7 +331,7 @@ public class Welt {
 
 					// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 					for (Region pReg : fantasya.alleRegionen()) {
-						Coords c = pReg.getCoords();
+						Coordinates c = pReg.getCoordinates();
 						Region r = Region.Create(pReg.getClass().getSimpleName(), c);
 						r.setInselKennung(pReg.getInselKennung());
 						r.setLuxus(pReg.getLuxus());
@@ -340,7 +343,7 @@ public class Welt {
 
 						// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 						for (Region maybe : neu.alleRegionen()) {
-							Coords c = maybe.getCoords();
+							Coordinates c = maybe.getCoordinates();
 							Region r = Region.Load(c);
 							if ((r == null) || (r instanceof Chaos)) {
 								// neu!
@@ -362,7 +365,7 @@ public class Welt {
 
 					// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 					for (Region pReg : unterwelt.alleRegionen()) {
-						Coords c = pReg.getCoords();
+						Coordinates c = pReg.getCoordinates();
 						Region r = Region.Create(pReg.getClass().getSimpleName(), c);
 						r.setInselKennung(pReg.getInselKennung());
 						r.setLuxus(pReg.getLuxus());
@@ -374,7 +377,7 @@ public class Welt {
 
 						// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 						for (Region maybe : neu.alleRegionen()) {
-							Coords c = maybe.getCoords();
+							Coordinates c = maybe.getCoordinates();
 							Region r = Region.Load(c);
 							if ((r == null) || (r instanceof Chaos)) {
 								// neu!
@@ -395,7 +398,7 @@ public class Welt {
 
 				// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 				for (Region maybe : neu.alleRegionen()) {
-					Coords c = maybe.getCoords();
+					Coordinates c = maybe.getCoordinates();
 					Region r = Region.Load(c);
 					if ((r == null) || (r instanceof Chaos)) {
 						// neu!
@@ -416,18 +419,18 @@ public class Welt {
 
 	protected static ProtoInsel inselZuwachs(int welt) {
 		ProtoInsel vorhanden = new AltInsel(welt);
-		Coords m = vorhanden.getMittelpunkt(true);
+		Coordinates m = vorhanden.getMittelpunkt(true);
 		vorhanden.shift(-m.getX(), -m.getY());
 
 		InselGenerator ig = new InselGenerator();
 		ProtoInsel neu = ig.addNewInselTo(vorhanden);
 
 		// Ursprungsregion suchen und Koordinaten zurückverschieben:
-		Coords shift = null;
+		Coordinates shift = null;
 		for (Region r : neu.alleRegionen()) {
 			if (AltInsel.URSPRUNGS_MARKER.equals(r.getBeschreibung())) {
-				Coords now = r.getCoords();
-				shift = new Coords(-now.getX(), -now.getY(), 0);
+				Coordinates now = r.getCoordinates();
+				shift = Coordinates.create(-now.getX(), -now.getY(), 0);
 				break;
 			}
 		}

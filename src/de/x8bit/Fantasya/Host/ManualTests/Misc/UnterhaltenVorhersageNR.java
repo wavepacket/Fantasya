@@ -43,7 +43,7 @@ public class UnterhaltenVorhersageNR extends TestBase {
 			u.setItem(Schwert.class, u.getPersonen());
 			u.Befehle.add("TREIBE " + r.getSilber() + " // alles Alt-Vermögen der Region eintreiben");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -57,7 +57,7 @@ public class UnterhaltenVorhersageNR extends TestBase {
             u.setName(this.getName()+" 02");
 			u.Befehle.add("UNTERHALTE");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -71,7 +71,7 @@ public class UnterhaltenVorhersageNR extends TestBase {
             u.setName(this.getName()+" 03");
 			u.Befehle.add("UNTERHALTE");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -85,7 +85,7 @@ public class UnterhaltenVorhersageNR extends TestBase {
             u.setName(this.getName()+" 04");
 			u.Befehle.add("UNTERHALTE");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
     }
@@ -118,7 +118,7 @@ public class UnterhaltenVorhersageNR extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

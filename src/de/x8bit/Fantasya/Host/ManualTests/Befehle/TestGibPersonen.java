@@ -139,7 +139,7 @@ public class TestGibPersonen extends TestBase {
             if (tokens[1].equals("03")) {
 				if (u.getPersonen() != 1) retval = fail(uRef + "Unerwartete Personenzahl: " + u.getPersonen() + ".");
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -155,7 +155,7 @@ public class TestGibPersonen extends TestBase {
             if (tokens[1].equals("06")) {
 				if (u.getPersonen() != 2) retval = fail(uRef + "Unerwartete Personenzahl: " + u.getPersonen() + ".");
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

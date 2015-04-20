@@ -34,12 +34,12 @@ public class TestEinheitAufloesen extends TestBase {
 			weg.setItem(Eisen.class, 5);
 			weg.setLongOrder("GIB BAUERN 1 PERSONEN");
 
-			new Info(this.getClass().getSimpleName() + " (Empfänger vorhanden) Setup in " + r + ".", bleibt, bleibt.getCoords());
+			new Info(this.getClass().getSimpleName() + " (Empfänger vorhanden) Setup in " + r + ".", bleibt, bleibt.getCoordinates());
 		}
 		{
 			Region r = testWorld.nurBetretbar(testWorld.getAlleRegionen()).get(1);
 
-			Unit bleibt = this.createUnit(Partei.getPartei(0), r);
+			Unit bleibt = this.createUnit(Partei.getFaction(0), r);
 			bleibt.setBeschreibung("Erwartet: Andere Einheit ist weg.");
 			bleibt.setItem(Silber.class, 1000);
 			bleibt.setItem(Eisen.class, 1);

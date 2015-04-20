@@ -115,7 +115,7 @@ public class ParteiTarnungKampf extends TestBase {
             d.setPersonen(1);
             d.setSkill(Hiebwaffen.class, d.getPersonen() * 450);
             d.setItem(Schwert.class, d.getPersonen());
-            Partei.getPartei(d.getOwner()).setAllianz(pc.getNummer(), AllianzOption.Kaempfe, true);
+            Partei.getFaction(d.getOwner()).setAllianz(pc.getNummer(), AllianzOption.Kaempfe, true);
 
             ua.Befehle.add("ATTACKIERE PARTEI " + pb.getNummerBase36());
             ub.Befehle.add("ATTACKIERE PARTEI " + pa.getNummerBase36());
@@ -172,7 +172,7 @@ public class ParteiTarnungKampf extends TestBase {
 
             // unit 01
             if (tokens[1].equals("11") || tokens[1].equals("22")) {
-//                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+//                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoords(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();

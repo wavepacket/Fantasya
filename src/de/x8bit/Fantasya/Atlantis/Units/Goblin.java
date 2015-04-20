@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Skill;
@@ -18,6 +17,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Hiebwaffen;
 import de.x8bit.Fantasya.Atlantis.Skills.Tarnung;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Krieger;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Weapons.WKnueppel;
@@ -92,7 +92,7 @@ public class Goblin extends Monster
 		if (this.getName().startsWith("Einheit")) this.Befehle.add("BENENNE EINHEIT " + GoblinName());
 
         
-		Region region = Region.Load(getCoords());
+		Region region = Region.Load(getCoordinates());
 
 
         //TODO Hungernde Goblins greifen an
@@ -133,7 +133,7 @@ public class Goblin extends Monster
 				List<Region> guteZiele = getGuteWanderziele();
 				if (!guteZiele.isEmpty()) {
 					Collections.shuffle(guteZiele);
-					Richtung ri = region.getCoords().getRichtungNach(guteZiele.get(0).getCoords());
+					Richtung ri = region.getCoordinates().getRichtungNach(guteZiele.get(0).getCoordinates());
 					Befehle.add("NACH " + ri.getShortcut());
 					Befehle.add("// den Kumpels von " + other + " ausgewichen nach " + ri.getShortcut());
 					return;
@@ -151,7 +151,7 @@ public class Goblin extends Monster
 			List<Region> guteZiele = getGuteWanderziele();
 			if (!guteZiele.isEmpty()) {
 				Collections.shuffle(guteZiele);
-				Richtung ri = region.getCoords().getRichtungNach(guteZiele.get(0).getCoords());
+				Richtung ri = region.getCoordinates().getRichtungNach(guteZiele.get(0).getCoordinates());
 				Befehle.add("NACH " + ri.getShortcut());
 			} else {
 				Befehle.add("LERNE Tarnung");
@@ -201,7 +201,7 @@ public class Goblin extends Monster
 	}
 	
 	protected List<Region> getGuteWanderziele() {
-		List<Region> alleZiele = Region.Load(this.getCoords()).getNachbarn();
+		List<Region> alleZiele = Region.Load(this.getCoordinates()).getNeighbours();
 		List<Region> guteZiele = new ArrayList<Region>();
 		for (Region ziel : alleZiele) if (ziel.istBetretbar(this) && !ziel.anwesendeParteien().isEmpty()) guteZiele.add(ziel);
 		return guteZiele;
@@ -261,11 +261,11 @@ public class Goblin extends Monster
 	 * @param coords Wenn null, wird zufällig eine Region bestimmt. Ansonsten wird die Einheiten in coords ausgesetzt.
 	 * @return 
 	 */
-	private static Unit createGoblinEVA(int insel, Coords coords) {
+	private static Unit createGoblinEVA(int insel, Coordinates coords) {
 		List<Region> regionen = Region.getInselRegionen(insel, true);
 		Unit unit = null;
 		if (coords == null) {
-			unit = Unit.CreateUnit("Goblin", Codierung.fromBase36("dark"), regionen.get(Random.rnd(0, regionen.size())).getCoords());
+			unit = Unit.CreateUnit("Goblin", Codierung.fromBase36("dark"), regionen.get(Random.rnd(0, regionen.size())).getCoordinates());
 		} else	{
 			unit = Unit.CreateUnit("Goblin", Codierung.fromBase36("dark"), coords);
 		}

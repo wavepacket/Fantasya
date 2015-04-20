@@ -13,10 +13,10 @@ public class Mantis200 extends TestBase {
 
 	@Override
 	protected void mySetupTest() {
-		Partei partei = Partei.getPartei(1);
+		Partei partei = Partei.getFaction(1);
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 		
-		Building burg = Building.Create("Burg", region.getCoords());
+		Building burg = Building.Create("Burg", region.getCoordinates());
 		burg.setSize(500);
 		
 		Unit unit = this.createUnit(partei, region);

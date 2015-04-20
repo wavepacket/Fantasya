@@ -2,10 +2,10 @@ package de.x8bit.Fantasya.Host.Reports;
 
 import java.util.SortedSet;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.BuildInformation;
 import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.Host.Reports.Writer.ZRWriter;
@@ -68,7 +68,7 @@ public class ReportZR
 	}
 	
 	private void ReportRegion(Region region, Partei partei)	{
-		Coords prvC = partei.getPrivateCoords(region.getCoords());
+		Coordinates prvC = partei.getPrivateCoordinates(region.getCoordinates());
 
 		writer.wl();
 		writer.wl();

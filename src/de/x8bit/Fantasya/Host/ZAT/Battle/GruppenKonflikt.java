@@ -69,26 +69,26 @@ public class GruppenKonflikt {
         return seiteA.getPersonen() + seiteB.getPersonen();
     }
 
-    public Set<Partei> getParteienSeiteA() {
+    public Set<Partei> getFactionenSeiteA() {
         Set<Partei> retval = new HashSet<Partei>();
         for (Gruppe g : getSeiteA()) {
-            retval.add(Partei.getPartei(g.getParteiNr()));
+            retval.add(Partei.getFaction(g.getFactionNr()));
         }
         return retval;
     }
 
-    public Set<Partei> getParteienSeiteB() {
+    public Set<Partei> getFactionenSeiteB() {
         Set<Partei> retval = new HashSet<Partei>();
         for (Gruppe g : getSeiteB()) {
-            retval.add(Partei.getPartei(g.getParteiNr()));
+            retval.add(Partei.getFaction(g.getFactionNr()));
         }
         return retval;
     }
 
     public Set<Partei> getInvolvierteParteien() {
         Set<Partei> retval = new HashSet<Partei>();
-        retval.addAll(this.getParteienSeiteA());
-        retval.addAll(this.getParteienSeiteB());
+        retval.addAll(this.getFactionenSeiteA());
+        retval.addAll(this.getFactionenSeiteB());
         return retval;
     }
 
@@ -166,22 +166,22 @@ public class GruppenKonflikt {
         if (getSeiteA().size() > 1) {
             List<String> beteiligte = new ArrayList<String>();
             for (Gruppe g : getSeiteA()) {
-                beteiligte.add(g.beschreibeFuerPartei(Partei.getPartei(0)));
+                beteiligte.add(g.beschreibeFuerPartei(Partei.getFaction(0)));
             }
             sb.append("Die Verb\u00fcndeten ").append(StringUtils.aufzaehlung(beteiligte));
             sb.append(" greifen ");
         } else {
-            sb.append(getSeiteA().iterator().next().beschreibeFuerPartei(Partei.getPartei(0)));
+            sb.append(getSeiteA().iterator().next().beschreibeFuerPartei(Partei.getFaction(0)));
             sb.append(" greift ");
         }
         if (getSeiteB().size() > 1) {
             List<String> beteiligte = new ArrayList<String>();
             for (Gruppe g : getSeiteB()) {
-                beteiligte.add(g.beschreibeFuerPartei(Partei.getPartei(0)));
+                beteiligte.add(g.beschreibeFuerPartei(Partei.getFaction(0)));
             }
             sb.append("die Verb\u00fcndeten ").append(StringUtils.aufzaehlung(beteiligte));
         } else {
-            sb.append(getSeiteB().iterator().next().beschreibeFuerPartei(Partei.getPartei(0)));
+            sb.append(getSeiteB().iterator().next().beschreibeFuerPartei(Partei.getFaction(0)));
         }
         sb.append(" an.");
         return sb.toString();

@@ -21,7 +21,7 @@ public class PUUnit extends TestBase {
 	
 	@Override
 	public void mySetupTest() {
-		Partei p = Partei.getPartei(1);
+		Partei p = Partei.getFaction(1);
 		List<Region> regionen = this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen());
 		
 		Unit unit = this.createUnit(p, regionen.get(0));

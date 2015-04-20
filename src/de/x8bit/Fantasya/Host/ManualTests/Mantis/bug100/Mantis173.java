@@ -14,11 +14,11 @@ public class Mantis173 extends TestBase {
 	protected void mySetupTest() {
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 
-		Unit unit1 = this.createUnit(Partei.getPartei(1), region);
+		Unit unit1 = this.createUnit(Partei.getFaction(1), region);
 		unit1.setItem(Schwert.class, 20);
 		unit1.setPersonen(1);
 		
-		Unit unit2 = this.createUnit(Partei.getPartei(Codierung.fromBase36("dark")), region);
+		Unit unit2 = this.createUnit(Partei.getFaction(Codierung.fromBase36("dark")), region);
 		unit2.setPersonen(1);
 		unit2.setItem(Silber.class, 0);
 		

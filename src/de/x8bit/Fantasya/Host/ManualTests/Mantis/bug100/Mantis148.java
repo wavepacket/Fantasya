@@ -24,11 +24,11 @@ public class Mantis148 extends TestBase {
 		Region r = this.getTestWorld().nurTerrain(getRegions(), Wald.class).get(0);
 
 		// Gebäude:
-		Saegewerk g = (Saegewerk)Building.Create(Saegewerk.class.getSimpleName(), r.getCoords());
+		Saegewerk g = (Saegewerk)Building.Create(Saegewerk.class.getSimpleName(), r.getCoordinates());
 		g.setSize(250);
 
 		// Die Holzfäller:
-		Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+		Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 		u.setName("Holzfäller");
 		u.setBeschreibung("Erwartet: 600 Holz werden abgebaut, es gibt knapp 300 Bäume weniger. Bäume vorher: " + r.getResource(Holz.class).getAnzahl());
 		u.setPersonen(200);
@@ -39,7 +39,7 @@ public class Mantis148 extends TestBase {
 		u.setLongOrder("MACHE Holz");
 
 		g.Enter(u);
-		new Info("Mantis #148 Setup in " + r + " " + r.getCoords() + ".", p);
+		new Info("Mantis #148 Setup in " + r + " " + r.getCoordinates() + ".", p);
 	}
 
     @Override

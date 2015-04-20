@@ -1,15 +1,17 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Ship;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,14 +33,14 @@ public class ShipSerializer implements ObjectSerializer<Ship> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Map<Coords, Region> regionMap;
+	private Map<Coordinates, Region> regionMap;
 	private MapCache<Unit> unitCache;
 
 	/** Constructs a new serializer.
 	 *
 	 * @param regionMap a map of all regions, so that ships can be attached there.
 	 */
-	public ShipSerializer(Map<Coords, Region> regionMap, MapCache<Unit> unitCache) {
+	public ShipSerializer(Map<Coordinates, Region> regionMap, MapCache<Unit> unitCache) {
 		if (regionMap == null) {
 			throw new IllegalArgumentException("Need a valid region map.");
 		}
@@ -78,7 +80,7 @@ public class ShipSerializer implements ObjectSerializer<Ship> {
 			return null;
 		}
 
-		Coords coords = new Coords(
+		Coordinates coords = Coordinates.create(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));
@@ -96,7 +98,7 @@ public class ShipSerializer implements ObjectSerializer<Ship> {
 		ship.setNummer(Integer.decode(mapping.get("nummer")));
 		ship.setName(mapping.get("name"));
 		ship.setBeschreibung(mapping.get("beschreibung"));
-		ship.setCoords(coords);
+		ship.setCoordinates(coords);
 		ship.setOwner(Integer.decode(mapping.get("kapitaen")));
 		ship.setGroesse(Integer.decode(mapping.get("groesse")));
 
@@ -138,9 +140,9 @@ public class ShipSerializer implements ObjectSerializer<Ship> {
 		data.put("nummer", String.valueOf(object.getNummer()));
 		data.put("name", object.getName());
 		data.put("beschreibung", object.getBeschreibung());
-		data.put("koordx", String.valueOf(object.getCoords().getX()));
-		data.put("koordy", String.valueOf(object.getCoords().getY()));
-		data.put("welt", String.valueOf(object.getCoords().getWelt()));
+		data.put("koordx", String.valueOf(object.getCoordinates().getX()));
+		data.put("koordy", String.valueOf(object.getCoordinates().getY()));
+		data.put("welt", String.valueOf(object.getCoordinates().getZ()));
 		data.put("kapitaen", String.valueOf(object.getOwner()));
 		data.put("groesse", String.valueOf(object.getGroesse()));
 
@@ -155,10 +157,10 @@ public class ShipSerializer implements ObjectSerializer<Ship> {
 		}
 
 		// error logging
-		if (!regionMap.containsKey(object.getCoords())) {
+		if (!regionMap.containsKey(object.getCoordinates())) {
 			logger.warn("Error saving ship \"{}\": Region at \"{}\" does not exist.",
 					object.getNummer(),
-					object.getCoords());
+					object.getCoordinates());
 		}
 		if (unitCache.get(object.getOwner()) == null) {
 			logger.warn("Error saving ship \"{}\": Owner does not exist.",

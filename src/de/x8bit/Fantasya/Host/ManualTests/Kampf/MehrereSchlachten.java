@@ -101,7 +101,7 @@ public class MehrereSchlachten extends TestBase {
             Unit ue = this.createUnit(e, r);
             ue.setName(this.getName()+" 99");
             ue.setPersonen(1);
-            e.setUrsprung(r.getCoords());
+            e.setUrsprung(r.getCoordinates());
 
 
             new Info(this.getName() + " Setup in " + r + ".", ua);

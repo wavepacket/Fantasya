@@ -2,8 +2,10 @@ package de.x8bit.Fantasya.util;
 
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
+import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
+
 import java.util.Collection;
 
 
@@ -29,11 +31,18 @@ public class FreieNummern {
 			return UnitIDPool.getInstance().getFreieNummer();
 		}
 
+		boolean isFaction = false;
+		if (proxy.iterator().next() instanceof Partei) isFaction = true;
+		
 		for(int wanted = 1; wanted < Codierung.fromBase36("zzzz"); wanted++) {
 			boolean free = true;
 			for(Atlantis o : proxy) {
 				if (!free) break; // nur PROXY abbrechen
 				if (o.getNummer() == wanted) free = false;
+				if (isFaction) {
+					Partei faction = Partei.getFaction(wanted);
+					if (faction != null) free = false;
+				}
 			}
 			// ist frei? - dann zurück damit
 			if (free) return wanted;

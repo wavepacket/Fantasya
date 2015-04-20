@@ -19,7 +19,7 @@ public class Mantis276 extends TestBase {
 		
 		Region r = world.nurNachbarVon(world.nurBetretbar(getRegions()), Ozean.class).get(0); getRegions().remove(r);
 		
-		Unit u = Unit.CreateUnit("Mensch", partei.getNummer(), r.getCoords());
+		Unit u = Unit.CreateUnit("Mensch", partei.getNummer(), r.getCoordinates());
 		u.setPersonen(10);
 		u.setSkill(Holzfaellen.class, 180 * 30); // 30 Tage pro Person
 		u.setName("holzfäller");

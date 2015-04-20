@@ -78,14 +78,14 @@ public class Zaubern extends EVABase {
 			if (tw == 0) continue;
 
 			int max = unit.getMaxAura();
-			int a = unit.getCoords().getWelt() > 0 ? unit.getAura() : unit.getMana();
+			int a = unit.getCoordinates().getZ() > 0 ? unit.getAura() : unit.getMana();
 
 			// TODO muss noch etwas verbessert werden ... steigt zu schnell
 			int zuwachs = Random.rnd(1, tw + 1);
 			if (a + zuwachs > max) zuwachs = max - a;
 
 			if (zuwachs > 0) {
-				if (unit.getCoords().getWelt() > 0) {
+				if (unit.getCoordinates().getZ() > 0) {
 					new Info(unit + " regeneriert " + zuwachs + " Punkte Aura.", unit);
 					unit.setAura(a + zuwachs);
 				} else {
@@ -141,7 +141,7 @@ public class Zaubern extends EVABase {
 
 
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());

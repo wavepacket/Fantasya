@@ -197,8 +197,8 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
 		{
 			// Koordinaten auf der Oberfläche berechnen
 			Region r = proxy.get(i);
-			x = (r.getCoords().getX() - minx) * ImageSize.x;
-			y = (r.getCoords().getY() - miny) * ImageSize.y;
+			x = (r.getCoordinates().getX() - minx) * ImageSize.x;
+			y = (r.getCoordinates().getY() - miny) * ImageSize.y;
 			
 			// an X verschieben
 			//x -= ((maxy - miny) / 2) - (r.getY() - miny) * ImageSize.x / 2;
@@ -209,7 +209,7 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
 			// das Icon malen
 			g.drawImage(terrainPics.getImage(r), x, y, ImageSize.x, ImageSize.y, null);
 			
-			if (Cursor.x == r.getCoords().getX() && Cursor.y == r.getCoords().getY())
+			if (Cursor.x == r.getCoordinates().getX() && Cursor.y == r.getCoordinates().getY())
 			{
 				regionframe.UpdateRegion(r);
 				g.drawImage(img_cursor, x, y, ImageSize.x, ImageSize.y, null);
@@ -218,9 +218,9 @@ public class MainFrame extends JFrame implements WindowListener, MouseWheelListe
 			if (r.istBetretbar(null)) 
 			{
 				DrawShadowed(g, x, y + 10, r.getName());
-				if ((r.getCoords().getX() % 2) == 0 && (r.getCoords().getY() % 2) == 0)
+				if ((r.getCoordinates().getX() % 2) == 0 && (r.getCoordinates().getY() % 2) == 0)
 				{
-					DrawShadowed(g, x, y + 22, "(" + r.getCoords().getX() + ", " + r.getCoords().getY() + ")");
+					DrawShadowed(g, x, y + 22, "(" + r.getCoordinates().getX() + ", " + r.getCoordinates().getY() + ")");
 				}
 			}
 		}

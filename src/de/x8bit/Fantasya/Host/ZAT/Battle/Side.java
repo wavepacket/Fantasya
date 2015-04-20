@@ -2,8 +2,8 @@ package de.x8bit.Fantasya.Host.ZAT.Battle;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Burg;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.Kampfzauber;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,6 +28,7 @@ import de.x8bit.Fantasya.Atlantis.Skills.Magie;
 import de.x8bit.Fantasya.Atlantis.Skills.Reiten;
 import de.x8bit.Fantasya.Atlantis.Skills.Taktik;
 import de.x8bit.Fantasya.Atlantis.Spell.AttackSpell;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.EVA.Kriege;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Effects.BFXBurginsasseAttack;
@@ -45,6 +46,7 @@ import de.x8bit.Fantasya.util.comparator.ItemStueckGewichtComparator;
 import de.x8bit.Fantasya.util.Random;
 import de.x8bit.Fantasya.util.StringUtils;
 import de.x8bit.Fantasya.util.comparator.UnitSkillComparator;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -92,7 +94,7 @@ public class Side {
         this.berichte = new HashMap<Partei, KampfreportXML>();
         
         Set<Partei> parteien = new HashSet<Partei>();
-        for (Gruppe g : pGruppen) parteien.add(Partei.getPartei(g.getParteiNr()));
+        for (Gruppe g : pGruppen) parteien.add(Partei.getFaction(g.getFactionNr()));
 
         List<Unit> units = new ArrayList<Unit>();
         for (Partei partei : parteien) {
@@ -100,7 +102,7 @@ public class Side {
             if (!berichte.containsKey(partei)) berichte.put(partei, new KampfreportXML(partei));
             
             for (Gruppe g : pGruppen) {
-                if (g.getParteiNr() != partei.getNummer()) continue;
+                if (g.getFactionNr() != partei.getNummer()) continue;
                 
                 teilnehmer.get(partei).add(g);
                 
@@ -220,7 +222,7 @@ public class Side {
         return gefecht;
     }
 
-    public Set<Partei> getParteien() {
+    public Set<Partei> getFactionen() {
         return teilnehmer.keySet();
     }
 
@@ -339,7 +341,7 @@ public class Side {
 
         List<Unit> traeger = new ArrayList<Unit>();
         List<Unit> sammler = new ArrayList<Unit>();
-        for (Partei p : this.getParteien()) {
+        for (Partei p : this.getFactionen()) {
             for (Unit u : this.getUnits(p)) {
                 int m = beuteModus(u);
                 if (m == Kriege.BEUTE_NICHTS) {
@@ -456,7 +458,7 @@ public class Side {
     private void gefallenenMeldungen() {
         // den jeweiligen Meldungsemfänger bestimmen:
         Map<Partei, Unit> chefs = new HashMap<Partei, Unit>();
-        for (Partei p : getParteien()) {
+        for (Partei p : getFactionen()) {
             Unit chef = besterTaktiker(new HashSet<Unit>(getUnits(p)));
             if (chef != null) chefs.put(p, chef);
         }
@@ -466,7 +468,7 @@ public class Side {
         for (Unit vorher : anfangsUnits) {
             Unit jetzt = Unit.Load(vorher.getNummer());
             if (vorher.getPersonen() > jetzt.getPersonen()) {
-                Partei p = Partei.getPartei(jetzt.getOwner());
+                Partei p = Partei.getFaction(jetzt.getOwner());
                 int gefallene = vorher.getPersonen() - jetzt.getPersonen();
                 
                 // die Gesamtbilanz entsprechend erhöhen:
@@ -499,7 +501,7 @@ public class Side {
                 }
                 
                 Region r = getGefecht().getRegion();
-                Coords my = p.getPrivateCoords(r.getCoords());
+                Coordinates my = p.getPrivateCoordinates(r.getCoordinates());
                 new Botschaft(null, p, "In " + r + " " + my + " sind unsere Kämpfer (" + StringUtils.aufzaehlung(ehemalige) + ") komplett besiegt worden!");
             }
         }
@@ -1017,7 +1019,7 @@ public class Side {
     }
 
     public KampfreportXML bericht(int nr) {
-        return bericht(Partei.getPartei(nr));
+        return bericht(Partei.getFaction(nr));
     }
 
     public KampfreportXML bericht(Partei p) {

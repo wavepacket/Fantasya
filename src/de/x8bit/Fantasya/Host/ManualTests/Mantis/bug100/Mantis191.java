@@ -23,7 +23,7 @@ public class Mantis191 extends TestBase {
 		Partei p = this.getTestWorld().getSpieler1();
 		Region r = getRegions().get(0);
 
-		Unit mage = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+		Unit mage = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 		mage.setName("Magier");
 		mage.setBeschreibung("Bäume vorher: " + r.getResource(Holz.class).getAnzahl());
 		mage.setPersonen(1);
@@ -34,7 +34,7 @@ public class Mantis191 extends TestBase {
 		mage.setSpell(new HainDerTausendEichen());
 		mage.setLongOrder("ZAUBERE \"Hain der 1000 Eichen\" 1");
 
-		new Info("Mantis #191 Setup in " + r + " " + r.getCoords() + ".", p);
+		new Info("Mantis #191 Setup in " + r + " " + r.getCoordinates() + ".", p);
 	}
 
     @Override

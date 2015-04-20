@@ -58,7 +58,7 @@ public class Cheaten extends TestBase {
             u.Befehle.add("SET BUILDING Werft");
             u.Befehle.add("LERNE Tarnung");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

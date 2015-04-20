@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.ManualTests.Mantis.bug100;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -10,6 +9,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Skills.Segeln;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
 import de.x8bit.Fantasya.Host.ManualTests.TestWorld;
@@ -30,13 +30,13 @@ public class Mantis177 extends TestBase {
 
         // wohin segeln wir denn so?
 		Richtung richtg = tw.getRichtung(r, Ozean.class);
-        Coords ziel = r.getCoords().shift(richtg);
+        Coordinates ziel = r.getCoordinates().shiftDirection(richtg);
         
         Unit u = this.createUnit(p, r);
         u.setName(this.getClass().getSimpleName() + " 01 " + ziel.getX() + " " + ziel.getY());
 		u.setSkill(Segeln.class, 450);
 
-		Ship ship = Ship.Create("Boot", r.getCoords());
+		Ship ship = Ship.Create("Boot", r.getCoordinates());
 		ship.setGroesse(5);
 		ship.setFertig(true);
         u.Enter(ship);
@@ -46,7 +46,7 @@ public class Mantis177 extends TestBase {
         u.Befehle.add("NACH " + richtg);
         u.setBeschreibung("Erwartet: Ändert die Nummer des Schiffs auf m177 und legt ab.");
 
-        new Info("Mantis #177 Setup in " + r + " " + r.getCoords() + ".", p);
+        new Info("Mantis #177 Setup in " + r + " " + r.getCoordinates() + ".", p);
 	}
 
     @Override
@@ -72,14 +72,14 @@ public class Mantis177 extends TestBase {
                     int x = Integer.parseInt(tokens[2]);
                     int y = Integer.parseInt(tokens[3]);
 
-                    if ( (x != u.getCoords().getX()) || (y != u.getCoords().getY()) ) {
-                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen - NUMMER SCHIFF, Nummer stimmt nicht. (" + u + ", " + u.getCoords()+")");
+                    if ( (x != u.getCoordinates().getX()) || (y != u.getCoordinates().getY()) ) {
+                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen - NUMMER SCHIFF, Nummer stimmt nicht. (" + u + ", " + u.getCoordinates()+")");
                         retval = false;
                     }
 
                     Ship ship = Ship.Load(u.getSchiff());
                     if ( !ship.getNummerBase36().equals("m177") ) {
-                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen - NUMMER SCHIFF, Reise gescheitert. (" + u + ", " + u.getCoords()+")");
+                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen - NUMMER SCHIFF, Reise gescheitert. (" + u + ", " + u.getCoordinates()+")");
                         retval = false;
                     }
                 }

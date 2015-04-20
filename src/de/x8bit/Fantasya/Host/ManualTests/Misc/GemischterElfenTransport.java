@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Host.ManualTests.Misc;
 
 import java.util.Collection;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -17,6 +16,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Reiten;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
 
@@ -34,7 +34,7 @@ public class GemischterElfenTransport extends TestBase {
         Region r = null;
 		Region r2 = null;
         for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-            r2 = Region.Load(maybe.getCoords().shift(Richtung.Osten));
+            r2 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
             if (r2.istBetretbar(null)) {
                 r = maybe; break;
             }
@@ -44,7 +44,7 @@ public class GemischterElfenTransport extends TestBase {
 		getRegions().remove(r2);
 
         {
-			Coords target = r.getCoords().shift(Richtung.Osten);
+			Coordinates target = r.getCoordinates().shiftDirection(Richtung.Osten);
 
 			Unit u = this.createUnit(p, r);
             u.setName(this.getName() + " 01 " + target.getX() + " " + target.getY() );
@@ -62,7 +62,7 @@ public class GemischterElfenTransport extends TestBase {
 
 			u.Befehle.add("NACH o");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -96,12 +96,12 @@ public class GemischterElfenTransport extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-				if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+				if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
 					retval = fail(tokens[1] + ": Einheit ist nicht gereist.");
 				}
 
                 /*
-				messages = Message.Retrieve(Partei.Load(u.getOwner()), u.getCoords(), u);
+				messages = Message.Retrieve(Partei.Load(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getMessage().toLowerCase();

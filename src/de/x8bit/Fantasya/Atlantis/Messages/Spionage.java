@@ -9,7 +9,7 @@ public class Spionage extends Message {
 	public Spionage(String msg, Unit u)
 	{
 		super();
-		print(0, msg, u.getCoords(), u);
+		print(0, msg, u.getCoordinates(), u);
 	}
 
 }

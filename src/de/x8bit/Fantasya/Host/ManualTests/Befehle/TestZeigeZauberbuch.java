@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Host.ManualTests.*;
+
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Message;
@@ -14,6 +14,7 @@ import de.x8bit.Fantasya.Atlantis.Spells.Erdbeben;
 import de.x8bit.Fantasya.Atlantis.Spells.GuterWind;
 import de.x8bit.Fantasya.Atlantis.Spells.HainDerTausendEichen;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 
 /**
@@ -38,7 +39,7 @@ public class TestZeigeZauberbuch extends TestBase {
 			u.setSpell(new GuterWind());
 			u.Befehle.add("ZEIGE ZAUBERBUCH");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -70,7 +71,7 @@ public class TestZeigeZauberbuch extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), (Coords)null, null);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), (Coordinates)null, null);
                 int found = 0;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

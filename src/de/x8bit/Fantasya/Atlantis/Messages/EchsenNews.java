@@ -14,7 +14,7 @@ public class EchsenNews extends Message
 	public EchsenNews(String msg, Unit u)
 	{
 		super();
-		print(0, msg, u.getCoords(), u);
+		print(0, msg, u.getCoordinates(), u);
 	}
 	
 	public EchsenNews(String msg, Partei partei)

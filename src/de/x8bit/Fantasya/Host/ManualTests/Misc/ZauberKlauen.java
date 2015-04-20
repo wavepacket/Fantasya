@@ -36,7 +36,7 @@ public class ZauberKlauen extends TestBase {
 			magier.setSpell(new KlauenDerTiefe());
 			magier.Befehle.add("ZAUBERE \"Klauen der Tiefe\" 4");
 
-            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoordinates());
         }
     }
 
@@ -70,7 +70,7 @@ public class ZauberKlauen extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

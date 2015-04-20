@@ -57,7 +57,7 @@ public class TestSpielerLoeschen extends TestBase {
             u.Befehle.add("GIB BAUERN 1 PERSON");
 
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -81,7 +81,7 @@ public class TestSpielerLoeschen extends TestBase {
             retval = this.fail("Es wurden erwartete Einheiten gar nicht mehr gefunden: " + missing);
         }
 
-        Partei leer = Partei.getPartei(p.getNummer() + 1);
+        Partei leer = Partei.getFaction(p.getNummer() + 1);
         if (leer != null) {
             retval = fail("Die leere Partei ist noch vorhanden.");
         }

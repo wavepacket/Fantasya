@@ -20,7 +20,7 @@ public class Puschkin extends Monster {
 		for(Region r : regionen) {
 			int spawn = Random.rnd(0, 100);
 			if (spawn > GameRules.Monster.TIER.Puschkin.SpawnPercent()) continue;
-			Unit b = Unit.CreateUnit("Puschkin", Codierung.fromBase36("tier"), r.getCoords());
+			Unit b = Unit.CreateUnit("Puschkin", Codierung.fromBase36("tier"), r.getCoordinates());
 			b.setPersonen(1);
 			b.setTarnPartei(0);
 			b.setName("Bär");
@@ -48,7 +48,7 @@ public class Puschkin extends Monster {
 		} else {
 			int attack = Random.rnd(0, 100);
 			if (attack < GameRules.Monster.TIER.Puschkin.AttackPercent()) {
-				Region r = Region.Load(getCoords());
+				Region r = Region.Load(getCoordinates());
 				int idx = Random.rnd(0, r.getUnits().size() - 1);
 				Unit u = (Unit)r.getUnits().toArray()[idx];
 				Befehle.add("ATTACKIERE " + u.getNummerBase36());

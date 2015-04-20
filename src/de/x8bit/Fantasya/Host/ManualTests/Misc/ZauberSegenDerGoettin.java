@@ -107,12 +107,12 @@ public class ZauberSegenDerGoettin extends TestBase {
 
             // unit 01 - Wüste zu Ebene
             if (tokens[1].equals("01")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (!(r instanceof Ebene)) {
 					retval = fail(tokens[1] + ": Region hat sich nicht in eine Ebene verwandelt.");
 				}
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -120,7 +120,7 @@ public class ZauberSegenDerGoettin extends TestBase {
                 }
                 if (!found) retval = fail(tokens[1] + ": Meldung über Aura-Verbrauch fehlt.");
 
-                messages = Message.Retrieve(null, u.getCoords(), null);
+                messages = Message.Retrieve(null, u.getCoordinates(), null);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -131,7 +131,7 @@ public class ZauberSegenDerGoettin extends TestBase {
 
             // unit 02 - zu wenig Aura
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -143,7 +143,7 @@ public class ZauberSegenDerGoettin extends TestBase {
 
             // unit 03 - nicht in einer Wüste
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {

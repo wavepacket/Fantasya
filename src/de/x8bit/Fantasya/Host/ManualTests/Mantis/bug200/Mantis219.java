@@ -108,7 +108,7 @@ public class Mantis219 extends TestBase {
                     retval = fail(tokens[1] + ": HELFE KONTAKT hat nicht geklappt?");
                 }
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -119,7 +119,7 @@ public class Mantis219 extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

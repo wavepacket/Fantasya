@@ -139,7 +139,7 @@ public class LehrenLernen extends TestBase {
 				}
                 if (!found) retval = fail(tokens[1] + ": Der LEHRE-Befehl wurde nicht wie erwartet korrigiert.");
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText();
@@ -161,7 +161,7 @@ public class LehrenLernen extends TestBase {
 				if (Main.getBFlag("EVA")) continue; // bei EVA wird der Befehl erst gar nicht zugelassen
 
 				// Maumau-Spieler
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -197,7 +197,7 @@ public class LehrenLernen extends TestBase {
             // unit 11
             if (tokens[1].equals("11")) {
 				// Lehrer für fremde Partei
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

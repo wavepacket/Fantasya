@@ -19,7 +19,6 @@ import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Buildings.Burg;
 import de.x8bit.Fantasya.Atlantis.Buildings.Leuchtturm;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.Kampfzauber;
 import de.x8bit.Fantasya.Atlantis.Helper.Nachfrage;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
@@ -45,6 +44,7 @@ import de.x8bit.Fantasya.Atlantis.Regions.Sandstrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Vulkan;
 import de.x8bit.Fantasya.Atlantis.Regions.aktiverVulkan;
 import de.x8bit.Fantasya.Atlantis.Skills.Magie;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.EVA.Diebstahl;
 import de.x8bit.Fantasya.Host.EVA.Environment;
 import de.x8bit.Fantasya.Host.EVA.Handeln;
@@ -69,6 +69,7 @@ import de.x8bit.Fantasya.Host.Reports.util.ParteiTalentComparator;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.StringUtils;
 import de.x8bit.Fantasya.util.comparator.RegionsMachtComparator;
+
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Collections;
@@ -369,9 +370,9 @@ public class SyntaxHighlightingNR extends ReportNR {
         StringBuilder sb = new StringBuilder();
         sb.append("Der Schwerpunkt der Bevölkerung deines Landes liegt rechnerisch ");
         if (partei.canAccess(schwerpunkt) && schwerpunkt.istBetretbar(null)) {
-            sb.append("in " + schwerpunkt + " " + partei.getPrivateCoords(schwerpunkt.getCoords()) + ".");
+            sb.append("in " + schwerpunkt + " " + partei.getPrivateCoordinates(schwerpunkt.getCoordinates()) + ".");
         } else {
-            sb.append("bei " + partei.getPrivateCoords(schwerpunkt.getCoords()).xy() + ".");
+            sb.append("bei " + partei.getPrivateCoordinates(schwerpunkt.getCoordinates()).toString(false) + ".");
         }
         writer.wl(sb.toString());
         writer.wl("");
@@ -389,7 +390,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 		writer.wl("Die größten Bevölkerungen:");
 		writer.wl("==========================");
 		List<Partei> meistePersonen = new ArrayList<Partei>();
-		meistePersonen.addAll(Partei.PROXY);
+		meistePersonen.addAll(Partei.getPlayerFactionList());
 		Collections.sort(meistePersonen, Collections.reverseOrder(new ParteiPersonenComparator()) );
 		int nr = 1;
 		for (Partei p : meistePersonen) {
@@ -405,7 +406,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 		writer.wl("Der größte Reichtum:");
 		writer.wl("====================");
 		List<Partei> reichtum = new ArrayList<Partei>();
-		reichtum.addAll(Partei.PROXY);
+		reichtum.addAll(Partei.getPlayerFactionList());
 		Collections.sort(reichtum, Collections.reverseOrder(new ParteiSilberComparator()) );
 		nr = 1;
 		for (Partei p : reichtum) {
@@ -424,7 +425,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 		writer.wl("==========================");
 		List<Partei> bildung = new ArrayList<Partei>();
 		List<Partei> ausgeschlossene = new ArrayList<Partei>();
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.getPlayerFactionList()) {
 			if (p.getPersonen() >= 100) {
 				bildung.add(p);
 			} else {
@@ -458,13 +459,13 @@ public class SyntaxHighlightingNR extends ReportNR {
 		EinflussKarte ek = new EinflussKarte();
 		Map<Partei, Float> ranking = new HashMap<Partei, Float>();
 		float rankingSumme = 0;
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.getPlayerFactionList()) {
 			ranking.put(p, ek.getGlobalenEinfluss(p));
 			rankingSumme += ranking.get(p);
 		}
 		
 		List<Partei> einfluss = new ArrayList<Partei>();
-		einfluss.addAll(Partei.PROXY);
+		einfluss.addAll(Partei.getPlayerFactionList());
 		Collections.sort(einfluss, Collections.reverseOrder(new GenericParteiComparator(ranking)) );
 		
 		nr = 1;
@@ -517,9 +518,9 @@ public class SyntaxHighlightingNR extends ReportNR {
             int summeLandGroesse = 0;
             int summeOzeanGroesse = 0;
             int summeLavastromGroesse = 0;
-            for (Insel i : inseln) summeLandGroesse += i.getCoords().size();
-            for (Insel i : ozeane) summeOzeanGroesse += i.getCoords().size();
-            for (Insel i : lavastroeme) summeLavastromGroesse += i.getCoords().size();
+            for (Insel i : inseln) summeLandGroesse += i.getCoordinates().size();
+            for (Insel i : ozeane) summeOzeanGroesse += i.getCoordinates().size();
+            for (Insel i : lavastroeme) summeLavastromGroesse += i.getCoordinates().size();
             int anzahlRegionen = summeLandGroesse + summeOzeanGroesse + summeLavastromGroesse;
             
             float anteil = (float)summeLandGroesse / (float)anzahlRegionen;
@@ -554,7 +555,7 @@ public class SyntaxHighlightingNR extends ReportNR {
         InselVerwaltung iv = InselVerwaltung.getInstance();
 
         int summeGroesse = 0;
-        for (Insel i : inseln) summeGroesse += i.getCoords().size();
+        for (Insel i : inseln) summeGroesse += i.getCoordinates().size();
         
         //        >1 3  6   1         2         3         4         5         6
         writer.wl("  #  Name                   O/U Regions (%)    Hö kumul.% ");
@@ -564,7 +565,7 @@ public class SyntaxHighlightingNR extends ReportNR {
         boolean line50 = false;
         boolean line90 = false;
         for (Insel i : inseln) {
-            float anteil = (float)i.getCoords().size() / (float)summeGroesse;
+            float anteil = (float)i.getCoordinates().size() / (float)summeGroesse;
             kumul += anteil;
             
             String anzahlHoehlen = "   ";
@@ -578,7 +579,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 					String.format("%5s", i.getPublicId() + " ")
 					+ String.format("%-23s", iv.getInselName(partei, i.getPublicId()))
 					+ String.format("%2s", " " + oberOderUnter)
-					+ String.format("%7s", N.format(i.getCoords().size()))
+					+ String.format("%7s", N.format(i.getCoordinates().size()))
 					+ String.format("%-9s", " (" + P.format(anteil) + ")")
                     + anzahlHoehlen
 					+ " " + String.format("%-7s", "(" + P.format(kumul) + ")")
@@ -604,7 +605,7 @@ public class SyntaxHighlightingNR extends ReportNR {
         // überhaupt irgendjemand?
         boolean irgendwer = false;
         for (Partei other : partei.getBekannteParteien()) {
-            if (other.isMonster()) continue;
+            if (!other.isPlayerFaction()) continue;
 
             WriteTheLine();
             writeSectionStart("Alle bekannten Völker", true);
@@ -615,7 +616,7 @@ public class SyntaxHighlightingNR extends ReportNR {
         if (!irgendwer) return;
 
         for (Partei other : partei.getBekannteParteien()) {
-            if (other.isMonster()) continue;
+            if (!other.isPlayerFaction()) continue;
 
             String msg = other.getName() + " [" + other.getNummerBase36() + "], " + other.getEMail();
             writer.wl(msg);
@@ -640,7 +641,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 			sortiert.put(kat, new ArrayList<Message>());
 		}
 		// Messages holen und einsortieren
-		for (Message msg : Message.Retrieve(partei, (Coords)null, null)) {
+		for (Message msg : Message.Retrieve(partei, (Coordinates)null, null)) {
 			String kat = msg.getClass().getSimpleName();
 			if (!sortiert.containsKey(kat)) continue; // Debug und so - wollen wir nicht im Report.
 			sortiert.get(kat).add(msg);
@@ -686,7 +687,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 		
         for (int partnerNr : partei.getAllianzen().keySet()) {
             Allianz a = partei.getAllianz(partnerNr);
-            Partei partner = Partei.getPartei(partnerNr);
+            Partei partner = Partei.getFaction(partnerNr);
             if (partner == null) {
                 new SysErr("ReportNR: Allianz mit nicht-existenter Partei - " + partei.getNummerBase36() + " mit " + Codierung.toBase36(partnerNr));
                 continue;
@@ -716,7 +717,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 		boolean cont = false;
 		String msg = "Die Steuer für alle Völker liegt bei " + partei.getDefaultsteuer() + "%";
 		for(Steuer steuer : partei.getSteuern()) {
-			Partei p = Partei.getPartei(steuer.getFaction());
+			Partei p = Partei.getFaction(steuer.getFaction());
 			if (cont) msg += ", "; else { cont = true; msg += ", Sondervergünstigungen für: "; }
 			msg += p + " (zahlt " + steuer.getRate() + "%)";
 		}
@@ -774,10 +775,10 @@ public class SyntaxHighlightingNR extends ReportNR {
 	/** alle Regionen ausgeben */
 	private void Regionen() {
         InselVerwaltung iv = InselVerwaltung.getInstance();
-        InselVerwaltung.ParteiReportDaten prd = iv.getParteiReportDaten(partei);
-        Set<Coords> nurHistorische = new HashSet<Coords>();
+        InselVerwaltung.ParteiReportDaten prd = iv.getFactionReportDaten(partei);
+        Set<Coordinates> nurHistorische = new HashSet<Coordinates>();
         for (RegionsSicht rs : prd.getHistorische()) {
-            nurHistorische.add(rs.getCoords());
+            nurHistorische.add(rs.getCoordinates());
         }
         
         for (Insel i : prd.getBekannteInseln()) {
@@ -785,7 +786,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             writer.wl("");
             
             String name = i.getName(partei);
-            if (name == null) name = "Insel bei " + partei.getPrivateCoords(i.getMittelpunkt());
+            if (name == null) name = "Insel bei " + partei.getPrivateCoordinates(i.getMittelpunkt());
             writeSectionStart(name, true);
             
             String beschreibung = iv.getInselBeschreibung(partei, i.getPublicId());
@@ -795,12 +796,12 @@ public class SyntaxHighlightingNR extends ReportNR {
                 writer.wl("");
             }
             
-            List<Coords> sortiert = new ArrayList<Coords>();
+            List<Coordinates> sortiert = new ArrayList<Coordinates>();
             sortiert.addAll(prd.getRegionenAufInsel(i.getPublicId()));
             Collections.sort(sortiert, new CoordComparatorLNR());
 
             // List<String> echo = new ArrayList<String>();
-            for (Coords c : sortiert) {
+            for (Coordinates c : sortiert) {
                 RegionsSicht rs = partei.getRegionsSicht(c);
                 // echo.add(rs+"");
                 
@@ -819,21 +820,21 @@ public class SyntaxHighlightingNR extends ReportNR {
             writeSectionEnd();
         }
         
-        List<Coords> regionenOhneInsel = prd.getRegionenOhneInsel();
+        List<Coordinates> regionenOhneInsel = prd.getRegionenOhneInsel();
         if (!regionenOhneInsel.isEmpty()) {
             WriteTheLine();
             writer.wl("");
             writeSectionStart("Auf unbekannten Inseln", true);
-            for (Coords c : regionenOhneInsel) {
+            for (Coordinates c : regionenOhneInsel) {
                 Region(Region.Load(c));
             }
             writeSectionEnd();
         }
 	}
 	
-    private void AtlasRegion(Coords c) {
+    private void AtlasRegion(Coordinates c) {
         RegionsSicht rs = partei.atlas.get(c);
-        Coords privateCoords = partei.getPrivateCoords(c);
+        Coordinates privateCoordinates = partei.getPrivateCoordinates(c);
 		String terrain = rs.getTerrain();
         String name = rs.getName();
         int sichtung = rs.getRunde();
@@ -843,7 +844,7 @@ public class SyntaxHighlightingNR extends ReportNR {
         msg.append(">> ");
         msg.append(terrain);
         if ((name != null) && (!"null".equals(name))) msg.append(" ").append(name);
-        msg.append(" (").append(privateCoords.getX()).append(" ").append(privateCoords.getY()).append("), ");
+        msg.append(" (").append(privateCoordinates.getX()).append(" ").append(privateCoordinates.getY()).append("), ");
         msg.append("zuletzt besucht in Runde ").append(sichtung).append(".");
         msg.append(" <<");
         
@@ -852,7 +853,7 @@ public class SyntaxHighlightingNR extends ReportNR {
     
     private void Region(Region r) {
 //        if (ZATMode.CurrentMode().isDebug()) {
-//            RegionsSicht rs = partei.getRegionsSicht(r.getCoords());
+//            RegionsSicht rs = partei.getRegionsSicht(r.getCoordinates());
 //            String code = "<null>";
 //            if (rs != null) code = rs.toCode();
 //            writer.wl("");
@@ -861,7 +862,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 //        }
         
 
-        RegionsSicht rs = partei.getRegionsSicht(r.getCoords());
+        RegionsSicht rs = partei.getRegionsSicht(r.getCoordinates());
         boolean details = false;
         if (rs != null) details = rs.hasDetails();
         if (partei.getNummer() == 0) details = true;
@@ -886,26 +887,26 @@ public class SyntaxHighlightingNR extends ReportNR {
 	private void Region_Header(Region r, boolean details) {
 		StringBuilder msg = new StringBuilder();
 
-        Coords privateCoords = partei.getPrivateCoords(r.getCoords());
+        Coordinates privateCoordinates = partei.getPrivateCoordinates(r.getCoordinates());
 		String terrain = r.getClass().getSimpleName();
         if (!details) {
 			if (!r.istBetretbar(null) || r instanceof Chaos) {
                 // undetaillierte Ozeane etc.
                 msg.append(">> ").append(terrain);
-                msg.append(" (").append(privateCoords.getX()).append(" ").append(privateCoords.getY()).append("). ");
+                msg.append(" (").append(privateCoordinates.getX()).append(" ").append(privateCoordinates.getY()).append("). ");
             } else {
                 // undetaillierte Länder:
                 msg.append(">> ").append(r.getName());
-                msg.append(" (").append(privateCoords.getX()).append(" ").append(privateCoords.getY()).append("), ");
+                msg.append(" (").append(privateCoordinates.getX()).append(" ").append(privateCoordinates.getY()).append("), ");
                 msg.append(terrain).append(". ");
             }
         } else if ((!r.istBetretbar(null)) || (r instanceof Chaos)) {
 			msg.append(
                     ">> ").append(terrain).append(
-                    " (").append(privateCoords.getX()).append(" ").append(privateCoords.getY()).append("), ");
+                    " (").append(privateCoordinates.getX()).append(" ").append(privateCoordinates.getY()).append("), ");
 		} else {
 			msg.append(">> ").append(r.getName()).append(
-                    " (").append(privateCoords.getX()).append(" ").append(privateCoords.getY()).append("), ");
+                    " (").append(privateCoordinates.getX()).append(" ").append(privateCoordinates.getY()).append("), ");
             msg.append(terrain).append(", ");
             if (r.getResource(Holz.class).getAnzahl() > 0) {
                 msg.append(r.getResource(Holz.class).getAnzahl()).append(" Bäume, ");
@@ -913,7 +914,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 			msg.append(N.format(r.getBauern())).append(" Bauern, $").append(N.format(r.getSilber())).append(" Silber. ");
 		}
         
-        RegionsSicht rs = partei.getRegionsSicht(r.getCoords());
+        RegionsSicht rs = partei.getRegionsSicht(r.getCoordinates());
         if ((rs != null) && (rs.getQuelle() == Leuchtturm.class)) {
             msg.append("Den Bericht von hier liefert euch ein Leuchtturm. ");
         }
@@ -946,7 +947,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             // Nachbarregionen: Land
             List<String> landNachbarn = new ArrayList<String>();
             for(Richtung ri : Richtung.values()) {
-                Region hr = Region.Load(r.getCoords().shift(ri));
+                Region hr = Region.Load(r.getCoordinates().shiftDirection(ri));
                 if (hr == null) {
                     landNachbarn.add("im " + ri.name() + " liegt Chaos");
                 } else {
@@ -974,7 +975,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             // Nachbarregionen: Wasser
             List<String> wasserNachbarn = new ArrayList<String>();
             for(Richtung ri : Richtung.values()) {
-                Region hr = Region.Load(r.getCoords().shift(ri));
+                Region hr = Region.Load(r.getCoordinates().shiftDirection(ri));
                 if (hr == null)	continue;
                 if (hr instanceof Ozean) {
                     wasserNachbarn.add(ri.toString() + " (Sturmwahrscheinlichkeit ist " + ((Ozean)hr).getSturmValue() + ")");
@@ -1027,15 +1028,15 @@ public class SyntaxHighlightingNR extends ReportNR {
 	private void Region_Meldungen(Region r) {
 		writer.NRFront += 3;
 
-		List<Message> meldungen = Message.Retrieve(null, r.getCoords(), null);
+		List<Message> meldungen = Message.Retrieve(null, r.getCoordinates(), null);
 		boolean omniszienz = partei.getNummer() == 0;
 		boolean any = false;
 		for (Message m : meldungen) {
 			// nur anzeigen, wenn die Meldung nicht zu einer bestimmten Einheit gehört:
 			if (m.getUnit() != null) continue;
 			
-			if ((m.getPartei() != null) && (!omniszienz)) {
-				if (m.getPartei().getNummer() != partei.getNummer()) {
+			if ((m.getFaction() != null) && (!omniszienz)) {
+				if (m.getFaction().getNummer() != partei.getNummer()) {
 					continue; // fremde Meldungen überspringen
 				}
 			}
@@ -1052,7 +1053,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 		List<String> strassen = new ArrayList<String>();
         for(Richtung richtung : Richtung.values()) {
 			if (r.getStrassensteine(richtung) > 0) {
-				Region hr = Region.Load(r.getCoords().shift(richtung));
+				Region hr = Region.Load(r.getCoordinates().shiftDirection(richtung));
 				String diese = hr + " ";
 				diese += "(" + richtung.name();
 				long prozent = Math.round( ((double) r.getStrassensteine(richtung) / (double) r.getSteineFuerStrasse()) * 100.0);
@@ -1212,7 +1213,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 			int gesamtBilanz = 0;
 			List<String> descHer = new ArrayList<String>();
 			List<String> descWeg = new ArrayList<String>();
-			for (Region nachbar : r.getNachbarn()) {
+			for (Region nachbar : r.getNeighbours()) {
 				int weg = BauernWanderung.GetBauernWanderung(r, nachbar);
 				int her = BauernWanderung.GetBauernWanderung(nachbar, r);
 
@@ -1446,7 +1447,7 @@ public class SyntaxHighlightingNR extends ReportNR {
         }
 		
 		Partei p = null;
-		if (u.getTarnPartei() != 0) p = Partei.getPartei(u.getTarnPartei());
+		if (u.getTarnPartei() != 0) p = Partei.getFaction(u.getTarnPartei());
 
 		StringBuilder msg = new StringBuilder();
         msg.append(u).append(", ");
@@ -1585,7 +1586,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 			}
 
             // Reisemöglichkeiten:
-            if ((u.getSchiff() == 0) || (Region.Load(u.getCoords()).istBetretbar(u))) {
+            if ((u.getSchiff() == 0) || (Region.Load(u.getCoordinates()).istBetretbar(u))) {
                 msg.append(getReiseBedingungen(u) + ". ");
             } else {
                 Ship s = Ship.Load(u.getSchiff());
@@ -1671,7 +1672,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             }
 
 			// Meldungen
-			List<Message> unitMessages = Message.Retrieve(null, (Coords)null, u);
+			List<Message> unitMessages = Message.Retrieve(null, (Coordinates)null, u);
 			if (!unitMessages.isEmpty()) {
 				writer.wl(msg.toString());
 				writer.NRFront += 3;

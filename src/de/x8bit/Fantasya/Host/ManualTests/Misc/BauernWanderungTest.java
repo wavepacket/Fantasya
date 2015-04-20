@@ -48,7 +48,7 @@ public class BauernWanderungTest extends TestBase {
 			r.setBauern(r.getBauern() - 1000);
 
 			if (i == 0) {
-				Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+				Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 				b.setSize(251);
 
 				Unit u = this.createUnit(p, r);
@@ -96,7 +96,7 @@ public class BauernWanderungTest extends TestBase {
             Unit u = this.createUnit(p, r);
             u.setName(this.getName()+" 01");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -113,7 +113,7 @@ public class BauernWanderungTest extends TestBase {
 		// die beiden wollen ganz allein im Ozean sein:
 		Region e = ebenen.get(0);
 		Region g = null;
-		for (Region n : e.getNachbarn()) {
+		for (Region n : e.getNeighbours()) {
 			if (g == null) {
 				if (n.getClass() == Gletscher.class) {
 					g = n;
@@ -123,17 +123,17 @@ public class BauernWanderungTest extends TestBase {
 			Region wech = n.cloneAs(Ozean.class);
 			wech.setBauern(0);
 
-			Region.CACHE.remove(n.getCoords());
-			Region.CACHE.put(wech.getCoords(), wech);
+			Region.CACHE.remove(n.getCoordinates());
+			Region.CACHE.put(wech.getCoordinates(), wech);
 		}
-		for (Region n : g.getNachbarn()) {
-			if (n.getCoords().equals(e.getCoords())) continue;
+		for (Region n : g.getNeighbours()) {
+			if (n.getCoordinates().equals(e.getCoordinates())) continue;
 
 			Region wech = n.cloneAs(Ozean.class);
 			wech.setBauern(0);
 
-			Region.CACHE.remove(n.getCoords());
-			Region.CACHE.put(wech.getCoords(), wech);
+			Region.CACHE.remove(n.getCoordinates());
+			Region.CACHE.put(wech.getCoordinates(), wech);
 		}
 
 		getRegions().remove(e);
@@ -147,7 +147,7 @@ public class BauernWanderungTest extends TestBase {
 		e.setResource(Elefant.class, 0);
 		e.setSilber(e.getBauern() * 100);
 
-		Building b = Building.Create(Burg.class.getSimpleName(), e.getCoords());
+		Building b = Building.Create(Burg.class.getSimpleName(), e.getCoordinates());
 		b.setSize(250);
 		b.setName("Vermehrungsburg");
 
@@ -166,7 +166,7 @@ public class BauernWanderungTest extends TestBase {
 			if (!r.istBetretbar(null)) continue;
 
 			if (Random.W(10) > 5) {
-				Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+				Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 				b.setSize(2);
 				b.setName("Gutshaus");
 				if (Random.W(10) > 6) {
@@ -213,7 +213,7 @@ public class BauernWanderungTest extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

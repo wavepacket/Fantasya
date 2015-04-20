@@ -103,7 +103,7 @@ public class GruppenBuendnisfall {
         
         // alle Einheiten in Gruppen einsortieren:
         Unit somebody = eAngriffe.keySet().iterator().next();
-        Region r = Region.Load(somebody.getCoords());
+        Region r = Region.Load(somebody.getCoordinates());
         for (Unit u : r.getUnits()) {
             gbf.addToGruppe(u);
         }
@@ -156,19 +156,19 @@ public class GruppenBuendnisfall {
                 
             for (Gruppe kandidat : gbf.getAlleGruppen()) {
                 // unsere eigenen sollten vorher schon aufgenommen worden sein:
-                if (kandidat.getParteiNr() == verteidiger.getParteiNr()) continue;
+                if (kandidat.getFactionNr() == verteidiger.getFactionNr()) continue;
 
                 // Alliierte geben ihre Parteitarnung NICHT zugunsten der Hilfesuchenden auf -
                 // das Setzen einer Tarnpartei entzieht also Einheiten ihren Allianzpflichten.
                 if (!kandidat.istAuthentisch()) continue;
 
-                Partei maybe = Partei.getPartei(kandidat.getParteiNr());
-                if (maybe.hatAllianz(verteidiger.getParteiNr(), AllianzOption.Kaempfe)) {
+                Partei maybe = Partei.getFaction(kandidat.getFactionNr());
+                if (maybe.hatAllianz(verteidiger.getFactionNr(), AllianzOption.Kaempfe)) {
                     // Ausnahme, wenn der Verbündete den Hilfesuchenden selbst angreift:
                     boolean aktiverAngriffVonMaybe = false;
                     for (GruppenPaarung gp2 : gbf.befohleneAngriffe) {
-                        if ((gp2.getA().getParteiNr() == maybe.getNummer()) && gp2.getA().istAuthentisch()) {
-                            if (gp2.getB().getParteiNr() == verteidiger.getParteiNr()) {
+                        if ((gp2.getA().getFactionNr() == maybe.getNummer()) && gp2.getA().istAuthentisch()) {
+                            if (gp2.getB().getFactionNr() == verteidiger.getFactionNr()) {
                                 aktiverAngriffVonMaybe = true; 
                                 break;
                             } 

@@ -20,7 +20,7 @@ public class TestMsg extends Message
 	{
 		super();
 		if (Main.getBFlag("DEBUG") || Main.getBFlag("debug")) {
-            print(0, msg, Partei.getPartei(0));	// Owner == 0 signalisiert das System ^^
+            print(0, msg, Partei.getFaction(0));	// Owner == 0 signalisiert das System ^^
         }
 	}
 }

@@ -84,7 +84,7 @@ public class LehrenCrash extends TestBase {
             u.setSkill(Ausdauer.class, 1650 * u.getPersonen());
             u.Befehle.add("LEHRE " + schueler11);
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -118,7 +118,7 @@ public class LehrenCrash extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

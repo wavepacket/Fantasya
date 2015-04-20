@@ -24,7 +24,7 @@ public class BefehleKlassifizieren {
 				befehlCnt ++;
 			}
 			// Nur "weltliche" Einheiten zählen:
-			if (u.getCoords().getWelt() != 0) unitCnt ++;
+			if (u.getCoordinates().getZ() != 0) unitCnt ++;
         }
 		new SysMsg("BefehlsSpeicher: " + befehlCnt + " gültige Befehle (" + NumberFormat.getNumberInstance().format(befehlsZeichen) + " Zeichen) von " + unitCnt + " Einheiten interpretiert.");
 	}

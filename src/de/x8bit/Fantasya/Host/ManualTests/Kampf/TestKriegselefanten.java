@@ -66,7 +66,7 @@ public class TestKriegselefanten extends TestBase {
             
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
 
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

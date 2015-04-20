@@ -35,7 +35,7 @@ public class Holzfaellerhuette extends Building
 		int tw = u.Talentwert(Burgenbau.class);
 		if (tw < 3)
 		{
-			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoords());
+			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoordinates());
 			return;
 		}
 		

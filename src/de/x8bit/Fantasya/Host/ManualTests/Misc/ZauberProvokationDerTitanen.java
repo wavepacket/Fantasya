@@ -53,7 +53,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.setAura(11*11);
 			u.Befehle.add("ZAUBERE Provokation der Titanen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -69,7 +69,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.setAura(11*11);
 			u.Befehle.add("ZAUBERE Provokation der Titanen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -84,7 +84,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.setAura(11*11);
 			u.Befehle.add("ZAUBERE Provokation der Titanen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
 		// für die Magier 04, 05, 06:
@@ -103,7 +103,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.setAura(11*11);
 			u.Befehle.add("ZAUBERE Provokation der Titanen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         { // Ozean zu Sumpf (mit Schiff)
@@ -112,7 +112,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			r.setName(getName()+" R05");
 			getRegions().remove(r);
 
-			Ship s = Ship.Create(Boot.class.getSimpleName(), r.getCoords());
+			Ship s = Ship.Create(Boot.class.getSimpleName(), r.getCoordinates());
 			s.setName(getName() + "-Provokation-Boot");
 			s.setGroesse(s.getConstructionSize());
 
@@ -125,7 +125,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.setItem(Silber.class, 4000); // um das Boot nicht zu überladen
 			u.Enter(s);
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
 		// für die Magier 07, 08, 09:
@@ -144,7 +144,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.setAura(10*11); // zu wenig Aura
 			u.Befehle.add("ZAUBERE Provokation der Titanen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -160,7 +160,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.Befehle.add("ZAUBERE Provokation der Titanen");
 			u.setItem(Silber.class, 40); // zu wenig Silber
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -175,7 +175,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 			u.setAura(11*11);
 			u.Befehle.add("ZAUBERE Provokation der Titanen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
 
@@ -212,12 +212,12 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 01 - Sumpf zu Wüste
             if (tokens[1].equals("01")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (!(r instanceof Wueste)) {
 					retval = fail(tokens[1] + ": Region hat sich nicht in eine Wüste verwandelt.");
 				}
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -226,7 +226,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
                 }
                 if (!found) retval = fail(tokens[1] + ": Meldung über Aura-Verbrauch fehlt.");
 
-                messages = Message.Retrieve(null, u.getCoords(), null);
+                messages = Message.Retrieve(null, u.getCoordinates(), null);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -237,7 +237,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 02 - Ebene zu Hochland
             if (tokens[1].equals("02")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (!(r instanceof Hochland)) {
 					retval = fail(tokens[1] + ": Region hat sich nicht in ein Hochland verwandelt.");
 				}
@@ -249,7 +249,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 					retval = fail(tokens[1] + ": Es gibt nicht die erwarteten Stein-Vorkommen.");
 				}
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -258,7 +258,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
                 }
                 if (!found) retval = fail(tokens[1] + ": Meldung über Aura-Verbrauch fehlt.");
 
-                messages = Message.Retrieve(null, u.getCoords(), null);
+                messages = Message.Retrieve(null, u.getCoordinates(), null);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -269,7 +269,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 03 - Hochland zu Berge
             if (tokens[1].equals("03")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (!(r instanceof Berge)) {
 					retval = fail(tokens[1] + ": Region hat sich nicht in ein Gebirge verwandelt.");
 				}
@@ -283,7 +283,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 					retval = fail(tokens[1] + ": Es gibt nicht die erwarteten Stein-Vorkommen.");
 				}
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -292,7 +292,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
                 }
                 if (!found) retval = fail(tokens[1] + ": Meldung über Aura-Verbrauch fehlt.");
 
-                messages = Message.Retrieve(null, u.getCoords(), null);
+                messages = Message.Retrieve(null, u.getCoordinates(), null);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -303,7 +303,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 04 - Berge zu Gletscher
             if (tokens[1].equals("04")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (!(r instanceof Gletscher)) {
 					retval = fail(tokens[1] + ": Region hat sich nicht in einen Gletscher verwandelt.");
 				}
@@ -315,7 +315,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 					retval = fail(tokens[1] + ": Es gibt nicht die erwarteten Stein-Vorkommen.");
 				}
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -324,7 +324,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
                 }
                 if (!found) retval = fail(tokens[1] + ": Meldung über Aura-Verbrauch fehlt.");
 
-                messages = Message.Retrieve(null, u.getCoords(), null);
+                messages = Message.Retrieve(null, u.getCoordinates(), null);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -335,12 +335,12 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 05 - Ozean zu Sumpf, aus einem Boot heraus:
             if (tokens[1].equals("05")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (!(r instanceof Sumpf)) {
 					retval = fail(tokens[1] + ": Region hat sich nicht in einen Sumpf verwandelt.");
 				}
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -349,7 +349,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
                 }
                 if (!found) retval = fail(tokens[1] + ": Meldung über Aura-Verbrauch fehlt.");
 
-                messages = Message.Retrieve(null, u.getCoords(), null);
+                messages = Message.Retrieve(null, u.getCoordinates(), null);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -362,7 +362,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 07 - zu wenig Aura
             if (tokens[1].equals("07")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -374,7 +374,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 08 - zu wenig Silber
             if (tokens[1].equals("08")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {
@@ -386,7 +386,7 @@ public class ZauberProvokationDerTitanen extends TestBase {
 
             // unit 09 - zu wenig Talent
             if (tokens[1].equals("09")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {

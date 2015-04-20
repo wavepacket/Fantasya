@@ -94,24 +94,24 @@ public class Steuertuerme extends EVABase implements NotACommand
 //	 */
 //	private int Einkommen(Unit steuerpflichtiger, Unit finanzbeamter)
 //	{
-//		Partei staat = Partei.getPartei(finanzbeamter.getOwner());
+//		Partei staat = Partei.getFaction(finanzbeamter.getOwner());
 //		Steuer s = staat.getSteuern(steuerpflichtiger.getOwner());
 //		int e = (int) ((float) haendler.get(steuerpflichtiger) * ((float)s.getRate() / 100.0));
 //		return e == 0 ? 1 : e;
 //	}
 	
-	private Set<Partei> getParteien(SortedSet<Unit> units) {
+	private Set<Partei> getFactionen(SortedSet<Unit> units) {
 		Set<Partei> retval = new HashSet<Partei>();
 		for (Unit u : units) {
-			retval.add(Partei.getPartei(u.getOwner()));
+			retval.add(Partei.getFaction(u.getOwner()));
 		}
 		return retval;
 	}
 
-	private Set<Partei> getParteien(Set<Unit> units) {
+	private Set<Partei> getFactionen(Set<Unit> units) {
 		SortedSet<Unit> unitList = new TreeSet<Unit>();
 		unitList.addAll(units);
-		return getParteien(unitList);
+		return getFactionen(unitList);
 	}
 
 	public boolean DoAction(Unit u, String[] befehl) { return false; }
@@ -119,7 +119,7 @@ public class Steuertuerme extends EVABase implements NotACommand
 		Set<Region> regions = new HashSet<Region>();
 		for (Building b : Building.PROXY) {
 			if (b.getClass() == Steuerturm.class) {
-				regions.add(Region.Load(b.getCoords()));
+				regions.add(Region.Load(b.getCoordinates()));
 			}
 		}
 
@@ -130,7 +130,7 @@ public class Steuertuerme extends EVABase implements NotACommand
 			// Ausnahme! Nicht für diese Klasse suchen, sondern (nochmal)
 			// für SteuernErpressen.class
 			List<Einzelbefehl> befehle =
-					BefehlsSpeicher.getInstance().get(SteuernErpressen.class, r.getCoords());
+					BefehlsSpeicher.getInstance().get(SteuernErpressen.class, r.getCoordinates());
 
 			// alle Steuerbeamten sammeln:
 			treiber = new TreeSet<Unit>();
@@ -156,7 +156,7 @@ public class Steuertuerme extends EVABase implements NotACommand
 
 
 
-			Set<Partei> besteuerer = getParteien(treiber);
+			Set<Partei> besteuerer = getFactionen(treiber);
 
 			haendler = new HashMap<Unit, Integer>();
 			// sammelt alle Händler in der Region ... Händler sind alle Einheiten
@@ -168,7 +168,7 @@ public class Steuertuerme extends EVABase implements NotACommand
 			}
 			new Debug(haendler.size() + " Händler");
 
-			Set<Partei> besteuerte = getParteien(haendler.keySet());
+			Set<Partei> besteuerte = getFactionen(haendler.keySet());
 
 			// alle Tribut-Paarungen bestimmen:
 			tribute = new HashSet<TributVerhaeltnis>();
@@ -288,7 +288,7 @@ public class Steuertuerme extends EVABase implements NotACommand
 					new Info(u + " muss bei einem effektiven Steuersatz von "
 							+ nf.format(tv.getSteuersatzEffektiv()) + " "
 							+ steuer + " Silber an " + tv.getNehmer() + " zahlen.",
-							u, u.getCoords()
+							u, u.getCoordinates()
 					);
 				}
 			}
@@ -307,7 +307,7 @@ public class Steuertuerme extends EVABase implements NotACommand
 					new Info(u + " treibt bei einem effektiven Steuersatz von " 
 							+ nf.format(tv.getSteuersatzEffektiv()) + " "
 							+ einnahmen + " Silber von " + tv.getGeber() + " ein.",
-							u, u.getCoords()
+							u, u.getCoordinates()
 					);
 				}
 			}

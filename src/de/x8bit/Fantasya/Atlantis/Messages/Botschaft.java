@@ -14,7 +14,7 @@ public class Botschaft extends Message
 
 	public Botschaft(Unit von, Unit an, String msg) {
 		super();
-		print(0, "Botschaft von " + von + ": " + msg, an.getCoords(), an);
+		print(0, "Botschaft von " + von + ": " + msg, an.getCoordinates(), an);
 	}
 	
 	/**
@@ -27,12 +27,12 @@ public class Botschaft extends Message
 		super();
 		String absender = null;
         if (von != null) {
-            absender = Partei.getPartei(von.getOwner()).toString();
+            absender = Partei.getFaction(von.getOwner()).toString();
             if (von.getTarnPartei() != von.getOwner()) {
                 if (von.getTarnPartei() == 0) {
                     absender = "irgendwem";
                 } else {
-                    Partei tp = Partei.getPartei(von.getTarnPartei());
+                    Partei tp = Partei.getFaction(von.getTarnPartei());
                     if (tp == null) {
                         // ?
                         absender = "irgendwem";
@@ -47,7 +47,7 @@ public class Botschaft extends Message
         
         if (von != null) {
 			print(0, "Überall sind Aushänge von " + absender + " an " + an + " angenagelt: " + msg,
-					Partei.getPartei(0), von.getCoords());
+					Partei.getFaction(0), von.getCoordinates());
         } else {
             // von == null  -  das sind Botschaften vom Spiel and den Spieler:
             print(0, msg, an);
@@ -62,12 +62,12 @@ public class Botschaft extends Message
 	 */
 	public Botschaft(Unit von, Region r, String msg) {
 		super();
-		String absender = Partei.getPartei(von.getOwner()).toString();
+		String absender = Partei.getFaction(von.getOwner()).toString();
         if (von.getTarnPartei() != von.getOwner()) {
             if (von.getTarnPartei() == 0) {
                 absender = "irgendwem";
             } else {
-                Partei tp = Partei.getPartei(von.getTarnPartei());
+                Partei tp = Partei.getFaction(von.getTarnPartei());
                 if (tp == null) {
                     // ?
                     absender = "irgendwem";
@@ -80,12 +80,12 @@ public class Botschaft extends Message
 		// for (Partei p : r.anwesendeParteien()) {
 			// txt, (keine!) partei, (keine!) unit, coords:
 //			print(0, "Herolde von " + absender + " verkünden: 'An alle: " + msg + "'",
-//					Partei.getPartei(0), r.getCoords());
+//					Partei.getFaction(0), r.getCoordinates());
 		// }
         
         for(Partei p : r.anwesendeParteien()) {
         	if (p.getNummer() != von.getOwner()) {
-        		print(0, "Herolde von " + absender + " verkünden: 'An alle, " + msg + "'", p, r.getCoords());
+        		print(0, "Herolde von " + absender + " verkünden: 'An alle, " + msg + "'", p, r.getCoordinates());
         	}
         }
 	}

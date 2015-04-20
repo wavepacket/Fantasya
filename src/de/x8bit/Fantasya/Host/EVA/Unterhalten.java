@@ -57,7 +57,7 @@ public class Unterhalten extends EVABase {
 	}
 	
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
         int wants = 0;
 		// alle Unterhalter sammeln
@@ -79,11 +79,11 @@ public class Unterhalten extends EVABase {
                     wants += weWant;
                     u.wants = weWant;	// falls der Befehl doppelt auftaucht ^^
                 } else {
-                    new Fehler(u + " - die Region wird von Nicht-Alliierten Einheiten bewacht.", u, u.getCoords());
+                    new Fehler(u + " - die Region wird von Nicht-Alliierten Einheiten bewacht.", u, u.getCoordinates());
                     eb.setError();
                 }
             } else {
-                new Fehler(u + " hat keine Idee wie die Bevölkerung unterhalten werden soll.", u, u.getCoords());
+                new Fehler(u + " hat keine Idee wie die Bevölkerung unterhalten werden soll.", u, u.getCoordinates());
                 eb.setError();
             }
             eb.setPerformed();

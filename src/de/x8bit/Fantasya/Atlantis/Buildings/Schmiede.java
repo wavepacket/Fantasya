@@ -35,15 +35,15 @@ public class Schmiede extends Building
 		int tw = u.Talentwert(Burgenbau.class);
 		if (tw < 4)
 		{
-			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoords());
+			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoordinates());
 			return;
 		}
 		
 		// zusätzlichen Gebäude testen
-		Region region = Region.Load(u.getCoords());
+		Region region = Region.Load(u.getCoordinates());
 		if (!region.hatGebaeude(Burg.class, 50, u))
 		{
-			new Fehler(u + " - in " + region + " fehlt ein Schloss um " + getTyp() + " bauen zu können", u, u.getCoords());
+			new Fehler(u + " - in " + region + " fehlt ein Schloss um " + getTyp() + " bauen zu können", u, u.getCoordinates());
 			return;
 		}
 		

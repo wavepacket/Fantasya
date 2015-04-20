@@ -134,13 +134,13 @@ public class TestHelfe extends TestBase {
             // "fremde" Einheiten überspringen.
             if (!u.getName().startsWith(this.getName())) continue;
 
-            Partei partei = Partei.getPartei(u.getOwner());
+            Partei partei = Partei.getFaction(u.getOwner());
 			String[] tokens = u.getName().split("\\ ");
 
             // unit 01
             if (tokens[1].equals("01")) {
-				Partei b = Partei.getPartei(Codierung.fromBase36(tokens[2]));
-				Partei c = Partei.getPartei(Codierung.fromBase36(tokens[3]));
+				Partei b = Partei.getFaction(Codierung.fromBase36(tokens[2]));
+				Partei c = Partei.getFaction(Codierung.fromBase36(tokens[3]));
 
 				if (c != null) {
 					retval = fail(tokens[1] + ": Partei C ist noch vorhanden - STIRB nicht korrekt ausgeführt.");
@@ -176,7 +176,7 @@ public class TestHelfe extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-				Partei a = Partei.getPartei(Codierung.fromBase36(tokens[2]));
+				Partei a = Partei.getFaction(Codierung.fromBase36(tokens[2]));
 
 				if (a == null) {
 					retval = fail(tokens[1] + ": Partei A ist nicht vorhanden.");

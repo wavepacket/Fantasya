@@ -109,7 +109,7 @@ public class Burg extends Building {
 		// nochmal holen ... ist größer als Null
 		int tw = u.Talentwert(Burgenbau.class);
 		if (tw < NeededTalent()) {
-			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen.", u, u.getCoords());
+			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen.", u, u.getCoordinates());
 			return;
 		}
 
@@ -123,7 +123,7 @@ public class Burg extends Building {
 				item.setAnzahl(item.getAnzahl() - 1);
 				build++;
 			} else {
-				new Fehler("Keine Steine mehr vorhanden auf der Baustelle von " + this + ".", u, u.getCoords());
+				new Fehler("Keine Steine mehr vorhanden auf der Baustelle von " + this + ".", u, u.getCoordinates());
 				break;
 			}
 		}

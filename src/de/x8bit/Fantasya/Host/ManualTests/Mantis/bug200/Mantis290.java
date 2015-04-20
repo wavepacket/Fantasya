@@ -45,10 +45,10 @@ public class Mantis290 extends TestBase {
         Region r2 = null;
 
         for (Region maybe : tw.nurBetretbar(getRegions())) {
-            r1 = Region.Load(maybe.getCoords().shift(Richtung.Osten));
+            r1 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
             if (!r1.istBetretbar(null)) continue;
 			if (!(r1 instanceof Sumpf)) continue;
-            r2 = Region.Load(r1.getCoords().shift(Richtung.Osten));
+            r2 = Region.Load(r1.getCoordinates().shiftDirection(Richtung.Osten));
             if (!r2.istBetretbar(null)) continue;
 
             // gotcha!
@@ -67,7 +67,7 @@ public class Mantis290 extends TestBase {
 			r2.setStrassensteine(Richtung.Westen, r2.getSteineFuerStrasse());
 
 			Unit u = this.createUnit(p, r);
-			u.setName(this.getName() + " 01 " + r2.getCoords().getX() + " " + r2.getCoords().getY() + " Straßengeher");
+			u.setName(this.getName() + " 01 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY() + " Straßengeher");
 			u.setPersonen(15);
 			u.setSkill(Reiten.class, 630 * u.getPersonen());
 			u.setItem(Elefant.class, 45);
@@ -92,7 +92,7 @@ public class Mantis290 extends TestBase {
 			u.setItem(Schwert.class, u.getPersonen());
 			u.Befehle.add("BEWACHE");
 
-			new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+			new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -124,12 +124,12 @@ public class Mantis290 extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = this.fail(tokens[1] + ": Ist nicht in der erwarteten Region.");
                 }
 
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

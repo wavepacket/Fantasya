@@ -26,10 +26,10 @@ public class Spionage extends TestBase {
 //		Unit v5 = createVictim(tw, r, 5);		// Aufpasser bei anderer Partei
 
         Unit a1 = createAgent(tw, r, null, 1);								// kein Talent
-        Unit a2 = createAgent(tw, r, Partei.getPartei(a1.getOwner()), 2);	// kein Aufpasser
-        Unit a3 = createAgent(tw, r, Partei.getPartei(a1.getOwner()), 3);	// Aufpasser dumm
-        Unit a4 = createAgent(tw, r, Partei.getPartei(a1.getOwner()), 4);	// Aufpasser gleich
-        Unit a5 = createAgent(tw, r, Partei.getPartei(a1.getOwner()), 5);	// Aufpasser besser
+        Unit a2 = createAgent(tw, r, Partei.getFaction(a1.getOwner()), 2);	// kein Aufpasser
+        Unit a3 = createAgent(tw, r, Partei.getFaction(a1.getOwner()), 3);	// Aufpasser dumm
+        Unit a4 = createAgent(tw, r, Partei.getFaction(a1.getOwner()), 4);	// Aufpasser gleich
+        Unit a5 = createAgent(tw, r, Partei.getFaction(a1.getOwner()), 5);	// Aufpasser besser
         
         // kein Talent
         // -- zwischen a1 und v1

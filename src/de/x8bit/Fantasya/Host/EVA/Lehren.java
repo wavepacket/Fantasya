@@ -42,7 +42,7 @@ public class Lehren extends EVABase
     }
 	
 	public void DoAction(Region r, String dummy) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -103,7 +103,7 @@ public class Lehren extends EVABase
                 }
 				// KONTAKT soll nicht nötig sein (Mantis #302 - http://www.fantasya-pbem.de/mantis/view.php?id=302 )
 //                if (!schueler.hatKontakt(u, AllianzOption.Kontaktiere)) {
-//                    new Fehler(schueler + " hat keinen Kontakt zu uns.", u, u.getCoords());
+//                    new Fehler(schueler + " hat keinen Kontakt zu uns.", u, u.getCoordinates());
 //                    eb.setError();
 //                    continue;
 //                }

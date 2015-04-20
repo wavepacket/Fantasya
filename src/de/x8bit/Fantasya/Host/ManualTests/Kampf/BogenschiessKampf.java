@@ -54,7 +54,7 @@ public class BogenschiessKampf extends TestBase {
 
 
 
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
 
         {
@@ -84,7 +84,7 @@ public class BogenschiessKampf extends TestBase {
 
 
 
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
 
     }

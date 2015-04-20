@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.ZAT.Battle.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Items.Pegasus;
 import de.x8bit.Fantasya.Atlantis.Items.Schwert;
@@ -13,12 +12,14 @@ import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Skills.Hiebwaffen;
 import de.x8bit.Fantasya.Atlantis.Skills.Reiten;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.CommandLineArg;
 import de.x8bit.Fantasya.Host.EVA.Kriege;
 import de.x8bit.Fantasya.Host.EVA.util.BefehleKlassifizieren;
 import de.x8bit.Fantasya.Host.Main;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -486,22 +487,24 @@ public class KampfSimulator implements CommandLineArg {
         
         Unit.CACHE.clear();
         BefehlsSpeicher.getInstance().clear();
-        Partei.PROXY.clear();
+        Partei.clearPlayerFactionList();
         Region.CACHE.clear();
 
+        // p0 = Partei.OMNI_FACTION;
+        /*
         Partei p0 = new Partei();
         p0.setNummer(0);
         p0.setEMail("noone@foo.bar");
         p0.setMonster(1);
         p0.setRasse("Monster");
-        Partei.PROXY.add(p0);
-
+        Partei.PROXY.add(p0); 
+        */
 
         Region r = new Ebene();
         r.setName("KampfSimulatorenland");
-        r.setCoords(new Coords(0, 0, 1));
+        r.setCoordinates(Coordinates.create(0, 0, 1));
         r.Init();
-        Region.CACHE.put(r.getCoords(), r);
+        Region.CACHE.put(r.getCoordinates(), r);
 
         KampfAufstellung ka = new KampfAufstellung(filename); // arg ist hier dann ein Dateiname
 
@@ -510,8 +513,8 @@ public class KampfSimulator implements CommandLineArg {
         ua.BefehleExperimental.add(ua, "ATTACKIERE " + ub.getNummerBase36());
         ub.BefehleExperimental.add(ub, "ATTACKIERE " + ua.getNummerBase36());
 
-        pa = Partei.getPartei(ua.getOwner());
-        pb = Partei.getPartei(ub.getOwner());
+        pa = Partei.getFaction(ua.getOwner());
+        pb = Partei.getFaction(ub.getOwner());
 
 
         // den coeff anwenden:
@@ -568,13 +571,13 @@ public class KampfSimulator implements CommandLineArg {
         // System.out.println("Setup der Norm-Truppe mit Koeffizient " + coeff);
 
 		
-//		Unit a = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-        Unit b = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-//        Unit c = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-//        Unit d = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+//		Unit a = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+        Unit b = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+//        Unit c = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+//        Unit d = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 
         // Burgen-Test:
-//		Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+//		Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 //		burg.setName("Zitadelle");
 //		burg.setSize(2500);
 //        a.Enter(burg); b.Enter(burg); c.Enter(burg); d.Enter(burg);
@@ -635,7 +638,7 @@ public class KampfSimulator implements CommandLineArg {
     }
 
     public void setupHerausForderer(Partei p, Region r) {
-//        Unit b0 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+//        Unit b0 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 //        
 //        b0.setName("B0");
 //        b0.setPersonen((int)Math.round(100));
@@ -647,7 +650,7 @@ public class KampfSimulator implements CommandLineArg {
 //        b0.setSkill(Ausdauer.class, b0.getPersonen() * Skill.LerntageFuerTW(3));
 //        b0.setKampfposition(Kampfposition.Vorne);
 
-        Unit b1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+        Unit b1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
         
         b1.setName("B1");
         b1.setPersonen((int)Math.round(100));
@@ -660,14 +663,14 @@ public class KampfSimulator implements CommandLineArg {
         b1.setKampfposition(Kampfposition.Vorne);
 
         // Taktiker:
-//        Unit b1 = Unit.CreateUnit(challenge.getRasse(), challenge.getNummer(), r.getCoords());
+//        Unit b1 = Unit.CreateUnit(challenge.getRasse(), challenge.getNummer(), r.getCoordinates());
 //        b1.setName("B1");
 //        b1.setPersonen(1); // skaliert nicht!
 //        b1.setSkill(Taktik.class, b1.getPersonen() * 450);
 //        b1.setKampfposition(Kampfposition.Hinten);
 
         // Schützen:
-//        Unit b1 = Unit.CreateUnit(challenge.getRasse(), challenge.getNummer(), r.getCoords());
+//        Unit b1 = Unit.CreateUnit(challenge.getRasse(), challenge.getNummer(), r.getCoordinates());
 //        b1.setName("B1");
 //        b1.setPersonen((int)Math.round(55 * coeff));
 //        b1.setItem(Armbrust.class, b1.getPersonen());
@@ -675,7 +678,7 @@ public class KampfSimulator implements CommandLineArg {
 //        b1.setKampfposition(Kampfposition.Hinten);
 		
 		// Höllenhunde:
-//        Unit b0 = Unit.CreateUnit("Hoellenhund", p.getNummer(), r.getCoords());
+//        Unit b0 = Unit.CreateUnit("Hoellenhund", p.getNummer(), r.getCoordinates());
 //        
 //        b0.setName("B0");
 //        b0.setPersonen((int)Math.round(10));
@@ -688,8 +691,8 @@ public class KampfSimulator implements CommandLineArg {
         // System.out.println("Setup der Norm-Truppe mit Koeffizient " + coeff);
 
         /*
-        Unit a = Unit.CreateUnit(pa.getRasse(), pa.getNummer(), r.getCoords());
-        Unit b = Unit.CreateUnit(pb.getRasse(), pb.getNummer(), r.getCoords());
+        Unit a = Unit.CreateUnit(pa.getRasse(), pa.getNummer(), r.getCoordinates());
+        Unit b = Unit.CreateUnit(pb.getRasse(), pb.getNummer(), r.getCoordinates());
 
         a.setName("A-Kämpfer");
         b.setName("B-Kämpfer");
@@ -712,7 +715,7 @@ public class KampfSimulator implements CommandLineArg {
 
     private void evaluateSingle(int runde) {
         for (String name : watchlist) {
-            for (Partei p : Partei.PROXY) {
+            for (Partei p : Partei.getPlayerFactionList()) {
                 if (!p.getName().equalsIgnoreCase(name)) continue;
 
                 int cnt = 0;
@@ -723,6 +726,37 @@ public class KampfSimulator implements CommandLineArg {
                 }
 
                 if (!survivors.containsKey(runde)) {
+					survivors.put(runde, new HashMap<String, Integer>());
+				}
+
+                survivors.get(runde).put(name, cnt);
+            }
+            for (Partei p : Partei.getNPCFactionList()) {
+                if (!p.getName().equalsIgnoreCase(name)) continue;
+
+                int cnt = 0;
+                for (Unit u : Unit.CACHE) {
+                    if (u.getOwner() != p.getNummer()) continue;
+
+                    cnt += u.getPersonen();
+                }
+
+                if (!survivors.containsKey(runde)) {
+					survivors.put(runde, new HashMap<String, Integer>());
+				}
+
+                survivors.get(runde).put(name, cnt);
+            }
+            
+            if (Partei.OMNI_FACTION.getName().equalsIgnoreCase(name)) {
+            	int cnt = 0;
+            	for (Unit u : Unit.CACHE) {
+                    if (u.getOwner() != Partei.OMNI_FACTION.getNummer()) continue;
+
+                    cnt += u.getPersonen();
+                }
+            	
+            	if (!survivors.containsKey(runde)) {
 					survivors.put(runde, new HashMap<String, Integer>());
 				}
 

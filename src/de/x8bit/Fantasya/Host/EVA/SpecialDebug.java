@@ -3,11 +3,11 @@ package de.x8bit.Fantasya.Host.EVA;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.DeepDebug;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 
@@ -27,14 +27,14 @@ public class SpecialDebug extends EVABase implements NotACommand
 	{
 		super("SpecialDebug - " + debugStep(step));
 
-		ListResources(new Coords(1, -12, 1));	// 11g
-//		ListResources(new Coords(2, -13, 1));	// c7
-//		ListResources(new Coords(2, -12, 1));	// c9
-//		ListResources(new Coords(3, -12, 1));	// g
-//		ListResources(new Coords(4, -12, 1));	// sk
+		ListResources(Coordinates.create(1, -12, 1));	// 11g
+//		ListResources(new Coordinates(2, -13, 1));	// c7
+//		ListResources(new Coordinates(2, -12, 1));	// c9
+//		ListResources(new Coordinates(3, -12, 1));	// g
+//		ListResources(new Coordinates(4, -12, 1));	// sk
 	}
 	
-	private void ListResources(Coords coords)
+	private void ListResources(Coordinates coords)
 	{
 		Datenbank db = new Datenbank("SpecialDebug");
 		db.myQuery = "SELECT anzahl, resource FROM resourcen WHERE " + coords.Where(false);

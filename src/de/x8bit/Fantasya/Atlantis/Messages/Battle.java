@@ -13,7 +13,7 @@ public class Battle extends Message {
 	public Battle(String msg, Unit u)
 	{
 		super();
-        print(0, msg, u.getCoords(), u);
+        print(0, msg, u.getCoordinates(), u);
 	}
 	
 	public Battle(String msg, Partei p) {

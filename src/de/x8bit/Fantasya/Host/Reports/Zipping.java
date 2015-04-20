@@ -10,15 +10,12 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.mail.MessagingException;
-
 import de.x8bit.Fantasya.Atlantis.Partei;
-import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.GameRules;
-import de.x8bit.Fantasya.util.net.SMTPConnector;
+// import de.x8bit.Fantasya.util.net.SMTPConnector;
 
 /**
  * Ob wirklich e-mails versendet werden, wird über
@@ -67,10 +64,11 @@ public class Zipping
 				while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
 				in.close();
 			}
-			if (p.getMonster() > 1)	{
+			if (!p.isPlayerFaction())	{
 				InputStream in = null;
-				if (p.getMonster() == 2) in = new BufferedInputStream(new FileInputStream("world.xml")); // TODO geo.xml
-				if (p.getMonster() == 3) in = new BufferedInputStream(new FileInputStream("world.xml"));
+				in = new BufferedInputStream(new FileInputStream("world.xml"));
+				//if (p.getMonster() == 2) in = new BufferedInputStream(new FileInputStream("world.xml")); // TODO geo.xml
+				//if (p.getMonster() == 3) in = new BufferedInputStream(new FileInputStream("world.xml"));
 				out.putNextEntry(new ZipEntry("monster.xml"));
 				int len;
 				while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
@@ -88,21 +86,6 @@ public class Zipping
 		} catch (IOException e) 
 		{
 			new SysErr(e.toString());
-		}
-		
-		if (p.getEMail().length() == 0) {
-			new SysMsg("Partei " + p + " hat keine E-Mail-Adresse - der Report wird nicht verschickt.");
-			return;
-		}
-
-		SMTPConnector conn = new SMTPConnector();
-		File zip = new File("zip/" + GameRules.getRunde() + "/" + p.getNummerBase36() + ".zip");
-		try {
-			conn.sendReport(p, zip);
-		} catch (IOException ex) {
-			new BigError(ex);
-		} catch (MessagingException ex) {
-			new BigError(ex);
 		}
 	}
 

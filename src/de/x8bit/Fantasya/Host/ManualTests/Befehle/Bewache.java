@@ -3,7 +3,6 @@ package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -13,8 +12,10 @@ import de.x8bit.Fantasya.Atlantis.Items.Schwert;
 import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Hiebwaffen;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
+
 import java.util.Collection;
 
 /**
@@ -31,7 +32,7 @@ public class Bewache extends TestBase {
 			Region r = this.getTestWorld().nurBetretbar(getRegions()).get(0);
 			getRegions().remove(r);
 			
-            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setSize(10);
 
 			Unit u = this.createUnit(p, r);
@@ -64,7 +65,7 @@ public class Bewache extends TestBase {
 			u.Befehle.add("LERNE Hiebwaffen");
 
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -98,7 +99,7 @@ public class Bewache extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, (Coords)null, u); // Die Koordinaten können sich durch NACH geändert haben!
+                messages = Message.Retrieve(p, (Coordinates)null, u); // Die Koordinaten können sich durch NACH geändert haben!
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -116,7 +117,7 @@ public class Bewache extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(p, (Coords)null, u); // Die Koordinaten können sich durch NACH geändert haben!
+                messages = Message.Retrieve(p, (Coordinates)null, u); // Die Koordinaten können sich durch NACH geändert haben!
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -129,7 +130,7 @@ public class Bewache extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(p, (Coords)null, u); // Die Koordinaten können sich durch NACH geändert haben!
+                messages = Message.Retrieve(p, (Coordinates)null, u); // Die Koordinaten können sich durch NACH geändert haben!
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

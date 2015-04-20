@@ -51,7 +51,7 @@ public class SteuernErpressen extends EVABase
 	
     @Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Unit u : r.getUnits()) u.wants = 0; // reset für alle, sonst kann aus früheren Phasen was durchkommen.
 

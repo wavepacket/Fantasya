@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Spell;
@@ -17,6 +17,7 @@ import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
 import de.x8bit.Fantasya.Host.EVA.Kommentare;
 import de.x8bit.Fantasya.Host.EVA.util.BefehlsMuster.Art;
+
 import java.util.Collections;
 
 /**
@@ -26,7 +27,7 @@ import java.util.Collections;
  * @author hapebe
  */
 public class Einzelbefehl {
-    final Coords coords;
+    final Coordinates coords;
 	final Unit unit;
 	final String befehl;
 	int sortRank;
@@ -59,14 +60,14 @@ public class Einzelbefehl {
     protected List<Region> reise = null;
 
 	public Einzelbefehl(Unit u, String befehl) {
-        this(u, u.getCoords(), befehl, u.BefehleExperimental.size());
+        this(u, u.getCoordinates(), befehl, u.BefehleExperimental.size());
     }
 
     public Einzelbefehl(Unit u, String befehl, int sortRank) {
-        this(u, u.getCoords(), befehl, sortRank);
+        this(u, u.getCoordinates(), befehl, sortRank);
     }
 
-	public Einzelbefehl(Unit u, Coords c, String befehl, int sortRank) {
+	public Einzelbefehl(Unit u, Coordinates c, String befehl, int sortRank) {
 		if (befehl.trim().isEmpty()) {
 			new SysErr("Leerer String als Befehl für " + u + " in " + c + "?");
 		}
@@ -167,7 +168,7 @@ public class Einzelbefehl {
 		return unit;
 	}
 
-	public Coords getCoords() {
+	public Coordinates getCoordinates() {
 		return coords;
 	}
 

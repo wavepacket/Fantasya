@@ -1,7 +1,8 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,12 +12,12 @@ import java.util.List;
  *
  * @author hapebe
  */
-public class StartPosition extends HashSet<Coords> {
+public class StartPosition extends HashSet<Coordinates> {
 	private static final long serialVersionUID = -6393701701859960211L;
-	protected Coords zentrum;
+	protected Coordinates zentrum;
 
 	@Override
-	public boolean add(Coords e) {
+	public boolean add(Coordinates e) {
 		if (this.size() < 3) return super.add(e);
 		return false;
 	}
@@ -29,28 +30,28 @@ public class StartPosition extends HashSet<Coords> {
 		return false;
 	}
 
-	public void setZentrum(Coords c) {
+	public void setZentrum(Coordinates c) {
 		if (!this.contains(c)) throw new IllegalArgumentException("Koordinate " + c + " gehört nicht zu dieser Startposition.");
 		zentrum = c;
 	}
 
-	public Coords getZentrum() {
+	public Coordinates getZentrum() {
 		return zentrum;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public String toString() {
-		List<Coords> me = new ArrayList<Coords>();
+		List<Coordinates> me = new ArrayList<Coordinates>();
 		me.addAll(this);
 		Collections.sort(me);
 
 		List<String> parts = new ArrayList<String>();
-		for (Coords c : me) {
+		for (Coordinates c : me) {
 			if (c.equals(getZentrum())) {
-				parts.add("C" + c.xy());
+				parts.add("C" + c.toString(false));
 			} else {
-				parts.add(c.xy());
+				parts.add(c.toString(false));
 			}
 		}
 

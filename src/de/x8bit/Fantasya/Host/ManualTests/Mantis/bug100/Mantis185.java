@@ -27,12 +27,12 @@ public class Mantis185 extends TestBase {
 
 		{ // eigentlicher Bug
 			// Lehrer
-			Unit l1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit l2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+			Unit l1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit l2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 			// Schüler
-			Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+			Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 
 			l1.setName("Lehrer 1"); l2.setName("Lehrer 2");
 			s1.setName("Schüler 1"); s2.setName("Schüler 2"); s3.setName("Schüler 3");
@@ -66,12 +66,12 @@ public class Mantis185 extends TestBase {
 
 		{ // Gegencheck:
 			// Lehrer
-			Unit l1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit l2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+			Unit l1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit l2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 			// Schüler
-			Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+			Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 
 			l1.setName("Lehrer 1"); l2.setName("Lehrer 2");
 			s1.setName("Schüler 1"); s2.setName("Schüler 2"); s3.setName("Schüler 3");
@@ -105,13 +105,13 @@ public class Mantis185 extends TestBase {
 
 		{ // Gegencheck 2:
 			// Lehrer
-			Unit l1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit l2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit l3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+			Unit l1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit l2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit l3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 			// Schüler
-			Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
-			Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+			Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
+			Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 
 			l1.setName("Lehrer 1 - TW zu niedrig für 1 und 2"); l2.setName("Lehrer 2");  l3.setName("Lehrer 3");
 			s1.setName("Schüler 1"); s2.setName("Schüler 2"); s3.setName("wird von Lehrer 1 gelehrt");
@@ -146,7 +146,7 @@ public class Mantis185 extends TestBase {
 			s3.setLongOrder("LERNE Wahrnehmung");
 		}
 
-		new Info("Mantis #185 Setup in " + r + " " + r.getCoords() + ".", p);
+		new Info("Mantis #185 Setup in " + r + " " + r.getCoordinates() + ".", p);
 	}
 
     @Override

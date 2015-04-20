@@ -42,7 +42,7 @@ public class Greif extends Monster
 	@Override
 	public void planMonster()
 	{
-        Region region = Region.Load(getCoords());
+        Region region = Region.Load(getCoordinates());
 		if (region instanceof Gletscher) Family(); else Movement();
         
         if (this.getPersonen() == 1) {
@@ -90,12 +90,12 @@ public class Greif extends Monster
         
 //		new SysMsg(" - Bewegung " + this);
 		String direction = Richtung.random().getShortcut();
-		Region next = Region.Load(getCoords().shift(Richtung.getRichtung(direction)));
+		Region next = Region.Load(getCoordinates().shiftDirection(Richtung.getRichtung(direction)));
 		int versuch = 0;
 		while(!next.istBetretbar(null) || ((next instanceof Gletscher) && (next.containsRace(Greif.class))))
 		{
 			direction = Richtung.random().getShortcut();
-			next = Region.Load(getCoords().shift(Richtung.getRichtung(direction)));
+			next = Region.Load(getCoordinates().shiftDirection(Richtung.getRichtung(direction)));
 			if (versuch++ > 10)	{
 				new SysMsg(this + " hat keine Richtung zum Bewegen gefunden -> Abgebrochen");
 				return;
@@ -110,10 +110,10 @@ public class Greif extends Monster
 	private void Fraction()
 	{
 //		new SysMsg(" - Fraction -> " + this);
-		Unit greif = spawnGreif(Region.Load(getCoords())); // einen "Noob" spawnen
+		Unit greif = spawnGreif(Region.Load(getCoordinates())); // einen "Noob" spawnen
 		setPersonen(getPersonen() - greif.getPersonen());
 		String direction = Richtung.random().getShortcut();
-		Region next = Region.Load(getCoords().shift(Richtung.getRichtung(direction)));
+		Region next = Region.Load(getCoordinates().shiftDirection(Richtung.getRichtung(direction)));
 		int versuch = 0;
 		while(!next.istBetretbar(null))
 		{
@@ -122,7 +122,7 @@ public class Greif extends Monster
 				break;
 			}
 			direction = Richtung.random().getShortcut();
-			next = Region.Load(getCoords().shift(Richtung.getRichtung(direction)));
+			next = Region.Load(getCoordinates().shiftDirection(Richtung.getRichtung(direction)));
         }
 		greif.Befehle.add("NACH " + direction);
 	}
@@ -154,7 +154,7 @@ public class Greif extends Monster
 	private static Unit spawnGreif(Region region)
 	{
 		// Greif erstellenvalue
-		Unit greif = Unit.CreateUnit("Greif", Codierung.fromBase36("tier"), region.getCoords());
+		Unit greif = Unit.CreateUnit("Greif", Codierung.fromBase36("tier"), region.getCoordinates());
 		greif.setPersonen(Random.rnd(GameRules.Monster.TIER.Greif.PersonsMin(), GameRules.Monster.TIER.Greif.PersonsMax()));
 		greif.setSkill(Speerkampf.class, Random.rnd(GameRules.Monster.TIER.Greif.SpeerkampfMin(), GameRules.Monster.TIER.Greif.SpeerkampfMax()));
 		greif.setSkill(Hiebwaffen.class, Random.rnd(GameRules.Monster.TIER.Greif.HiebwaffenMin(), GameRules.Monster.TIER.Greif.HiebwaffenMax()));
@@ -218,12 +218,12 @@ public class Greif extends Monster
 	public boolean actionUnterhalt() {
         // wieviele Greife sind hier außer uns?
         int n=0;
-        for (Unit u : Region.Load(getCoords()).getUnits()) if (u instanceof Greif) n += u.getPersonen();
+        for (Unit u : Region.Load(getCoordinates()).getUnits()) if (u instanceof Greif) n += u.getPersonen();
         
         if (n > 250) {
             // das sieht schlecht aus:
             if (Random.W(6) < 6) {
-                new Info(getPersonen() + " " + this + " sind verhungert.", Region.Load(getCoords()));
+                new Info(getPersonen() + " " + this + " sind verhungert.", Region.Load(getCoordinates()));
                 setPersonen(0);
                 setLebenspunkte(0);
                 setItem(Greifenei.class, 0);
@@ -234,7 +234,7 @@ public class Greif extends Monster
         } else if (n > 60) {
             // das wird eng:
             if (Random.W(6) < 4) {
-                new Info(getPersonen() + " " + this + " sind verhungert.", Region.Load(getCoords()));
+                new Info(getPersonen() + " " + this + " sind verhungert.", Region.Load(getCoordinates()));
                 setPersonen(0);
                 setLebenspunkte(0);
                 setItem(Greifenei.class, 0);

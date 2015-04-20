@@ -84,7 +84,7 @@ public class BeispielKampf03c extends TestBase {
             genauePikeniere.Befehle.add("ATTACKIERE " + idB);
             schuetzen.Befehle.add("ATTACKIERE GEZIELT " + idKatapultschuetze);
 
-            new Info(this.getName() + " Setup in " + r + ".", genauePikeniere, genauePikeniere.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", genauePikeniere, genauePikeniere.getCoordinates());
         }
     }
 

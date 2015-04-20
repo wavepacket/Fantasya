@@ -66,7 +66,7 @@ public class MagierRekrutieren extends TestBase {
 			u.Befehle.add("LERNE Wahrnehmung");
 
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

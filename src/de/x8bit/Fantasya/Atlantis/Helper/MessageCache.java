@@ -1,8 +1,9 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.util.comparator.MessageComparator;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class MessageCache implements Cache<Message> {
 	
 	private Set<Message> allObjects = new TreeSet<Message>(new MessageComparator());
 	private Map<Integer, Set<Message>> playerMap = new HashMap<Integer, Set<Message>>();
-	private Map<Coords, Set<Message>> regionMap = new HashMap<Coords, Set<Message>>();
+	private Map<Coordinates, Set<Message>> regionMap = new HashMap<Coordinates, Set<Message>>();
 
 	/** Adds a message to the cache.
 	 * 
@@ -50,21 +51,21 @@ public class MessageCache implements Cache<Message> {
 		}
 		
 		// add to the player list for faster lookup
-		if (msg.getPartei() != null) {
-			if (!playerMap.containsKey(msg.getPartei().getNummer())) {
-				playerMap.put(msg.getPartei().getNummer(), new TreeSet<Message>(new MessageComparator()));
+		if (msg.getFaction() != null) {
+			if (!playerMap.containsKey(msg.getFaction().getNummer())) {
+				playerMap.put(msg.getFaction().getNummer(), new TreeSet<Message>(new MessageComparator()));
 			}
 			
-			playerMap.get(msg.getPartei().getNummer()).add(msg);
+			playerMap.get(msg.getFaction().getNummer()).add(msg);
 		}
 		
 		// add to region map for faster lookup
-		if (msg.getCoords() != null) {
-			if (!regionMap.containsKey(msg.getCoords())) {
-				regionMap.put(msg.getCoords(), new TreeSet<Message>(new MessageComparator()));
+		if (msg.getCoordinates() != null) {
+			if (!regionMap.containsKey(msg.getCoordinates())) {
+				regionMap.put(msg.getCoordinates(), new TreeSet<Message>(new MessageComparator()));
 			}
 			
-			regionMap.get(msg.getCoords()).add(msg);
+			regionMap.get(msg.getCoordinates()).add(msg);
 		}
 		
 		return allObjects.add(msg);
@@ -75,15 +76,15 @@ public class MessageCache implements Cache<Message> {
 	public boolean remove(Object o) {
 		Message msg = (Message)o;
 		
-		if (msg.getPartei() != null) {
-			if (playerMap.containsKey(msg.getPartei().getNummer())) {
-				playerMap.get(msg.getPartei().getNummer()).remove(o);
+		if (msg.getFaction() != null) {
+			if (playerMap.containsKey(msg.getFaction().getNummer())) {
+				playerMap.get(msg.getFaction().getNummer()).remove(o);
 			}
 		}
 
-		if (msg.getCoords() != null) {
-			if (regionMap.containsKey(msg.getCoords())) {
-				regionMap.get(msg.getCoords()).remove(o);
+		if (msg.getCoordinates() != null) {
+			if (regionMap.containsKey(msg.getCoordinates())) {
+				regionMap.get(msg.getCoordinates()).remove(o);
 			}
 		}
 
@@ -112,7 +113,7 @@ public class MessageCache implements Cache<Message> {
 	 * an empty set is returned.
 	 */
 	@Override
-	public Set<Message> getAll(Coords coords) {
+	public Set<Message> getAll(Coordinates coords) {
 		if (!regionMap.containsKey(coords)) {
 			return Collections.unmodifiableSet(new HashSet<Message>());
 		}
@@ -128,13 +129,13 @@ public class MessageCache implements Cache<Message> {
 	 * an empty set is returned.
 	 */
 	@Override
-	public Set<Message> getAll(Coords coords, int p) {
+	public Set<Message> getAll(Coordinates coords, int p) {
 		Set<Message> retval = new TreeSet<Message>(new MessageComparator());
 		
 		// we first request all messages at the given coordinate, then loop
 		// through them by hand.
 		for (Message msg : getAll(coords)) {
-			if (msg.getPartei() != null && msg.getPartei().getNummer() == p) {
+			if (msg.getFaction() != null && msg.getFaction().getNummer() == p) {
 				retval.add(msg);
 			}
 		}

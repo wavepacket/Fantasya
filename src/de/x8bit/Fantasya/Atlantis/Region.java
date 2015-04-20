@@ -178,7 +178,17 @@ public abstract class Region extends Atlantis implements Comparable<Region> {
 	/** (EVA) Map ALLER Regionen, Schl��ssel sind ihre Koordinaten */
 	public final static Map<Coordinates, Region> CACHE;
 	public static boolean USE_TOPTW_CACHE = false;
-
+	
+	private int publicIslandID = 0;
+	
+	public int getPublicIslandID() {
+		return publicIslandID;
+	}
+	
+	public void setPublicIslandID(int publicIslandID) {
+		this.publicIslandID = publicIslandID;
+	}
+	
 	@Override
 	public int getNummer() {
 		return this.getCoordinates().hashCode();
@@ -1333,7 +1343,7 @@ public abstract class Region extends Atlantis implements Comparable<Region> {
 				parteien.add(partei);
 				if (omniszienz) {
 					parteien.addAll(Partei.getPlayerFactionList());
-					parteien.addAll(Partei.getNonPlayerFactionList());
+					parteien.addAll(Partei.getNPCFactionList());
 				}
 
 				for (Partei p : parteien) {

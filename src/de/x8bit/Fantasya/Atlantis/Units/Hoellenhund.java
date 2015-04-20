@@ -6,7 +6,6 @@ import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Cave;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Skill;
@@ -22,6 +21,7 @@ import de.x8bit.Fantasya.Atlantis.Regions.aktiverVulkan;
 import de.x8bit.Fantasya.Atlantis.Skills.Ausdauer;
 import de.x8bit.Fantasya.Atlantis.Skills.Monsterkampf;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Krieger;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Weapons.MHoellenhund;
 import de.x8bit.Fantasya.util.Codierung;
@@ -77,7 +77,7 @@ public class Hoellenhund extends Monster
 		if (this.getKampfposition() != Kampfposition.Vorne) Befehle.add("KÄMPFE VORNE");
 
 		
-		Region region = Region.Load(getCoords());
+		Region region = Region.Load(getCoordinates());
 		
 		
 		// sind andere Hoellenhunde hier, mit einer niedrigeren ID als wir?
@@ -134,7 +134,7 @@ public class Hoellenhund extends Monster
 			List<Region> guteZiele = getGuteWanderziele();
 			if ((!guteZiele.isEmpty()) && (Random.W(6) > 3)) {
 				Collections.shuffle(guteZiele);
-				Richtung ri = region.getCoords().getRichtungNach(guteZiele.get(0).getCoords());
+				Richtung ri = region.getCoordinates().getRichtungNach(guteZiele.get(0).getCoordinates());
 				Befehle.add("NACH " + ri.getShortcut());
 			} else {
                 if (getItem(Silber.class).getAnzahl() > getPersonen() * 5 * 6) {
@@ -161,7 +161,7 @@ public class Hoellenhund extends Monster
 				List<Region> guteZiele = getGuteWanderziele();
 				if (!guteZiele.isEmpty()) {
 					Collections.shuffle(guteZiele);
-					Richtung ri = region.getCoords().getRichtungNach(guteZiele.get(0).getCoords());
+					Richtung ri = region.getCoordinates().getRichtungNach(guteZiele.get(0).getCoordinates());
 					Befehle.add("NACH " + ri.getShortcut());
 				} else {
 					Befehle.add("LERNE Monsterkampf");
@@ -186,7 +186,7 @@ public class Hoellenhund extends Monster
     }
 	
 	protected List<Region> getGuteWanderziele() {
-		List<Region> alleZiele = Region.Load(this.getCoords()).getNachbarn();
+		List<Region> alleZiele = Region.Load(this.getCoordinates()).getNeighbours();
 		List<Region> guteZiele = new ArrayList<Region>();
 		for (Region ziel : alleZiele) {
 			if (ziel.istBetretbar(this) && (ziel.getClass() != aktiverVulkan.class)) guteZiele.add(ziel);
@@ -198,7 +198,7 @@ public class Hoellenhund extends Monster
 	 * @param coords Die Einheiten wird bei coords ausgesetzt.
 	 * @return 
 	 */
-	private static Unit createHoellenhunde(Coords coords) {
+	private static Unit createHoellenhunde(Coordinates coords) {
 		Unit unit = null;
 		unit = Unit.CreateUnit("Hoellenhund", Codierung.fromBase36("dark"), coords);
         
@@ -210,7 +210,7 @@ public class Hoellenhund extends Monster
 		List<Region> ziele = ((Hoellenhund)unit).getGuteWanderziele();
 		if (!ziele.isEmpty()) {
 			Collections.shuffle(ziele);
-			Richtung ri = coords.getRichtungNach(ziele.get(0).getCoords());
+			Richtung ri = coords.getRichtungNach(ziele.get(0).getCoordinates());
 			unit.Befehle.add("NACH " + ri.getShortcut() + " " + ri.getShortcut());
 		} else {
 			unit.Befehle.add("LERNE Monsterkampf");
@@ -240,7 +240,7 @@ public class Hoellenhund extends Monster
 				int neu = Random.W(4) - 1;
 				if (neu <= 0) neu = 1;
 				for (int i=0; i < neu; i++) {
-					createHoellenhunde(r.getCoords());
+					createHoellenhunde(r.getCoordinates());
 				}
 			}
 		}
@@ -284,7 +284,7 @@ public class Hoellenhund extends Monster
 		// und jetzt noch spezifisch nach Terrain -
 		// Hoellenhunde bekommen Monsterkampf +5 auf Vulkanen
 		if (skill.getClass().equals(Monsterkampf.class)) {
-			Region r = Region.Load(this.getCoords());
+			Region r = Region.Load(this.getCoordinates());
 			if ((r.getClass() == Vulkan.class) || (r.getClass() == aktiverVulkan.class)) tw +=  5;
 		}
 

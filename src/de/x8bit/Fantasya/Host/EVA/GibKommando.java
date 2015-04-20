@@ -44,7 +44,7 @@ public class GibKommando extends EVABase
 
 	// COMMAND GIB <einheit> KOMMANDO
 	public void DoAction(Region r, String dummy) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -71,19 +71,19 @@ public class GibKommando extends EVABase
 
             if (empf == 0) {
                 eb.setError();
-                new Fehler("Die Nummer " + eb.getTargetUnit() + " der Einheit wurde nicht erkannt.", u, u.getCoords());
+                new Fehler("Die Nummer " + eb.getTargetUnit() + " der Einheit wurde nicht erkannt.", u, u.getCoordinates());
                 continue;
             }
             
 			Unit other = Unit.Get(empf);
 			if (other == null) {
                 eb.setError();
-				new Fehler(u + " konnte die Einheit nicht finden, die das Kommando erhalten sollte.", u, u.getCoords());
+				new Fehler(u + " konnte die Einheit nicht finden, die das Kommando erhalten sollte.", u, u.getCoordinates());
 				continue;
 			}
 			if (!other.hatKontakt(u, AllianzOption.Gib)) {
                 eb.setError();
-				new Info("Die Einheit " + other + " hat uns nicht kontaktiert.", u, u.getCoords());
+				new Info("Die Einheit " + other + " hat uns nicht kontaktiert.", u, u.getCoordinates());
                 continue;
 			}
 
@@ -96,23 +96,23 @@ public class GibKommando extends EVABase
                     b.setOwner(other.getNummer());
 
 					Building.PROXY.add(b);
-                    new Info("Das Kommando für " + b + " wurde an " + other + " übergeben.", u, u.getCoords());
-                    if (u.getOwner() != other.getOwner()) new Info(other + " hat das Kommando für " + b + " von " + u + " erhalten.", other, other.getCoords());
+                    new Info("Das Kommando für " + b + " wurde an " + other + " übergeben.", u, u.getCoordinates());
+                    if (u.getOwner() != other.getOwner()) new Info(other + " hat das Kommando für " + b + " von " + u + " erhalten.", other, other.getCoordinates());
                     eb.setPerformed();
                 } else {
                     eb.setError();
-                    new Fehler(u + " kann nicht das Kommando übergeben, " + other + " ist nicht im Gebäude.", u, u.getCoords());
+                    new Fehler(u + " kann nicht das Kommando übergeben, " + other + " ist nicht im Gebäude.", u, u.getCoordinates());
                 }
             } else {
                 // Schiff
                 if (other.getSchiff() == s.getNummer())	{
                     eb.setPerformed();
                     s.setOwner(other.getNummer());
-                    new Info("Das Kommando für '" + s + "' wurde an '" + other + "' übergeben.", u, u.getCoords());
-                    if (u.getOwner() != other.getOwner()) new Info(other + " hat das Kommando für '" + s + "' von '" + u + "' erhalten.", other, other.getCoords());
+                    new Info("Das Kommando für '" + s + "' wurde an '" + other + "' übergeben.", u, u.getCoordinates());
+                    if (u.getOwner() != other.getOwner()) new Info(other + " hat das Kommando für '" + s + "' von '" + u + "' erhalten.", other, other.getCoordinates());
                 } else {
                     eb.setError();
-                    new Fehler(u + " kann nicht das Kommando übergeben, " + other + " ist nicht auf dem Schiff.", u, u.getCoords());
+                    new Fehler(u + " kann nicht das Kommando übergeben, " + other + " ist nicht auf dem Schiff.", u, u.getCoordinates());
                 }
             }
             

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -25,6 +24,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.NamedItem;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.Datenbank;
@@ -39,6 +39,7 @@ import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.ComplexName;
 import de.x8bit.Fantasya.util.comparator.UnitSortierungComparator;
+
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -85,7 +86,7 @@ abstract public class EVABase {
 	 */
 	public EVABase(String befehl, String message) {
 		if (!ZATMode.CurrentMode().getSkip(this.getClass())) {
-			Set<Coords> regionen = BefehlsSpeicher.getInstance().getCoords(this.getClass());
+			Set<Coordinates> regionen = BefehlsSpeicher.getInstance().getCoordinates(this.getClass());
 
 			if (message != null) new ZATMsg(message + " in " + regionen.size() + " Regionen.");
 
@@ -105,8 +106,8 @@ abstract public class EVABase {
 			} else {
 
 				// der klassische Normalfall:
-				for (Coords c : regionen) {
-					if (c.getWelt() == 0) {
+				for (Coordinates c : regionen) {
+					if (c.getZ() == 0) {
 						continue; // virtuelle Einheiten machen nix! (t, te, tem ...)
 					}					// new SysMsg("Region " + Region.Load(c) + "...");
 					DoAction(Region.Load(c), befehl);
@@ -178,7 +179,7 @@ abstract public class EVABase {
 		}
 		// Parteien lÃ¶schen
 		if (clear) {
-			Partei.PROXY.clear();
+			Partei.clearPlayerFactionList();
 		}
 
 		// Schiffe lÃ¶schen
@@ -233,7 +234,7 @@ abstract public class EVABase {
 
 				String b[] = line.split("\\ ");
 				if (b.length < minSize) {
-					new Fehler("Fehler im Syntax des Befehls '" + line + "'.", u, u.getCoords());
+					new Fehler("Fehler im Syntax des Befehls '" + line + "'.", u, u.getCoordinates());
 					continue;
 				}
 
@@ -257,7 +258,7 @@ abstract public class EVABase {
 					}
 					// LongOrder wird/muss von den Kindern gesetzt (werden)
 //                } else {
-//                    new Fehler("'" + line + "' - " + u + " hat bereits einen langen Befehl.", u, u.getCoords());
+//                    new Fehler("'" + line + "' - " + u + " hat bereits einen langen Befehl.", u, u.getCoordinates());
 				}
 			} else {
 				// Befehlszeile einfach übernehmen ... da das gerade

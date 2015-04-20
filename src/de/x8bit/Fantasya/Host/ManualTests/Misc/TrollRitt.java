@@ -28,8 +28,8 @@ public class TrollRitt extends TestBase {
         Region r = null; Region ost = null; Region ostost = null;
 
 		for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-			ost = Region.Load(maybe.getCoords().shift(Richtung.Osten));
-			ostost = Region.Load(ost.getCoords().shift(Richtung.Osten));
+			ost = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
+			ostost = Region.Load(ost.getCoordinates().shiftDirection(Richtung.Osten));
 			if (ost.istBetretbar(null) && ostost.istBetretbar(null)) {
 				r = maybe;
 				break;
@@ -42,13 +42,13 @@ public class TrollRitt extends TestBase {
 
         {
             Unit u = this.createUnit(p2, r);
-            u.setName(this.getName()+" 01 " + ost.getCoords().getX() + " " + ost.getCoords().getY());
+            u.setName(this.getName()+" 01 " + ost.getCoordinates().getX() + " " + ost.getCoordinates().getY());
 			u.setSkill(Reiten.class, 300);
 			u.setItem(Silber.class, 0);
 			u.setItem(Pferd.class, 1);
 			u.Befehle.add("NACH o o");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -82,7 +82,7 @@ public class TrollRitt extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-				if (!verifyUnitCoords(tokens, u.getCoords())) {
+				if (!verifyUnitCoordinates(tokens, u.getCoordinates())) {
 					retval = fail(tokens[1] + ": Nicht in der erwarteten Region angekommen.");
 				}
             }

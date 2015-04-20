@@ -1,14 +1,16 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.Nachfrage;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Items.LuxusGood;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +24,14 @@ public class LuxusSerializer implements ObjectSerializer<Region> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Map<Coords, Region> map;
+	private Map<Coordinates, Region> map;
 
 	/** Creates a new serializer.
 	 *
 	 * @param map a mapping from coordinates to regions for lookup.
 	 * @throws IllegalArgumentException if the mapping is null.
 	 */
-	public LuxusSerializer(Map<Coords, Region> map) {
+	public LuxusSerializer(Map<Coordinates, Region> map) {
 		if (map == null) {
 			throw new IllegalArgumentException("Need a valid map.");
 		}
@@ -49,7 +51,7 @@ public class LuxusSerializer implements ObjectSerializer<Region> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Region load(Map<String, String> mapping) {
-		Coords coords = new Coords(
+		Coordinates coords = Coordinates.create(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));
@@ -99,7 +101,7 @@ public class LuxusSerializer implements ObjectSerializer<Region> {
 	@Override
 	public SerializedData save(Region object) {
 		SerializedData output = new SerializedData();
-		Coords coords = object.getCoords();
+		Coordinates coords = object.getCoordinates();
 
 		boolean produceFound = false;
 		for (Nachfrage nf : object.getLuxus()) {
@@ -107,7 +109,7 @@ public class LuxusSerializer implements ObjectSerializer<Region> {
 
 			item.put("koordx", String.valueOf(coords.getX()));
 			item.put("koordy", String.valueOf(coords.getY()));
-			item.put("welt", String.valueOf(coords.getWelt()));
+			item.put("welt", String.valueOf(coords.getZ()));
 			item.put("luxus", nf.getItem().getSimpleName());
 			item.put("nachfrage", String.valueOf(Math.round(nf.getNachfrage() * 1000)));
 

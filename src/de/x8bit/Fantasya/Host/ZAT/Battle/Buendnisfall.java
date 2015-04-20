@@ -183,9 +183,9 @@ public class Buendnisfall {
         
         // Parteiangriffe auflisten:
         for (Unit attacker : eAngriffe.keySet()) {
-            Partei a = Partei.getPartei(attacker.getOwner());
+            Partei a = Partei.getFaction(attacker.getOwner());
             for (Unit defender : eAngriffe.get(attacker)) {
-                Partei d = Partei.getPartei(defender.getOwner()); // Tarnpartei statt Owner?
+                Partei d = Partei.getFaction(defender.getOwner()); // Tarnpartei statt Owner?
                 if (!retval.angriffe.keySet().contains(a)) retval.angriffe.put(a, new HashSet<Partei>());
                 retval.angriffe.get(a).add(d);
             }
@@ -199,9 +199,14 @@ public class Buendnisfall {
             Set<Partei> helfer = new HashSet<Partei>();
             for (Partei b : retval.angriffe.get(a)) {
                 Set<Partei> alliierteTheoretisch = new HashSet<Partei>();
-                for (Partei maybe : Partei.PROXY) {
+                for (Partei maybe : Partei.getPlayerFactionList()) {
                     if (maybe.hatAllianz(b.getNummer(), AllianzOption.Kaempfe)) alliierteTheoretisch.add(maybe);
                 }
+                for (Partei maybe : Partei.getNPCFactionList()) {
+                    if (maybe.hatAllianz(b.getNummer(), AllianzOption.Kaempfe)) alliierteTheoretisch.add(maybe);
+                }
+                
+                if (Partei.OMNI_FACTION.hatAllianz(b.getNummer(), AllianzOption.Kaempfe)) alliierteTheoretisch.add(Partei.OMNI_FACTION);
 
                 Set<Partei> alliiertePraktisch = new HashSet<Partei>();
                 for (Partei maybe : alliierteTheoretisch) {

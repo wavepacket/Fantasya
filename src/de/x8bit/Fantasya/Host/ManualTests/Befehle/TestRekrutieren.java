@@ -56,7 +56,7 @@ public class TestRekrutieren extends TestBase {
 
 			Partei magier = tw.createPartei(Elf.class);
 			magier.setName(this.getName() + "-Magier");
-			magier.setUrsprung(r.getCoords());
+			magier.setUrsprung(r.getCoordinates());
             u = this.createUnit(magier, r);
             u.setName(this.getName() + " 03");
 			u.setPersonen(4);
@@ -65,7 +65,7 @@ public class TestRekrutieren extends TestBase {
 			u.Befehle.add("REKRUTIERE 1");
 
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
 		}
     }
 
@@ -106,7 +106,7 @@ public class TestRekrutieren extends TestBase {
             if (tokens[1].equals("02")) {
 				if (u.getPersonen() <= 1) retval = fail(tokens[1] + ": Einfaches Rekrutieren hat nicht geklappt.");
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -119,7 +119,7 @@ public class TestRekrutieren extends TestBase {
             if (tokens[1].equals("03")) {
 				if (u.getPersonen() > 4) retval = fail(tokens[1] + ": Magier konnten sich unerlaubt viele Rekruten holen.");
 
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

@@ -73,11 +73,11 @@ public class SturmZauberKampf extends TestBase {
             u.setKampfposition(Kampfposition.Hinten);
 
 
-            b.setUrsprung(r.getCoords());
+            b.setUrsprung(r.getCoordinates());
 
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
             
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

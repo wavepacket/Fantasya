@@ -54,7 +54,7 @@ public class UnterhaltungsTest extends TestBase {
             u.setName(this.getName()+" 03");
             u.Befehle.add("unterhalte 1000000000");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -88,7 +88,7 @@ public class UnterhaltungsTest extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -103,7 +103,7 @@ public class UnterhaltungsTest extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -118,7 +118,7 @@ public class UnterhaltungsTest extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

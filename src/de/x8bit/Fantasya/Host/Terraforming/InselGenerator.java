@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.Terraforming;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.StartPosition;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
@@ -10,10 +9,12 @@ import de.x8bit.Fantasya.Atlantis.Regions.Feuerwand;
 import de.x8bit.Fantasya.Atlantis.Regions.Gletscher;
 import de.x8bit.Fantasya.Atlantis.Regions.Hochland;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.MapSelection;
 import de.x8bit.Fantasya.util.Random;
 import de.x8bit.Fantasya.util.StatSerie;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -40,7 +41,7 @@ public class InselGenerator {
 		}
 		int inselKennung = alteInselKennung + 1;
 		
-		int welt = vorhanden.getWelt();
+		int welt = vorhanden.getZ();
 		
 		if (welt < 0) {
 			// o, dann suchen wir stattdessen die kleinste (negative) Inselkennung:
@@ -58,9 +59,9 @@ public class InselGenerator {
 		// ist der Anker für das Anlegen (im doppelten Sinn) neuer Inseln
 		MapSelection juengsteAlte = new MapSelection();
 		for (Region r : vorhanden.alleRegionen()) {
-			if (r.getInselKennung() == alteInselKennung) juengsteAlte.add(r.getCoords());
+			if (r.getInselKennung() == alteInselKennung) juengsteAlte.add(r.getCoordinates());
 		}
-		Coords anlegePunkt = juengsteAlte.getMittelpunkt();
+		Coordinates anlegePunkt = juengsteAlte.getMittelpunkt();
 
 		// muss nachher wieder zurückverschoben werden, zumindest für die neue Insel!
 		vorhanden.shift(0 - anlegePunkt.getX(), 0 - anlegePunkt.getY());
@@ -115,11 +116,11 @@ public class InselGenerator {
 		String wasIsses = neu.getClass().getSimpleName();
 		new SysMsg("Neu: " + wasIsses + " #" + inselKennung + " mit " + neu.alleRegionen().size() + " eigenen Regionen, " + abstand + " von der nächsten bekannten Region.");
 
-		Coords m = neu.getMittelpunkt(true); // Ozean mit einbeziehen
+		Coordinates m = neu.getMittelpunkt(true); // Ozean mit einbeziehen
 
 		// den Mittelpunkt einzeichnen:
 		Region r = neu.getRegion(m.getX(), m.getY());
-		if (r == null) { r = new Ozean(); r.setCoords(m); }
+		if (r == null) { r = new Ozean(); r.setCoordinates(m); }
 		r.setName("ME-" + inselKennung);
 
 		neu.shift(0 - m.getX(), 0 - m.getY());
@@ -162,7 +163,7 @@ public class InselGenerator {
 
 			// den Ursprung (0;0) der kombinierten Insel in die neue Mitte verschieben.
 			insel.mittelpunkt = null;
-			Coords m = insel.getMittelpunkt(false);
+			Coordinates m = insel.getMittelpunkt(false);
 			insel.shift(0 - m.getX(), 0 - m.getY());
 			Region mr = insel.getRegion(0, 0);
 			if (mr != null) mr.setBeschreibung(mr.getBeschreibung()+" - Mittelpunkt der Welt nach Insel " + (i+1));
@@ -170,7 +171,7 @@ public class InselGenerator {
 			insel.saveCR("./temp/gesamtwelt-" + (i+1) + ".cr");
 		}
 
-		Coords m = insel.getMittelpunkt(false);
+		Coordinates m = insel.getMittelpunkt(false);
 		insel.shift(0 - m.getX(), 0 - m.getY());
 
         // insel.konturieren(1);
@@ -178,11 +179,11 @@ public class InselGenerator {
 
 		int i = 1;
 		for (StartPosition sp : insel.findeStartPositionen()) {
-			for (Coords c : sp) {
+			for (Coordinates c : sp) {
 				Region r = insel.getRegion(c.getX(), c.getY());
 				String name = r.getName();
 				r = Gletscher.class.newInstance();
-				r.setCoords(c);
+				r.setCoordinates(c);
 				r.setName("SP" + i + "-" + name);
 				if (c.equals(sp.getZentrum())) r.setName("SP" + i + "-ZENTRUM-" + name);
 				insel.putRegion(r);
@@ -200,7 +201,7 @@ public class InselGenerator {
 			int cnt = 0;
 			for (WeltPartition p : partitionen) {
 				if (cnt == 0) { cnt++; continue; }
-				for (Coords c : p.getCoords()) {
+				for (Coordinates c : p.getCoordinates()) {
 					Region temp = insel.getRegion(c.getX(), c.getY());
 					temp.setBeschreibung(temp.getBeschreibung() + " - Partition " + (cnt + 1));
 				}
@@ -208,15 +209,15 @@ public class InselGenerator {
 			}
 
 			// alle Partitionen wachsen auf Partition #1 zu:
-			Coords zentrum = partitionen.get(0).getMittelpunkt();
+			Coordinates zentrum = partitionen.get(0).getMittelpunkt();
 			for (int j=1 ; j<partitionen.size(); j++) {
 				WeltPartition satellit = partitionen.get(j);
 
 				// wir suchen diejenige Grenzregion, die am nähesten zum
 				// Welt-Mittelpunkt (der anderen Partition) liegt:
-				Coords bridge = null;
+				Coordinates bridge = null;
 				int minDistance = Integer.MAX_VALUE;
-				for (Coords c : satellit.getGrenzen()) {
+				for (Coordinates c : satellit.getGrenzen()) {
 					int d = c.getDistance(zentrum);
 					if (d < minDistance) {
 						bridge = c;
@@ -225,12 +226,12 @@ public class InselGenerator {
 				}
 
 				if (bridge != null) {
-					Coords extendCoords = bridge.shift(bridge.getRichtungNach(zentrum));
+					Coordinates extendCoordinates = bridge.shiftDirection(bridge.getRichtungNach(zentrum));
 
 					Region extend;
 					try {
 						extend = Ozean.class.newInstance();
-						extend.setCoords(extendCoords);
+						extend.setCoordinates(extendCoordinates);
 						insel.putRegion(extend);
 					} catch (InstantiationException ex) {
 						new BigError(ex);
@@ -238,7 +239,7 @@ public class InselGenerator {
 						new BigError(ex);
 					}
 
-					new SysMsg("Verbindung von Partition " + (j+1) + " wächst von " + bridge.xy() + " nach " + extendCoords.xy() + ", Ziel: " + zentrum.xy() + ".");
+					new SysMsg("Verbindung von Partition " + (j+1) + " wächst von " + bridge.toString(false) + " nach " + extendCoordinates.toString(false) + ", Ziel: " + zentrum.toString(false) + ".");
 				}
 			}
 		}
@@ -254,7 +255,7 @@ public class InselGenerator {
      */
 	@SuppressWarnings("unchecked")
     public ProtoInsel combine(ProtoInsel stator, ProtoInsel motor, int minDistance) {
-		int inselkennung = motor.getInselkennung(motor.getWelt());
+		int inselkennung = motor.getInselkennung(motor.getZ());
 
         List<InselKombinationsScore> scores = new ArrayList<InselKombinationsScore>();
 
@@ -396,7 +397,7 @@ public class InselGenerator {
 			for (InselKombinationsScore iks : scores) {
 				// die Debug-Regionen auf jeden Fall eintragen:
 				String beschreibung = "iks #" + (cnt + 1);
-				Coords thisShift = new Coords(iks.getDx(), iks.getDy(), stator.getWelt());
+				Coordinates thisShift = Coordinates.create(iks.getDx(), iks.getDy(), stator.getZ());
 				Region r = null;
 				if (cnt < 3) {
 					r = Feuerwand.class.newInstance();
@@ -407,7 +408,7 @@ public class InselGenerator {
 				} else {
 					r = Gletscher.class.newInstance();
 				}
-				r.setCoords(thisShift);
+				r.setCoordinates(thisShift);
 				r.setBeschreibung(beschreibung);
 				debug.putRegion(r);
 

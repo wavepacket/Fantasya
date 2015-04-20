@@ -40,7 +40,7 @@ public class TestBurgenKampf extends TestBase {
             a.setItem(Kettenhemd.class, a.getPersonen());
 //            String idA = a.getNummerBase36();
 
-            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setName("Schutzburg");
 			burg.setSize(50);
 			

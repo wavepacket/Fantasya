@@ -26,7 +26,7 @@ public final class BaumAussaat {
 			System.out.println("Samen: " + r.getName());
 
 			boolean isoliert = true;
-			for (Region n : r.getNachbarn()) {
+			for (Region n : r.getNeighbours()) {
 				if (n.istBetretbar(null)) { isoliert = false; break; }
 			}
 			if (isoliert) continue; // Aus isolierten Regionen wird kein Wald ausgesät.
@@ -43,7 +43,7 @@ public final class BaumAussaat {
 			// alle passenden Nachbarregionen
 			int reizSumme = 0;
 			Map<Region, Integer> reizvoll = new HashMap<Region, Integer>();
-			for (Region n : r.getNachbarn()) {
+			for (Region n : r.getNeighbours()) {
 				if (!n.istBetretbar(null)) continue;
 
 				int frei = (n.freieArbeitsplaetze() > 0 ? n.freieArbeitsplaetze() : 0);

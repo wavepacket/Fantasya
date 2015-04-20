@@ -97,20 +97,20 @@ public final class Gefecht {
         this.konflikt = konflikt;
 
 		// Parteien für die Meldungen sammeln
-        beobachterParteien.add(Partei.getPartei(0));
+        beobachterParteien.add(Partei.getFaction(0));
         if (!KampfSimulator.AKTIV) {
             beobachterParteien.addAll(region.anwesendeParteien());
         }
 
         angreiferParteien = new ArrayList<Partei>();
-        for (Partei p : konflikt.getParteienSeiteA()) {
+        for (Partei p : konflikt.getFactionenSeiteA()) {
             // angreifer enthält auch "theoretische" Alliierte; d.h. solche, die hier gar keine Einheiten haben.
             if (!region.getUnits(p).isEmpty()) angreiferParteien.add(p);
         }
         for (Partei p : angreiferParteien) beobachterParteien.remove(p);
 
         verteidigerParteien = new ArrayList<Partei>();
-        for (Partei p : konflikt.getParteienSeiteB()) {
+        for (Partei p : konflikt.getFactionenSeiteB()) {
             // verteidiger enthält auch "theoretische" Alliierte; d.h. solche, die hier gar keine Einheiten haben.
             if (!region.getUnits(p).isEmpty()) verteidigerParteien.add(p);
         }
@@ -118,7 +118,7 @@ public final class Gefecht {
 
         this.explizitAngegriffene = explizitAngegriffene;
 
-		detailInfos.add(Partei.getPartei(0));
+		detailInfos.add(Partei.getFaction(0));
         if (!KampfSimulator.AKTIV) {
             detailInfos.addAll(this.angreiferParteien);
             detailInfos.addAll(this.verteidigerParteien);
@@ -183,11 +183,11 @@ public final class Gefecht {
 
         // alle Parteien werden über den Kampf informiert - "von Hand" wegen der privaten Koordinaten
 		Set<Partei> zeugen = getRegion().anwesendeParteien();
-		zeugen.add(Partei.getPartei(0));
+		zeugen.add(Partei.getFaction(0));
         for (Partei p : zeugen) {
             String msg =
                     getRegion() + " " +
-                    p.getPrivateCoords(getRegion().getCoords()) + ": " +
+                    p.getPrivateCoordinates(getRegion().getCoordinates()) + ": " +
                     StringUtils.ucfirst(angreiferSeite.beschreibeTeilnehmer(p)) +
                     " greifen " + verteidigerSeite.beschreibeTeilnehmer(p) +
                     " an.\n";
@@ -235,7 +235,7 @@ public final class Gefecht {
 	 * @param side aktive Seite
 	 */
     public void kampfMagie(Side side) {
-        for (Partei p : side.getParteien()) {
+        for (Partei p : side.getFactionen()) {
             for (Unit mage : side.getUnits(p)) {
                 if (mage.Talentwert(Magie.class) == 0) continue; // kein Magier
 
@@ -260,10 +260,10 @@ public final class Gefecht {
                     // Spruch vorbereiten
                     Einzelbefehl eb = null;
                     try {
-                        eb = new Einzelbefehl(mage, mage.getCoords(), as, 0);
+                        eb = new Einzelbefehl(mage, mage.getCoordinates(), as, 0);
                     } catch(IllegalArgumentException ex) {
                         try {
-                            eb = new Einzelbefehl(mage, mage.getCoords(), "ZAUBERE " + as, 0);
+                            eb = new Einzelbefehl(mage, mage.getCoordinates(), "ZAUBERE " + as, 0);
                         } catch(IllegalArgumentException ex2) {
                             new Debug("IllegalArgumentException für AttackSpell '" + as + "'");
                             /* nop */
@@ -795,7 +795,7 @@ public final class Gefecht {
      * @param anAlle wenn true, werden auch unbeteiligte anwesende Parteien informiert
      */
     public void meldung(String text, boolean anAlle) {
-        new Battle(text, Partei.getPartei(0)); // auf jeden Fall Meldung an Partei 0
+        new Battle(text, Partei.getFaction(0)); // auf jeden Fall Meldung an Partei 0
         if (KampfSimulator.AKTIV) return;
 
         for (Partei p : angreiferParteien) {
@@ -804,11 +804,11 @@ public final class Gefecht {
                 String msg =
                         wasIssesBestimmt + " in " +
                         getRegion() + " [priv]" +
-                        p.getPrivateCoords(getRegion().getCoords()) + ": " +
+                        p.getPrivateCoordinates(getRegion().getCoordinates()) + ": " +
                         angreiferSeite.beschreibeTeilnehmer(p) +
                         " greifen " + verteidigerSeite.beschreibeTeilnehmer(p) +
                         " an - ";
-                throw new RuntimeException(msg + "Kampfreport der Angreifer (" + p + ") in " + getRegion() + " " + getRegion().getCoords() + " ist null.");
+                throw new RuntimeException(msg + "Kampfreport der Angreifer (" + p + ") in " + getRegion() + " " + getRegion().getCoordinates() + " ist null.");
             }
             bericht.meldung(text);
             new Battle(text, p);
@@ -931,7 +931,7 @@ public final class Gefecht {
     }
     
     private void siegmeldung(Side gewinner) {
-        new Battle(StringUtils.ucfirst(gewinner.beschreibeTeilnehmer(Partei.getPartei(0)) + " gewinnen " + wasIssesBestimmt + ".\n"), Partei.getPartei(0)); // auf jeden Fall für Partei 0
+        new Battle(StringUtils.ucfirst(gewinner.beschreibeTeilnehmer(Partei.getFaction(0)) + " gewinnen " + wasIssesBestimmt + ".\n"), Partei.getFaction(0)); // auf jeden Fall für Partei 0
         for (Partei p : region.anwesendeParteien()) {
 			new Battle(StringUtils.ucfirst(gewinner.beschreibeTeilnehmer(p) + " gewinnen " + wasIssesBestimmt + ".\n"), p);
         }
@@ -942,7 +942,7 @@ public final class Gefecht {
 		
         final Set<Partei> empfaenger = new HashSet<Partei>();
         empfaenger.addAll(region.anwesendeParteien());
-        empfaenger.add(Partei.getPartei(0));
+        empfaenger.add(Partei.getFaction(0));
         
         meldung(">> -- Zusammenfassung ----------------------------------------------\n", true);
         for (Partei beobachter : empfaenger) {
@@ -986,7 +986,7 @@ public final class Gefecht {
         empfaenger.clear();
         empfaenger.addAll(angreiferParteien);
         empfaenger.addAll(verteidigerParteien);
-        empfaenger.add(Partei.getPartei(0));
+        empfaenger.add(Partei.getFaction(0));
         for (Partei beobachter : empfaenger) {
             new Battle(">> -- Verwundungen -------------------------------------------------\n", beobachter);
             if (angreiferSeite.getPersonen() > 0) new Battle(verwundetenReport(angreiferSeite, beobachter), beobachter);
@@ -1047,10 +1047,10 @@ public final class Gefecht {
 			// Spruch vorbereiten
             Einzelbefehl eb = null;
             try {
-                eb = new Einzelbefehl(mage, mage.getCoords(), cs, 0);
+                eb = new Einzelbefehl(mage, mage.getCoordinates(), cs, 0);
             } catch(IllegalArgumentException ex) {
                 try {
-                    eb = new Einzelbefehl(mage, mage.getCoords(), "ZAUBERE " + cs, 0);
+                    eb = new Einzelbefehl(mage, mage.getCoordinates(), "ZAUBERE " + cs, 0);
                 } catch(IllegalArgumentException ex2) {
                     new Debug("IllegalArgumentException für ConfusionSpell '" + cs + "'");
                     /* nop */
@@ -1060,7 +1060,7 @@ public final class Gefecht {
             
 
             if (eb == null) {
-                new Fehler("'" + cs + "' ist kein gültiger Kampfzauber-Befehl.", mage, mage.getCoords());
+                new Fehler("'" + cs + "' ist kein gültiger Kampfzauber-Befehl.", mage, mage.getCoordinates());
                 continue;
             }
 
@@ -1072,15 +1072,15 @@ public final class Gefecht {
             }
 
 			if (spell == null) {
-				new Fehler(mage + " - Kampfzauber '" + cs + "' ist irgendwie nicht recht spruchreif.", mage, mage.getCoords());
+				new Fehler(mage + " - Kampfzauber '" + cs + "' ist irgendwie nicht recht spruchreif.", mage, mage.getCoordinates());
 				continue;
 			}
 			if (!spell.canUsedBy(mage)) {
-				new Fehler(mage + " - Kampfzauber '" + cs + "' ist zu kompliziert.", mage, mage.getCoords());
+				new Fehler(mage + " - Kampfzauber '" + cs + "' ist zu kompliziert.", mage, mage.getCoordinates());
 				continue;
 			}
             if (!(spell instanceof ConfusionSpell)) {
-				new Fehler(mage + " - Kampfzauber '" + cs + "' ist kein Verwirrungszauber.", mage, mage.getCoords());
+				new Fehler(mage + " - Kampfzauber '" + cs + "' ist kein Verwirrungszauber.", mage, mage.getCoordinates());
 				continue;
             }
 
@@ -1095,7 +1095,7 @@ public final class Gefecht {
             String neueEnergie = (spell.isOrcus()?mage.getMana():mage.getAura()) + (spell.isOrcus()?" Mana":" Aura");
 
 			// alle Informieren
-			geheimMeldung( Partei.getPartei(mage.getOwner()),
+			geheimMeldung( Partei.getFaction(mage.getOwner()),
                     mage + " zaubert " + spell.getName() + " auf Stufe " + stufe + " für " + kosten + " und hat nun noch " + neueEnergie + ".", // eigene Partei
                     mage + " zaubert " + spell.getName() + ".", // Freunde
                     null, // Feinde
@@ -1112,7 +1112,7 @@ public final class Gefecht {
     private void TagDerWahrheiten() {
         List<Partei> leser = new ArrayList<Partei>();
 		leser.addAll(region.anwesendeParteien());
-		leser.add(Partei.getPartei(0));
+		leser.add(Partei.getFaction(0));
 		for (Partei p : leser) {
             boolean ausfuehrlich = false;
             if (ZATMode.CurrentMode().isDebug()) ausfuehrlich = true;
@@ -1211,7 +1211,7 @@ public final class Gefecht {
 
         boolean talenteZeigen = false;
         // TODO: Hier auch Allianzen (HELFE) berücksichtigen?
-        if (beobachter.getNummer() == gruppe.getParteiNr()) talenteZeigen = true;
+        if (beobachter.getNummer() == gruppe.getFactionNr()) talenteZeigen = true;
 		if (beobachter.getNummer() == 0) talenteZeigen = true;
 
 		List<Krieger> eligible = new ArrayList<Krieger>();
@@ -1382,20 +1382,20 @@ public final class Gefecht {
 
     private void meldeAbgebrocheneAngriffe() {
         Set<Partei> beobachter = new HashSet<Partei>();
-        beobachter.add(Partei.getPartei(0));
+        beobachter.add(Partei.getFaction(0));
         beobachter.addAll(angreiferParteien);
         beobachter.addAll(verteidigerParteien);
         for (Partei p : beobachter) {
             Set<String> meldungA = new HashSet<String>();
             Set<String> meldungV = new HashSet<String>();
             for (GruppenPaarung gp : konflikt.getUnmoeglicheAngriffe()) {
-                if (gp.getA().getParteiNr() == p.getNummer()) {
+                if (gp.getA().getFactionNr() == p.getNummer()) {
                     String s = "";
                     if (!gp.getA().istAuthentisch()) s+= "von " + gp.getA().beschreibeFuerPartei(p) + " ";
                     s += "auf " + gp.getB().beschreibeFuerPartei(p);
                     meldungA.add(s);
                 }
-                if (gp.getB().getParteiNr() == p.getNummer()) {
+                if (gp.getB().getFactionNr() == p.getNummer()) {
                     String s = "von " + gp.getA().beschreibeFuerPartei(p);
                     if (!gp.getB().istAuthentisch()) s += " auf " + gp.getB().beschreibeFuerPartei(p);
                     meldungV.add(s);

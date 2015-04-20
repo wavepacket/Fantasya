@@ -40,7 +40,7 @@ public class TestAlwaysModifier extends TestBase {
 			u.Befehle.add("LERNE Ausdauer");
 			u.setItem(Silber.class, 10000);
 
-			new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+			new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -92,7 +92,7 @@ public class TestAlwaysModifier extends TestBase {
 				}
                 if (!found) retval = fail(tokens[1] + ": @GIB-Befehl ist nicht mehr vorhanden.");
 
-				messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+				messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

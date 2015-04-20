@@ -148,7 +148,7 @@ abstract public class ZATBase {
 	public static void ClearProxy(boolean clear) {
 		// Parteien lÃ¶schen
 		if (clear) {
-			Partei.PROXY.clear();
+			Partei.clearPlayerFactionList();
 		}
 
 		// Schiffe lÃ¶schen
@@ -203,7 +203,7 @@ abstract public class ZATBase {
 
 				String b[] = line.split("\\ ");
 				if (b.length < minSize) {
-					new Fehler("Fehler im Syntax des Befehls '" + line + "'.", u, u.getCoords());
+					new Fehler("Fehler im Syntax des Befehls '" + line + "'.", u, u.getCoordinates());
 					continue;
 				}
 
@@ -227,7 +227,7 @@ abstract public class ZATBase {
 					}
 					// LongOrder wird/muss von den Kindern gesetzt (werden)
 				} else {
-					new Fehler("'" + line + "' - " + u + " hat bereits einen langen Befehl.", u, u.getCoords());
+					new Fehler("'" + line + "' - " + u + " hat bereits einen langen Befehl.", u, u.getCoordinates());
 				}
 			} else {
 				// Befehlszeile einfach übernehmen ... da das gerade
@@ -517,7 +517,7 @@ abstract public class ZATBase {
 	 * @return List der Einheiten, die den gegebenen Befehl enthalten
 	 */
 	public static List<Einzelbefehl> getEinzelbefehle(List<Integer> einheitenNummern, String befehl) {
-		new Info("Suche nach einzelnen Befehlen: " + befehl, Partei.getPartei(0));
+		new Info("Suche nach einzelnen Befehlen: " + befehl, Partei.getFaction(0));
 		befehl = befehl.toLowerCase();
 		List<Einzelbefehl> retval = new ArrayList<Einzelbefehl>();
 		for (int nummer : einheitenNummern) {
@@ -526,8 +526,8 @@ abstract public class ZATBase {
 				String b = u.Befehle.get(i);
 				if (b.toLowerCase().startsWith(befehl)) {
 					// gotcha!
-					new Info("... und habe einen gefunden: " + u + ": " + b + " (Rang " + i + ")", Partei.getPartei(0));
-					Einzelbefehl eb = new Einzelbefehl(u, u.getCoords(), b, i);
+					new Info("... und habe einen gefunden: " + u + ": " + b + " (Rang " + i + ")", Partei.getFaction(0));
+					Einzelbefehl eb = new Einzelbefehl(u, u.getCoordinates(), b, i);
 					retval.add(eb);
 					break;
 				}

@@ -38,7 +38,7 @@ public class HainDerTausendEichen extends Spell
 		if (param.length > 2) stufe = getSpellLevel(mage, param[2]);
 		if (stufe == 0) return 0; // Fehler kam schon in getSpellLevel
 
-		Region region = Region.Load(mage.getCoords());
+		Region region = Region.Load(mage.getCoordinates());
 		
 		// Anzahl der neuen Bäume berechnen
 		Item resource = region.getResource(Holz.class);

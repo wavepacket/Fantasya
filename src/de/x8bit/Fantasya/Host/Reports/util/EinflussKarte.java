@@ -1,11 +1,12 @@
 package de.x8bit.Fantasya.Host.Reports.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Chaos;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.util.MapSelection;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ import java.util.Map;
  * @author hapebe
  */
 final public class EinflussKarte {
-	protected final Map<Coords, EinflussRecord> einfluss = new HashMap<Coords, EinflussRecord>();
+	protected final Map<Coordinates, EinflussRecord> einfluss = new HashMap<Coordinates, EinflussRecord>();
 	
 	public EinflussKarte() {
 		for (Region r : Region.CACHE.values()) {
@@ -26,12 +27,12 @@ final public class EinflussKarte {
 				int n = 0;
 				// 2012-08-14 - max. Trefferpunkte statt Personenzahl: Libellen sind gar nicht so einflussreich...
                 for (Unit u : r.getUnits(p.getNummer())) n += u.maxLebenspunkte(); // u.getPersonen();
-				registerEinfluss(r.getCoords(), p, n);
+				registerEinfluss(r.getCoordinates(), p, n);
 			}
 		}
 	}
 	
-	protected final void registerEinfluss(Coords c, Partei p, int personen) {
+	protected final void registerEinfluss(Coordinates c, Partei p, int personen) {
 		// die Region selbst:
 		addRegionsEinfluss(c, p, personen);
 		
@@ -44,7 +45,7 @@ final public class EinflussKarte {
 			if (personen == 0) break;
 			
 			MapSelection kontur = ms.getAussenKontur();
-			for (Coords n : kontur.asList()) {
+			for (Coordinates n : kontur.asList()) {
 				addRegionsEinfluss(n, p, personen);
 			}
 			
@@ -59,7 +60,7 @@ final public class EinflussKarte {
 	 * @param p
 	 * @param personen 
 	 */
-	protected void addRegionsEinfluss(Coords c, Partei p, int personen) {
+	protected void addRegionsEinfluss(Coordinates c, Partei p, int personen) {
 		if (!einfluss.containsKey(c)) {
 			Region r = Region.Load(c);
 			if ((r == null) || (r instanceof Chaos)) return;
@@ -70,7 +71,7 @@ final public class EinflussKarte {
 		er.anwesende.put(p, er.anwesende.get(p) + personen);
 	}
 	
-	public float getEinfluss(Coords c, Partei p) {
+	public float getEinfluss(Coordinates c, Partei p) {
 		if (!einfluss.containsKey(c)) return 0f;
 		EinflussRecord er = einfluss.get(c);
 		if (!er.anwesende.containsKey(p)) return 0f;
@@ -89,7 +90,7 @@ final public class EinflussKarte {
 	public float getGlobalenEinfluss(Partei p) {
 		float summe = 0f;
 		for (Region r : Region.CACHE.values()) {
-			summe += getEinfluss(r.getCoords(), p);
+			summe += getEinfluss(r.getCoordinates(), p);
 		}
 		return summe;
 	}

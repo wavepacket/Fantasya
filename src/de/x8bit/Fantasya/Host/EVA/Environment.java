@@ -5,7 +5,6 @@ import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Cave;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -30,6 +29,7 @@ import de.x8bit.Fantasya.Atlantis.Regions.Wueste;
 import de.x8bit.Fantasya.Atlantis.Regions.aktiverVulkan;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Units.Greif;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Welt;
 import de.x8bit.Fantasya.Host.EVA.Umwelt.BauernWanderung;
 import de.x8bit.Fantasya.Host.EVA.Umwelt.BaumAussaat;
@@ -40,6 +40,7 @@ import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.Random;
 import de.x8bit.Fantasya.util.StringUtils;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,8 +78,8 @@ public class Environment extends EVABase implements NotACommand {
 		Unterwelt();
 
         // Haben wir ausgestorbene Völker?
-        for (Partei p : Partei.PROXY) {
-			if (p.isMonster()) continue;
+        for (Partei p : Partei.getPlayerFactionList()) {
+			if (!p.isPlayerFaction()) continue;
 
             int cnt = 0;
             for (Unit u : Unit.CACHE.getAll(p.getNummer())) {
@@ -200,7 +201,7 @@ public class Environment extends EVABase implements NotACommand {
 //				if (silber < unit.getItem(Kriegselefant.class).getAnzahl() * 5)
 //				{
 //					int rest = silber / 5;
-//					new Fehler(unit + " verliert " + (unit.getItem(Kriegselefant.class).getAnzahl() - rest) + " Kriegselefanten durch Unterernährung", unit, unit.getCoords());
+//					new Fehler(unit + " verliert " + (unit.getItem(Kriegselefant.class).getAnzahl() - rest) + " Kriegselefanten durch Unterernährung", unit, unit.getCoordinates());
 //					unit.getItem(Kriegselefant.class).setAnzahl(rest);
 //					unit.getItem(Silber.class).setAnzahl(unit.getItem(Silber.class).getAnzahl() - rest * 5);
 //				}
@@ -238,16 +239,16 @@ public class Environment extends EVABase implements NotACommand {
 		for (Region region : wald2ebene) {
 			Region ebene = region.cloneAs(Ebene.class);
 
-			Region.CACHE.remove(region.getCoords());
-			Region.CACHE.put(ebene.getCoords(), ebene);
+			Region.CACHE.remove(region.getCoordinates());
+			Region.CACHE.put(ebene.getCoordinates(), ebene);
 		}
 		
 		// Umwandeln - Ebene -> Wald
 		for (Region region : ebene2wald) {
 			Region wald = region.cloneAs(Wald.class);
 
-			Region.CACHE.remove(region.getCoords());
-			Region.CACHE.put(wald.getCoords(), wald);
+			Region.CACHE.remove(region.getCoordinates());
+			Region.CACHE.put(wald.getCoordinates(), wald);
 		}
 
 
@@ -260,8 +261,8 @@ public class Environment extends EVABase implements NotACommand {
 		int oberweltRegionen = 0;
 		int unterweltRegionen = 0;
 		for (Region r : Region.CACHE.values()) {
-			if (r.getCoords().getWelt() == 1) oberweltRegionen ++;
-			if (r.getCoords().getWelt() == -1) unterweltRegionen ++;
+			if (r.getCoordinates().getZ() == 1) oberweltRegionen ++;
+			if (r.getCoordinates().getZ() == -1) unterweltRegionen ++;
 		}
 		
 		if (unterweltRegionen == 0) {
@@ -275,9 +276,9 @@ public class Environment extends EVABase implements NotACommand {
 //			for (Region r : Region.PROXY) {
 //				if (!r.istBetretbar(null)) continue;
 //				if (r.getClass() == Sandstrom.class) continue; // keine Höhlen auf/in Sandströmen
-//				if (r.getCoords().getWelt() == 1) {
+//				if (r.getCoordinates().getZ() == 1) {
 //					oberweltOrte.add(r);
-//				} else if (r.getCoords().getWelt() == -1) {
+//				} else if (r.getCoordinates().getZ() == -1) {
 //					unterweltOrte.add(r);
 //				}
 //			}
@@ -313,7 +314,7 @@ public class Environment extends EVABase implements NotACommand {
 //						if (r.getClass() == Vulkan.class) hoehlenArt = "Felsspalte";
 //						if (r.getClass() == aktiverVulkan.class) hoehlenArt = "Felsspalte";
 //						
-//						Building cave = Building.Create(hoehlenArt, r.getCoords());
+//						Building cave = Building.Create(hoehlenArt, r.getCoordinates());
 //						cave.setSize(Random.W(20) + Random.W(10));
 //						inselnMitHoehle.add(r.getInselKennung());
 //					} else {
@@ -336,7 +337,7 @@ public class Environment extends EVABase implements NotACommand {
 //						if (r.getClass() == Vulkan.class) hoehlenArt = "Felsspalte";
 //						if (r.getClass() == aktiverVulkan.class) hoehlenArt = "Felsspalte";
 //
-//						Building cave = Building.Create(hoehlenArt, r.getCoords());
+//						Building cave = Building.Create(hoehlenArt, r.getCoordinates());
 //						cave.setSize(Random.W(20) + Random.W(10));
 //						inselnMitHoehle.add(r.getInselKennung());
 //					} else {
@@ -349,7 +350,7 @@ public class Environment extends EVABase implements NotACommand {
         
         unterweltRegionen = 0;
         for (Region r : Region.CACHE.values()) {
-            if (r.getCoords().getWelt() == -1) unterweltRegionen ++;
+            if (r.getCoordinates().getZ() == -1) unterweltRegionen ++;
         }
 		float ratio = (float)unterweltRegionen / (float)oberweltRegionen;
         
@@ -364,7 +365,7 @@ public class Environment extends EVABase implements NotACommand {
 
             unterweltRegionen = 0;
             for (Region r : Region.CACHE.values()) {
-                if (r.getCoords().getWelt() == -1) unterweltRegionen ++;
+                if (r.getCoordinates().getZ() == -1) unterweltRegionen ++;
             }
             ratio = (float)unterweltRegionen / (float)oberweltRegionen;
         }
@@ -396,8 +397,8 @@ public class Environment extends EVABase implements NotACommand {
 			// Ausbruch!
 			Region inferno = region.cloneAs(aktiverVulkan.class);
 
-			Region.CACHE.remove(region.getCoords());
-			Region.CACHE.put(inferno.getCoords(), inferno);
+			Region.CACHE.remove(region.getCoordinates());
+			Region.CACHE.put(inferno.getCoordinates(), inferno);
 			
 			new ZATMsg("In " + inferno.getName() + " bricht ein Vulkan aus.");
 			
@@ -410,9 +411,9 @@ public class Environment extends EVABase implements NotACommand {
 					float talentFaktor = 1f - (float)opfer / (float)u.getPersonen();
 					if (opfer == u.getPersonen()) {
 						if (opfer == 1) {
-							new Info(u + " ist beim Ausbruch des Vulkans ums leben gekommen.", Partei.getPartei(u.getOwner()));
+							new Info(u + " ist beim Ausbruch des Vulkans ums leben gekommen.", Partei.getFaction(u.getOwner()));
 						} else {
-							new Info("Alle von " + u + " sind beim Ausbruch des Vulkans ums Leben gekommen.", Partei.getPartei(u.getOwner()));
+							new Info("Alle von " + u + " sind beim Ausbruch des Vulkans ums Leben gekommen.", Partei.getFaction(u.getOwner()));
 						}
 					} else {
 						new Info(u + " - " + opfer + " von uns sind beim Ausbruch des Vulkans ums Leben gekommen.", u);
@@ -432,8 +433,8 @@ public class Environment extends EVABase implements NotACommand {
 				// Der Vulkan erlischt:
 				Region erloschen = region.cloneAs(Vulkan.class);
 
-				Region.CACHE.remove(region.getCoords());
-				Region.CACHE.put(erloschen.getCoords(), erloschen);
+				Region.CACHE.remove(region.getCoordinates());
+				Region.CACHE.put(erloschen.getCoordinates(), erloschen);
 				
 				new ZATMsg("Der Vulkan in " + erloschen.getName() + " erlischt.");
 			} else {
@@ -446,9 +447,9 @@ public class Environment extends EVABase implements NotACommand {
 						float talentFaktor = 1f - (float)opfer / (float)u.getPersonen();
 						if (opfer == u.getPersonen()) {
 							if (opfer == 1) {
-								new Info(u + " ist beim Ausbruch des Vulkans ums leben gekommen.", Partei.getPartei(u.getOwner()));
+								new Info(u + " ist beim Ausbruch des Vulkans ums leben gekommen.", Partei.getFaction(u.getOwner()));
 							} else {
-								new Info("Alle von " + u + " sind beim Ausbruch des Vulkans ums Leben gekommen.", Partei.getPartei(u.getOwner()));
+								new Info("Alle von " + u + " sind beim Ausbruch des Vulkans ums Leben gekommen.", Partei.getFaction(u.getOwner()));
 							}
 						} else {
 							new Info(u + " - " + opfer + " von uns sind beim Ausbruch des Vulkans ums Leben gekommen.", u);
@@ -482,7 +483,7 @@ public class Environment extends EVABase implements NotACommand {
 				for (Unit u : b.getUnits()) {
 					u.setGebaeude(0);
 					
-					String regionsName = r.toString() + " " + Partei.getPartei(u.getOwner()).getPrivateCoords(r.getCoords());
+					String regionsName = r.toString() + " " + Partei.getFaction(u.getOwner()).getPrivateCoordinates(r.getCoordinates());
 					new Info(b + " versinkt spurlos im Treibsand von " + regionsName + ".", u);
 				}
 				
@@ -501,14 +502,14 @@ public class Environment extends EVABase implements NotACommand {
 				}
 				
 				if (opfer > 0) {
-					String regionsName = r.toString() + " " + Partei.getPartei(u.getOwner()).getPrivateCoords(r.getCoords());
+					String regionsName = r.toString() + " " + Partei.getFaction(u.getOwner()).getPrivateCoordinates(r.getCoordinates());
 					
 					float talentFaktor = 1f - (float)opfer / (float)u.getPersonen();
 					if (opfer == u.getPersonen()) {
 						if (opfer == 1) {
-							new Info(u + " ist im Treibsand von " + regionsName + " versunken.", Partei.getPartei(u.getOwner()));
+							new Info(u + " ist im Treibsand von " + regionsName + " versunken.", Partei.getFaction(u.getOwner()));
 						} else {
-							new Info(u + " sind im Treibsand von " + regionsName + " verschollen.", Partei.getPartei(u.getOwner()));
+							new Info(u + " sind im Treibsand von " + regionsName + " verschollen.", Partei.getFaction(u.getOwner()));
 						}
 					} else {
 						List<String> verloreneItems = new ArrayList<String>();
@@ -550,7 +551,7 @@ public class Environment extends EVABase implements NotACommand {
         iv.karteVerarbeiten();
         
         Set<Integer> inselnMitHoehlen = new HashSet<Integer>();
-        for (Cave c : bestehende) inselnMitHoehlen.add(iv.getInselNummer(c.getCoords()));
+        for (Cave c : bestehende) inselnMitHoehlen.add(iv.getInselNummer(c.getCoordinates()));
         
         Set<Integer> inselnOhneHoehlen = new HashSet<Integer>();
         inselnOhneHoehlen.addAll(iv.getExistierendeInseln());
@@ -560,8 +561,8 @@ public class Environment extends EVABase implements NotACommand {
         Set<Integer> loeschSet = new HashSet<Integer>();
         // Unterwelt und Ozeane etc. aussortieren:
         for (int inselId : inselnOhneHoehlen) {
-            for (Coords c : iv.getInselCoords(inselId)) {
-                if (c.getWelt() < 0) { 
+            for (Coordinates c : iv.getInselCoordinates(inselId)) {
+                if (c.getZ() < 0) { 
                     loeschSet.add(inselId);
                     continue;
                 }
@@ -580,7 +581,7 @@ public class Environment extends EVABase implements NotACommand {
         int grosseInselnOhneHoehle = 0;
         for (int inselId : inselnOhneHoehlen) {
             if (iv.getInsel(inselId).istUnterwelt()) continue; // es interessieren nur die Oberweltinseln...
-            if (iv.getInselCoords(inselId).size() > 19) grosseInselnOhneHoehle++;
+            if (iv.getInselCoordinates(inselId).size() > 19) grosseInselnOhneHoehle++;
         }
         if (grosseInselnOhneHoehle > 0) new ZATMsg("Es gibt " + grosseInselnOhneHoehle + " große (>19 Regionen) Oberwelt-Inseln ohne Höhlen.");
         
@@ -590,17 +591,17 @@ public class Environment extends EVABase implements NotACommand {
             
             new ZATMsg(" - Grabe neues Höhlenpaar...");
             
-            Map<Coords, Integer> hoehlenChanceOberwelt = new HashMap<Coords, Integer>();
+            Map<Coordinates, Integer> hoehlenChanceOberwelt = new HashMap<Coordinates, Integer>();
             for (Region r : Region.CACHE.values()) {
-                Coords c = r.getCoords();
-                if (c.getWelt() <= 0) continue;
+                Coordinates c = r.getCoordinates();
+                if (c.getZ() <= 0) continue;
                 if (!r.istBetretbar(null)) continue;
 
                 // Entfernung zur nächsten bestehenden Höhle bestimmen:
                 int minDistance = Integer.MAX_VALUE;
                 for (Cave cave : Cave.GetCaves(1)) {
-                    if (cave.getCoords().getWelt() <= 0) continue;
-                    int d = c.getDistance(cave.getCoords());
+                    if (cave.getCoordinates().getZ() <= 0) continue;
+                    int d = c.getDistance(cave.getCoordinates());
                     if (d < minDistance) minDistance = d;
                 }
 
@@ -609,7 +610,7 @@ public class Environment extends EVABase implements NotACommand {
                 
                 // Inseln ohne Höhlen, aber mit mindestens 12 Regionen haben bessere Chancen:
                 if (inselnOhneHoehlen.contains(iv.getInselNummer(c))) {
-                    if (iv.getInsel(iv.getInselNummer(c)).getCoords().size() > 12) {
+                    if (iv.getInsel(iv.getInselNummer(c)).getCoordinates().size() > 12) {
                         hoehlenChanceOberwelt.put(c, hoehlenChanceOberwelt.get(c) * 3);
                     }
                 }
@@ -617,18 +618,18 @@ public class Environment extends EVABase implements NotACommand {
             // Entstehungs-Wahrscheinlichkeiten von Höhlen für alle Oberwelt-Regionen berechnet
             if (hoehlenChanceOberwelt.isEmpty()) throw new IllegalStateException("Keine geeignete Oberwelt-Region für neue Höhlen gefunden.");
             
-            Map<Coords, Integer> hoehlenChanceUnterwelt = new HashMap<Coords, Integer>();
+            Map<Coordinates, Integer> hoehlenChanceUnterwelt = new HashMap<Coordinates, Integer>();
             for (Region r : Region.CACHE.values()) {
-                Coords c = r.getCoords();
-                if (c.getWelt() >= 0) continue;
+                Coordinates c = r.getCoordinates();
+                if (c.getZ() >= 0) continue;
                 if (!r.istBetretbar(null)) continue;
                 if (r instanceof Sandstrom) continue;
 
                 // Entfernung zur nächsten bestehenden Höhle bestimmen:
                 int minDistance = Integer.MAX_VALUE;
                 for (Cave cave : Cave.GetCaves(-1)) {
-                    if (cave.getCoords().getWelt() >= 0) continue;
-                    int d = c.getDistance(cave.getCoords());
+                    if (cave.getCoordinates().getZ() >= 0) continue;
+                    int d = c.getDistance(cave.getCoordinates());
                     if (d < minDistance) minDistance = d;
                 }
 
@@ -639,15 +640,15 @@ public class Environment extends EVABase implements NotACommand {
             if (hoehlenChanceUnterwelt.isEmpty()) throw new IllegalStateException("Keine geeignete Unterwelt-Region für neue Höhlen gefunden.");
             
             int summeOberweltChancen = 0; int summeUnterweltChancen = 0; 
-            for (Coords c : hoehlenChanceOberwelt.keySet()) summeOberweltChancen += hoehlenChanceOberwelt.get(c);
-            for (Coords c : hoehlenChanceUnterwelt.keySet()) summeUnterweltChancen += hoehlenChanceUnterwelt.get(c);
+            for (Coordinates c : hoehlenChanceOberwelt.keySet()) summeOberweltChancen += hoehlenChanceOberwelt.get(c);
+            for (Coordinates c : hoehlenChanceUnterwelt.keySet()) summeUnterweltChancen += hoehlenChanceUnterwelt.get(c);
             
             StringBuilder sb = new StringBuilder();
             sb.append("Höhlenpaar: ");
             
             // die "Gewinner" in Ober- und Unterwelt bestimmen:
-            Coords ausgangOben = null; Coords ausgangUnten = null;
-            List<Coords> kandidatenOben = new ArrayList<Coords>(hoehlenChanceOberwelt.keySet());
+            Coordinates ausgangOben = null; Coordinates ausgangUnten = null;
+            List<Coordinates> kandidatenOben = new ArrayList<Coordinates>(hoehlenChanceOberwelt.keySet());
             Collections.shuffle(kandidatenOben);
             while (Random.W(summeOberweltChancen) > hoehlenChanceOberwelt.get(kandidatenOben.get(0))) {
                 Collections.shuffle(kandidatenOben);
@@ -655,7 +656,7 @@ public class Environment extends EVABase implements NotACommand {
             ausgangOben = kandidatenOben.get(0);
             sb.append("p-Level(oben) = ").append(hoehlenChanceOberwelt.get(kandidatenOben.get(0)));
             sb.append(", ");
-            List<Coords> kandidatenUnten = new ArrayList<Coords>(hoehlenChanceUnterwelt.keySet());
+            List<Coordinates> kandidatenUnten = new ArrayList<Coordinates>(hoehlenChanceUnterwelt.keySet());
             Collections.shuffle(kandidatenUnten);
             while (Random.W(summeUnterweltChancen) > hoehlenChanceUnterwelt.get(kandidatenUnten.get(0))) {
                 Collections.shuffle(kandidatenUnten);
@@ -681,9 +682,9 @@ public class Environment extends EVABase implements NotACommand {
             if (r.getClass() == Gletscher.class) hoehlenArt = "Felsspalte";
             if (r.getClass() == Vulkan.class) hoehlenArt = "Felsspalte";
             if (r.getClass() == aktiverVulkan.class) hoehlenArt = "Felsspalte";
-            Building cave = Building.Create(hoehlenArt, r.getCoords());
+            Building cave = Building.Create(hoehlenArt, r.getCoordinates());
             cave.setSize(Random.W(20) + Random.W(10));
-            sb.append(cave).append(" in ").append(r).append(" ").append(r.getCoords()).append(", Inselkennung ").append(r.getInselKennung());
+            sb.append(cave).append(" in ").append(r).append(" ").append(r.getCoordinates()).append(", Inselkennung ").append(r.getInselKennung());
             sb.append(" und ");
             
             r = Region.Load(ausgangUnten);
@@ -694,9 +695,9 @@ public class Environment extends EVABase implements NotACommand {
             if (r.getClass() == Gletscher.class) hoehlenArt = "Felsspalte";
             if (r.getClass() == Vulkan.class) hoehlenArt = "Felsspalte";
             if (r.getClass() == aktiverVulkan.class) hoehlenArt = "Felsspalte";
-            cave = Building.Create(hoehlenArt, r.getCoords());
+            cave = Building.Create(hoehlenArt, r.getCoordinates());
             cave.setSize(Random.W(20) + Random.W(10));
-            sb.append(cave).append(" in ").append(r).append(" ").append(r.getCoords()).append(", Inselkennung ").append(r.getInselKennung());
+            sb.append(cave).append(" in ").append(r).append(" ").append(r.getCoordinates()).append(", Inselkennung ").append(r.getInselKennung());
             
             new Debug(sb.toString());
             

@@ -45,7 +45,7 @@ public class Diebstahl extends EVABase {
 	
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -62,7 +62,7 @@ public class Diebstahl extends EVABase {
 			}
 		
 			// Koordinaten überprüfen
-			if (!victim.getCoords().equals(u.getCoords())) {
+			if (!victim.getCoordinates().equals(u.getCoordinates())) {
 				new Fehler(u + " - die Einheit '" + eb.getTargetUnit() + "' ist nicht zu finden.", u);
 				eb.setError();
 				continue;
@@ -94,7 +94,7 @@ public class Diebstahl extends EVABase {
 
 					// beide Informieren
 					new Info(u + " kann " + possible + " Silber von " + victim + " stehlen.", u);
-					// keine Info !!! new Info(victim + " wurde um " + possible + " Silber erleichtert", victim, victim.getCoords());
+					// keine Info !!! new Info(victim + " wurde um " + possible + " Silber erleichtert", victim, victim.getCoordinates());
 					
 					u.setEinkommen(u.getEinkommen() + possible);
 					victim.setEinkommen(victim.getEinkommen() - possible); // hihi...

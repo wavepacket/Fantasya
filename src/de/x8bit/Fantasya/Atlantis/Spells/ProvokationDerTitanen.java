@@ -73,7 +73,7 @@ public class ProvokationDerTitanen extends Spell {
 		mage.getItem(Silber.class).setAnzahl(mage.getItem(Silber.class).getAnzahl() - 50);
 
 
-		Region r = Region.Load(mage.getCoords());
+		Region r = Region.Load(mage.getCoordinates());
 		Class<? extends Region> terrain = r.getClass();
 		Class<? extends Region> newTerrain = null;
 		boolean handled = false;
@@ -112,8 +112,8 @@ public class ProvokationDerTitanen extends Spell {
 				newRegion.setResource(Stein.class, 0);
 			}
 
-			Region.CACHE.remove(r.getCoords());
-			Region.CACHE.put(newRegion.getCoords(), newRegion);
+			Region.CACHE.remove(r.getCoordinates());
+			Region.CACHE.put(newRegion.getCoordinates(), newRegion);
 		}
 
 		if (!handled) {

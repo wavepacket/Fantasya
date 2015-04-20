@@ -76,7 +76,7 @@ public class RegionFrame extends JFrame implements WindowListener
 		if (r == null) return;
 		if (!this.isShowing()) this.setVisible(true);
 		
-		setTitle(r.getName() + " [" + r.getCoords().getX() + "/" + r.getCoords().getY() + "/" + r.getCoords().getWelt() + "]");
+		setTitle(r.getName() + " [" + r.getCoordinates().getX() + "/" + r.getCoordinates().getY() + "/" + r.getCoordinates().getZ() + "]");
 		
 		ChangeRegionData((TreeNode) myTreeModel.getRoot(), r);
 		ChangeEinheitData((TreeNode) myTreeModel.getRoot(), r);
@@ -105,7 +105,7 @@ public class RegionFrame extends JFrame implements WindowListener
 		
 		// neuen Infos erstellen
 		node_region = new DefaultMutableTreeNode(r.getName() + " (" + r.getClass().getSimpleName() + ")");
-		node_region.add(new DefaultMutableTreeNode("Koordinaten [" + r.getCoords().getX() + "/" + r.getCoords().getY() + "/" + r.getCoords().getWelt() + "]"));
+		node_region.add(new DefaultMutableTreeNode("Koordinaten [" + r.getCoordinates().getX() + "/" + r.getCoordinates().getY() + "/" + r.getCoordinates().getZ() + "]"));
 		node_region.add(new DefaultMutableTreeNode(r.getBauern() + " Bauern"));
 		//node_region.add(new DefaultMutableTreeNode(r.getBaum() + " Bäume"));
 		

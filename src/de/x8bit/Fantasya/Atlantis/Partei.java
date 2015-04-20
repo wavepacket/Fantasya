@@ -22,6 +22,7 @@ import de.x8bit.Fantasya.Atlantis.Skills.Tarnung;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
 import de.x8bit.Fantasya.Atlantis.Units.Goblin;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.atlas.FactionAtlas;
 import de.x8bit.Fantasya.Atlantis.util.atlas.NPCFactionAtlas;
 import de.x8bit.Fantasya.Atlantis.util.atlas.OmniFactionAtlas;
@@ -61,21 +62,22 @@ public class Partei extends Atlantis {
 	public static final Partei ANIMAL_FACTION = new Partei(1376883, FactionWay.ANIMAL); // Partei tier
 
 	public static final List<Partei> PLAYER_FACTION_LIST = new ArrayList<Partei>();
-	private static final List<Partei> NON_PLAYER_FACTION_LIST = new ArrayList<Partei>();
+	private static final List<Partei> NPC_FACTION_LIST = new ArrayList<Partei>();
 
 	static {
+		OMNI_FACTION.NMR = GameRules.getRunde();
 		MONSTER_FACTION.Rasse = Goblin.class.getSimpleName();
 		ANIMAL_FACTION.Rasse = Greif.class.getSimpleName();
-		NON_PLAYER_FACTION_LIST.add(OMNI_FACTION);
-		NON_PLAYER_FACTION_LIST.add(MONSTER_FACTION);
-		NON_PLAYER_FACTION_LIST.add(ANIMAL_FACTION);
+		// NON_PLAYER_FACTION_LIST.add(OMNI_FACTION);
+		NPC_FACTION_LIST.add(MONSTER_FACTION);
+		NPC_FACTION_LIST.add(ANIMAL_FACTION);
 	}
 	private String Rasse = "Mensch";
 	private String EMail = "";
 	private String Website = "";
 	private String Password = "empty";
 	private int NMR = 0;
-	private Coordinates Ursprung = Coordinates.create(0, 0, 0);
+	private Coordinates Ursprung = DefaultConstantsFactory.NO_COORDINATES_VALUE;
 	private int Alter = 0;
 	private int Defaultsteuer = 0;
 	private Map<Integer, Allianz> allianzen = new HashMap<Integer, Allianz>();
@@ -124,6 +126,15 @@ public class Partei extends Atlantis {
 	
 	public boolean isPlayerFaction() {
 		return this.factionWay == FactionWay.PLAYER;
+	}
+	
+	public boolean isNPCFaction() {
+		if (this.factionWay != FactionWay.PLAYER
+				&& this.factionWay != FactionWay.OMNI
+				&& this.factionWay != FactionWay.UNKNOWN)
+			return true;
+		return false;
+					
 	}
 
 	public void setCheats(int value) {
@@ -538,14 +549,14 @@ public class Partei extends Atlantis {
 		return moeglich;
 	}
 
-	public static boolean isNonPlayerFaction(int id) {
-		for (Partei possibleFaction : NON_PLAYER_FACTION_LIST)
+	public static boolean isNPCFaction(int id) {
+		for (Partei possibleFaction : NPC_FACTION_LIST)
 			if (id == possibleFaction.getNummer()) return true;
 		return false;
 	}
 	
-	private static Partei getNonPlayerFaction(int id) {
-		for (Partei possibleFaction : NON_PLAYER_FACTION_LIST)
+	private static Partei getNPCFaction(int id) {
+		for (Partei possibleFaction : NPC_FACTION_LIST)
 			if (id == possibleFaction.getNummer()) return possibleFaction;
 		return null;
 	}
@@ -568,8 +579,8 @@ public class Partei extends Atlantis {
 	 * @return non player factions
 	 */
 	
-	public static List<Partei> getNonPlayerFactionList() {
-		return Collections.unmodifiableList(NON_PLAYER_FACTION_LIST);
+	public static List<Partei> getNPCFactionList() {
+		return Collections.unmodifiableList(NPC_FACTION_LIST);
 	}
 	
 //	/**
@@ -603,7 +614,8 @@ public class Partei extends Atlantis {
 	 * Sucht und gibt eine Partei zur�ck. Wenn es die Partei nicht gibt, wird UNKNOWN_FACTION zur�ckgegeben.
 	 */
 	public static Partei getFaction(int id) {
-		Partei faction = getNonPlayerFaction(id);
+		if (id == OMNI_FACTION.getNummer()) return OMNI_FACTION;
+		Partei faction = getNPCFaction(id);
 		if (faction != null) return faction;
 		for (Partei possibleFaction : PLAYER_FACTION_LIST)
 			if (possibleFaction.getNummer() == id)

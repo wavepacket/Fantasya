@@ -1,12 +1,14 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Region;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,14 +19,14 @@ public class ResourcenSerializer implements ObjectSerializer<Region> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Map<Coords, Region> map;
+	private Map<Coordinates, Region> map;
 
 	/** Constructs a new serializer.
 	 *
 	 * @param map a mapping from coordinates to the regions at this coordinate.
 	 * @throws IllegalArgumentException if the argument is null.
 	 */
-	public ResourcenSerializer(Map<Coords,Region> map) {
+	public ResourcenSerializer(Map<Coordinates,Region> map) {
 		if (map == null) {
 			throw new IllegalArgumentException("Need a non-null map.");
 		}
@@ -51,7 +53,7 @@ public class ResourcenSerializer implements ObjectSerializer<Region> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Region load(Map<String, String> mapping) {
-		Coords coords = new Coords(
+		Coordinates coords = Coordinates.create(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));
@@ -88,14 +90,14 @@ public class ResourcenSerializer implements ObjectSerializer<Region> {
 	@Override
 	public SerializedData save(Region object) {
 		SerializedData output = new SerializedData();
-		Coords coords = object.getCoords();
+		Coordinates coords = object.getCoordinates();
 
 		for (Item item : object.getResourcen()) {
 			Map<String,String> values = new HashMap<String,String>();
 			
 			values.put("koordx", String.valueOf(coords.getX()));
 			values.put("koordy", String.valueOf(coords.getY()));
-			values.put("welt", String.valueOf(coords.getWelt()));
+			values.put("welt", String.valueOf(coords.getZ()));
 			values.put("resource", item.getClass().getSimpleName());
 			values.put("anzahl", String.valueOf(item.getAnzahl()));
 

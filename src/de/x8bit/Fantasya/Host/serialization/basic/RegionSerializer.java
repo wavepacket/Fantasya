@@ -1,11 +1,13 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +55,7 @@ public class RegionSerializer implements ObjectSerializer<Region> {
 
 		region.setName(mapping.get("name"));
 		region.setBeschreibung(mapping.get("Beschreibung"));
-		region.setCoords(new Coords(
+		region.setCoordinates(Coordinates.create(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt"))));
@@ -66,7 +68,7 @@ public class RegionSerializer implements ObjectSerializer<Region> {
 		logger.debug("Loaded region \"{}\" with type \"{}\" at coordinate {}.",
 				region.getName(),
 				mapping.get("typ"),
-				region.getCoords());
+				region.getCoordinates());
 
 		return region;
 	}
@@ -83,9 +85,9 @@ public class RegionSerializer implements ObjectSerializer<Region> {
 		output.put("typ", region.getClass().getSimpleName());
 		output.put("name", region.getName());
 		output.put("Beschreibung", region.getBeschreibung());
-		output.put("koordx", String.valueOf(region.getCoords().getX()));
-		output.put("koordy", String.valueOf(region.getCoords().getY()));
-		output.put("welt", String.valueOf(region.getCoords().getWelt()));
+		output.put("koordx", String.valueOf(region.getCoordinates().getX()));
+		output.put("koordy", String.valueOf(region.getCoordinates().getY()));
+		output.put("welt", String.valueOf(region.getCoordinates().getZ()));
 		output.put("bauern", String.valueOf(region.getBauern()));
 		output.put("ralter", String.valueOf(region.getAlter()));
 		output.put("entstandenin", String.valueOf(region.getEnstandenIn()));

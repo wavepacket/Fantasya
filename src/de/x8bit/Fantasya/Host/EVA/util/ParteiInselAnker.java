@@ -7,13 +7,13 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Chaos;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung.Insel;
 import de.x8bit.Fantasya.util.Codierung;
@@ -33,7 +33,7 @@ import de.x8bit.Fantasya.util.StringUtils;
 public class ParteiInselAnker {
     final int parteiNr;
     
-    Coords anker;
+    Coordinates anker;
     
     int privateInselId = -1;
     int entdeckungsRunde = -1;
@@ -44,7 +44,7 @@ public class ParteiInselAnker {
         this.parteiNr = parteiNr;
     }
     
-    public static void Entfernen(Partei p, Coords c) {
+    public static void Entfernen(Partei p, Coordinates c) {
         Region r = Region.Load(c);
         r.removeProperty(GameRules.INSEL_ID_FUER_PARTEI + Codierung.toBase36(p.getNummer()));
         r.removeProperty(GameRules.INSEL_ENTDECKUNG_FUER_PARTEI + Codierung.toBase36(p.getNummer()));
@@ -53,14 +53,14 @@ public class ParteiInselAnker {
     }
     
     public static void BenenneInsel(Unit u, String name) {
-        BenenneInsel(Partei.getPartei(u.getOwner()), u.getCoords(), name);
+        BenenneInsel(Partei.getFaction(u.getOwner()), u.getCoordinates(), name);
     }
     
     public static void BeschreibeInsel(Unit u, String beschr) {
-        BeschreibeInsel(Partei.getPartei(u.getOwner()), u.getCoords(), beschr);
+        BeschreibeInsel(Partei.getFaction(u.getOwner()), u.getCoordinates(), beschr);
     }
     
-    public static void BenenneInsel(Partei p, Coords c, String name) {
+    public static void BenenneInsel(Partei p, Coordinates c, String name) {
         ParteiInselAnker pia = FindOrCreateFor(p, c);
         
         // alten Anker lichten!
@@ -77,7 +77,7 @@ public class ParteiInselAnker {
         ParteiInselAnker.Initialisieren(p);
     }
     
-    public static void BeschreibeInsel(Partei p, Coords c, String beschr) {
+    public static void BeschreibeInsel(Partei p, Coordinates c, String beschr) {
         ParteiInselAnker pia = FindOrCreateFor(p, c);
         
         // alten Anker lichten!
@@ -94,7 +94,7 @@ public class ParteiInselAnker {
         ParteiInselAnker.Initialisieren(p);
     }
     
-    public static ParteiInselAnker FindOrCreateFor(Partei p, Coords c) {
+    public static ParteiInselAnker FindOrCreateFor(Partei p, Coordinates c) {
         if (c == null) return null;
         Region r = Region.Load(c);
         if (r == null) return null;
@@ -103,7 +103,7 @@ public class ParteiInselAnker {
         
         InselVerwaltung iv = InselVerwaltung.getInstance();
         int publicInselId = iv.getInselNummer(c);
-        Set<Coords> inselCoords = iv.getInselCoords(publicInselId);
+        Set<Coordinates> inselCoordinates = iv.getInselCoordinates(publicInselId);
         
         // alle existierenden berücksichtigen ...
         boolean gefunden = false;
@@ -113,10 +113,10 @@ public class ParteiInselAnker {
         pia.setEntdeckungsRunde(Integer.MAX_VALUE);
         SortedMap<Integer, String> namen = new TreeMap<Integer, String>();
         SortedMap<Integer, String> beschreibungen = new TreeMap<Integer, String>();
-        Set<Coords> alteAnker = new HashSet<Coords>();
+        Set<Coordinates> alteAnker = new HashSet<Coordinates>();
         
-        for (Coords alteAnkerC : p.getInselAnker().keySet()) {
-            if (inselCoords.contains(alteAnkerC)) {
+        for (Coordinates alteAnkerC : p.getInselAnker().keySet()) {
+            if (inselCoordinates.contains(alteAnkerC)) {
                 gefunden = true;
                 alteAnker.add(alteAnkerC);
                 
@@ -160,7 +160,7 @@ public class ParteiInselAnker {
             if (alteAnker.size() > 1) {
                 // au Backe - mehr als ein alter Anker auf der gleichen Insel:
                 // alle weg:
-                for (Coords alteC : alteAnker) {
+                for (Coordinates alteC : alteAnker) {
                     ParteiInselAnker.Entfernen(p, alteC);
                 }
                 // den neuen speichern:
@@ -194,14 +194,14 @@ public class ParteiInselAnker {
     }
     
     public static ParteiInselAnker FindOrCreateFor(Unit u) {
-        return FindOrCreateFor(Partei.getPartei(u.getOwner()), u.getCoords());
+        return FindOrCreateFor(Partei.getFaction(u.getOwner()), u.getCoordinates());
     }
     
     public static int FreiePrivateInselID(int parteiNr) {
         int retval = 1; // 1 ist die erste ID
         
-        Partei p = Partei.getPartei(parteiNr);
-        for (Coords c : p.getInselAnker().keySet()) {
+        Partei p = Partei.getFaction(parteiNr);
+        for (Coordinates c : p.getInselAnker().keySet()) {
             ParteiInselAnker pia = p.getInselAnker().get(c);
             if (pia.getPrivateInselId() >= retval) retval = pia.getPrivateInselId() + 1;
         }
@@ -224,8 +224,8 @@ public class ParteiInselAnker {
             
             ParteiInselAnker pia = new ParteiInselAnker(p.getNummer());
             pia.setEntdeckungsRunde(Integer.MAX_VALUE);
-            Coords found = null;
-            for (Coords c : insel.getCoords()) {
+            Coordinates found = null;
+            for (Coordinates c : insel.getCoordinates()) {
                 Region r = Region.Load(c);
                 
                 int privateInselID = -1;
@@ -234,7 +234,7 @@ public class ParteiInselAnker {
 						privateInselID = r.getIntegerProperty(idKey);
 					}
                 } catch (NumberFormatException ex) {
-                    throw new RuntimeException("Partei " + p + ", Region " + r + " (" + r.getCoords() + ")...", ex);
+                    throw new RuntimeException("Partei " + p + ", Region " + r + " (" + r.getCoordinates() + ")...", ex);
                 }
                 if (privateInselID != -1) {
                     // gotcha!
@@ -267,7 +267,7 @@ public class ParteiInselAnker {
     public void saveToRegion() {
         if (getAnker() == null) throw new IllegalStateException("ParteiInselAnker #" + getPrivateInselId() + " soll gespeichert werden, gehört aber zu keiner Region.");
         
-        // new Debug("PIA.saveToRegion(): " + Partei.Load(getParteiNr()) + "@" + Region.Load(getAnker()) + " " + getAnker() + " - ID " + getPrivateInselId() + ", " + getPrivaterInselname() + ", " + getPrivateInselbeschreibung());
+        // new Debug("PIA.saveToRegion(): " + Partei.Load(getFactionNr()) + "@" + Region.Load(getAnker()) + " " + getAnker() + " - ID " + getPrivateInselId() + ", " + getPrivaterInselname() + ", " + getPrivateInselbeschreibung());
         
         String idKey = GameRules.INSEL_ID_FUER_PARTEI + Codierung.toBase36(parteiNr);
         String rundeKey = GameRules.INSEL_ENTDECKUNG_FUER_PARTEI + Codierung.toBase36(parteiNr);
@@ -286,7 +286,7 @@ public class ParteiInselAnker {
 		}
     }
     
-    public void loadFromRegion(Coords anker) {
+    public void loadFromRegion(Coordinates anker) {
         if (anker == null) throw new NullPointerException("anker ist null.");
         
         String idKey = GameRules.INSEL_ID_FUER_PARTEI + Codierung.toBase36(parteiNr);
@@ -313,15 +313,15 @@ public class ParteiInselAnker {
         setPrivateInselbeschreibung(r.getStringProperty(beschrKey, null));
     }
 
-    public int getParteiNr() {
+    public int getFactionNr() {
         return parteiNr;
     }
     
-    public Coords getAnker() {
+    public Coordinates getAnker() {
         return anker;
     }
 
-    public void setAnker(Coords anker) {
+    public void setAnker(Coordinates anker) {
         this.anker = anker;
     }
 
@@ -359,7 +359,7 @@ public class ParteiInselAnker {
     
     @Override
     public String toString() {
-        return "Insel-Anker für " + Partei.getPartei(getParteiNr()) + ": "
+        return "Insel-Anker für " + Partei.getFaction(getFactionNr()) + ": "
                 + Region.Load(getAnker()) + " " + getAnker() + " - "
                 + " ID " + getPrivateInselId() + "p/" + InselVerwaltung.getInstance().getInselNummer(getAnker()) + ", "
                 + " entdeckt in " + getEntdeckungsRunde() + ", "

@@ -17,7 +17,6 @@ import de.x8bit.Fantasya.Atlantis.Units.Puschkin;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
-import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.StringUtils;
 import java.util.HashSet;
 
@@ -29,11 +28,11 @@ public class Monsterplanung extends EVABase implements NotACommand
 		super("Monsterplanung");
 		
 		// NMR's für alle Monstervölker zurück setzen
-		for(Partei p : Partei.PROXY) if (p.isMonster()) p.setNMR(GameRules.getRunde());
+		for(Partei p : Partei.getNPCFactionList()) p.setNMR(GameRules.getRunde());
 
 		// sicherstellen, dass es die fixen Monsterparteien gibt:
-        checkPartei("dark");
-		checkPartei("tier");
+        // checkPartei("dark");		// Partei.MONSTER_FACTION
+		// checkPartei("tier");		// Partei.ANIMAL_FACTION
 		
         // tier - "harmlose" Tiere
         Greif.spawnMonster();
@@ -51,7 +50,7 @@ public class Monsterplanung extends EVABase implements NotACommand
 		// wg. concurrent modification exception. Denke ich...
 		for(Unit u : new HashSet<Unit>(Unit.CACHE)) {
 			if (!(u instanceof Monster)) continue;
-			if (!Partei.getPartei(u.getOwner()).isMonster()) continue;
+			if (Partei.getFaction(u.getOwner()).isPlayerFaction()) continue;
 			
 			new Debug(" -> Monsterplanung für " + u);
 			((Monster)u).planMonster();
@@ -82,21 +81,6 @@ public class Monsterplanung extends EVABase implements NotACommand
 		}
 
 //		new SysMsg(" - Monsterplanung beendet");
-	}
-	
-	private void checkPartei(String id)
-	{
-		Partei p = Partei.getPartei(Codierung.fromBase36(id));
-		if (p == null)
-		{
-			new SysMsg("Partei [" + id + "] existiert nicht - erzeuge sie...");
-			p = Partei.Create();
-			p.setNummer(Codierung.fromBase36(id));
-			p.setEMail("mogel@x8bit.de");
-			p.setMonster(1); // mindestens - mehr manuell via DB
-			p.setNMR(GameRules.getRunde());
-			Partei.PROXY.add(p);
-		}
 	}
 	
 	/** braucht kein Sack */@Override

@@ -20,11 +20,11 @@ public class AtlantenLesen extends EVABase implements NotACommand {
 
     @Override
     public void PreAction() {
-        for (Partei p : Partei.PROXY) {
+        for (Partei p : Partei.getPlayerFactionList()) {
             // nachdem Einheiten gereist sind, muss ggf. die detaillierte Regionssicht wieder entfernt werden!
             for (Unit u : Unit.CACHE) {
                 if (u.getOwner() == p.getNummer()) {
-                    p.addKnownRegion(u.getCoords(), true, Unit.class);
+                    p.addKnownRegion(u.getCoordinates(), true, Unit.class);
                 }
             }
 
@@ -39,7 +39,7 @@ public class AtlantenLesen extends EVABase implements NotACommand {
             String[] eintraege = bibliothek.split("\\}\\s+\\{");
             for (String eintrag : eintraege) {
                 RegionsSicht rs = RegionsSicht.FromCode("{" + eintrag + "}");
-                p.atlas.put(rs.getCoords(), rs);
+                p.atlas.put(rs.getCoordinates(), rs);
             }
             
             // new Debug("Partei " + p + ":\n" + p.atlas.toString());

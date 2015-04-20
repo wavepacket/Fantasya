@@ -2,8 +2,8 @@ package de.x8bit.Fantasya.Host.ManualTests.Misc;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Leuchtturm;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Host.ManualTests.*;
+
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Message;
@@ -21,6 +21,7 @@ import de.x8bit.Fantasya.Atlantis.Units.Aquaner;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
 import de.x8bit.Fantasya.Atlantis.Units.Halbling;
 import de.x8bit.Fantasya.Atlantis.Units.Zwerg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 
 /**
@@ -38,10 +39,10 @@ public class LeuchtturmTest extends TestBase {
 
 		Region r = null; Region jwd = null; Region gleichNebenan = null;
 		for (Region maybe : tw.nurNachbarVon(tw.nurBetretbar(getRegions()), Ozean.class)) {
-			Coords c = maybe.getCoords();
-			jwd = Region.Load(new Coords(c.getX() - 4, c.getY(), c.getWelt()));
+			Coordinates c = maybe.getCoordinates();
+			jwd = Region.Load(Coordinates.create(c.getX() - 4, c.getY(), c.getZ()));
 			if (!(jwd instanceof Ozean)) continue;
-			gleichNebenan = Region.Load(new Coords(c.getX() - 1, c.getY(), c.getWelt()));
+			gleichNebenan = Region.Load(Coordinates.create(c.getX() - 1, c.getY(), c.getZ()));
 			if (!(gleichNebenan instanceof Ozean)) continue;
 
 			// gotcha!
@@ -60,15 +61,15 @@ public class LeuchtturmTest extends TestBase {
 		getRegions().remove(gleichNebenan);
 
         {
-			Building b = Building.Create(Leuchtturm.class.getSimpleName(), r.getCoords());
+			Building b = Building.Create(Leuchtturm.class.getSimpleName(), r.getCoordinates());
 			b.setSize(10001);
 			String turmId = b.getNummerBase36();
 
-			Building b2 = Building.Create(Leuchtturm.class.getSimpleName(), r.getCoords());
+			Building b2 = Building.Create(Leuchtturm.class.getSimpleName(), r.getCoordinates());
 			b2.setSize(8);
 			String turm2Id = b2.getNummerBase36();
 
-			Building b3 = Building.Create(Leuchtturm.class.getSimpleName(), r.getCoords());
+			Building b3 = Building.Create(Leuchtturm.class.getSimpleName(), r.getCoordinates());
 			b3.setSize(100);
 			String turm3Id = b3.getNummerBase36();
 
@@ -169,7 +170,7 @@ public class LeuchtturmTest extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

@@ -3,12 +3,12 @@ package de.x8bit.Fantasya.Host.EVA;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.Info;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.EVA.util.BefehlsMuster;
 import de.x8bit.Fantasya.Host.EVA.util.DoppelteAusfuehrungException;
@@ -39,21 +39,21 @@ public class Ursprung extends EVABase
 	
     @Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
 
 			Unit u = eb.getUnit();
-            Partei p = Partei.getPartei(u.getOwner());
+            Partei p = Partei.getFaction(u.getOwner());
             int dx = 0;
             int dy = 0;
             try	{
                 dx = Integer.parseInt(eb.getTokens()[1]);
                 dy = Integer.parseInt(eb.getTokens()[2]);
-                Coords c = p.getUrsprung();
+                Coordinates c = p.getUrsprung();
 
-                p.setUrsprung(new Coords(c.getX() + dx, c.getY() + dy, c.getWelt()));
+                p.setUrsprung(Coordinates.create(c.getX() + dx, c.getY() + dy, c.getZ()));
 
                 new Info("Ursprung wurde um X:" + dx + " / Y:" + dy + " verschoben.", u);
             } catch(Exception ex) {

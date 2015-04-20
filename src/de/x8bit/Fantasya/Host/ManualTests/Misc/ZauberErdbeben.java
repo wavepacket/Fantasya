@@ -46,15 +46,15 @@ public class ZauberErdbeben extends TestBase {
 			magier.setSpell(new Erdbeben());
 			magier.Befehle.add("ZAUBERE \"Erdbeben\" 4");
 
-			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setName("Schüttelhütte I");
 			burg.setSize(100);
 
-			burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setName("Schüttelhütte II");
 			burg.setSize(100);
 
-			burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setName("Schüttelhütte III");
 			burg.setSize(100);
 
@@ -98,7 +98,7 @@ public class ZauberErdbeben extends TestBase {
 			a.Befehle.add("ATTACKIERE " + b.getNummerBase36());
 			b.Befehle.add("LERNE Hiebwaffen");
 
-            new Info(this.getName() + "-Kampf Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-Kampf Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -132,7 +132,7 @@ public class ZauberErdbeben extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -148,7 +148,7 @@ public class ZauberErdbeben extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

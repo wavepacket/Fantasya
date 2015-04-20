@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -20,6 +19,7 @@ import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Skills.Burgenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Schiffbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Strassenbau;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.Paket;
 import de.x8bit.Fantasya.Host.EVA.util.AnzahlHint;
@@ -173,7 +173,7 @@ public class Produktion extends EVABase {
 
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -280,7 +280,7 @@ public class Produktion extends EVABase {
 
 			int id = b.getNummer();
 
-			for (Unit u : Unit.CACHE.getAll(b.getCoords())) {
+			for (Unit u : Unit.CACHE.getAll(b.getCoordinates())) {
 				if (u.getBelagert() == id) {
 					new Info(b + " ist zerstört - die Belagerung wurde erfolgreich beendet.", u);
 					u.setBelagert(0);
@@ -309,10 +309,10 @@ public class Produktion extends EVABase {
 
 			int id = s.getNummer();
 
-			for (Unit u : Unit.CACHE.getAll(s.getCoords())) {
+			for (Unit u : Unit.CACHE.getAll(s.getCoordinates())) {
 				if (u.getSchiff() == id) {
 					u.setSchiff(0);
-					Region r = Region.Load(s.getCoords());
+					Region r = Region.Load(s.getCoordinates());
 					if (r.istBetretbar(u)) {
 						new Info(s + " ist zerstört worden - wir stehen vor den traurigen Resten.", u);
 					} else if (r instanceof Ozean) {
@@ -326,7 +326,7 @@ public class Produktion extends EVABase {
 			loeschliste2.add(s);
 		}
 		for (Ship gone : loeschliste2) {
-            Region.Load(gone.getCoords()).getShips().remove(gone);
+            Region.Load(gone.getCoordinates()).getShips().remove(gone);
 			Ship.PROXY.remove(gone);
 		}
 		new SysMsg(loeschliste2.size() + " Schiffe gelöscht -> size == 0");
@@ -336,7 +336,7 @@ public class Produktion extends EVABase {
 		// Mantis #181 - böser Hack, siehe PreAction()
 		// persistente Resourcen in den Regionen wiederherstellen
 		for (ResourceRecord memory : Produktion.persistentResources) { // static list
-			Region r = Region.Load(memory.getCoords());
+			Region r = Region.Load(memory.getCoordinates());
 			r.setResource(memory.getResource(), memory.getAnzahl());
 		}
 		// Speicher freigeben:
@@ -364,7 +364,7 @@ public class Produktion extends EVABase {
 			for (Item i:persistentResourceTypes) {
 				int anzahl = r.getResource(i.getClass()).getAnzahl();
 				if (anzahl > 0) {
-					ResourceRecord memory = new ResourceRecord(r.getCoords(), anzahl, i.getClass());
+					ResourceRecord memory = new ResourceRecord(r.getCoordinates(), anzahl, i.getClass());
 					Produktion.persistentResources.add(memory); // static list
 				}
 			}
@@ -402,7 +402,7 @@ public class Produktion extends EVABase {
 		}
 		
 		// Baumöglichkeiten überprüfen
-		Region r = Region.Load(u.getCoords());
+		Region r = Region.Load(u.getCoordinates());
 		if (r.getSteineFuerStrasse() == 0) {
 			befehl.setError();
 			new Fehler("In " + r + " kann keine Strasse gebaut werden.", u);
@@ -450,7 +450,7 @@ public class Produktion extends EVABase {
 			return;
 		}
 			
-		if (!u.getCoords().equals(building.getCoords())) {
+		if (!u.getCoordinates().equals(building.getCoordinates())) {
 			befehl.setError();
 			new Fehler(u + " - das Gebäude [" + id + "] wurde nicht gefunden.", u);
 			return;
@@ -462,11 +462,11 @@ public class Produktion extends EVABase {
 	
 	// COMMAND MACHE <gebäude>
 	public void Gebaeude_Start(Unit u, Einzelbefehl befehl, Class<? extends Building> clazz) {
-		Building building = Building.Create(clazz.getSimpleName(), u.getCoords());
+		Building building = Building.Create(clazz.getSimpleName(), u.getCoordinates());
 		building.Mache(u);
 
 		@SuppressWarnings("unused")
-		Region r = Region.Load(u.getCoords());
+		Region r = Region.Load(u.getCoordinates());
 		// r.getBuildings().add(building); // wird jetzt schon in Building.Create erledigt.
 		
 		if (building.getSize() > 0)	{
@@ -500,7 +500,7 @@ public class Produktion extends EVABase {
 			return;
 		}
 
-		if (!u.getCoords().equals(ship.getCoords())) {
+		if (!u.getCoordinates().equals(ship.getCoordinates())) {
 			befehl.setError();
 			new Fehler(u + " steht nicht in der gleichen Region wie " + ship + ".", u);
 			return;
@@ -512,11 +512,11 @@ public class Produktion extends EVABase {
 	}
 	
 	public void Schiff_Start(Unit u, Einzelbefehl befehl, Class<? extends Ship> clazz) {
-		Ship ship = Ship.Create(clazz.getSimpleName(), u.getCoords());
+		Ship ship = Ship.Create(clazz.getSimpleName(), u.getCoordinates());
 		ship.Mache(u);
 
 		@SuppressWarnings("unused")
-		Region r = Region.Load(u.getCoords());
+		Region r = Region.Load(u.getCoordinates());
 		// r.getShips().add(ship); // wird jetzt schon in Ship.Create erledigt.
 
 		if (ship.getGroesse() > 0)	{
@@ -559,7 +559,7 @@ public class Produktion extends EVABase {
 
 
 	private class ResourceRecord {
-		Coords coords;
+		Coordinates coords;
 		int anzahl;
 		Class<? extends Item> resource;
 
@@ -567,7 +567,7 @@ public class Produktion extends EVABase {
 			return anzahl;
 		}
 
-		public Coords getCoords() {
+		public Coordinates getCoordinates() {
 			return coords;
 		}
 
@@ -575,7 +575,7 @@ public class Produktion extends EVABase {
 			return resource;
 		}
 		
-		public ResourceRecord(Coords coords, int anzahl, Class<? extends Item> resource) {
+		public ResourceRecord(Coordinates coords, int anzahl, Class<? extends Item> resource) {
 			this.coords = coords;
 			this.anzahl = anzahl;
 			this.resource = resource;

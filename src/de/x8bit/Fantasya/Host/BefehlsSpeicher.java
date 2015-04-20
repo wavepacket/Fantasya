@@ -21,13 +21,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
 import de.x8bit.Fantasya.Host.EVA.util.BefehlsMuster;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
@@ -100,7 +100,7 @@ public class BefehlsSpeicher {
     }
 
 	@SuppressWarnings("unchecked")
-	public Set<Coords> getCoords(Class<? extends EVABase> prozessor) {
+	public Set<Coordinates> getCoordinates(Class<? extends EVABase> prozessor) {
 		BefehleProRegion bpr = befehleProPhase.get(prozessor);
 		if (bpr != null) return bpr.keySet();
 
@@ -115,7 +115,7 @@ public class BefehlsSpeicher {
 	 * @param c Koordinaten der Region
 	 * @return Alle passenden Befehle
 	 */
-	public List<Einzelbefehl> get(Class<? extends EVABase> prozessor, Coords c) {
+	public List<Einzelbefehl> get(Class<? extends EVABase> prozessor, Coordinates c) {
 		List<Einzelbefehl> befehle = befehleProPhase.get(prozessor, c);
 		if (befehle == null) {
 			new SysErr("Liste der Einzelbefehle ist null für " + prozessor.getSimpleName() + " in " + c + ".");
@@ -153,7 +153,7 @@ public class BefehlsSpeicher {
 
         BefehleProRegion bpr = befehleProPhase.get(prozessor);
         if (bpr != null) {
-            for (Coords c:bpr.keySet()) {
+            for (Coordinates c:bpr.keySet()) {
                 retval.addAll(bpr.get(c));
             }
         }
@@ -333,7 +333,7 @@ public class BefehlsSpeicher {
             if (prozessor != null) prozessorName = prozessor.getSimpleName();
             sb.append("----------\n\n" + prozessorName + "\n");
 			BefehleProRegion bpr = befehleProPhase.get(prozessor);
-			for (Coords c : bpr.getCoords()) {
+			for (Coordinates c : bpr.getCoordinates()) {
 				Region r = Region.Load(c);
 				sb.append("\t" + r + " " + c + ":\n");
 				RegionsBefehle rb = bpr.get(c);
@@ -341,8 +341,8 @@ public class BefehlsSpeicher {
                     new SysMsg("RegionsBefehle sind leer in " + r + "?");
                     continue;
                 }
-				for (Integer parteiNummer : rb.getParteien()) {
-					sb.append("\t\t" + Partei.getPartei(parteiNummer) +":\n");
+				for (Integer parteiNummer : rb.getFactionen()) {
+					sb.append("\t\t" + Partei.getFaction(parteiNummer) +":\n");
 					for (Einzelbefehl eb : rb) {
 						if (eb.getUnit().getOwner() == parteiNummer) sb.append("\t\t\t" + eb + "\n");
 					}
@@ -391,19 +391,19 @@ public class BefehlsSpeicher {
 			super.clear();
 		}
 
-		public Set<Integer> getParteien() {
+		public Set<Integer> getFactionen() {
 			return parteien;
 		}
 		
 	}
 
-	private class BefehleProRegion extends TreeMap<Coords, RegionsBefehle> {
+	private class BefehleProRegion extends TreeMap<Coordinates, RegionsBefehle> {
 		private static final long serialVersionUID = -8382486000344247639L;
 
-		private final Set<Coords> coords = new TreeSet<Coords>();
+		private final Set<Coordinates> coords = new TreeSet<Coordinates>();
 
 		public void add(Einzelbefehl eb) {
-			Coords c = eb.getUnit().getCoords();
+			Coordinates c = eb.getUnit().getCoordinates();
 			if (this.get(c) == null) this.put(c, new RegionsBefehle());
 			this.get(c).add(eb);
 			coords.add(c);
@@ -412,7 +412,7 @@ public class BefehlsSpeicher {
 		public boolean removeDeep(Einzelbefehl eb) {
 			// TODO das funktioniert mit Bewegungsbefehlen nicht, weil sich die Region ändert.
 			// TODO testen!
-			RegionsBefehle rb = this.get(eb.getCoords());
+			RegionsBefehle rb = this.get(eb.getCoordinates());
 			if (rb != null) return rb.removeDeep(eb);
 			
 			// rb ist null: in dieser Region gibt es keine Befehle...
@@ -420,7 +420,7 @@ public class BefehlsSpeicher {
 		}
 
 		@SuppressWarnings("unused")
-		public void clear(Coords c) {
+		public void clear(Coordinates c) {
 			if (this.get(c) == null) this.put(c, new RegionsBefehle());
 			this.get(c).clear();
 			coords.remove(c);
@@ -428,14 +428,14 @@ public class BefehlsSpeicher {
 
 		@Override
 		public void clear() {
-			for (Coords c : this.keySet()) {
+			for (Coordinates c : this.keySet()) {
 				this.get(c).clear();
 			}
 			coords.clear();
 			super.clear();
 		}
 
-		public Set<Coords> getCoords() {
+		public Set<Coordinates> getCoordinates() {
 			return coords;
 		}
 	}
@@ -472,7 +472,7 @@ public class BefehlsSpeicher {
 			return phasen;
 		}
 
-		public List<Einzelbefehl> get(Class<? extends EVABase> prozessor, Coords c) {
+		public List<Einzelbefehl> get(Class<? extends EVABase> prozessor, Coordinates c) {
 			BefehleProRegion bpr = this.get(prozessor);
 			RegionsBefehle rb = bpr.get(c);
 			return rb;
@@ -483,7 +483,7 @@ public class BefehlsSpeicher {
 		 * Ist nur für Testzwecke gedacht und nicht bestmöglich performant!
 		 */
 		@SuppressWarnings("unused")
-		public List<Einzelbefehl> get(Class<? extends EVABase> prozessor, Coords c, Unit u) {
+		public List<Einzelbefehl> get(Class<? extends EVABase> prozessor, Coordinates c, Unit u) {
 			List<Einzelbefehl> retval = new ArrayList<Einzelbefehl>();
 
 			for (Einzelbefehl eb : this.get(prozessor, c)) {

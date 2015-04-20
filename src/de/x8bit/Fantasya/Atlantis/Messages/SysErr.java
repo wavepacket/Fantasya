@@ -27,6 +27,6 @@ public class SysErr extends Message
 	public SysErr(int level, String msg)
 	{
 		super();
-		print(level, msg, Partei.getPartei(0));	// Owner == 0 signalisiert das System ^^
+		print(level, msg, Partei.getFaction(0));	// Owner == 0 signalisiert das System ^^
 	}
 }

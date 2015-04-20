@@ -42,7 +42,7 @@ public class Cave extends Building {
 		List<Cave> alb = new ArrayList<Cave>();
 
 		for (Building b : Building.PROXY) {
-			if (b.getCoords().getWelt() != ebene) {
+			if (b.getCoordinates().getZ() != ebene) {
 				continue;
 			}
 			if (!(b instanceof Cave)) {
@@ -96,9 +96,9 @@ public class Cave extends Building {
 //            if (!r.istBetretbar(null)) continue;
 //            if (r.getClass() == Sandstrom.class) continue; // keine Höhlen auf/in Sandströmen
 //            
-//            if (r.getCoords().getWelt() == 1) {
+//            if (r.getCoordinates().getWelt() == 1) {
 //                oberweltOrte.add(r);
-//            } else if (r.getCoords().getWelt() == -1) {
+//            } else if (r.getCoordinates().getWelt() == -1) {
 //                unterweltOrte.add(r);
 //            }
 //        }
@@ -134,7 +134,7 @@ public class Cave extends Building {
 //                    if (r.getClass() == Vulkan.class) hoehlenArt = "Felsspalte";
 //                    if (r.getClass() == aktiverVulkan.class) hoehlenArt = "Felsspalte";
 //
-//                    Building cave = Building.Create(hoehlenArt, r.getCoords());
+//                    Building cave = Building.Create(hoehlenArt, r.getCoordinates());
 //                    cave.setSize(Atlantis.W(20) + Atlantis.W(10));
 //                    inselnMitHoehle.add(r.getInselKennung());
 //                } else {
@@ -157,7 +157,7 @@ public class Cave extends Building {
 //                    if (r.getClass() == Vulkan.class) hoehlenArt = "Felsspalte";
 //                    if (r.getClass() == aktiverVulkan.class) hoehlenArt = "Felsspalte";
 //
-//                    Building cave = Building.Create(hoehlenArt, r.getCoords());
+//                    Building cave = Building.Create(hoehlenArt, r.getCoordinates());
 //                    cave.setSize(Atlantis.W(20) + Atlantis.W(10));
 //                    inselnMitHoehle.add(r.getInselKennung());
 //                } else {
@@ -245,7 +245,7 @@ public class Cave extends Building {
 
 		// die Höhle ist geschlossen ... also öffnen
 		if (open == 0) {
-			List<Cave> hoehlen = GetCaves(0 - getCoords().getWelt());
+			List<Cave> hoehlen = GetCaves(0 - getCoordinates().getZ());
 
 			// TODO andere Fehlerbehandlung
 			if (hoehlen.isEmpty()) {
@@ -265,12 +265,12 @@ public class Cave extends Building {
 		if (ausgang == null) {
 			new BigError(new RuntimeException("Korrespondierende Höhle auf der anderen Ebene wurde nie ausgewählt oder existiert nicht mehr."));
 		}
-		Region ziel = Region.Load(ausgang.getCoords());
+		Region ziel = Region.Load(ausgang.getCoordinates());
 		if (ziel == null) {
-			new BigError(new RuntimeException("Ziel-Region @" + ausgang.getCoords() + " von Höhle " + ausgang + " existiert nicht (mehr)."));
+			new BigError(new RuntimeException("Ziel-Region @" + ausgang.getCoordinates() + " von Höhle " + ausgang + " existiert nicht (mehr)."));
 		}
 
-		Partei partei = Partei.getPartei(unit.getOwner());
+		Partei partei = Partei.getFaction(unit.getOwner());
 
 		if (!partei.canAccess(ziel)) {
 			new Fehler(unit + " irrt in den Gängen von " + this + " herum und kommt schließlich wieder am Ausgangsort an.", unit);
@@ -283,15 +283,15 @@ public class Cave extends Building {
 
 
 		Unit.CACHE.remove(unit);
-		unit.setCoords(ausgang.getCoords());
+		unit.setCoordinates(ausgang.getCoordinates());
 		Unit.CACHE.add(unit);
 
 		// auf jeden Fall Infos in die Reporte:
-		Partei.getPartei(unit.getOwner()).addKnownRegion(ausgang.getCoords(), true, Cave.class);
+		Partei.getFaction(unit.getOwner()).addKnownRegion(ausgang.getCoordinates(), true, Cave.class);
 
 		String verb = (unit.getPersonen() == 1 ? "steigt" : "steigen");
-		String richtung = (ausgang.getCoords().getWelt() == -1 ? "hinab" : "hinauf");
-		new Info(unit + " " + verb + " durch finstere Gänge " + richtung + " nach " + Region.Load(unit.getCoords()) + ".", unit);
+		String richtung = (ausgang.getCoordinates().getZ() == -1 ? "hinab" : "hinauf");
+		new Info(unit + " " + verb + " durch finstere Gänge " + richtung + " nach " + Region.Load(unit.getCoordinates()) + ".", unit);
 
 		UpdateStates(this, ausgang);
 		UpdateStates(ausgang, this);

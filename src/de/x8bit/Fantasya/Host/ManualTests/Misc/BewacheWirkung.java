@@ -53,7 +53,7 @@ public class BewacheWirkung extends TestBase {
             u.Befehle.add("LERNE Hiebwaffen");
             u.setBewacht(true);
 
-            new Info(this.getName() + "-00 Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-00 Setup in " + r + ".", u, u.getCoordinates());
         }
 
         { // zweiter Fall: Allianz
@@ -83,7 +83,7 @@ public class BewacheWirkung extends TestBase {
             u.Befehle.add("LERNE Hiebwaffen");
             u.setBewacht(true);
 
-            new Info(this.getName() + "-10 Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-10 Setup in " + r + ".", u, u.getCoordinates());
         }
 
         { // dritter Fall: KONTAKTIERE
@@ -113,7 +113,7 @@ public class BewacheWirkung extends TestBase {
             u2.Befehle.add("LERNE Hiebwaffen");
             u2.setBewacht(true);
 
-            new Info(this.getName() + "-20 Setup in " + r + ".", u2, u2.getCoords());
+            new Info(this.getName() + "-20 Setup in " + r + ".", u2, u2.getCoordinates());
         }
 
     }
@@ -152,7 +152,7 @@ public class BewacheWirkung extends TestBase {
                     retval = fail(tokens[1] + ": Rekrutieren hat unerwartet geklappt.");
                 }
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -167,7 +167,7 @@ public class BewacheWirkung extends TestBase {
                     retval = fail(tokens[1] + ": Rekrutieren hat nicht geklappt.");
                 }
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -182,7 +182,7 @@ public class BewacheWirkung extends TestBase {
                     retval = fail(tokens[1] + ": Rekrutieren hat nicht geklappt.");
                 }
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

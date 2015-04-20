@@ -1,13 +1,15 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,18 +18,18 @@ public class BuildingSerializer implements ObjectSerializer<Building> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Set<Coords> regionCoords;
+	private Set<Coordinates> regionCoordinates;
 	private MapCache<Unit> unitList;
 	
-	public BuildingSerializer(Set<Coords> regionCoords, MapCache<Unit> unitList) {
-		if (regionCoords == null) {
+	public BuildingSerializer(Set<Coordinates> regionCoordinates, MapCache<Unit> unitList) {
+		if (regionCoordinates == null) {
 			throw new IllegalArgumentException("List of region coordinates must not be null.");
 		}
 		if (unitList == null) {
 			throw new IllegalArgumentException("List of units must not be null.");
 		}
 
-		this.regionCoords = regionCoords;
+		this.regionCoordinates = regionCoordinates;
 		this.unitList = unitList;
 	}
 
@@ -60,18 +62,18 @@ public class BuildingSerializer implements ObjectSerializer<Building> {
 		}
 
 		// fail on bad coordinates
-		Coords coord = new Coords(
+		Coordinates coord = Coordinates.create(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));
-		if (!regionCoords.contains(coord)) {
+		if (!regionCoordinates.contains(coord)) {
 			logger.warn("Error loading building \"{}\": Region at coordinates {} does not exist.",
 					mapping.get("nummer"),
 					coord);
 			return null;
 		}
 
-		building.setCoords(coord);
+		building.setCoordinates(coord);
 		building.setNummer(Integer.decode(mapping.get("nummer")));
 		building.setName(mapping.get("name"));
 		building.setBeschreibung(mapping.get("beschreibung"));
@@ -92,9 +94,9 @@ public class BuildingSerializer implements ObjectSerializer<Building> {
 		Map<String, String> mapping = new HashMap<String, String>();
 
 		mapping.put("type", object.getTyp());
-		mapping.put("koordx", String.valueOf(object.getCoords().getX()));
-		mapping.put("koordy", String.valueOf(object.getCoords().getY()));
-		mapping.put("welt", String.valueOf(object.getCoords().getWelt()));
+		mapping.put("koordx", String.valueOf(object.getCoordinates().getX()));
+		mapping.put("koordy", String.valueOf(object.getCoordinates().getY()));
+		mapping.put("welt", String.valueOf(object.getCoordinates().getZ()));
 		mapping.put("nummer", String.valueOf(object.getNummer()));
 		mapping.put("name", object.getName());
 		mapping.put("beschreibung", object.getBeschreibung());
@@ -115,9 +117,9 @@ public class BuildingSerializer implements ObjectSerializer<Building> {
 					object.getNummer());
 		}
 
-		if (!regionCoords.contains(object.getCoords())) {
+		if (!regionCoordinates.contains(object.getCoordinates())) {
 			logger.warn("Location \"{}\" of building \"{}\" does not exist.",
-					object.getCoords(),
+					object.getCoordinates(),
 					object.getNummer());
 		}
 

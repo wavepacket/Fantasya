@@ -86,7 +86,7 @@ public class BeispielKampf02 extends TestBase {
 
             u.Befehle.add("ATTACKIERE " + idB);
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

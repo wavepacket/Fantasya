@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,7 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 				&& keys.contains("originx")
 				&& keys.contains("originy")
 				&& keys.contains("cheats")
-				&& keys.contains("monster")
+				//&& keys.contains("monster")
 				&& keys.contains("steuern");
 	}
 
@@ -40,19 +41,20 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 		Partei object = null;
 		
 		try {
-			object = new Partei(Integer.decode(mapping.get("age")));
+			int id = Integer.parseInt(mapping.get("id"), 36);
+			if (Partei.isNPCFaction(id) || id == Partei.OMNI_FACTION.getNummer()) return null;
+			object = Partei.createPlayerFaction(id, Integer.decode(mapping.get("age")));
 			object.setName(mapping.get("name"));
 			object.setBeschreibung(mapping.get("beschreibung"));
-			object.setNummer(Integer.parseInt(mapping.get("id"), 36));
 			object.setEMail(mapping.get("email"));
 			object.setRasse(mapping.get("rasse"));
 			object.setPassword(mapping.get("password"));
 			object.setWebsite(mapping.get("website"));
 			object.setNMR(Integer.decode(mapping.get("nmr")));
-			object.setUrsprung(new Coords(Integer.decode(mapping.get("originx")),
+			object.setUrsprung(Coordinates.create(Integer.decode(mapping.get("originx")),
 					Integer.decode(mapping.get("originy")), 1));
 			object.setCheats(Integer.decode(mapping.get("cheats")));
-			object.setMonster(Integer.decode(mapping.get("monster")));
+			//object.setMonster(Integer.decode(mapping.get("monster")));
 			object.setDefaultsteuer(Integer.decode(mapping.get("steuern")));
 
 			logger.debug("Loaded Partei \"{}\" with id \"{}\"",
@@ -84,7 +86,7 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 		results.put("originx", String.valueOf(object.getUrsprung().getX()));
 		results.put("originy", String.valueOf(object.getUrsprung().getY()));
 		results.put("cheats", String.valueOf(object.getCheats()));
-		results.put("monster", String.valueOf(object.getMonster()));
+		//results.put("monster", String.valueOf(object.getMonster()));
 		results.put("steuern", String.valueOf(object.getDefaultsteuer()));
 
 		return new SerializedData(results);

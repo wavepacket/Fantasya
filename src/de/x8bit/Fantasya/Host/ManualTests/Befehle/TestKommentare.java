@@ -39,7 +39,7 @@ public class TestKommentare extends TestBase {
 			u.Befehle.add("lerne ausdauer //Inline-Kommentar");
 
 
-			new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+			new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

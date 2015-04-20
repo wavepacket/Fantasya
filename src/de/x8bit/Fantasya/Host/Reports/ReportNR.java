@@ -14,7 +14,6 @@ import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Atlantis;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -47,6 +46,7 @@ import de.x8bit.Fantasya.Atlantis.Regions.Sandstrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Vulkan;
 import de.x8bit.Fantasya.Atlantis.Regions.aktiverVulkan;
 import de.x8bit.Fantasya.Atlantis.Skills.Magie;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.BuildInformation;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.Paket;
@@ -173,7 +173,7 @@ public class ReportNR
 		boolean header = false;
 		
 		for (Partei other : partei.getBekannteParteien()) {
-			if (other.isMonster()) continue;
+			if (!other.isPlayerFaction()) continue;
 			
 			if (!header) {
 				WriteTheLine(); writer.center("Alle bekannten Völker"); writer.wl("");
@@ -247,7 +247,7 @@ public class ReportNR
 			sortiert.put(kat, new ArrayList<Message>());
 		}
 		// Messages holen und einsortieren
-		for (Message msg : Message.Retrieve(partei, (Coords)null, null)) {
+		for (Message msg : Message.Retrieve(partei, (Coordinates)null, null)) {
 			String kat = msg.getClass().getSimpleName();
 			if (!sortiert.containsKey(kat)) continue; // Debug und so - wollen wir nicht im Report.
 			sortiert.get(kat).add(msg);
@@ -295,7 +295,7 @@ public class ReportNR
 		
 		for (int partnerNr : partei.getAllianzen().keySet()) {
 			Allianz a = partei.getAllianz(partnerNr);
-			Partei partner = Partei.getPartei(partnerNr);
+			Partei partner = Partei.getFaction(partnerNr);
 			if (partner == null) {
 				new SysErr("ReportNR: Allianz mit nicht-existenter Partei - " + partei.getNummerBase36() + " mit " + Codierung.toBase36(partnerNr));
 				continue;
@@ -324,7 +324,7 @@ public class ReportNR
 		String msg = "Die Steuer für alle Völker liegt bei " + partei.getDefaultsteuer() + "%";
 		for(Steuer steuer : partei.getSteuern())
 		{
-			Partei p = Partei.getPartei(steuer.getFaction());
+			Partei p = Partei.getFaction(steuer.getFaction());
 			if (cont) msg += ", "; else { cont = true; msg += ", Sondervergünstigungen für: "; }
 			msg += p + " (zahlt " + steuer.getRate() + "%)";
 		}
@@ -340,7 +340,7 @@ public class ReportNR
 			WriteTheLine();
 			Region_Header(r);
 
-			RegionsSicht rs = partei.getRegionsSicht(r.getCoords());
+			RegionsSicht rs = partei.getRegionsSicht(r.getCoordinates());
 			boolean details = false;
 			if (rs != null) details = rs.hasDetails();
 			if (partei.getNummer() == 0) details = true;
@@ -360,7 +360,7 @@ public class ReportNR
 	
 	private void Region_Header(Region r)
 	{
-		Coords privateCoords = partei.getPrivateCoords(r.getCoords());
+		Coordinates privateCoordinates = partei.getPrivateCoordinates(r.getCoordinates());
 		Item resource = null;
 		
 		String msg = "";
@@ -369,13 +369,13 @@ public class ReportNR
 		
 		if (!hidden) {
 			if (r instanceof Ozean) {
-				msg = r.getClass().getSimpleName() +  " (" + privateCoords.getX() + ", " + privateCoords.getY() + "), " ;
+				msg = r.getClass().getSimpleName() +  " (" + privateCoordinates.getX() + ", " + privateCoordinates.getY() + "), " ;
 			} else {
-				msg = r.getName() + " (" + privateCoords.getX() + ", " + privateCoords.getY() + "), " + r.getClass().getSimpleName();
+				msg = r.getName() + " (" + privateCoordinates.getX() + ", " + privateCoordinates.getY() + "), " + r.getClass().getSimpleName();
 				msg += ", " + r.getResource(Holz.class).getAnzahl() + " Bäume, " + r.getBauern() + " Bauern, $" + r.getSilber() + " Silber. ";
 			}
 		} else {
-			msg = r.getName() + " (" + privateCoords.getX() + ", " + privateCoords.getY() + "), " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN;
+			msg = r.getName() + " (" + privateCoordinates.getX() + ", " + privateCoordinates.getY() + "), " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN;
 		}
 
 		if (!hidden) {
@@ -399,7 +399,7 @@ public class ReportNR
 		// Nachbarregionen: Land
 		List<String> parts = new ArrayList<String>();
 		for(Richtung ri : Richtung.values()) {
-			Region hr = Region.Load(r.getCoords().shift(ri));
+			Region hr = Region.Load(r.getCoordinates().shiftDirection(ri));
 			if ((hr == null) || (!partei.canAccess(hr))) {
 				parts.add("im " + ri.name() + " liegt " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN);
 			} else {
@@ -429,7 +429,7 @@ public class ReportNR
 		// Nachbarregionen: Wasser
 		parts = new ArrayList<String>();
 		for(Richtung ri : Richtung.values()) {
-			Region hr = Region.Load(r.getCoords().shift(ri));
+			Region hr = Region.Load(r.getCoordinates().shiftDirection(ri));
 			if (hr == null)	continue;
 			if ((hr instanceof Ozean) && (partei.canAccess(hr))) parts.add(ri.toString());
 		}
@@ -485,7 +485,7 @@ public class ReportNR
 		{
 			if (r.getStrassensteine(richtung) > 0)
 			{
-				Region hr = Region.Load(r.getCoords().shift(richtung));
+				Region hr = Region.Load(r.getCoordinates().shiftDirection(richtung));
 				if (count++ != 0) msg += ", "; else msg = "Es führt eine Strasse nach ";
 				msg += hr + " ";
 				msg += "(" + richtung.name();
@@ -733,7 +733,7 @@ public class ReportNR
 	private void Region_Einheit(Unit u)
 	{
 		Partei p = null;
-		if (u.getTarnPartei() != 0) p = Partei.getPartei(u.getTarnPartei());
+		if (u.getTarnPartei() != 0) p = Partei.getFaction(u.getTarnPartei());
 		
 		// Sichtbarkeit von Einheiten mit Tarnung prüfen
 		if ((u.getSchiff() == 0) && (u.getGebaeude() == 0)) {

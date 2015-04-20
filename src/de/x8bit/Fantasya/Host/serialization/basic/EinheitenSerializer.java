@@ -1,14 +1,17 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Kampfposition;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
-import java.util.Collection;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,18 +29,13 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Collection<Partei> partyList;
-	private Set<Coords> regionList;
+	private Set<Coordinates> regionList;
 
-	public EinheitenSerializer(Collection<Partei> partyList, Set<Coords> regionList) {
-		if (partyList == null) {
-			throw new IllegalArgumentException("Require a valid list of parties for unit serialization.");
-		}
+	public EinheitenSerializer(Set<Coordinates> regionList) {
 		if (regionList == null) {
 			throw new IllegalArgumentException("Require a valid regionList for unit serialization.");
 		}
 
-		this.partyList = partyList;
 		this.regionList = regionList;
 	}
 
@@ -84,7 +82,7 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 		}
 
 		unit.setNummer(Integer.decode(mapping.get("nummer")));
-		unit.setCoords(new Coords(
+		unit.setCoordinates(Coordinates.create(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt"))));
@@ -123,15 +121,20 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 		}
 
 		// now check if the unit is valid at all, otherwise return null.
-		if (!regionList.contains(unit.getCoords())) {
+		if (!regionList.contains(unit.getCoordinates())) {
 			logger.warn("Error loading unit \"{}\": No region at location {}.",
 					unit.getNummer(),
-					unit.getCoords());
+					unit.getCoordinates());
 			return null;
 		}
 
 		Partei owner = null;
-		for (Partei p : partyList) {
+		
+    	List<Partei> allFactionList = new ArrayList<Partei>();
+    	allFactionList.addAll(Partei.getPlayerFactionList());
+    	allFactionList.addAll(Partei.getNPCFactionList());
+    	allFactionList.add(Partei.OMNI_FACTION);
+		for (Partei p : allFactionList) {
 			if (p.getNummer() == unit.getOwner()) {
 				owner = p;
 			}
@@ -158,9 +161,9 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 		// Compatibility notes: The old serialization code saved several 
 		// obsolete columns. These are: "id" (nummer in base36 format, never loaded)
 		data.put("rasse", object.getClass().getSimpleName());
-		data.put("koordx", String.valueOf(object.getCoords().getX()));
-		data.put("koordy", String.valueOf(object.getCoords().getY()));
-		data.put("welt", String.valueOf(object.getCoords().getWelt()));
+		data.put("koordx", String.valueOf(object.getCoordinates().getX()));
+		data.put("koordy", String.valueOf(object.getCoordinates().getY()));
+		data.put("welt", String.valueOf(object.getCoordinates().getZ()));
 		data.put("nummer", String.valueOf(object.getNummer()));
 		data.put("name", object.getName());
 		data.put("beschreibung", object.getBeschreibung());

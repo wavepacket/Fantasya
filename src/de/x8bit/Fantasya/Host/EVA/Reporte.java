@@ -69,13 +69,14 @@ public class Reporte extends EVABase implements NotACommand
 	@Override
 	public void PostAction() {
 		spieler = new ArrayList<Partei>();
-		spieler.addAll(Partei.PROXY);
+		spieler.addAll(Partei.getPlayerFactionList());
+		spieler.addAll(Partei.getNPCFactionList());
 
         int nSpieler = 0;
         int nMonster = 0;
         for (Partei p : spieler) {
             if (p.getNummer() == 0) continue; // zähle gar nicht mit
-            if (p.isMonster()) {
+            if (!p.isPlayerFaction()) {
                 nMonster ++;
             } else {
                 nSpieler ++;

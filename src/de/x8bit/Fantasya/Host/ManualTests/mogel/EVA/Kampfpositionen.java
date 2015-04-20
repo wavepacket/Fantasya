@@ -14,15 +14,17 @@ public class Kampfpositionen extends TestBase {
 	protected void mySetupTest() {
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 		
+		// Partei dark = Partei.MONSTER_FACTION;
+		/*
 		Partei dark = new Partei();
 		dark.setNummer(Codierung.fromBase36("dark"));
 		dark.setMonster(3); // World-Report
-		
+		*/
 		Datenbank db = new Datenbank("settings");
 		db.SaveSettings(GameRules.INSELKENNUNG_SPIELER, 10);
 		db.Close();
 		
-		Unit unit = this.createUnit(Partei.getPartei(1), region);
+		Unit unit = this.createUnit(Partei.getFaction(1), region);
 		unit.setPersonen(1);
 		unit.Befehle.add("KAEMPFE hinten");
 	}

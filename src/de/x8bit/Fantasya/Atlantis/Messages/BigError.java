@@ -75,7 +75,7 @@ public class BigError extends de.x8bit.Fantasya.Atlantis.Message
 		}
 		
 		System.out.println("[-!!!-] " + text);
-		print(0, text, Partei.getPartei(0)); // die Nachricht in die DB schieben
+		print(0, text, Partei.getFaction(0)); // die Nachricht in die DB schieben
 	
 		Datenbank.ListQueryStack();
 

@@ -118,10 +118,10 @@ public class ReportXML
 				unit = m.getUnit().getNummer();
 			}
 			int x = 0, y = 0, welt = 0;
-			if (m.getCoords() != null) {
-				x = m.getCoords().getX();
-				y = m.getCoords().getY();
-				welt = m.getCoords().getWelt();
+			if (m.getCoordinates() != null) {
+				x = m.getCoordinates().getX();
+				y = m.getCoordinates().getY();
+				welt = m.getCoordinates().getZ();
 			}
 
 			xml.ElementStart("message");

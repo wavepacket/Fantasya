@@ -26,6 +26,6 @@ public class SysMsg extends Message
 	public SysMsg(int level, String msg)
 	{
 		super();
-		print(level, msg, Partei.getPartei(0));	// Owner == 0 signalisiert das System ^^
+		print(level, msg, Partei.getFaction(0));	// Owner == 0 signalisiert das System ^^
 	}
 }

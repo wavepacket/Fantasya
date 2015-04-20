@@ -54,7 +54,7 @@ public class Pferd extends Item implements AnimalResource {
 
 		// Meldung
         if (punkte > 0) {
-            Partei p = Partei.getPartei(unit.getOwner());
+            Partei p = Partei.getFaction(unit.getOwner());
             
             int freigelassen = p.getIntegerProperty(Pferd.PROPERTY_ENTLASSEN, 0);
             int pferdeGefangen = p.getIntegerProperty(Pferd.PROPERTY_GEFANGEN, 0);
@@ -114,7 +114,7 @@ public class Pferd extends Item implements AnimalResource {
 //	/** das Pferd von der Gegend abziehen */
 //	protected void Make(Unit u, int anzahl)
 //	{
-//		Region region = Region.Load(u.getCoords()); 
+//		Region region = Region.Load(u.getCoordinates()); 
 //		Item resource = region.getResource(this.getClass());
 //		
 //		// Sicherheitscheck
@@ -131,7 +131,7 @@ public class Pferd extends Item implements AnimalResource {
 //		{
 //			Item pegasus = u.getItem(Pegasus.class);
 //			pegasus.setAnzahl(pegasus.getAnzahl() + (anzahl / 100) + 1); // für jedes 100. Pferd aber mind. 1 Pegasus
-//			new Info(u + " kann ein Pegasus einfangen", u, u.getCoords());
+//			new Info(u + " kann ein Pegasus einfangen", u, u.getCoordinates());
 //		}
 //		
 //		// Einhorn fangen ... etwas anders als in V1 ... aber nur max. 1
@@ -140,7 +140,7 @@ public class Pferd extends Item implements AnimalResource {
 //			// *juhu* ... was ganz seltenes
 //			Item einhorn = u.getItem(Einhorn.class);
 //			einhorn.setAnzahl(einhorn.getAnzahl() + 1);
-//			new Info(u + " kann ein Einhorn einfangen", u, u.getCoords());
+//			new Info(u + " kann ein Einhorn einfangen", u, u.getCoordinates());
 //		}
 //	}
 	
@@ -148,7 +148,7 @@ public class Pferd extends Item implements AnimalResource {
 	public void actionWachstum(Region r)
 	{
 		// kein Wachstum in der Unterwelt:
-		if (r.getCoords().getWelt() < 1) return;
+		if (r.getCoordinates().getZ() < 1) return;
 		
 		int rnd = Random.rnd(0, 1);
 		int jz[] = new int[] { rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd };
@@ -168,7 +168,7 @@ public class Pferd extends Item implements AnimalResource {
 		
 		if (r.freieArbeitsplaetze() < neu) return;	// nue wachsen wenn noch freie Abreitsplätze da sind
 		
-		//new Debug(this + " - " + anzahl + " Pferde - neu: " + neu, getCoords());
+		//new Debug(this + " - " + anzahl + " Pferde - neu: " + neu, getCoordinates());
 		anzahl += neu;
 		
 		if (anzahl < 0) anzahl = 0;

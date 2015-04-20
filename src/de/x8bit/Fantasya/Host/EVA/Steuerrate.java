@@ -53,18 +53,18 @@ public class Steuerrate extends EVABase
 
 	/** die Steuerrate festlegen */
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
 
 			int rate = eb.getAnzahl();
 			Unit u = eb.getUnit();
-			Partei p = Partei.getPartei(u.getOwner());
+			Partei p = Partei.getFaction(u.getOwner());
 
 			// STEUERN 45
 			if (eb.getVariante() == 1) {
-				new Info("Allgemeine Steuerrate für andere Völker wird auf " + rate + "% festgelegt.", u, u.getCoords());
+				new Info("Allgemeine Steuerrate für andere Völker wird auf " + rate + "% festgelegt.", u, u.getCoordinates());
 
 				p.setDefaultsteuer(rate);
 
@@ -72,16 +72,16 @@ public class Steuerrate extends EVABase
 			} else if (eb.getVariante() == 2) {
 				int nummer = Codierung.fromBase36(eb.getTargetId());
 				if (nummer != 0) {
-					Partei other = Partei.getPartei(nummer);
+					Partei other = Partei.getFaction(nummer);
 					if (other != null) {
 
 						p.setSteuern(nummer, rate);
 
-						new Info("Steuerrate für " + other + " wird auf " + rate + "% festgelegt.", u, u.getCoords());
+						new Info("Steuerrate für " + other + " wird auf " + rate + "% festgelegt.", u, u.getCoordinates());
 					} else {
 					}
 				} else {
-					new Fehler("Das Volk mit der Nummer '0' können wir nicht besteuern.", u, u.getCoords());
+					new Fehler("Das Volk mit der Nummer '0' können wir nicht besteuern.", u, u.getCoordinates());
 				}
 				
 			} else {

@@ -23,7 +23,7 @@ public class TestCase
 	{
 		new SysMsg("- teste Allianzen");
 		
-		Partei p = Partei.getPartei(1);
+		Partei p = Partei.getFaction(1);
 		if (p == null)
 		{
 			new SysMsg(" .. konnte Partei #1 nicht laden");
@@ -35,7 +35,7 @@ public class TestCase
 		a.setOption(AllianzOption.Handel, true);
 		
 		new SysMsg(" .. hole Partei erneut");
-		p = Partei.getPartei(1);
+		p = Partei.getFaction(1);
 		new SysMsg(" => Allianz für Partner 2 & Handel - " + p.hatAllianz(2, AllianzOption.Handel) + " [true]");
 		new SysMsg(" => Allianz für Partner 2 & Treiben - " + p.hatAllianz(2, AllianzOption.Steuern) + " [false]");
 		if (p.hatAllianz(2, AllianzOption.Handel) == false) fail++;

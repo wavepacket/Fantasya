@@ -1,11 +1,12 @@
 package de.x8bit.Fantasya.Host.ZAT.Battle.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.CommandLineArg;
@@ -16,6 +17,7 @@ import de.x8bit.Fantasya.Host.ZAT.Battle.GruppenKonflikt;
 import de.x8bit.Fantasya.Host.ZAT.Battle.GruppenPaarung;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Krieger;
 import de.x8bit.Fantasya.util.Codierung;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +52,7 @@ public class DuellAnalyse implements CommandLineArg {
     public DuellAnalyse() {
         r = new Ebene();
         r.setName("Arena");
-        r.setCoords(new Coords(0,0,0));
+        r.setCoordinates(DefaultConstantsFactory.NO_COORDINATES_VALUE);
         r.Init();
 
         einheitA = -1;
@@ -124,12 +126,13 @@ public class DuellAnalyse implements CommandLineArg {
     private void liesSituation(String fileName) {
         majorPhase = "AAAA"; minor = 1;
         
-        Partei p0 = new Partei();
+        /// Partei p0 = Partei.OMNI_FACTION;
+        /* Partei p0 = Partei.createNewPlayerFaction();
         p0.setNummer(0);
         p0.setEMail("noone@foo.bar");
         p0.setMonster(1);
         p0.setRasse("Monster");
-        Partei.PROXY.add(p0);
+        Partei.PROXY.add(p0); */
 
         KampfAufstellung ka = new KampfAufstellung(fileName);
 

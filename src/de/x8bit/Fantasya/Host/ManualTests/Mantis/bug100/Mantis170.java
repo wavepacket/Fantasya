@@ -88,7 +88,7 @@ public class Mantis170 extends TestBase {
 					retval = fail(tokens[1] + ": Hat fälschlich den Zauber Kleines Erdbeben bekommen.");
 				}
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -102,7 +102,7 @@ public class Mantis170 extends TestBase {
                     fail(tokens[1] + ": Magie-Lerntage sind nicht wie erwartet - ohne Silber gelernt?");
                 }
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

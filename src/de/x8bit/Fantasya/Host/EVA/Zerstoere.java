@@ -56,7 +56,7 @@ public class Zerstoere extends EVABase
     }
 	
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -73,14 +73,14 @@ public class Zerstoere extends EVABase
                 if (u.getSchiff() != 0) s = Ship.Load(u.getSchiff());
 
                 if ((b == null) && (s == null)) {
-                    new Fehler("ZERSTÖRE - Wir sind weder in einem Gebäude noch an Bord eines Schiffs.", u, u.getCoords());
+                    new Fehler("ZERSTÖRE - Wir sind weder in einem Gebäude noch an Bord eines Schiffs.", u, u.getCoordinates());
                     eb.setError();
                     continue;
                 }
                 
                 if (b != null) {
                     if (b.getOwner() != u.getNummer()) {
-                        new Fehler("ZERSTÖRE - Wir haben nicht das Kommando über " + b + ".", u, u.getCoords());
+                        new Fehler("ZERSTÖRE - Wir haben nicht das Kommando über " + b + ".", u, u.getCoordinates());
                         eb.setError();
                         continue;
                     }
@@ -90,7 +90,7 @@ public class Zerstoere extends EVABase
 
                 if (s != null) {
                     if (s.getOwner() != u.getNummer()) {
-                        new Fehler("ZERSTÖRE - Wir haben nicht das Kommando über " + s + ".", u, u.getCoords());
+                        new Fehler("ZERSTÖRE - Wir haben nicht das Kommando über " + s + ".", u, u.getCoordinates());
                         eb.setError();
                         continue;
                     }

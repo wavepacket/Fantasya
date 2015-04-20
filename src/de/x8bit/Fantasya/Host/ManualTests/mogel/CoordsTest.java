@@ -1,12 +1,12 @@
 package de.x8bit.Fantasya.Host.ManualTests.mogel;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Skills.Magie;
 import de.x8bit.Fantasya.Atlantis.Spells.Luftreise;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
 
 public class CoordsTest extends TestBase {
@@ -20,10 +20,10 @@ public class CoordsTest extends TestBase {
 	
 	public void SetupCoordsDistance()
 	{
-		Coords c1 = new Coords(0, 0, 0);
-		Coords c2 = new Coords(1, 0, 0);
-		Coords c3 = new Coords(1, 1, 0);
-		Coords c4 = new Coords(1, 2, 0);
+		Coordinates c1 = Coordinates.create(0, 0, 0);
+		Coordinates c2 = Coordinates.create(1, 0, 0);
+		Coordinates c3 = Coordinates.create(1, 1, 0);
+		Coordinates c4 = Coordinates.create(1, 2, 0);
 		
 		new SysMsg("Distance c1 - c2 " + c1.getDistance(c2));	// 1
 		new SysMsg("Distance c1 - c3 " + c1.getDistance(c3));	// 1
@@ -34,7 +34,7 @@ public class CoordsTest extends TestBase {
 	
 	public void SetupLuftreise()
 	{
-		Partei partei = Partei.getPartei(1);
+		Partei partei = Partei.getFaction(1);
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 
 		Unit mage = this.createUnit(partei, region);

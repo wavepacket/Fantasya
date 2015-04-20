@@ -35,12 +35,12 @@ public class Mantis198 extends TestBase {
             r = this.getTestWorld().nurBetretbar(getRegions()).get(0); 
             getRegions().remove(r);
             
-            west = Region.Load(r.getCoords().shift(Richtung.Westen));
+            west = Region.Load(r.getCoordinates().shiftDirection(Richtung.Westen));
             if (west.istBetretbar(null)) break;
         }
 
-        int targetX = west.getCoords().getX();
-        int targetY = west.getCoords().getY();
+        int targetX = west.getCoordinates().getX();
+        int targetY = west.getCoordinates().getY();
         
 		{
 			Unit u = this.createUnit(p, r);
@@ -71,7 +71,7 @@ public class Mantis198 extends TestBase {
 
 		{
 			Unit u = this.createUnit(p, r);
-            u.setName(this.getClass().getSimpleName()+" 04 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getClass().getSimpleName()+" 04 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.setItem(Silber.class, 500);
 			u.Befehle.add("LERNE Wahrnehmung");
 			u.Befehle.add("NACH w");
@@ -88,7 +88,7 @@ public class Mantis198 extends TestBase {
 			u.setBeschreibung("Erwartet: Faulenzt und will das auch weiterhin.");
 		}
 
-		new Info("Mantis #198 Setup in " + r + " " + r.getCoords() + ".", p);
+		new Info("Mantis #198 Setup in " + r + " " + r.getCoordinates() + ".", p);
 	}
 
     @Override
@@ -124,7 +124,7 @@ public class Mantis198 extends TestBase {
                     }
 
                     if ( (!foundNach) || foundLerne) {
-                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoords()+")");
+                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoordinates()+")");
                         retval = false;
                     }
                 }
@@ -136,11 +136,11 @@ public class Mantis198 extends TestBase {
                       || (u.getSkill(Wahrnehmung.class).getLerntage() != 30)
                     ) {
 
-                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoords()+")");
+                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoordinates()+")");
                         retval = false;
                     }
 
-                    messages = Message.Retrieve(p, u.getCoords(), u);
+                    messages = Message.Retrieve(p, u.getCoordinates(), u);
                     boolean found = false;
                     for (Message msg : messages) {
                         String text = msg.getText().toLowerCase();
@@ -152,7 +152,7 @@ public class Mantis198 extends TestBase {
                 // unit 05 -
                 if (tokens[1].equals("05")) {
                     if ( !u.getLongOrder().toLowerCase().startsWith("faulenze") ) {
-                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoords()+")");
+                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoordinates()+")");
                         retval = false;
                     }
                 }
@@ -172,8 +172,8 @@ public class Mantis198 extends TestBase {
                     int x = Integer.parseInt(tokens[2]);
                     int y = Integer.parseInt(tokens[3]);
 
-                    if ( (x != u.getCoords().getX()) || (y != u.getCoords().getY()) ) {
-                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoords()+")");
+                    if ( (x != u.getCoordinates().getX()) || (y != u.getCoordinates().getY()) ) {
+                        this.fail(testName + "-Test " + tokens[1] + " ist fehlgeschlagen. (" + u + ", " + u.getCoordinates()+")");
                         retval = false;
                     }
                 }

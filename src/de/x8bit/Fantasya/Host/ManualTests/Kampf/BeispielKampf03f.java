@@ -101,7 +101,7 @@ public class BeispielKampf03f extends TestBase {
             schuetzen.Befehle.add("ATTACKIERE GEZIELT " + idKatapultschuetze + " " + idBrutaleSchuetzen);
             schuetzen2.Befehle.add("ATTACKIERE GEZIELT " + idKatapultschuetze + " " + idB);
 
-            new Info(this.getName() + " Setup in " + r + ".", genauePikeniere, genauePikeniere.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", genauePikeniere, genauePikeniere.getCoordinates());
         }
     }
 

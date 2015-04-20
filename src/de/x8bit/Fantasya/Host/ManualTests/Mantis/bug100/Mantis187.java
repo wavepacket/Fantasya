@@ -26,11 +26,11 @@ public class Mantis187 extends TestBase {
 		Region r = getRegions().get(0);
 
 		// Gebäude:
-		Schmiede schmiede = (Schmiede)Building.Create("Schmiede", r.getCoords());
+		Schmiede schmiede = (Schmiede)Building.Create("Schmiede", r.getCoordinates());
 		schmiede.setSize(48);
 
 		// Die Schmiede selbst:
-		Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+		Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 		u.setPersonen(40);
 		u.setSkill(Waffenbau.class, 40*840);
 		u.setItem(Eisen.class, 100);
@@ -44,14 +44,14 @@ public class Mantis187 extends TestBase {
 		int schmiedeNummer = u.getNummer();
 
 		// der Stein-Geber:
-		u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+		u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 		u.setPersonen(1);
 		u.setItem(Stein.class, 170);
 		u.setItem(Silber.class, 100);
 		u.Befehle.add("LIEFERE " + Codierung.toBase36(schmiedeNummer) + " 170 Stein");
 		u.setLongOrder("LIEFERE " + Codierung.toBase36(schmiedeNummer) + " 170 Stein");
 		
-		new Info("Mantis #167 Setup in " + r + " " + r.getCoords() + ".", p);
+		new Info("Mantis #167 Setup in " + r + " " + r.getCoordinates() + ".", p);
 	}
 
     @Override

@@ -54,7 +54,7 @@ public class LoadTest1 extends TestBase {
 		new SysMsg("createHome für Partei " + p.getNummerBase36() + "(" + anzahlUnits + " Einheiten)");
 
 		for (int i = 0; i < anzahlUnits; i++) {
-			Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoords());
+			Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r.getCoordinates());
 			u.setPersonen(Random.rnd(1, 100));
 			u.setItem(Silber.class, u.getPersonen() * 11);
 			Item item = (Item) Paket.getPaket("Items").get(Random.rnd(0, Paket.getPaket("Items").size())).Klasse;

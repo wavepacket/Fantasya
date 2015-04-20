@@ -35,7 +35,7 @@ public class Stirb extends EVABase
     }
 	
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -43,9 +43,9 @@ public class Stirb extends EVABase
 			// Angaben über die "Akteure" selbst:
 			Unit u = eb.getUnit();
 
-			Partei p = Partei.getPartei(u.getOwner());
+			Partei p = Partei.getFaction(u.getOwner());
 			if (!eb.getTokens()[1].replace("\"", "").equals(p.getPassword())) {
-				new Fehler("Das Passwort für den Selbstmord ist fehlerhaft.", u, u.getCoords());
+				new Fehler("Das Passwort für den Selbstmord ist fehlerhaft.", u, u.getCoordinates());
 				eb.setError();
 				continue;
 			} else {

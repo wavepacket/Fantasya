@@ -28,13 +28,13 @@ public class ZauberGuterWind extends TestBase {
         Region r = null; Region ziel = null;
 
         for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-            Region r1 = Region.Load(maybe.getCoords().shift(Richtung.Nordosten));
+            Region r1 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Nordosten));
             if (!(r1 instanceof Ozean)) continue;
-            Region r2 = Region.Load(r1.getCoords().shift(Richtung.Nordosten));
+            Region r2 = Region.Load(r1.getCoordinates().shiftDirection(Richtung.Nordosten));
             if (!(r2 instanceof Ozean)) continue;
-            Region r3 = Region.Load(r2.getCoords().shift(Richtung.Nordosten));
+            Region r3 = Region.Load(r2.getCoordinates().shiftDirection(Richtung.Nordosten));
             if (!(r3 instanceof Ozean)) continue;
-            Region r4 = Region.Load(r3.getCoords().shift(Richtung.Nordosten));
+            Region r4 = Region.Load(r3.getCoordinates().shiftDirection(Richtung.Nordosten));
             if (!(r4 instanceof Ozean)) continue;
 
             // gotcha!
@@ -46,7 +46,7 @@ public class ZauberGuterWind extends TestBase {
 
         {
 			Unit kapitaen = this.createKapitaen(p, r, "Boot");
-			kapitaen.setName(this.getName() + " 01 " + ziel.getCoords().getX() + " " + ziel.getCoords().getY());
+			kapitaen.setName(this.getName() + " 01 " + ziel.getCoordinates().getX() + " " + ziel.getCoordinates().getY());
 			kapitaen.Befehle.add("NACH no no no no");
 
 			Partei p2 = this.getTestWorld().createPartei(Mensch.class);
@@ -57,7 +57,7 @@ public class ZauberGuterWind extends TestBase {
 			magier.setSpell(new GuterWind());
 			magier.Befehle.add("ZAUBERE \"Guter Wind\" " + kapitaen.getNummerBase36());
 
-            new Info(this.getName() + " Setup in " + r + ".", kapitaen, kapitaen.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", kapitaen, kapitaen.getCoordinates());
         }
     }
 
@@ -91,14 +91,14 @@ public class ZauberGuterWind extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = fail(tokens[1] + ": Ist nicht korrekt gerudert.");
                 }
             }
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

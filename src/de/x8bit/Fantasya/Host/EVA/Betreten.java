@@ -51,7 +51,7 @@ public class Betreten extends EVABase
 
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -96,7 +96,7 @@ public class Betreten extends EVABase
 			new Fehler(u + " - das Gebäude [" + Codierung.toBase36(gebaeude) + "] existiert nicht.", u);
 			eb.setError();
 			return;
-		} else if (!building.getCoords().equals(u.getCoords())) {
+		} else if (!building.getCoordinates().equals(u.getCoordinates())) {
 			new Fehler(u + " - das Gebäude [" + Codierung.toBase36(gebaeude) + "] existiert nicht.", u);
 			eb.setError();
 			return;
@@ -116,18 +116,18 @@ public class Betreten extends EVABase
 		try { schiff = Codierung.fromBase36(eb.getTargetId()); } catch(Exception ex) { /* nüschts */ }
 
 		if (schiff == 0) {
-			new Fehler("Die Nummer für das Schiff '" + eb.getTargetId() + "' wurde nicht erkannt.", u, u.getCoords());
+			new Fehler("Die Nummer für das Schiff '" + eb.getTargetId() + "' wurde nicht erkannt.", u, u.getCoordinates());
 			eb.setError();
 			return;
 		}
 
 		Ship ship = Ship.Load(schiff);
 		if (ship == null) {
-			new Fehler("Das Schiff '" + Codierung.toBase36(schiff) + "' ist nicht in dieser Region.", u, u.getCoords());
+			new Fehler("Das Schiff '" + Codierung.toBase36(schiff) + "' ist nicht in dieser Region.", u, u.getCoordinates());
 			eb.setError();
 			return;
-		} else if (!ship.getCoords().equals(u.getCoords())) {
-			new Fehler("Das Schiff '" + Codierung.toBase36(schiff) + "' ist nicht in dieser Region.", u, u.getCoords());
+		} else if (!ship.getCoordinates().equals(u.getCoordinates())) {
+			new Fehler("Das Schiff '" + Codierung.toBase36(schiff) + "' ist nicht in dieser Region.", u, u.getCoordinates());
 			eb.setError();
 			return;
 		}
@@ -158,7 +158,7 @@ public class Betreten extends EVABase
 			new Fehler(u + " - die Höhle [" + Codierung.toBase36(hoehle) + "] existiert nicht.", u);
 			eb.setError();
 			return;
-		} else if (!building.getCoords().equals(u.getCoords())) {
+		} else if (!building.getCoordinates().equals(u.getCoordinates())) {
 			new Fehler(u + " - die Höhle [" + Codierung.toBase36(hoehle) + "] existiert nicht.", u);
 			eb.setError();
 			return;

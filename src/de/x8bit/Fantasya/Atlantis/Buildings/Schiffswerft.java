@@ -45,7 +45,7 @@ public class Schiffswerft extends Building
 		}
 		
 		// zusätzlichen Gebäude testen
-		Region region = Region.Load(u.getCoords());
+		Region region = Region.Load(u.getCoordinates());
 		if (!region.hatGebaeude(Burg.class, 50, u))
 		{
 			new Fehler(u + " - in " + region + " fehlt ein Schloss um " + getTyp() + " bauen zu können", u);

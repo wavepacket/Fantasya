@@ -28,7 +28,7 @@ public class TestMyrrheName extends TestBase {
         getRegions().remove(r);
 
         {
-            Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			b.setSize(50);
 
 			Unit u = this.createUnit(p, r);
@@ -69,7 +69,7 @@ public class TestMyrrheName extends TestBase {
 			u.Befehle.add("GIB " + id5 + " 25 Myre");
 			u.Befehle.add("LIEFERE " + id5 + " 25 Myre");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

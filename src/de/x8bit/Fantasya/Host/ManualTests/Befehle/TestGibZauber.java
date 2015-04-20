@@ -231,7 +231,7 @@ public class TestGibZauber extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -255,7 +255,7 @@ public class TestGibZauber extends TestBase {
             if (tokens[1].equals("05")) {
 				// mit EVA wird dieser Befehl gar nicht erst zugelassen.
 				if (Main.getBFlag("EVA")) continue;
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -277,7 +277,7 @@ public class TestGibZauber extends TestBase {
 
             // unit 07
             if (tokens[1].equals("07")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -288,7 +288,7 @@ public class TestGibZauber extends TestBase {
 
             // unit 08
             if (tokens[1].equals("08")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

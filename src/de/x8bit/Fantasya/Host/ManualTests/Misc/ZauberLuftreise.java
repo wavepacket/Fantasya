@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.ManualTests.Misc;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import java.util.List;
 
 import de.x8bit.Fantasya.Host.ManualTests.*;
@@ -12,7 +11,9 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Spells.Luftreise;
 import de.x8bit.Fantasya.Atlantis.Units.Mensch;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
+
 import java.util.Collection;
 
 /**
@@ -27,8 +28,8 @@ public class ZauberLuftreise extends TestBase {
         Region r = null; Region ziel = null;
         
         for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-            Coords c = maybe.getCoords();
-            Coords z = new Coords(c.getX() + 5, c.getY() - 2, c.getWelt());
+            Coordinates c = maybe.getCoordinates();
+            Coordinates z = Coordinates.create(c.getX() + 5, c.getY() - 2, c.getZ());
             Region maybeZiel = Region.Load(z);
 
             if (maybeZiel.istBetretbar(null)) {
@@ -45,7 +46,7 @@ public class ZauberLuftreise extends TestBase {
 			p2.setName("Z-Luftreise");
 
 			Unit magier = this.createMage(p2, r, 6);
-			magier.setName(this.getName() + " 01 " + ziel.getCoords().getX() + " " + ziel.getCoords().getY());
+			magier.setName(this.getName() + " 01 " + ziel.getCoordinates().getX() + " " + ziel.getCoordinates().getY());
 			magier.setSpell(new Luftreise());
 			magier.Befehle.add("ZAUBERE \"Luftreise\" +5 -2");
 
@@ -55,7 +56,7 @@ public class ZauberLuftreise extends TestBase {
             u = this.createUnit(p2, ziel);
             u.setName(this.getName() + " 03");
 
-            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoordinates());
         }
     }
 
@@ -89,11 +90,11 @@ public class ZauberLuftreise extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = fail(tokens[1] + ": Luftreise hat nicht funktioniert.");
                 }
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

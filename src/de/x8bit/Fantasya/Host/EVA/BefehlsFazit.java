@@ -68,7 +68,7 @@ public class BefehlsFazit extends EVABase implements NotACommand
 				// new Debug(u + ": " + eb.toString());
 
 				if (!eb.isPerformed()) {
-                    if (eb.getUnit().getCoords().getWelt() == 0) {
+                    if (eb.getUnit().getCoordinates().getZ() == 0) {
                         // ah, virtuelle Einheit!
                         continue;
                     }
@@ -81,7 +81,7 @@ public class BefehlsFazit extends EVABase implements NotACommand
 						continue;
 					}
 
-					Partei p = Partei.getPartei(u.getOwner());
+					Partei p = Partei.getFaction(u.getOwner());
 					if (!zatMode.isDebug()) {
 						new BigError("Befehl '" + eb.getBefehl() + "' (" + u + " von " + p + ") ist nicht verarbeitet worden!");
 					} else {

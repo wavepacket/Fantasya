@@ -66,18 +66,18 @@ public class TestFolgeBefehl extends TestBase {
 		Richtung ri2 = null;
 		Region r2 = null;
 		for(Region maybeR0 : this.getTestWorld().nurBetretbar(getRegions())) {
-			for (Region maybeR1 : maybeR0.getNachbarn()) {
+			for (Region maybeR1 : maybeR0.getNeighbours()) {
 				if (maybeR1.istBetretbar(null)) {
 					if (!getRegions().contains(maybeR1)) continue;
-					for (Region maybeR2 : maybeR1.getNachbarn()) {
-						if (maybeR2.istBetretbar(null) && (!maybeR2.getCoords().equals(maybeR0.getCoords()))) {
+					for (Region maybeR2 : maybeR1.getNeighbours()) {
+						if (maybeR2.istBetretbar(null) && (!maybeR2.getCoordinates().equals(maybeR0.getCoordinates()))) {
 							if (!getRegions().contains(maybeR2)) continue;
 							// gotcha!
 							r = maybeR0;
 							r1 = maybeR1;
-							ri1 = maybeR0.getCoords().getRichtungNach(r1.getCoords());
+							ri1 = maybeR0.getCoordinates().getRichtungNach(r1.getCoordinates());
 							r2 = maybeR2;
-							ri2 = r1.getCoords().getRichtungNach(r2.getCoords());
+							ri2 = r1.getCoordinates().getRichtungNach(r2.getCoordinates());
 
 							break;
 						}
@@ -104,12 +104,12 @@ public class TestFolgeBefehl extends TestBase {
 		String fauler = u.getNummerBase36();
 
 		u = this.createUnit(p, r);
-		u.setName(this.getName()+" 02 " + r.getCoords().getX() + " " + r.getCoords().getY());
+		u.setName(this.getName()+" 02 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 		u.Befehle.add("FOLGE EINHEIT " + fauler);
         u.setBeschreibung(u.Befehle.get(0));
 
 		u = this.createUnit(p, r);
-		u.setName(this.getName()+" 03 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 03 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.getSkill(Reiten.class).setLerntage(180 * u.getPersonen());
 		u.getItem(Pferd.class).setAnzahl(u.getPersonen());
 		u.Befehle.add("NACH " + ri1.getShortcut() + " " + ri2.getShortcut());
@@ -117,7 +117,7 @@ public class TestFolgeBefehl extends TestBase {
 		String reiter = u.getNummerBase36();
 
 		u = this.createUnit(p, r);
-		u.setName(this.getName()+" 04 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 04 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.getSkill(Reiten.class).setLerntage(180 * u.getPersonen());
 		u.getItem(Pferd.class).setAnzahl(u.getPersonen());
 		u.Befehle.add("FOLGEN EINHEIT " + reiter);
@@ -125,12 +125,12 @@ public class TestFolgeBefehl extends TestBase {
 
 		u = this.createUnit(p, r);
 		u.getItem(Silber.class).setAnzahl(100);
-		u.setName(this.getName()+" 05 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 05 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.Befehle.add("NACH " + ri1.getShortcut() + " " + ri2.getShortcut());
 		String wanderer = u.getNummerBase36();
 
 		u = this.createUnit(p, r);
-		u.setName(this.getName()+" 06 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 06 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.getSkill(Reiten.class).setLerntage(180 * u.getPersonen());
 		u.getItem(Pferd.class).setAnzahl(u.getPersonen());
 		u.Befehle.add("FOLGE EINHEIT " + wanderer);
@@ -140,20 +140,20 @@ public class TestFolgeBefehl extends TestBase {
 		fremde.setName(getName()+"-Fremde");
 
 		u = this.createUnit(fremde, r1);
-		u.setName(this.getName()+" 07 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 07 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("TARNE EINHEIT"); // das sollte ja nicht funktionieren
 		u.Befehle.add("ROUTE " + ri2.getShortcut() + " PAUSE " + ri2.invert().getShortcut() + " PAUSE");
 		String fremder = u.getNummerBase36();
 
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 08 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 08 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE EINHEIT " + fremder);
         u.setBeschreibung(u.Befehle.get(0));
 
 		u = this.createUnit(fremde, r1);
-		u.setName(this.getName()+" 09 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 09 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.setSkill(Tarnung.class, 1650 * u.getPersonen());
 		u.Befehle.add("TARNE EINHEIT");
@@ -161,7 +161,7 @@ public class TestFolgeBefehl extends TestBase {
 		String fremderGetarnter = u.getNummerBase36();
 
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 10 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 10 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE EINHEIT " + fremderGetarnter);
         u.setBeschreibung(u.Befehle.get(0));
@@ -174,7 +174,7 @@ public class TestFolgeBefehl extends TestBase {
 		
 		// getarnter alliierter Einheit folgen:
 		u = this.createUnit(alliierte, r1);
-		u.setName(this.getName()+" 101 " + r.getCoords().getX() + " " + r.getCoords().getY());
+		u.setName(this.getName()+" 101 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.setSkill(Tarnung.class, 1650 * u.getPersonen());
 		u.Befehle.add("HELFE " + p.getNummerBase36() + " KONTAKTIERE");
@@ -183,7 +183,7 @@ public class TestFolgeBefehl extends TestBase {
 		String alliierterGetarnter = u.getNummerBase36();
 
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 102 " + r.getCoords().getX() + " " + r.getCoords().getY());
+		u.setName(this.getName()+" 102 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE EINHEIT " + alliierterGetarnter);
         u.setBeschreibung(u.Befehle.get(0));
@@ -191,7 +191,7 @@ public class TestFolgeBefehl extends TestBase {
 		
 		// fremder, allierter TEMP-Einheit folgen
 		u = this.createUnit(alliierte, r1);
-		u.setName(this.getName()+" 103 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 103 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.setPersonen(2);
 		u.getItem(Silber.class).setAnzahl(100);
 		u.setSkill(Tarnung.class, 1650 * u.getPersonen());
@@ -200,14 +200,14 @@ public class TestFolgeBefehl extends TestBase {
 		u.Befehle.add("GIB TEMP alli 1 PERSONEN");
 		u.Befehle.add("GIB TEMP alli 50 Silber");
 		u.Befehle.add("MACHE TEMP alli");
-		u.Befehle.add("BENENNE EINHEIT \"" + getName() + " 105 " + r.getCoords().getX() + " " + r.getCoords().getY() + "\"");
+		u.Befehle.add("BENENNE EINHEIT \"" + getName() + " 105 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY() + "\"");
 		u.Befehle.add("TARNE EINHEIT");
 		u.Befehle.add("NACH " + kurs);
 		u.Befehle.add("ENDE");
 		u.Befehle.add("LERNE Ausdauer");
 
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 104 " + r.getCoords().getX() + " " + r.getCoords().getY());
+		u.setName(this.getName()+" 104 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE EINHEIT TEMP alli");
         u.setBeschreibung(u.Befehle.get(0));
@@ -215,19 +215,19 @@ public class TestFolgeBefehl extends TestBase {
 
 		// nicht existenten Einheiten und Schiffen folgen:
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 106 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 106 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE SCHIFF 70tp");
         u.setBeschreibung(u.Befehle.get(0));
 
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 108 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 108 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE EINHEIT 5hhj");
         u.setBeschreibung(u.Befehle.get(0));
 
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 110 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 110 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE EINHEIT TEMP 9pqx");
         u.setBeschreibung(u.Befehle.get(0));
@@ -235,14 +235,14 @@ public class TestFolgeBefehl extends TestBase {
 
 		// sich selbst folgen
 		u = this.createUnit(p, r1);
-		u.setName(this.getName()+" 112 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 112 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.getItem(Silber.class).setAnzahl(100);
 		u.Befehle.add("FOLGE EINHEIT " + u.getNummerBase36());
         u.setBeschreibung(u.Befehle.get(0));
 
 
 
-		new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+		new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
 	}
 
 	/**
@@ -256,18 +256,18 @@ public class TestFolgeBefehl extends TestBase {
 		Richtung ri2 = null;
 		Region r2 = null;
 		for(Region maybeR0 : this.getTestWorld().nurTerrain(getRegions(), Ozean.class)) {
-			for (Region maybeR1 : maybeR0.getNachbarn()) {
+			for (Region maybeR1 : maybeR0.getNeighbours()) {
 				if (!getRegions().contains(maybeR1)) continue;
 				if (maybeR1 instanceof Ozean) {
-					for (Region maybeR2 : maybeR1.getNachbarn()) {
-						if ((maybeR2 instanceof Ozean) && (!maybeR2.getCoords().equals(maybeR0.getCoords()))) {
+					for (Region maybeR2 : maybeR1.getNeighbours()) {
+						if ((maybeR2 instanceof Ozean) && (!maybeR2.getCoordinates().equals(maybeR0.getCoordinates()))) {
 							if (!getRegions().contains(maybeR2)) continue;
 							// gotcha!
 							r = maybeR0;
 							r1 = maybeR1;
-							ri1 = maybeR0.getCoords().getRichtungNach(r1.getCoords());
+							ri1 = maybeR0.getCoordinates().getRichtungNach(r1.getCoordinates());
 							r2 = maybeR2;
-							ri2 = r1.getCoords().getRichtungNach(r2.getCoords());
+							ri2 = r1.getCoordinates().getRichtungNach(r2.getCoordinates());
 
 							break;
 						}
@@ -283,7 +283,7 @@ public class TestFolgeBefehl extends TestBase {
 		getRegions().remove(r1);
 		getRegions().remove(r2);
 
-		Region.Load(r.getCoords()).setName(getName() + "-Strecke-0");
+		Region.Load(r.getCoordinates()).setName(getName() + "-Strecke-0");
 		r1.setName(getName() + "-Strecke-1");
 		r2.setName(getName() + "-Strecke-2");
 
@@ -294,28 +294,28 @@ public class TestFolgeBefehl extends TestBase {
 		String fauler = Codierung.toBase36(u.getSchiff());
 
 		u = this.createKapitaen(p, r, Boot.class.getSimpleName());
-		u.setName(this.getName()+" 12 " + r.getCoords().getX() + " " + r.getCoords().getY());
+		u.setName(this.getName()+" 12 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 		u.Befehle.add("FOLGE SCHIFF " + fauler);
 
 		u = this.createKapitaen(p, r, Langboot.class.getSimpleName());
-		u.setName(this.getName()+" 13 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 13 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.Befehle.add("NACH " + ri1.getShortcut() + " " + ri2.getShortcut() + " " +  ri2.invert().getShortcut());
         u.setBeschreibung("fährt voraus - " + u.Befehle.get(0));
 		String schneller = Codierung.toBase36(u.getSchiff());
 
 		u = this.createKapitaen(p, r, Boot.class.getSimpleName());
-		u.setName(this.getName()+" 14 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 14 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.Befehle.add("FOLGEN SCHIFF " + schneller);
         u.setBeschreibung(u.Befehle.get(0));
 
 		u = this.createKapitaen(p, r, Boot.class.getSimpleName());
 		u.getItem(Silber.class).setAnzahl(100);
-		u.setName(this.getName()+" 15 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 15 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.Befehle.add("NACH " + ri1.getShortcut() + " " + ri2.getShortcut() + " " + ri2.invert().getShortcut());
 		String langsamer = Codierung.toBase36(u.getSchiff());
 
 		u = this.createKapitaen(p, r, Boot.class.getSimpleName());
-		u.setName(this.getName()+" 16 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 16 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.Befehle.add("FOLGE SCHIFF " + langsamer);
         u.setBeschreibung(u.Befehle.get(0));
 
@@ -323,29 +323,29 @@ public class TestFolgeBefehl extends TestBase {
 		fremde.setName(getName()+"-Fremde-Schiffer");
 
 		u = this.createKapitaen(fremde, r1, Boot.class.getSimpleName());
-		u.setName(this.getName()+" 17 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 17 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.Befehle.add("TARNE EINHEIT"); // das sollte ja nicht funktionieren
 		u.Befehle.add("ROUTE " + ri2.getShortcut() + " PAUSE " + ri2.invert().getShortcut() + " PAUSE");
 		String fremder = Codierung.toBase36(u.getSchiff());
 
 		u = this.createKapitaen(p, r1, Boot.class.getSimpleName());
-		u.setName(this.getName()+" 18 " + r2.getCoords().getX() + " " + r2.getCoords().getY());
+		u.setName(this.getName()+" 18 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY());
 		u.Befehle.add("FOLGE SCHIFF " + fremder);
         u.setBeschreibung(u.Befehle.get(0));
 
 		u = this.createKapitaen(fremde, r1, Boot.class.getSimpleName());
-		u.setName(this.getName()+" 19 " + r.getCoords().getX() + " " + r.getCoords().getY());
+		u.setName(this.getName()+" 19 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 		u.setSkill(Tarnung.class, 1650 * u.getPersonen());
 		u.Befehle.add("TARNE EINHEIT");
 		u.Befehle.add("ROUTE " + ri1.invert().getShortcut() + " PAUSE");
 		String fremderGetarnter = Codierung.toBase36(u.getSchiff());
 
 		u = this.createKapitaen(p, r1, Boot.class.getSimpleName());
-		u.setName(this.getName()+" 20 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+		u.setName(this.getName()+" 20 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 		u.Befehle.add("FOLGE SCHIFF " + fremderGetarnter);
         u.setBeschreibung(u.Befehle.get(0));
 
-		new Info(this.getName() + "-Schifffahrt Setup in " + r + ".", u, u.getCoords());
+		new Info(this.getName() + "-Schifffahrt Setup in " + r + ".", u, u.getCoordinates());
 	}
 
     @Override
@@ -385,14 +385,14 @@ public class TestFolgeBefehl extends TestBase {
 
 			// wenn Koordinaten für die Einheit angegeben sind:
 			if (tokens.length == 4) {
-				if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+				if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
 					retval = fail(tokens[1] + " ist nicht in der erwarteten Region.");
 				}
 			}
 
             // 112 - Selbst-Folger
             if (tokens[1].equals("112")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

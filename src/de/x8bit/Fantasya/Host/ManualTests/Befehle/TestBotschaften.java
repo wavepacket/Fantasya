@@ -41,7 +41,7 @@ public class TestBotschaften extends TestBase {
         getRegions().remove(r);
 
         // damit sollten die Botschaften im Spieler-Text dann @(0,0,1) ausgewiesen sein:
-        pb.setUrsprung(r.getCoords()); 
+        pb.setUrsprung(r.getCoordinates()); 
 
         {
             // Partei A:
@@ -125,7 +125,7 @@ public class TestBotschaften extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
 
                 // Getarnte Einheit sollte per Botschaft nicht direkt erreichbar sein:
@@ -149,7 +149,7 @@ public class TestBotschaften extends TestBase {
 
             // unit 11
             if (tokens[1].equals("11")) {
-                messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -174,7 +174,7 @@ public class TestBotschaften extends TestBase {
 
             // unit 14
             if (tokens[1].equals("14")) {
-                messages = Message.Retrieve(null, u.getCoords(), null);
+                messages = Message.Retrieve(null, u.getCoordinates(), null);
                 // new Debug(messages.size() + " PARTEI-BOTSCHAFTEN");
                 boolean found = false;
                 for (Message msg : messages) {

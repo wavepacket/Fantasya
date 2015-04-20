@@ -210,7 +210,7 @@ public class KampfreportXML /* implements CommandLineArg */ {
         Element html = doc.createElement("html");
 
         StringBuffer sb = new StringBuffer();
-        for (Partei p : side.getParteien()) {
+        for (Partei p : side.getFactionen()) {
             sb.append("<div class=\"partei\">" + p + "<br>\n");
 
             List<Unit> units = side.getUnits(p);
@@ -245,7 +245,7 @@ public class KampfreportXML /* implements CommandLineArg */ {
         
         Element el = doc.createElement("seite");
 
-        for (Partei p : seite.getParteien()) {
+        for (Partei p : seite.getFactionen()) {
             Element pe = doc.createElement("partei");
             pe.setAttribute("id", p.getNummerBase36());
             pe.setAttribute("name", p.getName());
@@ -468,7 +468,7 @@ public class KampfreportXML /* implements CommandLineArg */ {
         return doc;
     }
 
-    public Partei getPartei() {
+    public Partei getFaction() {
         return partei;
     }
 

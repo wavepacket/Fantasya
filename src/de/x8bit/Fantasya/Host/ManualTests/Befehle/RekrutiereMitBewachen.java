@@ -180,7 +180,7 @@ public class RekrutiereMitBewachen extends TestBase {
 					retval = fail(tokens[1] + ": Hat unerwartet erfolgreich rekrutiert.");
 				}
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

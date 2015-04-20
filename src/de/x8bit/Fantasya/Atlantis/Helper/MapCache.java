@@ -1,8 +1,8 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 	/** A mapping from player id to all elements. */
 	private Map<Integer, Set<T>> playerMap = new HashMap<Integer, Set<T>>();
 	/** A mapping from region id to all elements. */
-	private Map<Coords, Set<T>> regionMap = new HashMap<Coords, Set<T>>();
+	private Map<Coordinates, Set<T>> regionMap = new HashMap<Coordinates, Set<T>>();
 
 	/** Adds another element to the cache.
 	 *
@@ -54,13 +54,13 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 		if (!playerMap.containsKey(element.getOwner())) {
 			playerMap.put(element.getOwner(), new HashSet<T>());
 		}
-		if (!regionMap.containsKey(element.getCoords())) {
-			regionMap.put(element.getCoords(), new HashSet<T>());
+		if (!regionMap.containsKey(element.getCoordinates())) {
+			regionMap.put(element.getCoordinates(), new HashSet<T>());
 		}
 		
 		idMap.put(element.getNummer(), element);
 		playerMap.get(element.getOwner()).add(element);
-		regionMap.get(element.getCoords()).add(element);
+		regionMap.get(element.getCoordinates()).add(element);
 		return allObjects.add(element);
 	}
 
@@ -88,8 +88,8 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 		} else {
 			new SysErr("NULL-Entry in de.x8bit.Fantasya.Atlantis.Helper.MapCache.remove(MapCache.java:86):" + element.getClass().getName() + " (" + element.toString() + ")");
 		}
-		if (regionMap.get(element.getCoords()) != null) {
-			regionMap.get(element.getCoords()).remove(element);
+		if (regionMap.get(element.getCoordinates()) != null) {
+			regionMap.get(element.getCoordinates()).remove(element);
 		} else {
 			new SysErr("NULL-Entry in de.x8bit.Fantasya.Atlantis.Helper.MapCache.remove(MapCache.java:91):" + element.getClass().getName() + " (" + element.toString() + ")");
 		}
@@ -114,7 +114,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 
 	/** Get a set of all elements at a certain coordinate. */
 	@Override
-	public Set<T> getAll(Coords coords) {
+	public Set<T> getAll(Coordinates coords) {
 		if (!regionMap.containsKey(coords)) {
 			return Collections.unmodifiableSet(new HashSet<T>());
 		}
@@ -123,12 +123,12 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 
 	/** Get the set of all elements at a certain coordinate belonging to a certain player.*/
 	@Override
-	public Set<T> getAll(Coords coords, int owner) {
+	public Set<T> getAll(Coordinates coords, int owner) {
 		// fish out the elements owned by the specified player by hand.
 		Set<T> retval = new HashSet<T>();
 
 		for (T item : getAll(coords)) {
-			if (item.getCoords().equals(coords) && item.getOwner() == owner) {
+			if (item.getCoordinates().equals(coords) && item.getOwner() == owner) {
 				retval.add(item);
 			}
 		}

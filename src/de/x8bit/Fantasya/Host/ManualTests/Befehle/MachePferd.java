@@ -39,7 +39,7 @@ public class MachePferd extends TestBase {
         getRegions().remove(r);
 
         {
-            Region.Load(r.getCoords()).setResource(Pferd.class, 10000);
+            Region.Load(r.getCoordinates()).setResource(Pferd.class, 10000);
 
             Unit u = this.createUnit(p, r);
             u.setName(this.getName()+" 01");
@@ -48,12 +48,12 @@ public class MachePferd extends TestBase {
             u.setItem(Pferd.class, 0);
             u.Befehle.add("MACHE Pferd");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
             r = this.getTestWorld().nurBetretbar(getRegions()).get(0);
-            Region.Load(r.getCoords()).setResource(Pferd.class, 10000);
+            Region.Load(r.getCoordinates()).setResource(Pferd.class, 10000);
 			getRegions().remove(r);
 
             Partei p2 = this.getTestWorld().createPartei(Mensch.class);
@@ -67,7 +67,7 @@ public class MachePferd extends TestBase {
             u.Befehle.add("GIB BAUERN 100 Pferd");
             u.Befehle.add("MACHE Pferd");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
     }
@@ -102,7 +102,7 @@ public class MachePferd extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -117,7 +117,7 @@ public class MachePferd extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

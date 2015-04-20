@@ -12,7 +12,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -23,6 +22,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Regions.Chaos;
 import de.x8bit.Fantasya.Atlantis.Regions.Lavastrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.Reports.util.EinflussKarte;
 import de.x8bit.Fantasya.Host.Reports.util.RegionReportComparatorLNR;
@@ -40,9 +40,9 @@ public final class InselVerwaltung {
     public final static int TYP_LAVASTROM = -2;
     
     /**
-     * für jede einzelne Region: Mapping Coords => "öffentliche" Insel-ID
+     * für jede einzelne Region: Mapping Coordinates => "öffentliche" Insel-ID
      */
-    Map<Coords, Integer> inselIds;
+    Map<Coordinates, Integer> inselIds;
     
     /**
      * Datensätze von Inseln / Ozeanen / Lavaströmen
@@ -62,7 +62,7 @@ public final class InselVerwaltung {
     }
     
     private InselVerwaltung() {
-        inselIds = new HashMap<Coords, Integer>();
+        inselIds = new HashMap<Coordinates, Integer>();
         inseln = new HashMap<Integer, Insel>();
         parteiReportDaten = new HashMap<Partei, ParteiReportDaten>();
     }
@@ -71,7 +71,7 @@ public final class InselVerwaltung {
      * @param p
      * @return ParteiReportDaten für die angegebene Partei, ggf. on demand neu berechnet
      */
-    public ParteiReportDaten getParteiReportDaten(Partei p) {
+    public ParteiReportDaten getFactionReportDaten(Partei p) {
         if (!parteiReportDaten.containsKey(p)) {
             parteiReportDaten.put(p, new ParteiReportDaten(p));
         }
@@ -88,8 +88,8 @@ public final class InselVerwaltung {
         
         int currentId = 1;
         for (Region r: Region.CACHE.values()) {
-            Coords c = r.getCoords();
-            if (c.getWelt() == 0) continue; // imaginäre Region...
+            Coordinates c = r.getCoordinates();
+            if (c.getZ() == 0) continue; // imaginäre Region...
 
             if (inselIds.get(c) != null) continue; // schon erfasst
             
@@ -111,10 +111,10 @@ public final class InselVerwaltung {
         for (int publicInselId : getExistierendeInseln()) {
             Insel i = inseln.get(publicInselId);
             
-            i.setCoords(getInselCoords(publicInselId));
-            i.setMittelpunkt(Coords.Mittelpunkt(i.getCoords()));
+            i.setCoordinates(getInselCoordinates(publicInselId));
+            i.setMittelpunkt(Coordinates.getCentralCoordinates(i.getCoordinates()));
             
-            for (Coords c : i.getCoords()) {
+            for (Coordinates c : i.getCoordinates()) {
                 for (Unit u : Unit.CACHE.getAll(c)) {
                     i.getEinheiten().add(u);
                 }
@@ -125,14 +125,14 @@ public final class InselVerwaltung {
                 parteiNummern.add(u.getOwner());
             }
             for (int parteiNr : parteiNummern) {
-                i.getParteien().add(Partei.getPartei(parteiNr));
+                i.getFactionen().add(Partei.getFaction(parteiNr));
             }
         }
 
         // verifizieren:
         for (int publicInselId : getExistierendeInseln()) {
             Insel i = inseln.get(publicInselId);
-            for (Coords c : i.getCoords()) {
+            for (Coordinates c : i.getCoordinates()) {
                 Region r = Region.Load(c);
 
                 if (i.getTyp() == TYP_LAND) {
@@ -156,7 +156,7 @@ public final class InselVerwaltung {
 
     }
     
-    protected boolean markiereInsel(Coords c, int inselId, int modus) {
+    protected boolean markiereInsel(Coordinates c, int inselId, int modus) {
         Region hier = Region.Load(c);
         if (hier.getClass() == Chaos.class) return false;
         
@@ -171,7 +171,7 @@ public final class InselVerwaltung {
         
         inselIds.put(c, inselId);
         
-        for (Coords nachbar : c.getNachbarn()) {
+        for (Coordinates nachbar : c.getNeighbours()) {
             if (inselIds.get(nachbar) == null) {
                 // eine noch nicht erfasste Region:
                 markiereInsel(nachbar, inselId, modus);
@@ -185,7 +185,7 @@ public final class InselVerwaltung {
      * @param c Koordinaten
      * @return "öffentliche" Insel-Nummer oder -1, falls es diese aus irgendeinem Grund nicht gibt.
      */
-    public int getInselNummer(Coords c) {
+    public int getInselNummer(Coordinates c) {
     	if (inselIds == null) throw new NullPointerException("Es wird nach einer Insel-Nummer gefragt (" + c + "), aber die Inseln der Welt wurden noch nicht analysiert.");
         if (inselIds.get(c) == null) return -1;
         return inselIds.get(c);
@@ -207,7 +207,7 @@ public final class InselVerwaltung {
      */
     public Set<Integer> getExistierendeInseln() {
         Set<Integer> retval = new HashSet<Integer>();
-        for (Coords c : inselIds.keySet()) {
+        for (Coordinates c : inselIds.keySet()) {
             retval.add(inselIds.get(c));
         }
         return retval;
@@ -225,9 +225,9 @@ public final class InselVerwaltung {
      * @param inselId
      * @return alle Koordinaten, die zur Insel Nr. inselId gehören
      */
-    public Set<Coords> getInselCoords(int inselId) {
-        Set<Coords> retval = new HashSet<Coords>();
-        for (Coords c : inselIds.keySet()) {
+    public Set<Coordinates> getInselCoordinates(int inselId) {
+        Set<Coordinates> retval = new HashSet<Coordinates>();
+        for (Coordinates c : inselIds.keySet()) {
             if (inselIds.get(c) == inselId) retval.add(c); 
         }
         return retval;
@@ -242,7 +242,7 @@ public final class InselVerwaltung {
         
         Set<Integer> retval = new HashSet<Integer>();
         for (Insel i : inseln.values()) {
-            if (i.getParteien().contains(p)) retval.add(i.getPublicId());
+            if (i.getFactionen().contains(p)) retval.add(i.getPublicId());
         }
         
         return retval;
@@ -253,7 +253,7 @@ public final class InselVerwaltung {
      * @param c
      * @return die private Insel-ID zu publicId, oder -1, falls es keine solche gibt
      */
-    public int getPrivateInselNummer(Partei p, Coords c) {
+    public int getPrivateInselNummer(Partei p, Coordinates c) {
         return getPrivateInselNummer(p, getInselNummer(c));
     }
     
@@ -275,7 +275,7 @@ public final class InselVerwaltung {
      * @param c Koordinaten
      * @return private Insel-Nummer an der gegebenen Koordinate - oder -1, falls es diese aus irgendeinem Grund nicht gibt.
      */
-    public int getInselNummer(Partei p, Coords c) {
+    public int getInselNummer(Partei p, Coordinates c) {
         if (inselIds.get(c) == null) return -1;
         
         int publicId = inselIds.get(c);
@@ -322,7 +322,7 @@ public final class InselVerwaltung {
      * @param c
      * @param name 
      */
-    public void setInselName(Partei p, Coords c, String name) {
+    public void setInselName(Partei p, Coordinates c, String name) {
         int publicInselId = getInselNummer(c);
         if (publicInselId == -1) return;
         
@@ -336,7 +336,7 @@ public final class InselVerwaltung {
      * @param c
      * @param beschr 
      */
-    public void setInselBeschreibung(Partei p, Coords c, String beschr) {
+    public void setInselBeschreibung(Partei p, Coordinates c, String beschr) {
         int publicInselId = getInselNummer(c);
         if (publicInselId == -1) return;
         
@@ -350,7 +350,7 @@ public final class InselVerwaltung {
      * @param c
      * @return 
      */
-    public String getInselName(Partei p, Coords c) {
+    public String getInselName(Partei p, Coordinates c) {
         int publicInselId = getInselNummer(c);
         if (publicInselId == -1) return "n/a";
         
@@ -364,7 +364,7 @@ public final class InselVerwaltung {
      * @param c
      * @return 
      */
-    public String getInselBeschreibung(Partei p, Coords c) {
+    public String getInselBeschreibung(Partei p, Coordinates c) {
         int publicInselId = getInselNummer(c);
         if (publicInselId == -1) return "n/a";
         
@@ -381,16 +381,16 @@ public final class InselVerwaltung {
         
         for (int inselId : getExistierendeInseln(TYP_LAND)) {
             Insel i = getInsel(inselId);
-            for (Partei p : i.getParteien()) {
+            for (Partei p : i.getFactionen()) {
                 float summe = 0f;
-                for (Coords c : i.getCoords()) {
+                for (Coordinates c : i.getCoordinates()) {
                     summe += ek.getEinfluss(c, p);
                 }
                 i.setParteiEinfluss(p, summe);
             }
         }
         
-        for (Partei partei : Partei.PROXY) {
+        for (Partei partei : Partei.getPlayerFactionList()) {
             // die vorhandenen Anker auffrischen:
             ParteiInselAnker.Initialisieren(partei);
             
@@ -398,7 +398,7 @@ public final class InselVerwaltung {
             if (partei.getNummer() != 0) {
                 for (RegionsSicht rs : partei.getKnownRegions(false)) {
                     // if (rs.hasDetails()) {
-                        int inselId = getInselNummer(rs.getCoords());
+                        int inselId = getInselNummer(rs.getCoordinates());
                         if (inselId == -1) continue;
                         bekannteInselIds.add(inselId);
                     // }
@@ -417,7 +417,7 @@ public final class InselVerwaltung {
                 // den passenden ParteiInselAnker entweder holen oder erzeugen:
                 ParteiInselAnker pia = null;
                 try {
-                    pia = ParteiInselAnker.FindOrCreateFor(partei, i.getCoords().iterator().next());
+                    pia = ParteiInselAnker.FindOrCreateFor(partei, i.getCoordinates().iterator().next());
                 } catch (RuntimeException ex) {
                     throw new IllegalStateException("Problem mit dem ParteiInselAnker für Insel #" + publicId + ", Typ " + i.getTyp() + ", Partei " + partei + ".", ex);
                 }
@@ -442,10 +442,10 @@ public final class InselVerwaltung {
         int publicId;
         int typ;
         
-        Set<Coords> coords = new HashSet<Coords>();
+        Set<Coordinates> coords = new HashSet<Coordinates>();
         Set<Partei> parteien = new HashSet<Partei>();
         Set<Unit> einheiten = new HashSet<Unit>();
-        Coords mittelpunkt;
+        Coordinates mittelpunkt;
         
         /**
          * Partei-Nummer => privater Inselname dieser Partei
@@ -473,26 +473,26 @@ public final class InselVerwaltung {
         }
         
         public boolean istOberwelt() {
-            for (Coords c : getCoords()) {
-                if (c.getWelt() > 0) return true;
-                if (c.getWelt() < 0) return false;
+            for (Coordinates c : getCoordinates()) {
+                if (c.getZ() > 0) return true;
+                if (c.getZ() < 0) return false;
             }
             throw new IllegalStateException("Insel ist weder Ober- noch Unterwelt (keine Regionen? welt == 0?)");
         }
 
         public boolean istUnterwelt() {
-            for (Coords c : getCoords()) {
-                if (c.getWelt() < 0) return true;
-                if (c.getWelt() > 0) return false;
+            for (Coordinates c : getCoordinates()) {
+                if (c.getZ() < 0) return true;
+                if (c.getZ() > 0) return false;
             }
             throw new IllegalStateException("Insel ist weder Ober- noch Unterwelt (keine Regionen? welt == 0?)");
         }
 
-        public Coords getMittelpunkt() {
+        public Coordinates getMittelpunkt() {
             return mittelpunkt;
         }
 
-        public void setMittelpunkt(Coords mittelpunkt) {
+        public void setMittelpunkt(Coordinates mittelpunkt) {
             this.mittelpunkt = mittelpunkt;
         }
         
@@ -507,13 +507,13 @@ public final class InselVerwaltung {
             if (this.istUnterwelt()) kandidaten = Cave.GetCaves(-1);
             
             for (Cave c : kandidaten) {
-                if (getCoords().contains(c.getCoords())) retval.add(c);
+                if (getCoordinates().contains(c.getCoordinates())) retval.add(c);
             }
             
             return retval;
         }
 
-        public Set<Coords> getCoords() {
+        public Set<Coordinates> getCoordinates() {
             return coords;
         }
         
@@ -523,7 +523,7 @@ public final class InselVerwaltung {
             return coords.size();
         }
 
-        public void setCoords(Set<Coords> coords) {
+        public void setCoordinates(Set<Coordinates> coords) {
             this.coords = coords;
         }
 
@@ -535,7 +535,7 @@ public final class InselVerwaltung {
             this.einheiten = einheiten;
         }
 
-        public Set<Partei> getParteien() {
+        public Set<Partei> getFactionen() {
             return parteien;
         }
 
@@ -576,22 +576,22 @@ public final class InselVerwaltung {
             float einflussSumme = 0f;
             for (int e : parteiEinfluss.keySet()) einflussSumme += parteiEinfluss.get(e);
             
-            for (ParteiEinfluss pe : getParteiEinfluesse()) {
-                Partei fremde = Partei.getPartei(pe.getPartei());
+            for (ParteiEinfluss pe : getFactionEinfluesse()) {
+                Partei fremde = Partei.getFaction(pe.getFaction());
                 if (p.getNummer() == fremde.getNummer()) continue; // p selbst hatten wir schon
-                if (fremde.isMonster()) continue; // die verraten nix
+                if (!fremde.isPlayerFaction()) continue; // die verraten nix
                 
                 // wenn es schon einen Namen gibt und der Einfluss dieser Partei unter 10% ist:
                 if (sb.length() > 0) {
                     if ((pe.getEinfluss() / einflussSumme) < 0.1) break;
                 }
                 
-                if (parteiInselNamen.containsKey(pe.getPartei())) {
-                    String fremdName = parteiInselNamen.get(pe.getPartei());
+                if (parteiInselNamen.containsKey(pe.getFaction())) {
+                    String fremdName = parteiInselNamen.get(pe.getFaction());
                     if (fremdName != null) {
                         if (sb.length() > 0) sb.append(" / ");
                         sb.append(fremdName);
-                        sb.append("[").append(Codierung.toBase36(pe.getPartei())).append("]");
+                        sb.append("[").append(Codierung.toBase36(pe.getFaction())).append("]");
                     }
                 }
             }
@@ -617,21 +617,21 @@ public final class InselVerwaltung {
             float einflussSumme = 0f;
             for (int e : parteiEinfluss.keySet()) einflussSumme += parteiEinfluss.get(e);
             
-            for (ParteiEinfluss pe : getParteiEinfluesse()) {
-                if (p.getNummer() == pe.getPartei()) continue; // p selbst hatten wir schon
-                if (p.isMonster()) continue; // die verraten nix
+            for (ParteiEinfluss pe : getFactionEinfluesse()) {
+                if (p.getNummer() == pe.getFaction()) continue; // p selbst hatten wir schon
+                if (!p.isPlayerFaction()) continue; // die verraten nix
                 
                 // wenn es schon einen Namen gibt und der Einfluss dieser Partei unter 10% ist:
                 if (sb.length() > 0) {
                     if ((pe.getEinfluss() / einflussSumme) < 0.1) break;
                 }
                 
-                if (parteiInselBeschreibungen.containsKey(pe.getPartei())) {
-                    String fremdBeschr = parteiInselBeschreibungen.get(pe.getPartei());
+                if (parteiInselBeschreibungen.containsKey(pe.getFaction())) {
+                    String fremdBeschr = parteiInselBeschreibungen.get(pe.getFaction());
                     if (fremdBeschr != null) {
                         if (sb.length() > 0) sb.append(" / ");
                         sb.append(fremdBeschr);
-                        sb.append("[").append(Codierung.toBase36(pe.getPartei())).append("]");
+                        sb.append("[").append(Codierung.toBase36(pe.getFaction())).append("]");
                     }
                 }
             }
@@ -657,12 +657,12 @@ public final class InselVerwaltung {
             parteiEinfluss.put(p.getNummer(), einfluss);
         }
         
-        public float getParteiEinfluss(Partei p) {
+        public float getFactionEinfluss(Partei p) {
             if (!parteiEinfluss.containsKey(p.getNummer())) return 0f;
             return parteiEinfluss.get(p.getNummer());
         }
         
-        public SortedSet<ParteiEinfluss> getParteiEinfluesse() {
+        public SortedSet<ParteiEinfluss> getFactionEinfluesse() {
             Set<ParteiEinfluss> tmp = new HashSet<ParteiEinfluss>();
             for (int partei : parteiEinfluss.keySet()) {
                 tmp.add(new ParteiEinfluss(partei, parteiEinfluss.get(partei)));
@@ -675,7 +675,7 @@ public final class InselVerwaltung {
          */
         public Set<Integer> getInselKennungen() {
             Set<Integer> retval = new HashSet<Integer>();
-            for (Coords c : this.getCoords()) {
+            for (Coordinates c : this.getCoordinates()) {
                 Region r = Region.Load(c);
                 retval.add(r.getInselKennung());
             }
@@ -702,7 +702,7 @@ public final class InselVerwaltung {
             return einfluss;
         }
 
-        public int getPartei() {
+        public int getFaction() {
             return partei;
         }
 
@@ -723,8 +723,8 @@ public final class InselVerwaltung {
 
         @Override
         public int compare(Insel i1, Insel i2) {
-            if (i1.getCoords().size() > i2.getCoords().size()) return -1;
-            if (i1.getCoords().size() < i2.getCoords().size()) return +1;
+            if (i1.getCoordinates().size() > i2.getCoordinates().size()) return -1;
+            if (i1.getCoordinates().size() < i2.getCoordinates().size()) return +1;
             
             if (i1.getPublicId() < i2.getPublicId()) return -1;
             if (i1.getPublicId() > i2.getPublicId()) return +1;
@@ -763,10 +763,10 @@ public final class InselVerwaltung {
         
         private List<Insel> bekannteInseln;
         /** alle direkt, benachbart oder historisch bekannten Regionen (werden im Konstruktor ermittelt) */
-        private Map<Integer, List<Coords>> regionenAufInsel;
-        private List<Coords> regionenOhneInsel;
-        private Map<Integer, List<Coords>> nachbarnAufInsel;
-        private List<Coords> nachbarnOhneInsel;
+        private Map<Integer, List<Coordinates>> regionenAufInsel;
+        private List<Coordinates> regionenOhneInsel;
+        private Map<Integer, List<Coordinates>> nachbarnAufInsel;
+        private List<Coordinates> nachbarnOhneInsel;
 
         public ParteiReportDaten(Partei p) {
             if (p == null) throw new NullPointerException("ParteiReportDaten sollen für Partei null erstellt werden...");
@@ -783,7 +783,7 @@ public final class InselVerwaltung {
             Collections.sort(nachbarn, new RegionReportComparatorLNR());
             
             // jetzt den Atlas auf seinen Mehrwert abklappern:
-            for (Coords c : p.atlas.keySet()) {
+            for (Coordinates c : p.atlas.keySet()) {
                 Region r = Region.Load(c);
                 if (regionen.contains(r)) continue;
                 if (nachbarn.contains(r)) continue;
@@ -799,22 +799,22 @@ public final class InselVerwaltung {
             
             InselVerwaltung iv = InselVerwaltung.getInstance();
             
-            regionenAufInsel = new HashMap<Integer, List<Coords>>();
-            regionenOhneInsel = new ArrayList<Coords>();
+            regionenAufInsel = new HashMap<Integer, List<Coordinates>>();
+            regionenOhneInsel = new ArrayList<Coordinates>();
             
-            Set<Coords> alleBekannten = new HashSet<Coords>();
-            for (Region r : regionen) alleBekannten.add(r.getCoords());
-            for (Region r : nachbarn) alleBekannten.add(r.getCoords());
-            for (RegionsSicht rs : historische) alleBekannten.add(rs.getCoords());
+            Set<Coordinates> alleBekannten = new HashSet<Coordinates>();
+            for (Region r : regionen) alleBekannten.add(r.getCoordinates());
+            for (Region r : nachbarn) alleBekannten.add(r.getCoordinates());
+            for (RegionsSicht rs : historische) alleBekannten.add(rs.getCoordinates());
             
-            for(Coords c : alleBekannten) {
+            for(Coordinates c : alleBekannten) {
                 Region r = Region.Load(c);
-                if (r instanceof Ozean) { regionenOhneInsel.add(r.getCoords()); continue; }
-                if (r instanceof Chaos) { regionenOhneInsel.add(r.getCoords()); continue; }
+                if (r instanceof Ozean) { regionenOhneInsel.add(r.getCoordinates()); continue; }
+                if (r instanceof Chaos) { regionenOhneInsel.add(r.getCoordinates()); continue; }
 
-                int publicId = iv.getInselNummer(r.getCoords());
-                if (!regionenAufInsel.containsKey(publicId)) regionenAufInsel.put(publicId, new ArrayList<Coords>());
-                regionenAufInsel.get(publicId).add(r.getCoords());
+                int publicId = iv.getInselNummer(r.getCoordinates());
+                if (!regionenAufInsel.containsKey(publicId)) regionenAufInsel.put(publicId, new ArrayList<Coordinates>());
+                regionenAufInsel.get(publicId).add(r.getCoordinates());
             }
 
             // Wenig bekannte Inseln aussortieren:
@@ -834,38 +834,38 @@ public final class InselVerwaltung {
             for (int publicId : loeschSet) regionenAufInsel.remove(publicId);
             
 
-            nachbarnAufInsel = new HashMap<Integer, List<Coords>>();
-            nachbarnOhneInsel = new ArrayList<Coords>();
+            nachbarnAufInsel = new HashMap<Integer, List<Coordinates>>();
+            nachbarnOhneInsel = new ArrayList<Coordinates>();
             for(Region r : getNachbarn()) {
-                if (r instanceof Ozean) { nachbarnOhneInsel.add(r.getCoords()); continue; }
-                if (r instanceof Chaos) { nachbarnOhneInsel.add(r.getCoords()); continue; }
+                if (r instanceof Ozean) { nachbarnOhneInsel.add(r.getCoordinates()); continue; }
+                if (r instanceof Chaos) { nachbarnOhneInsel.add(r.getCoordinates()); continue; }
 
-                int publicId = iv.getInselNummer(r.getCoords());
+                int publicId = iv.getInselNummer(r.getCoordinates());
                 if (!regionenAufInsel.containsKey(publicId)) {
                     // wenn die Insel nicht bekannt ist:
-                    nachbarnOhneInsel.add(r.getCoords());
+                    nachbarnOhneInsel.add(r.getCoordinates());
                 } else {
                     // wenn die Insel bekannt ist:
                     if (!nachbarnAufInsel.containsKey(publicId)) {
                         // ggf. neue Liste erstellen
-                        nachbarnAufInsel.put(publicId,  new ArrayList<Coords>());
+                        nachbarnAufInsel.put(publicId,  new ArrayList<Coordinates>());
                     }
-                    nachbarnAufInsel.get(publicId).add(r.getCoords());
+                    nachbarnAufInsel.get(publicId).add(r.getCoordinates());
                 }
             }
             
             // ...und noch die historischen zu den Nachbarn:
             for (RegionsSicht rs : historische) {
-                if (rs.getTerrain().equalsIgnoreCase("Ozean")) { nachbarnOhneInsel.add(rs.getCoords()); continue; }
-                if (rs.getTerrain().equalsIgnoreCase("Chaos")) { nachbarnOhneInsel.add(rs.getCoords()); continue; }
-                int publicId = iv.getInselNummer(rs.getCoords());
+                if (rs.getTerrain().equalsIgnoreCase("Ozean")) { nachbarnOhneInsel.add(rs.getCoordinates()); continue; }
+                if (rs.getTerrain().equalsIgnoreCase("Chaos")) { nachbarnOhneInsel.add(rs.getCoordinates()); continue; }
+                int publicId = iv.getInselNummer(rs.getCoordinates());
                 if (!regionenAufInsel.containsKey(publicId)) {
                     // wenn die Insel nicht bekannt ist:
-                    nachbarnOhneInsel.add(rs.getCoords());
+                    nachbarnOhneInsel.add(rs.getCoordinates());
                 } else {
                     // wenn die Insel bekannt ist:
-                    if (!nachbarnAufInsel.containsKey(publicId)) nachbarnAufInsel.put(publicId,  new ArrayList<Coords>());
-                    nachbarnAufInsel.get(publicId).add(rs.getCoords());
+                    if (!nachbarnAufInsel.containsKey(publicId)) nachbarnAufInsel.put(publicId,  new ArrayList<Coordinates>());
+                    nachbarnAufInsel.get(publicId).add(rs.getCoordinates());
                 }
             }
 
@@ -880,12 +880,12 @@ public final class InselVerwaltung {
             
             // bekannte Inseln mit einmaligen / permanenten Insel-IDs versehen
             ParteiInselAnker.Initialisieren(p);
-            Set<Coords> anker = p.getInselAnker().keySet();
+            Set<Coordinates> anker = p.getInselAnker().keySet();
             
             for (Insel insel : bekannteInseln) {
                 // privaten Namens- und ID-Eintrag suchen
                 boolean gefunden = false;
-                for (Coords c : insel.getCoords()) {
+                for (Coordinates c : insel.getCoordinates()) {
                     if (anker.contains(c)) {
                         // yepp!
                         ParteiInselAnker pia = p.getInselAnker().get(c);
@@ -900,7 +900,7 @@ public final class InselVerwaltung {
                 if (gefunden) continue;
                 
                 // keiner vorhanden - erzeugen:
-                Coords c = regionenAufInsel.get(insel.getPublicId()).get(0);
+                Coordinates c = regionenAufInsel.get(insel.getPublicId()).get(0);
                 ParteiInselAnker.FindOrCreateFor(p, c);
             }
             // jetzt haben alle bekannten Inseln neben der öffentlichen ID auch eine permanente private ID dieser Partei
@@ -913,19 +913,19 @@ public final class InselVerwaltung {
             return bekannteInseln;
         }
 
-        public List<Coords> getNachbarnAufInsel(int publicInselId) {
+        public List<Coordinates> getNachbarnAufInsel(int publicInselId) {
             return nachbarnAufInsel.get(publicInselId);
         }
 
-        public List<Coords> getNachbarnOhneInsel() {
+        public List<Coordinates> getNachbarnOhneInsel() {
             return nachbarnOhneInsel;
         }
 
-        public List<Coords> getRegionenAufInsel(int publicInselId) {
+        public List<Coordinates> getRegionenAufInsel(int publicInselId) {
             return regionenAufInsel.get(publicInselId);
         }
 
-        public List<Coords> getRegionenOhneInsel() {
+        public List<Coordinates> getRegionenOhneInsel() {
             return regionenOhneInsel;
         }
         
@@ -935,16 +935,16 @@ public final class InselVerwaltung {
             if (p.getNummer() != 0) {
                 // TODO: Die (versteckten) Nachbarn von bemannten Regionen sollten aber als Chaos auftauchen.
                 for (RegionsSicht rs : p.getKnownRegions(true)) { // true = mit versteckten
-                    Region r = Region.Load(rs.getCoords());
+                    Region r = Region.Load(rs.getCoordinates());
                     if (rs.hasDetails()) {
                         if (!p.canAccess(r)) {
 							// TODO: da steht einer in einer eigentlich unsichtbaren Regionn - wat nu?
                         } else {
-                            regionen.add(Region.Load(rs.getCoords()));
+                            regionen.add(Region.Load(rs.getCoordinates()));
                         }
                     } else {
                         if (p.canAccess(r)) {
-                            nachbarn.add(Region.Load(rs.getCoords()));
+                            nachbarn.add(Region.Load(rs.getCoordinates()));
                         } else {
                             // dann isses Chaos oder so:
                             Region unsichtbar = null;
@@ -958,7 +958,7 @@ public final class InselVerwaltung {
                                 new SysErr(ex.getMessage());
                             }
                             if (unsichtbar == null) throw new RuntimeException("Konnte keine Ersatzregion (unsichbar für " + p + ") instantiieren.");
-                            unsichtbar.setCoords(r.getCoords());
+                            unsichtbar.setCoordinates(r.getCoordinates());
                             nachbarn.add(unsichtbar);
                         }
                     }
@@ -984,7 +984,7 @@ public final class InselVerwaltung {
 
             for (Unit u : Unit.CACHE) {
                 if (u.getOwner() == p.getNummer()) {
-                    p.addKnownRegion(u.getCoords(), true, Unit.class);
+                    p.addKnownRegion(u.getCoordinates(), true, Unit.class);
                 }
             }
         }
@@ -994,9 +994,9 @@ public final class InselVerwaltung {
          */
         private void loadNachbarn() {
             for (RegionsSicht rs : p.getKnownRegions(false)) { // false == ohne "Versteckte"
-                Region r = Region.Load(rs.getCoords());
-                if (rs.hasDetails() && !Unit.CACHE.getAll(r.getCoords(),p.getNummer()).isEmpty()) {
-                    for (Coords nachbar : r.getCoords().getNachbarn()) {
+                Region r = Region.Load(rs.getCoordinates());
+                if (rs.hasDetails() && !Unit.CACHE.getAll(r.getCoordinates(),p.getNummer()).isEmpty()) {
+                    for (Coordinates nachbar : r.getCoordinates().getNeighbours()) {
                         p.addKnownRegion(nachbar, false, Unit.class);
                     }
                 }

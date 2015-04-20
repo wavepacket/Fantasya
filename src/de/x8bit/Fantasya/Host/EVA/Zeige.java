@@ -46,7 +46,7 @@ public class Zeige extends EVABase
 	public void PostAction() { }
 	public void PreAction() { }
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -57,8 +57,8 @@ public class Zeige extends EVABase
 			if (eb.getVariante() == 1) ZeigeZauberbuch(u);
 
 			if (eb.getVariante() == 0) {
-				new Info("ZEIGE fehlgeschlagen für: '" + eb.getBefehlCanonical() + "'", Partei.getPartei(0));
-				new Fehler("ZEIGE ist derzeit nur für 'ZAUBERBUCH' verfügbar - für alles andere bitte in der Bibliothek nachschauen: http://www.fantasya-pbem.de/bibliothek/", u, u.getCoords());
+				new Info("ZEIGE fehlgeschlagen für: '" + eb.getBefehlCanonical() + "'", Partei.getFaction(0));
+				new Fehler("ZEIGE ist derzeit nur für 'ZAUBERBUCH' verfügbar - für alles andere bitte in der Bibliothek nachschauen: http://www.fantasya-pbem.de/bibliothek/", u, u.getCoordinates());
 				eb.setError();
 			}
 

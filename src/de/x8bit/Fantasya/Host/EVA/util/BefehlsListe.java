@@ -24,7 +24,7 @@ public class BefehlsListe extends ArrayList<Einzelbefehl> {
     protected String fehlerBeschreibung = null;
 
     public void add(Unit u, String text) {
-        Einzelbefehl eb = new Einzelbefehl(u, u.getCoords(), text, this.size());
+        Einzelbefehl eb = new Einzelbefehl(u, u.getCoordinates(), text, this.size());
 
         this.add(eb);
     }

@@ -1,10 +1,10 @@
 package de.x8bit.Fantasya.Atlantis.Messages;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 
 public class Info extends Message
 {
@@ -14,10 +14,10 @@ public class Info extends Message
 	public Info() {}
 
 	public Info(String msg, Unit u) {
-		this(msg, u, u.getCoords());
+		this(msg, u, u.getCoordinates());
 	}
 	
-	public Info(String msg, Unit u, Coords c)
+	public Info(String msg, Unit u, Coordinates c)
 	{
 		super();
 		print(0, msg, c, u);
@@ -41,7 +41,7 @@ public class Info extends Message
 	public Info(String msg, Region r) {
 		super();
 
-		print(0, msg, null, r.getCoords());
+		print(0, msg, null, r.getCoordinates());
 	}
 	
 }

@@ -1,10 +1,10 @@
 package de.x8bit.Fantasya.Host.EVA;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -13,7 +13,9 @@ import de.x8bit.Fantasya.Host.EVA.util.BefehlsCheck;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.net.SMTPConnector;
+
 import java.util.List;
+
 import javax.mail.MessagingException;
 
 /**
@@ -32,8 +34,8 @@ public class BefehlsCheckMeldungen extends EVABase implements NotACommand {
         boolean dbEnabled = Datenbank.isEnabled();
         if (!dbEnabled) Datenbank.Enable();
 
-        for (Partei p : BefehlsCheck.getInstance().getParteien()) {
-            List<Message> meldungen = Message.Retrieve(p, (Coords)null, null);
+        for (Partei p : BefehlsCheck.getInstance().getFactionSet()) {
+            List<Message> meldungen = Message.Retrieve(p, (Coordinates)null, null);
 
             StringBuilder sb = new StringBuilder();
             sb.append("Befehle für Partei " + p + " wurden überprüft:\n\n");

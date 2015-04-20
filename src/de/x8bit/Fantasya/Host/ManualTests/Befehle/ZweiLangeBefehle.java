@@ -48,11 +48,11 @@ public class ZweiLangeBefehle extends TestBase {
             u.Befehle.add("NACH w");
             // u.Befehle.add("GIB Bauern PERSONEN"); // nach Mantis #269 jetzt erlaubt
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
 
         { // ... und nochmal Multi-Lang:
-            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
             burg.setSize(100);
 
             Unit u = this.createUnit(p, r);
@@ -106,7 +106,7 @@ public class ZweiLangeBefehle extends TestBase {
 
                 if (Main.getBFlag("EVA")) continue; // Bei EVA werden die Befehle gar nicht erst zugelassen
 
-				messages = Message.Retrieve(p, u.getCoords(), u);
+				messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -142,7 +142,7 @@ public class ZweiLangeBefehle extends TestBase {
                 }
 
                 if (Main.getBFlag("EVA")) continue; // Bei EVA werden die Befehle gar nicht erst zugelassen
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

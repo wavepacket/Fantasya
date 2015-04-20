@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -23,6 +22,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Lavastrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Regions.Sandstrom;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.Paket;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
@@ -159,8 +159,8 @@ public class CleanUp extends EVABase implements NotACommand
 	}
 
 	public static void RegelChecks() {
-		for (Partei p : Partei.PROXY) {
-			if (p.isMonster()) continue;
+		for (Partei p : Partei.getPlayerFactionList()) {
+			if (!p.isPlayerFaction()) continue;
 
 			Unit einheimischer = null;
 			for (Unit maybe : p.getEinheiten()) {
@@ -189,7 +189,7 @@ public class CleanUp extends EVABase implements NotACommand
 
 	public static Class<? extends Item> luxusProduktRaten(Region r) {
 		MapSelection rundum = new MapSelection();
-		rundum.add(r.getCoords());
+		rundum.add(r.getCoordinates());
 		rundum.wachsen(6);
 
 		Map<Class<? extends Item>, Integer> frequencies = new HashMap<Class<? extends Item>, Integer>();
@@ -200,7 +200,7 @@ public class CleanUp extends EVABase implements NotACommand
 			}
 		}
 
-		for (Coords c : rundum) {
+		for (Coordinates c : rundum) {
 			Region nachbar = Region.Load(c);
 			if (nachbar != null) {
 				Class<? extends Item> ware = nachbar.getProduce();

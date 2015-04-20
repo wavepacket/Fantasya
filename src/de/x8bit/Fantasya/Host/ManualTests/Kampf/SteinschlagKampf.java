@@ -58,11 +58,11 @@ public class SteinschlagKampf extends TestBase {
             ub.setItem(Schwert.class, ub.getPersonen());
             ub.setKampfposition(Kampfposition.Vorne);
 
-            b.setUrsprung(r.getCoords());
+            b.setUrsprung(r.getCoordinates());
 
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
             
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

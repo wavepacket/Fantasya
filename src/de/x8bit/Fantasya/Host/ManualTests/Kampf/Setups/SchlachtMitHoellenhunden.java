@@ -59,7 +59,7 @@ public class SchlachtMitHoellenhunden extends Schlacht01 {
 	@Override
     protected void setupAngreifer(Partei p, int f) {
         // hinten:
-        Unit hunde = Unit.CreateUnit("Hoellenhund", p.getNummer(), region.getCoords());
+        Unit hunde = Unit.CreateUnit("Hoellenhund", p.getNummer(), region.getCoordinates());
         hunde.setPersonen(10);
 		hunde.setSkill(Monsterkampf.class, 30 * hunde.getPersonen());
 		hunde.setName("Höllenhunde");

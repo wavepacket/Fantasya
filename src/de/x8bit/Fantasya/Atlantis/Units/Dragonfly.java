@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Atlantis.Units;
 
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -10,6 +9,7 @@ import de.x8bit.Fantasya.Atlantis.Helper.Monster;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Gletscher;
 import de.x8bit.Fantasya.Atlantis.Regions.Sumpf;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.Random;
@@ -27,7 +27,7 @@ public class Dragonfly extends Monster {
         this.setLebenspunkte(0); // ... und sie sind immer gesund!
 		
 		// die aktuelle region holen
-		Region sumpf = Region.Load(this.getCoords());
+		Region sumpf = Region.Load(this.getCoordinates());
 		
 		// gut - sie vermehren sich
 		int quartal = GameRules.getQuartal();
@@ -42,17 +42,17 @@ public class Dragonfly extends Monster {
 			if (personen > GameRules.Monster.TIER.DragonFly.FractionStart())
 			{
 				int fraction = personen * (int) (Random.rnd(0, GameRules.Monster.TIER.DragonFly.FractionPercent()) / 100.0f);
-				Unit fly = spawn(getCoords());
+				Unit fly = spawn(getCoordinates());
 				fly.setPersonen(fraction);
 
 				// neue Region suchen - nur in der Nachbarregion
 				String direction = Richtung.random().getShortcut();
-				Region next = Region.Load(getCoords().shift(Richtung.getRichtung(direction)));
+				Region next = Region.Load(getCoordinates().shiftDirection(Richtung.getRichtung(direction)));
 				int versuch = 0;
 				while(!next.istBetretbar(null) || ((next instanceof Gletscher) && (next.containsRace(Greif.class))))
 				{
 					direction = Richtung.random().getShortcut();
-					next = Region.Load(getCoords().shift(Richtung.getRichtung(direction)));
+					next = Region.Load(getCoordinates().shiftDirection(Richtung.getRichtung(direction)));
 					if (versuch++ > 10)
 					{
 						new SysMsg(this + " hat keine Richtung auswählen können -> abgebrochen");
@@ -81,12 +81,12 @@ public class Dragonfly extends Monster {
 			List<Region> regionen = Region.getRegions4Insel(insel, Sumpf.class);
 			for(Region sumpf : regionen)
 			{
-				if (!sumpf.containsRace(Dragonfly.class)) spawn(sumpf.getCoords());
+				if (!sumpf.containsRace(Dragonfly.class)) spawn(sumpf.getCoordinates());
 			}
 		}
 	}
 	
-	public static Unit spawn(Coords coords)
+	public static Unit spawn(Coordinates coords)
 	{
 		Unit fly = Unit.CreateUnit("Dragonfly", Codierung.fromBase36("tier"), coords);
 		fly.setPersonen(Random.rnd(GameRules.Monster.TIER.DragonFly.PersonsMin(), GameRules.Monster.TIER.DragonFly.PersonsMax()));

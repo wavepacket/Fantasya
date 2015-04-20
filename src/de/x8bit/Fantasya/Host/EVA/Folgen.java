@@ -82,7 +82,7 @@ public class Folgen extends EVABase {
 
 			if (tempnummer == 0) {
 				eb.setError();
-				new Fehler(u + " - Temp-Einheit " + eb.getTargetUnit() + " nicht gefunden.", u, u.getCoords());
+				new Fehler(u + " - Temp-Einheit " + eb.getTargetUnit() + " nicht gefunden.", u, u.getCoordinates());
 				return;
 			}
 			eb.setTargetUnit(Codierung.toBase36(tempnummer));
@@ -116,12 +116,12 @@ public class Folgen extends EVABase {
 		}
 
 		// Wäre (also: War) die Einheit am Ausgangsort sichtbar?
-		if ((targetUnit == null) || (!u.couldSeeInRegion(targetUnit, Region.Load(u.getCoords())))) {
+		if ((targetUnit == null) || (!u.couldSeeInRegion(targetUnit, Region.Load(u.getCoordinates())))) {
 			eb.setError();
 			if (variante == 1) {
-				new Fehler(u + " - '" + eb.getBefehl() + "': Einheit " + eb.getTargetUnit() + " nicht gefunden.", u, u.getCoords());
+				new Fehler(u + " - '" + eb.getBefehl() + "': Einheit " + eb.getTargetUnit() + " nicht gefunden.", u, u.getCoordinates());
 			} else if (variante == 2) {
-				new Fehler(u + " - '" + eb.getBefehl() + "': Schiff " + targetShip + " nicht gefunden.", u, u.getCoords());
+				new Fehler(u + " - '" + eb.getBefehl() + "': Schiff " + targetShip + " nicht gefunden.", u, u.getCoordinates());
 			}
 			return;
 		}
@@ -155,10 +155,10 @@ public class Folgen extends EVABase {
 		if (vorlauf == null) {
 			eb.setError();
 			if (targetUnit.getOwner() == u.getOwner()) {
-				new Fehler(u + ": " + targetUnit + " wollte zwar reisen, ist aber nicht vom Fleck gekommen.", u, u.getCoords());
+				new Fehler(u + ": " + targetUnit + " wollte zwar reisen, ist aber nicht vom Fleck gekommen.", u, u.getCoordinates());
 			} else {
 				// TODO: Hier offen legen, dass die Einheit eigentlich reisen wollte?
-				new Fehler(u + ": " + targetUnit + " ist in diesem Monat nicht gereist.", u, u.getCoords());
+				new Fehler(u + ": " + targetUnit + " ist in diesem Monat nicht gereist.", u, u.getCoordinates());
 			}
 			return;
 		}
@@ -173,7 +173,7 @@ public class Folgen extends EVABase {
 		// die Einheit ist gereist.
 
 		// die Einheit ist (war) nicht in der gleichen Region
-		if (!u.getCoords().equals(vorlauf.get(0).getCoords())) {
+		if (!u.getCoordinates().equals(vorlauf.get(0).getCoordinates())) {
 			eb.setError();
 			if (variante == 1) {
 				new Fehler(u + " - '" + eb.getBefehl() + "': Einheit " + eb.getTargetUnit() + " ist nicht in der gleichen Region.", u);
@@ -188,9 +188,9 @@ public class Folgen extends EVABase {
 		List<Region> weg = new ArrayList<Region>();
 		for (Region reg : vorlauf) weg.add(reg);
 		// die letzte Region ist nicht im Reise-Bericht enthalten:
-		weg.add(Region.Load(targetUnit.getCoords()));
+		weg.add(Region.Load(targetUnit.getCoordinates()));
 
-		Einzelbefehl hinterher = new Einzelbefehl(u, eb.getCoords(), Reisen.ErzeugeNachBefehl(weg), eb.getSortRank());
+		Einzelbefehl hinterher = new Einzelbefehl(u, eb.getCoordinates(), Reisen.ErzeugeNachBefehl(weg), eb.getSortRank());
 
 		Reisen.Ausfuehren(hinterher);
 		eb.setPerformed();

@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -15,6 +14,7 @@ import de.x8bit.Fantasya.Atlantis.Ships.Boot;
 import de.x8bit.Fantasya.Atlantis.Ships.Drachenschiff;
 import de.x8bit.Fantasya.Atlantis.Ships.Langboot;
 import de.x8bit.Fantasya.Atlantis.Units.Mensch;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
@@ -40,12 +40,12 @@ public class NachXYMeer extends TestBase {
 		Region r_1_0 = null; // Land
 
 		for (Region maybe : tw.nurTerrain(getRegions(), Ozean.class)) {
-			r_m1_0 = Region.Load(maybe.getCoords().shift(Richtung.Westen));
-			r_0_1 = Region.Load(maybe.getCoords().shift(Richtung.Nordosten));
-			r_1_1 = Region.Load(r_0_1.getCoords().shift(Richtung.Osten));
-			r_2_1 = Region.Load(r_1_1.getCoords().shift(Richtung.Osten));
+			r_m1_0 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Westen));
+			r_0_1 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Nordosten));
+			r_1_1 = Region.Load(r_0_1.getCoordinates().shiftDirection(Richtung.Osten));
+			r_2_1 = Region.Load(r_1_1.getCoordinates().shiftDirection(Richtung.Osten));
 
-			r_1_0 = Region.Load(maybe.getCoords().shift(Richtung.Osten));
+			r_1_0 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
 			if (!r_1_0.istBetretbar(null)) continue; // r_1_0 muss Land sein.
 			if (r_1_0.getClass() == Ebene.class) continue;
 			if (r_1_0.getClass() == Wald.class) continue; // soll nicht erreichbar für größere Schiffe sein.
@@ -68,11 +68,11 @@ public class NachXYMeer extends TestBase {
 		getRegions().remove(r_1_0);
 
 		r_0_0.setName(getName()+"-Startregion");
-		Coords c = r_0_0.getCoords();
+		Coordinates c = r_0_0.getCoordinates();
 
         { // NACH ...
             Unit u = this.createKapitaen(p, r_0_0, Boot.class.getSimpleName());
-            u.setName(this.getName() + " 01 " + r_1_0.getCoords().getX() + " " + r_1_0.getCoords().getY());
+            u.setName(this.getName() + " 01 " + r_1_0.getCoordinates().getX() + " " + r_1_0.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.Befehle.add("URSPRUNG " + c.getX() + " " + c.getY() );
 			u.Befehle.add("NACH (2 1)");
@@ -83,26 +83,26 @@ public class NachXYMeer extends TestBase {
 
             u = this.createKapitaen(p, r_0_0, Boot.class.getSimpleName());
             String befehl = "NACH (0 1) (2 1)";
-			u.setName(this.getName() + " 03 " + r_1_1.getCoords().getX() + " " + r_1_1.getCoords().getY());
+			u.setName(this.getName() + " 03 " + r_1_1.getCoordinates().getX() + " " + r_1_1.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.Befehle.add(befehl);
 			u.setBeschreibung("Befehl war: " + befehl);
 
             u = this.createKapitaen(p, r_0_0, Boot.class.getSimpleName());
             befehl = "NACH (0 1) PAUSE (2 1)";
-			u.setName(this.getName() + " 04 " + r_0_1.getCoords().getX() + " " + r_0_1.getCoords().getY());
+			u.setName(this.getName() + " 04 " + r_0_1.getCoordinates().getX() + " " + r_0_1.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.Befehle.add(befehl);
 			u.setBeschreibung("Befehl war: " + befehl);
 
             u = this.createKapitaen(p, r_0_0, Boot.class.getSimpleName());
             befehl = "NACH (0 1)";
-			u.setName(this.getName() + " 05 " + r_0_1.getCoords().getX() + " " + r_0_1.getCoords().getY());
+			u.setName(this.getName() + " 05 " + r_0_1.getCoordinates().getX() + " " + r_0_1.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.Befehle.add(befehl);
 			u.setBeschreibung("Befehl war: " + befehl);
 
-            new Info(this.getName() + " Setup in " + r_0_0 + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r_0_0 + ".", u, u.getCoordinates());
         } // Ende NACH
 
         { // ROUTE
@@ -117,7 +117,7 @@ public class NachXYMeer extends TestBase {
             // sollte in (0 0) ankommen:
 			u = this.createKapitaen(p, r_2_1, Langboot.class.getSimpleName());
             befehl = "ROUTE (0 1) (0 0) PAUSE (2 1)";
-            u.setName(this.getName() + " 12 " + r_0_0.getCoords().getX() + " " + r_0_0.getCoords().getY());
+            u.setName(this.getName() + " 12 " + r_0_0.getCoordinates().getX() + " " + r_0_0.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.Befehle.add(befehl);
 			u.setBeschreibung("Befehl war: " + befehl);
@@ -125,7 +125,7 @@ public class NachXYMeer extends TestBase {
             // Schnellpendler:
 			u = this.createKapitaen(p, r_1_1, Drachenschiff.class.getSimpleName());
             befehl = "ROUTE (2 1) (1 1)";
-            u.setName(this.getName() + " 13 " + r_2_1.getCoords().getX() + " " + r_2_1.getCoords().getY());
+            u.setName(this.getName() + " 13 " + r_2_1.getCoordinates().getX() + " " + r_2_1.getCoordinates().getY());
 			u.setItem(Silber.class, 100);
 			u.Befehle.add(befehl);
 			u.setBeschreibung("Befehl war: " + befehl);
@@ -162,12 +162,12 @@ public class NachXYMeer extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
             }
 
             // unit 03
             if (tokens[1].equals("03")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equals("NACH (2 1)")) found = true;
@@ -177,7 +177,7 @@ public class NachXYMeer extends TestBase {
 
             // unit 04
             if (tokens[1].equals("04")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equals("NACH (2 1)")) found = true;
@@ -187,13 +187,13 @@ public class NachXYMeer extends TestBase {
 
             // unit 05
             if (tokens[1].equals("05")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
             }
 			
 
             // unit 06
             if (tokens[1].equals("06")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equals("NACH (2 1)")) found = true;
@@ -216,7 +216,7 @@ public class NachXYMeer extends TestBase {
 
             // unit 12
             if (tokens[1].equals("12")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equalsIgnoreCase("ROUTE (2 1) (0 1) (0 0) PAUSE")) found = true;
@@ -226,7 +226,7 @@ public class NachXYMeer extends TestBase {
 
             // unit 13 - Pendler
             if (tokens[1].equals("13")) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) retval = fail(tokens[1] + ": Einheit ist nicht wie erwartet gereist.");
 				boolean found = false;
 				for (Einzelbefehl eb : u.BefehleExperimental) {
 					if (eb.getBefehlCanonical().equalsIgnoreCase("ROUTE (1 1) (2 1)")) found = true;

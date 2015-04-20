@@ -1,6 +1,7 @@
 package de.x8bit.Fantasya.Host.Terraforming;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,12 +12,12 @@ import java.util.List;
  */
 @SuppressWarnings("rawtypes")
 public class CoordRelation implements Comparable {
-    final Coords c;
+    final Coordinates c;
     final int distance;
 
-    public CoordRelation(Coords c) {
+    public CoordRelation(Coordinates c) {
         this.c = c;
-        this.distance = c.getDistance(new Coords(0,0,c.getWelt()));
+        this.distance = c.getDistance(Coordinates.create(0,0,c.getZ()));
     }
 
     @Override
@@ -29,7 +30,7 @@ public class CoordRelation implements Comparable {
         return c.compareTo(other.getC());
     }
 
-    public Coords getC() {
+    public Coordinates getC() {
         return c;
     }
 
@@ -45,7 +46,7 @@ public class CoordRelation implements Comparable {
         List<CoordRelation> retval = new ArrayList<CoordRelation>();
         for (int x = x0; x < x1; x++) {
             for (int y = y0; y < y1; y++) {
-                retval.add(new CoordRelation(new Coords(x, y, welt)));
+                retval.add(new CoordRelation(Coordinates.create(x, y, welt)));
             }
         }
 

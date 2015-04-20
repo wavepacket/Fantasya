@@ -1,7 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Buildings;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Items.Eisen;
 import de.x8bit.Fantasya.Atlantis.Items.Holz;
@@ -14,9 +13,11 @@ import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Skills.Burgenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.util.ComplexName;
 import de.x8bit.Fantasya.util.MapSelection;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -66,9 +67,9 @@ public class Leuchtturm extends Building {
 		}
 
 		// zusätzlichen Gebäude testen
-//		Region region = Region.Load(u.getCoords());
+//		Region region = Region.Load(u.getCoordinates());
 //		if (!region.hatGebaeude(Burg.class, 10, u))	{
-//			new Fehler(u + " - in " + region + " fehlt ein Turm um " + getTyp() + " bauen zu können", u, u.getCoords());
+//			new Fehler(u + " - in " + region + " fehlt ein Turm um " + getTyp() + " bauen zu können", u, u.getCoordinates());
 //			return;
 //		}
 
@@ -114,10 +115,10 @@ public class Leuchtturm extends Building {
 	 * und Wahrnehmungstalent
 	 */
 	public void leuchten() {
-		Region r = Region.Load(getCoords());
+		Region r = Region.Load(getCoordinates());
 		Set<Partei> insassen = new HashSet<Partei>();
 		for (Unit u : r.getUnits()) {
-			if (u.getGebaeude() == getNummer()) insassen.add(Partei.getPartei(u.getOwner()));
+			if (u.getGebaeude() == getNummer()) insassen.add(Partei.getFaction(u.getOwner()));
 		}
 
 		for (Partei p : insassen) {
@@ -126,14 +127,14 @@ public class Leuchtturm extends Building {
 			if (radius <= 0) continue;
 
 			MapSelection sichtBereich = new MapSelection();
-			sichtBereich.add(r.getCoords());
+			sichtBereich.add(r.getCoordinates());
 			
 			// die sichtbare Karte ausdehnen - dabei die (schiffbare) Entfernung merken
 			// erstmal nur bis vor den Horizont (radius - 1), der Rand kommt dann später dazu
-			Map<Coords, Integer> segelEntfernung = new HashMap<Coords, Integer>();
-			segelEntfernung.put(r.getCoords(), 0);
+			Map<Coordinates, Integer> segelEntfernung = new HashMap<Coordinates, Integer>();
+			segelEntfernung.put(r.getCoordinates(), 0);
 			for (int i=0; i < radius - 1; i++) {
-				for (Coords c : sichtBereich.getAussenKontur()) {
+				for (Coordinates c : sichtBereich.getAussenKontur()) {
                     int entfernung = i+1;
 					if (!(Region.Load(c) instanceof Ozean)) continue;
 					if (!sichtBereich.contains(c)) {
@@ -150,18 +151,18 @@ public class Leuchtturm extends Building {
             // für radius = 1 enthält sichtBereich und segelEntfernung nur r selbst (jeweils 0)
 
 			// der Randbereich - hier kommt auch Land in Frage:
-			for (Coords c : sichtBereich.getAussenKontur()) {
+			for (Coordinates c : sichtBereich.getAussenKontur()) {
 				int cEntfernung = Integer.MAX_VALUE - 100;
                 
 				// den (segelbaren) Nachbarn mit der geringesten Segel-Entfernung zum Zentrum suchen:
-				for (Coords n : c.getNachbarn()) {
+				for (Coordinates n : c.getNeighbours()) {
 					if (segelEntfernung.containsKey(n)) {
 						if (!(Region.Load(n) instanceof Ozean)) continue;
 						if (segelEntfernung.get(n) < cEntfernung) cEntfernung = segelEntfernung.get(n);
 					}
 				}
                 // für radius == 1 Sonderbehandlung, weil es keine Segelentfernungen für den Rand gibt:
-                if ((radius == 1) && (c.getDistance(r.getCoords()) == 1)) cEntfernung = 0;
+                if ((radius == 1) && (c.getDistance(r.getCoordinates()) == 1)) cEntfernung = 0;
                 
 				segelEntfernung.put(c, cEntfernung + 1); // +1, weil es ja die Entfernung des "nahesten" Nachbarn ist.
 				sichtBereich.add(c);
@@ -173,10 +174,10 @@ public class Leuchtturm extends Building {
 
 			// jetzt vergleichen - Regionen mit Segel-Entfernung > Luftlinie --> raus aus dem Sichtbereich
 			MapSelection luftlinie = new MapSelection();
-			luftlinie.add(r.getCoords());
-			Set<Coords> loeschliste = new HashSet<Coords>();
+			luftlinie.add(r.getCoordinates());
+			Set<Coordinates> loeschliste = new HashSet<Coordinates>();
 			for (int i=0; i<radius; i++) {
-				for (Coords c : luftlinie.getAussenKontur()) {
+				for (Coordinates c : luftlinie.getAussenKontur()) {
 					if (!sichtBereich.contains(c)) continue;
 					if (segelEntfernung.get(c) > i + 1) {
 						loeschliste.add(c);
@@ -192,9 +193,9 @@ public class Leuchtturm extends Building {
 			sichtBereich.removeAll(loeschliste);
 			
 
-			for (Coords c : sichtBereich) {
+			for (Coordinates c : sichtBereich) {
 				// der echte Sichtbereich:
-				if (c.equals(r.getCoords())) {
+				if (c.equals(r.getCoordinates())) {
 					// der Standort selbst,
 					p.addKnownRegion(c, true, Leuchtturm.class);
 				} else if (Region.Load(c) instanceof Ozean) {

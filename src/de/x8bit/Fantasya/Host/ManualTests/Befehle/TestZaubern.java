@@ -1,6 +1,5 @@
 package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Spell;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -26,8 +25,10 @@ import de.x8bit.Fantasya.Atlantis.Spells.MeisterDesSchiffs;
 import de.x8bit.Fantasya.Atlantis.Spells.Steinschlag;
 import de.x8bit.Fantasya.Atlantis.Spells.Sturm;
 import de.x8bit.Fantasya.Atlantis.Spells.Voodoo;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
 import de.x8bit.Fantasya.Host.ManualTests.TestWorld;
+
 import java.util.List;
 
 /**
@@ -273,9 +274,9 @@ public class TestZaubern extends TestBase {
 		Region r = null;
 		Region target = null;
 		for (Region temp : regions) {
-			Coords startCoords = temp.getCoords();
-			Coords targetCoords = new Coords(startCoords.getX() + 3, startCoords.getY(), startCoords.getWelt());
-			Region tempTarget = Region.Load(targetCoords);
+			Coordinates startCoordinates = temp.getCoordinates();
+			Coordinates targetCoordinates = Coordinates.create(startCoordinates.getX() + 3, startCoordinates.getY(), startCoordinates.getZ());
+			Region tempTarget = Region.Load(targetCoordinates);
 			if (tempTarget.istBetretbar(null)) {
 				// gotcha!
 				r = temp;
@@ -288,8 +289,8 @@ public class TestZaubern extends TestBase {
 		regions.remove(r);
 		regions.remove(target);
 
-		int dx = target.getCoords().getX() - r.getCoords().getX();
-		int dy = target.getCoords().getY() - r.getCoords().getY();
+		int dx = target.getCoordinates().getX() - r.getCoordinates().getX();
+		int dy = target.getCoordinates().getY() - r.getCoordinates().getY();
 
 		Unit mage = createMage(testWorld.getSpieler1(), r, 6);
 		mage.setBeschreibung("Erwartet: Luftreise von " + r + " aus klappt, Magier landet in " + target + ".");
@@ -310,14 +311,14 @@ public class TestZaubern extends TestBase {
 			Unit kapitaen = this.createKapitaen(testWorld.getSpieler1(), r, "Boot");
 			// so, Richtung finden:
 			Region r1 = null;
-			for (Region temp:r.getNachbarn()) {
+			for (Region temp:r.getNeighbours()) {
 				if (temp instanceof Ozean) {
 					r1 = temp;
 					break;
 				}
 			}
 			if (r1 == null)	throw new RuntimeException("Keine Nachbarregion zum Segeln gefunden? Das kann nicht passieren?");
-			String richtung = r.getCoords().getRichtungNach( r1.getCoords() ).getShortcut();
+			String richtung = r.getCoordinates().getRichtungNach( r1.getCoordinates() ).getShortcut();
 			kapitaen.Befehle.add("NACH " + richtung + " " + richtung + " " + richtung + " " + richtung + " " + richtung);
 
 			Unit mage = createMage(testWorld.getSpieler1(), r, 6);

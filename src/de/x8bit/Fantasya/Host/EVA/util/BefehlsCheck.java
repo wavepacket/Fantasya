@@ -48,11 +48,11 @@ public class BefehlsCheck {
 
 		Partei p;
 		try {
-			p = BefehleEinlesen.getPartei(cleanname);
+			p = BefehleEinlesen.getFaction(cleanname);
 			bci.setPartei(p);
 			bci.setRichtigesPasswort(true);
 		} catch (FalschesPasswortException ex) {
-			p = ex.getPartei();
+			p = ex.getFaction();
 			bci.setPartei(p);
 			bci.setRichtigesPasswort(false);
 		}
@@ -95,17 +95,17 @@ public class BefehlsCheck {
 		}
 	}
 
-	public Set<Partei> getParteien() {
+	public Set<Partei> getFactionSet() {
 		Set<Partei> retval = new HashSet<Partei>();
 		for (BefehlsCheckInfo bci : this.checkSet) {
-			retval.add(bci.getPartei());
+			retval.add(bci.getFaction());
 		}
 		return retval;
 	}
 
 	public boolean hasValidBefehle(Partei p) {
 		for (BefehlsCheckInfo bci : this.checkSet) {
-			if (bci.getPartei().getNummer() == p.getNummer()) {
+			if (bci.getFaction().getNummer() == p.getNummer()) {
 				if (bci.isRichtigesPasswort()) return true;
 				return false;
 			}
@@ -116,7 +116,7 @@ public class BefehlsCheck {
 	public File getCleanBefehle(Partei p) {
 		if (!this.hasValidBefehle(p)) return null;
 		for (BefehlsCheckInfo bci : this.checkSet) {
-			if (bci.getPartei().getNummer() == p.getNummer()) {
+			if (bci.getFaction().getNummer() == p.getNummer()) {
 				return bci.getCleanFile();
 			}
 		}
@@ -144,7 +144,7 @@ public class BefehlsCheck {
 			this.cleanFile = cleanFile;
 		}
 
-		public Partei getPartei() {
+		public Partei getFaction() {
 			return partei;
 		}
 
@@ -174,7 +174,7 @@ public class BefehlsCheck {
 			if (!(obj instanceof BefehlsCheckInfo)) return false;
 			BefehlsCheckInfo other = (BefehlsCheckInfo)obj;
 
-			if (other.getPartei().equals(this.getPartei())) return true;
+			if (other.getFaction().equals(this.getFaction())) return true;
 			return false;
 		}
 

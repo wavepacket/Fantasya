@@ -31,7 +31,7 @@ public class Passwort extends EVABase
 	
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -42,7 +42,7 @@ public class Passwort extends EVABase
 //            String passwort = Datenbank.CheckValue(eb.getTokens()[1], true);
 //            p.setPassword(Atlantis.Trim(passwort));
 //
-//            new Info("Das Passwort wurde auf '" + passwort + "' geändert.", u, u.getCoords());
+//            new Info("Das Passwort wurde auf '" + passwort + "' geändert.", u, u.getCoordinates());
             eb.setPerformed();
         }
     }

@@ -31,7 +31,7 @@ public class BewacheAN extends EVABase
     }
 	
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -49,12 +49,12 @@ public class BewacheAN extends EVABase
 				if (u.getWaffen() == 0)
 					new Fehler(u + " fehlt das passende Talent zur Waffe um die Region bewachen zu können", u);
 				else
-					new Fehler(u + " hat nicht genügend Waffen um die Region zu bewachen.", u, u.getCoords());
+					new Fehler(u + " hat nicht genügend Waffen um die Region zu bewachen.", u, u.getCoordinates());
 				eb.setError();
 			} else {
 				u.setBewacht(true);
 				// Vorsicht: BEWACHE wird nach der Bewegung ausgeführt, daher kann die Region eine andere sein!
-				new Info(u + " bewacht jetzt in " + Region.Load(u.getCoords()) + ".", u, u.getCoords());
+				new Info(u + " bewacht jetzt in " + Region.Load(u.getCoordinates()) + ".", u, u.getCoordinates());
 				eb.setPerformed();
 			}
 		}

@@ -29,7 +29,7 @@ public class Faulenzen extends TestBase {
             u.setName(this.getName()+" 01");
 			u.Befehle.add("FAULENZE");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

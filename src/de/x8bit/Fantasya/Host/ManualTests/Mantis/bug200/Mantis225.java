@@ -37,7 +37,7 @@ public class Mantis225 extends TestBase {
 			u.Befehle.clear();
 			u.Befehle.add("MACHE Bogen");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

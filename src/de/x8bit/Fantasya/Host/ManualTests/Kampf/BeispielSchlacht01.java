@@ -65,8 +65,8 @@ public class BeispielSchlacht01 extends TestBase {
 
             angreiferChef.Befehle.add("@ATTACKIERE " + verteidigerChef.getNummerBase36());
 
-            new Info(this.getName() + " Setup in " + region + ".", angreiferChef, angreiferChef.getCoords());
-            new Info(this.getName() + " Setup in " + region + ".", verteidigerChef, verteidigerChef.getCoords());
+            new Info(this.getName() + " Setup in " + region + ".", angreiferChef, angreiferChef.getCoordinates());
+            new Info(this.getName() + " Setup in " + region + ".", verteidigerChef, verteidigerChef.getCoordinates());
         }
     }
 

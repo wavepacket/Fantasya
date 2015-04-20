@@ -74,7 +74,7 @@ public final class BauernWanderung {
 
 			// Unterschied im Lohn-Niveau:
 			int maxNachbarLohn = -1;
-			for (Region nachbar : r.getNachbarn()) {
+			for (Region nachbar : r.getNeighbours()) {
 				if (!nachbar.istBetretbar(null)) continue;
 
 				if (nachbar.getLohn() > maxNachbarLohn) maxNachbarLohn = nachbar.getLohn();
@@ -85,7 +85,7 @@ public final class BauernWanderung {
 
 			// Unterschied zum größten Wohlstand unter den Nachbarn - Neid:
 			double maxNeid = 0;
-			for (Region nachbar : r.getNachbarn()) {
+			for (Region nachbar : r.getNeighbours()) {
 				if (!nachbar.istBetretbar(null)) continue;
 
 				double neid = GetBauernNeid(r, nachbar);
@@ -144,7 +144,7 @@ public final class BauernWanderung {
 			// das ist sozusagen das Gegenstück zur Neid-Berechnung (weiter oben)
 			double eigeneAttraktivitaet = attraktivitaet.get(r);
 			double bestesZiel = Double.NEGATIVE_INFINITY;
-			for (Region nachbar : r.getNachbarn()) {
+			for (Region nachbar : r.getNeighbours()) {
 				if (!nachbar.istBetretbar(null)) continue;
 
 				double attr = attraktivitaet.get(nachbar) - eigeneAttraktivitaet;
@@ -183,12 +183,12 @@ public final class BauernWanderung {
 			if (auswanderer > r.getBauern()) auswanderer = r.getBauern();
 
 			List<Region> ziele = new ArrayList<Region>();
-			for (Region nachbar : r.getNachbarn()) {
+			for (Region nachbar : r.getNeighbours()) {
 				if (nachbar.istBetretbar(null)) ziele.add(nachbar);
 			}
 
 			if (ziele.isEmpty()) {
-				new Debug("Keine Auswanderungsziele verfügbar in " + r + " " + r.getCoords() + ".");
+				new Debug("Keine Auswanderungsziele verfügbar in " + r + " " + r.getCoordinates() + ".");
 				continue;
 			}
 
@@ -252,8 +252,8 @@ public final class BauernWanderung {
 				if (zielWertSumme == Double.NaN)  throw new RuntimeException("Summe der Auswanderungswerte ist NaN (aktueller Summand: " + zielWert + ").");
 			}
 			if (zielWertSumme == 0) {
-				if (r.getCoords().getWelt() != 1) {
-					new SysMsg("Bauernwanderung aus " + r + " (" + r.getCoords() + ") ist nicht möglich.");
+				if (r.getCoordinates().getZ() != 1) {
+					new SysMsg("Bauernwanderung aus " + r + " (" + r.getCoordinates() + ") ist nicht möglich.");
 					break;
 				}
 				throw new RuntimeException("Summe der Auswanderungswerte ist 0.");
@@ -327,7 +327,7 @@ public final class BauernWanderung {
 		for (Region r : Region.CACHE.values()) {
 			if (!r.istBetretbar(null)) continue;
 
-			for (Region nachbar : r.getNachbarn()) {
+			for (Region nachbar : r.getNeighbours()) {
 				int weg = GetBauernWanderung(r, nachbar);
 				int her = GetBauernWanderung(nachbar, r);
 

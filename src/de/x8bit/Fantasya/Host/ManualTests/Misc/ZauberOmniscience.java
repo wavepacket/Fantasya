@@ -38,7 +38,7 @@ public class ZauberOmniscience extends TestBase {
             }
 			magier.Befehle.add("LERNE Magie");
 
-            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoordinates());
         }
     }
 
@@ -72,7 +72,7 @@ public class ZauberOmniscience extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

@@ -37,7 +37,7 @@ public class Steg extends Building
 		// nochmal holen ... ist größer als Null
 		int tw = u.Talentwert(Burgenbau.class);
 		if (tw < 2)	{
-			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen.", u, u.getCoords());
+			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen.", u, u.getCoordinates());
 			return;
 		}
 		

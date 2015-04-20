@@ -41,7 +41,7 @@ public class ParteiTalentTabelle {
             }
 
             int y = 0;
-            for (Partei p : Partei.PROXY) {
+            for (Partei p : Partei.getPlayerFactionList()) {
                 rows.put(y, p);
                 y ++;
             }

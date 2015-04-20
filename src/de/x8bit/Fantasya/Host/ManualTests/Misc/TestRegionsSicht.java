@@ -31,11 +31,11 @@ public class TestRegionsSicht extends TestBase {
 		// nach einer Region suchen, die drei Nachbarn im Südosten hat...
 		Region r1 = null, r2 = null, r3 = null;
 		for (Region r0 : lands) {
-			r1 = Region.Load(r0.getCoords().shift(Richtung.Suedosten));
+			r1 = Region.Load(r0.getCoordinates().shiftDirection(Richtung.Suedosten));
 			if (!r1.istBetretbar(null)) continue;
-			r2 = Region.Load(r1.getCoords().shift(Richtung.Suedosten));
+			r2 = Region.Load(r1.getCoordinates().shiftDirection(Richtung.Suedosten));
 			if (!r2.istBetretbar(null)) continue;
-			r3 = Region.Load(r2.getCoords().shift(Richtung.Suedosten));
+			r3 = Region.Load(r2.getCoordinates().shiftDirection(Richtung.Suedosten));
 			if (!r3.istBetretbar(null)) continue;
 
 			// gotcha!

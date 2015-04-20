@@ -71,12 +71,12 @@ public class Cheater extends EVABase
     }
 	
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
 
-			Partei p = Partei.getPartei(eb.getUnit().getOwner());
+			Partei p = Partei.getFaction(eb.getUnit().getOwner());
             Unit u = eb.getUnit();
             int variante = eb.getVariante();
 
@@ -132,7 +132,7 @@ public class Cheater extends EVABase
                     continue;
                 }
 
-                Partei newP = Partei.getPartei(nummer);
+                Partei newP = Partei.getFaction(nummer);
                 if (newP == null) {
                     eb.setError();
                     new Fehler(u + " - das Volk '" + eb.getTargetId() + "' existiert nicht.", u);
@@ -152,7 +152,7 @@ public class Cheater extends EVABase
                     continue;
                 }
 
-                Ship ship = Ship.Create(pak.Klasse.getClass().getSimpleName(), u.getCoords());
+                Ship ship = Ship.Create(pak.Klasse.getClass().getSimpleName(), u.getCoordinates());
                 ship.setGroesse(ship.getConstructionSize());
                 ship.setFertig(true);
                 if (u.getSchiff() == 0 && u.getGebaeude() == 0) u.Enter(ship);
@@ -167,7 +167,7 @@ public class Cheater extends EVABase
                     continue;
                 }
 
-                Building building = Building.Create(pak.Klasse.getClass().getSimpleName(), u.getCoords());
+                Building building = Building.Create(pak.Klasse.getClass().getSimpleName(), u.getCoordinates());
                 building.setSize(20);	// auch wenn Steg & Co. kleiner sind
                 if (u.getSchiff() == 0 && u.getGebaeude() == 0) u.Enter(building);
             }
@@ -180,7 +180,7 @@ public class Cheater extends EVABase
 	public void PreAction() { }
 	public void PostAction() {
 		// Cheats pro Runde verwenden
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.getPlayerFactionList()) {
 			if (p.getCheats() > 0) p.setCheats(p.getCheats() - 1);
 		}
 	}

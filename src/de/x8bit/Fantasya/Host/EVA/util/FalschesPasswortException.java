@@ -15,7 +15,7 @@ public class FalschesPasswortException extends RuntimeException {
 		this.partei = p;
 	}
 
-	public Partei getPartei() {
+	public Partei getFaction() {
 		return partei;
 	}
 }

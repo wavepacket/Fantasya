@@ -2,10 +2,10 @@ package de.x8bit.Fantasya.Host.EVA;
 
 import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Building;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Items.AnimalResource;
 import de.x8bit.Fantasya.Atlantis.Message;
@@ -17,11 +17,13 @@ import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Regions.Lavastrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Ship;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.util.StringUtils;
 import de.x8bit.Fantasya.util.UnitList;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -60,11 +62,11 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 				for(Unit u : anwesende) {
 					if (u.canSwim()) continue; // Einheit kann schwimmen
 					if (u.getSchiff() == 0) {
-						Partei p = Partei.getPartei(u.getOwner());
-						Coords c = p.getPrivateCoords(r.getCoords());
+						Partei p = Partei.getFaction(u.getOwner());
+						Coordinates c = p.getPrivateCoordinates(r.getCoordinates());
 
 						StringBuilder meldung = new StringBuilder();
-						meldung.append(u).append(" ertrinkt in " + r + " " + c.xy() + "!");
+						meldung.append(u).append(" ertrinkt in " + r + " " + c.toString(false) + "!");
 
 						List<Item> items = u.getItems();
 						List<Item> gegenstaende = new ArrayList<Item>();
@@ -95,11 +97,11 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 			} else {
 				if (r instanceof Lavastrom) {
 					for(Unit u : anwesende) {
-						Partei p = Partei.getPartei(u.getOwner());
-						Coords c = p.getPrivateCoords(r.getCoords());
+						Partei p = Partei.getFaction(u.getOwner());
+						Coordinates c = p.getPrivateCoordinates(r.getCoordinates());
 
 						StringBuilder meldung = new StringBuilder();
-						meldung.append(u).append(" verbrennt in ").append(r).append(" ").append(c.xy()).append("!");
+						meldung.append(u).append(" verbrennt in ").append(r).append(" ").append(c.toString(false)).append("!");
 
 						List<Item> items = u.getItems();
 						List<Item> gegenstaende = new ArrayList<Item>();
@@ -136,8 +138,8 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 	private void LeereVoelker()	{
 		new SysMsg(1, " - löschen von Völkern");
 		List<Partei> loeschliste = new ArrayList<Partei>();
-		for(Partei partei : Partei.PROXY) {
-			if (partei.isMonster()) continue;
+		for(Partei partei : Partei.getPlayerFactionList()) {
+			// if (partei.isMonster()) continue;
 
 			int anzahl = 0;
 			for(@SuppressWarnings("unused") Unit unit : Unit.CACHE.getAll(partei.getNummer())) {
@@ -147,7 +149,7 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 			if (anzahl > 0) continue; // hat noch Einheiten
 
             boolean keep = false;
-            for (Message m : Message.Retrieve(partei, (Coords)null, null)) {
+            for (Message m : Message.Retrieve(partei, (Coordinates)null, null)) {
                 if (m instanceof Battle) {
                     keep = true;
                     break;
@@ -159,10 +161,10 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 			partei.Delete();
 			loeschliste.add(partei);
 		}
-		for (Partei partei : loeschliste) Partei.PROXY.remove(partei);
+		for (Partei partei : loeschliste) Partei.removePlayerFaction(partei);
 
 		// Es kann jetzt sein, dass Allianzen ohne aktive Allianz-Option existieren:
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.getPlayerFactionList()) {
 			List<Integer> partnerLoeschliste = new ArrayList<Integer>();
 			for (int partnerNr : p.getAllianzen().keySet()) {
 				Allianz a = p.getAllianz(partnerNr);
@@ -198,7 +200,7 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 				}
 
                 // gibt es einen Empfänger für Hab und Gut?
-                Set<Unit> hinterbliebene = Region.Load(u.getCoords()).getUnits();
+                Set<Unit> hinterbliebene = Region.Load(u.getCoordinates()).getUnits();
                 for (Unit erbe : hinterbliebene) {
                     if (erbe.equals(u)) continue;
                     if (erbe.getOwner() != u.getOwner()) continue;
@@ -224,7 +226,7 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 
 				// die Gebäude/Schiffe freigeben ... sonst hat nie wieder einer das Kommando darüber
                 List<Building> buildings = new ArrayList<Building>();
-				buildings.addAll(Building.PROXY.getAll(u.getCoords()));
+				buildings.addAll(Building.PROXY.getAll(u.getCoordinates()));
 				for (Building b : buildings) {
 					if (b.getOwner() == u.getNummer()) {
 						Building.PROXY.remove(b);

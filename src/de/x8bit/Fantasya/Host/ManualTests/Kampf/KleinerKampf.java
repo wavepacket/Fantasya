@@ -60,11 +60,11 @@ public class KleinerKampf extends TestBase {
 //            ub.setItem(Kriegselefant.class, 1);
             ub.setKampfposition(Kampfposition.Vorne);
 
-            b.setUrsprung(r.getCoords());
+            b.setUrsprung(r.getCoordinates());
 
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
             
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

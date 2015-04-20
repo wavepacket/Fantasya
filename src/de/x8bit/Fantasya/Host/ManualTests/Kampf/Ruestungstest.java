@@ -46,7 +46,7 @@ public class Ruestungstest extends TestBase {
             ua.setBeschreibung("Erwartet: Die gerüstete Einheit siegt, der Gegner " + ub + " und damit Partei " + b + " ist nicht mehr vorhanden.");
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
             
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 
@@ -79,7 +79,7 @@ public class Ruestungstest extends TestBase {
             // unit 01
             if (tokens[1].equals("01")) {
                 int gegnerId = Codierung.fromBase36(tokens[2]);
-                Partei gegner = Partei.getPartei(gegnerId);
+                Partei gegner = Partei.getFaction(gegnerId);
                 if (gegner != null) {
                     int persons = gegner.getPersonen();
                     if (persons > 0) {
@@ -87,7 +87,7 @@ public class Ruestungstest extends TestBase {
                     }
                 }
 
-//                messages = Message.Retrieve(Partei.Load(u.getOwner()), u.getCoords(), u);
+//                messages = Message.Retrieve(Partei.Load(u.getOwner()), u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();

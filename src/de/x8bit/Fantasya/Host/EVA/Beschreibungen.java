@@ -74,7 +74,7 @@ public class Beschreibungen extends EVABase
 	
     @Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			// new TestMsg("Lerne: " + eb.toString());
@@ -95,7 +95,7 @@ public class Beschreibungen extends EVABase
 
             } else if (bezug.equals("region")) {
                 // COMMAND BENENNE REGION "blabla"
-                Region region = Region.Load(u.getCoords());
+                Region region = Region.Load(u.getCoordinates());
                 if (region.hatGebaeude(Burg.class, 1, u)) region.setBeschreibung(name);
 
             } else if (bezug.equals("gebaeude") || bezug.equals("gebäude") || bezug.equals("burg")) {
@@ -121,7 +121,7 @@ public class Beschreibungen extends EVABase
             } else if (bezug.equals("volk") || bezug.equals("partei")) {
                 // COMMAND BENENNE VOLK "blabla"
                 // COMMAND BENENNE PARTEI "blabla" - Syntax F1
-                Partei p = Partei.getPartei(u.getOwner());
+                Partei p = Partei.getFaction(u.getOwner());
                 p.setBeschreibung(name);
                 
             } else if (bezug.equals("insel") || bezug.equals("kontinent")) {

@@ -17,7 +17,7 @@ public class Mantis258 extends TestBase {
 		
 		Region r = world.nurNachbarVon(world.nurBetretbar(getRegions()), Ozean.class).get(0); getRegions().remove(r);
 		
-		Unit u = Unit.CreateUnit("Mensch", partei.getNummer(), r.getCoords());
+		Unit u = Unit.CreateUnit("Mensch", partei.getNummer(), r.getCoordinates());
 		u.setPersonen(183);
 		u.setSkill(Reiten.class, 183 * 30); // 30 Tage pro Person
 		u.setName("Meister des Reitens");

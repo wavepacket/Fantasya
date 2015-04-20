@@ -92,7 +92,7 @@ public class Dingens extends Atlantis {
 	protected int GenericMake2(Unit unit, int anzahl)
 	{
 		// überprüfen ob das Objekt überhaupt hergestellt werden kann
-		if (getConstructionSize() == 0) { new Fehler(unit + " kann " + this.getTyp() + " nicht herstellen.", unit, unit.getCoords()); return 0; }	// nö - also zurück
+		if (getConstructionSize() == 0) { new Fehler(unit + " kann " + this.getTyp() + " nicht herstellen.", unit, unit.getCoordinates()); return 0; }	// nö - also zurück
 		
 		// Anzahl überprüfen
 		anzahl = checkConstructionSkill(unit, anzahl, getConstructionSkills());			// über das Talent
@@ -123,7 +123,7 @@ public class Dingens extends Atlantis {
 
 				double save = checkConstructionCheats(item.getClass(), unit, anzahl * cc.getValue());
 				if (save > 0.000000001d) {
-					new Info(unit + " spart " + ((int)save) + " von " + anzahl * cc.getValue() + " sonst benötigten " + cc.getClazz().getSimpleName() + ".", unit, unit.getCoords());
+					new Info(unit + " spart " + ((int)save) + " von " + anzahl * cc.getValue() + " sonst benötigten " + cc.getClazz().getSimpleName() + ".", unit, unit.getCoordinates());
 				}
 				item.setAnzahl(item.getAnzahl() - (anzahl * cc.getValue() - (int)save));
 				
@@ -144,23 +144,23 @@ public class Dingens extends Atlantis {
                             StringUtils.aufzaehlung(verhinderer) +
                             ((verhinderer.size()==1)?" verhindert das.":" verhindern das."),
                             unit,
-                            unit.getCoords()
+                            unit.getCoordinates()
                     );
 
                     for (Unit u : verhinderer) {
-                        new Info(u + " hindert " + unit + " daran, " + this.getName() + " abzubauen.", u, u.getCoords());
+                        new Info(u + " hindert " + unit + " daran, " + this.getName() + " abzubauen.", u, u.getCoordinates());
                     }
                     
                     return 0;
                 }
 
-                Region r = Region.Load(unit.getCoords());
+                Region r = Region.Load(unit.getCoordinates());
 				Item resource = r.getResource(((Item)this).getClass());
 				int max = getAvailableResources(unit, ((Item)this).getClass());
 				if (max < anzahl) {
 					// Mantis #205
 					if (max > 0 ) {
-						new Info(unit + " findet nicht ausreichend " + ((Item)this).getName() + " - eigentlich wären " + anzahl + " machbar gewesen.", unit, unit.getCoords());
+						new Info(unit + " findet nicht ausreichend " + ((Item)this).getName() + " - eigentlich wären " + anzahl + " machbar gewesen.", unit, unit.getCoordinates());
 					}
 					anzahl = max;
 				} // Resourcen sind zu Ende
@@ -168,16 +168,16 @@ public class Dingens extends Atlantis {
 				// Meldung an die Einheit, wenn das gewünschte nicht (mehr) vorhanden ist.
 				if (anzahl == 0) {
 					if (unit.getPersonen() == 1) {
-						new Info(unit + " würde ja gern, aber findet kein " + ((Item)this).getName() + ". Vielleicht war jemand schneller?", unit, unit.getCoords());
+						new Info(unit + " würde ja gern, aber findet kein " + ((Item)this).getName() + ". Vielleicht war jemand schneller?", unit, unit.getCoordinates());
 					} else {
-						new Info(unit + " würden ja gern, aber finden kein " + ((Item)this).getName() + ". Vielleicht war jemand schneller?", unit, unit.getCoords());
+						new Info(unit + " würden ja gern, aber finden kein " + ((Item)this).getName() + ". Vielleicht war jemand schneller?", unit, unit.getCoordinates());
 					}
 					return 0;
 				}
 
 				double save = checkConstructionCheats(resource.getClass(), unit, anzahl);
 				if (save > 0.000000001d) {
-					new Info(unit + " spart " + ((int)save) + " " + getClass().getSimpleName() + " in der Region.", unit, unit.getCoords());
+					new Info(unit + " spart " + ((int)save) + " " + getClass().getSimpleName() + " in der Region.", unit, unit.getCoordinates());
 				}
 				// Mantis #181 - persistente Resourcen werden jetzt auch (erstmal) verbraucht,
 				// werden aber in Produktion.PreAction() / .PostAction() gesichert / wiederhergestellt.
@@ -225,7 +225,7 @@ public class Dingens extends Atlantis {
 			if (min < anzahl)
 			{
 				// die Meldung kommt immer - ist also (mehr oder weniger) ein falsches Falsch - deswegen einfach ausblenden
-				// new Fehler("Hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoords());
+				// new Fehler("Hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoordinates());
 				anzahl = min;
 			}
 		}
@@ -242,7 +242,7 @@ public class Dingens extends Atlantis {
 			int min = getAvailableItems(unit, (Class<? extends Item>) cc[i].getClazz()) / cc[i].getValue();
 			if (min < anzahl)
 			{
-				new Fehler(unit + " hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoords());
+				new Fehler(unit + " hat nicht genügend " + cc[i].getClazz().getSimpleName() + " um " + anzahl + " Punkte bauen zu können, reduziert auf " + min, unit, unit.getCoordinates());
 				anzahl = min;
 			}
 		}
@@ -291,7 +291,7 @@ public class Dingens extends Atlantis {
 	private int getAvailableResources(Unit unit, Class<? extends Item> resource)
 	{
 		// reale Anzahl holen
-		Region region = Region.Load(unit.getCoords());
+		Region region = Region.Load(unit.getCoordinates());
 		int anzahl = region.getResource(resource).getAnzahl();		
 		double save = checkConstructionCheats(resource, unit, anzahl);
 
@@ -316,13 +316,13 @@ public class Dingens extends Atlantis {
 	@SuppressWarnings("unchecked")
 	private int checkConstructionBuilding(Unit unit, int anzahl, ConstructionContainer cc []) {
 		if (cc == null) return anzahl;
-		Region region = Region.Load(unit.getCoords());
+		Region region = Region.Load(unit.getCoordinates());
 		for(int i = 0; i < cc.length; i++)
 		{
 			boolean building = region.hatGebaeude((Class<? extends Building>) cc[i].getClazz(), cc[i].getValue(), unit);
 			if (!building)
 			{
-				new Fehler("Es steht kein " + cc[i].getClazz().getSimpleName() + " in der Region um " + this.getTyp() + " bauen zu können", unit, unit.getCoords());
+				new Fehler("Es steht kein " + cc[i].getClazz().getSimpleName() + " in der Region um " + this.getTyp() + " bauen zu können", unit, unit.getCoordinates());
 				return 0;
 			}
 		}
@@ -348,7 +348,7 @@ public class Dingens extends Atlantis {
 
         // Belegung des Gebäudes testen und ggf. die Effizienz mindern:
         int insassen = 0;
-        for (Unit u : Unit.CACHE.getAll(unit.getCoords())) {
+        for (Unit u : Unit.CACHE.getAll(unit.getCoordinates())) {
             if (u.getGebaeude() == building.getNummer()) insassen += u.getPersonen();
         }
 
@@ -358,7 +358,7 @@ public class Dingens extends Atlantis {
         if (zukleinFaktor < 0.999) {
             new Fehler(unit.toString() + " stellt fest das das Gebäude " + building.toString() + " überbelegt ist und kann es nur zu "
                     + NumberFormat.getPercentInstance().format(zukleinFaktor) + " Prozent nutzen.",
-                    unit, unit.getCoords());
+                    unit, unit.getCoordinates());
         }
 
 		for(ConstructionCheats cc : getConstructionCheats())

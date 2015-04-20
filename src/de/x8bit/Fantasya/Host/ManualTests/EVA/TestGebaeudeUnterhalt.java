@@ -37,7 +37,7 @@ public class TestGebaeudeUnterhalt extends TestBase {
 			Building b = Building.getBuilding(u.getGebaeude());
 			b.setFunktion(false); // das sollte dazu führen, dass nächste Runde Verfall eintritt
 
-            new Info(this.getName() + "-01 Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-01 Setup in " + r + ".", u, u.getCoordinates());
         }
 
         { // Silber reicht nur mit Einsammeln (Besitzer hat aber auch ne Kleinigkeit).
@@ -57,7 +57,7 @@ public class TestGebaeudeUnterhalt extends TestBase {
             u.setName(this.getName()+" 12");
 			u.setItem(Silber.class, 110);
 
-            new Info(this.getName() + "-02 Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-02 Setup in " + r + ".", u, u.getCoordinates());
         }
 
         {
@@ -72,7 +72,7 @@ public class TestGebaeudeUnterhalt extends TestBase {
 			Building b = Building.getBuilding(u.getGebaeude());
 			b.setFunktion(false); // das sollte dazu führen, dass nächste Runde Verfall eintritt
 
-            new Info(this.getName() + "-03 Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-03 Setup in " + r + ".", u, u.getCoordinates());
         }
 	}
 
@@ -106,7 +106,7 @@ public class TestGebaeudeUnterhalt extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -122,7 +122,7 @@ public class TestGebaeudeUnterhalt extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -138,7 +138,7 @@ public class TestGebaeudeUnterhalt extends TestBase {
 
             // unit 12
             if (tokens[1].equals("12")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -153,7 +153,7 @@ public class TestGebaeudeUnterhalt extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

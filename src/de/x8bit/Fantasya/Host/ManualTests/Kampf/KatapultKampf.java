@@ -70,7 +70,7 @@ public class KatapultKampf extends TestBase {
             u.setItem(Armbrust.class, u.getPersonen());
             u.setKampfposition(Kampfposition.Hinten);
             
-            b.setUrsprung(r.getCoords());
+            b.setUrsprung(r.getCoordinates());
 
             ua.Befehle.add("ATTACKIERE " + ub.getNummerBase36());
 
@@ -78,10 +78,10 @@ public class KatapultKampf extends TestBase {
             Unit uc = this.createUnit(c, r);
             uc.setName(this.getName()+" 03");
             uc.setPersonen(1);
-            c.setUrsprung(r.getCoords());
+            c.setUrsprung(r.getCoordinates());
 
             
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

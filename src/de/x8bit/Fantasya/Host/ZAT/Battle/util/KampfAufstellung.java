@@ -1,13 +1,14 @@
 package de.x8bit.Fantasya.Host.ZAT.Battle.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Kampfposition;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.util.Codierung;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -137,7 +138,7 @@ public class KampfAufstellung {
 
                             u.setNummer(aktuelleEinheit);
                             u.setName("Krieger " + Codierung.toBase36(aktuelleEinheit));
-                            u.setCoords(new Coords(0, 0, 1));
+                            u.setCoordinates(Coordinates.create(0, 0, 1));
                             u.setPersonen(1);
                             u.setKampfposition(Kampfposition.Vorne);
 
@@ -260,15 +261,16 @@ public class KampfAufstellung {
 
 
     private Partei getOrCreatePartei(int id) {
-        Partei p = Partei.getPartei(id);
-        if (p == null) {
-            p = new Partei();
+        return Partei.getFaction(id);
+        // Wenn die Referenz NULL ist, dann soll die Fehlermeldung kommen.
+        /* if (p == null) {
+            p = Partei.createNewPlayerFaction();
             p.setNummer(id);
             p.setName("Partei " + Codierung.toBase36(id));
             p.setEMail("noone@foo.bar");
             Partei.PROXY.add(p);
         }
-        return p;
+        return p; */
     }
 
     public int getEinheitA() {

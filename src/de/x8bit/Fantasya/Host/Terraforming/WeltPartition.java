@@ -1,8 +1,9 @@
 package de.x8bit.Fantasya.Host.Terraforming;
 
 import de.x8bit.Fantasya.Host.Terraforming.ProtoInsel;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,12 +31,12 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 		List<WeltPartition> partitionen = new ArrayList<WeltPartition>();
 
 		WeltPartition zuKlaeren = new WeltPartition();
-		for (Region r : insel.alleRegionen()) zuKlaeren.add(r.getCoords());
+		for (Region r : insel.alleRegionen()) zuKlaeren.add(r.getCoordinates());
 
 		while (!zuKlaeren.isEmpty()) {
 			WeltPartition aktuell = new WeltPartition();
 
-			Coords seed = zuKlaeren.getCoords().get(0);
+			Coordinates seed = zuKlaeren.getCoordinates().get(0);
 			
 			// die komplette Partition:
 			aktuell.add(seed);
@@ -43,7 +44,7 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 			// diejenigen Koordinaten, die noch "wachsen" können, d.h. die
 			// möglicherweise noch Nachbarn haben, die auch zu 'aktuell'
 			// gehören könnten.
-			Set<Coords> aktive = new HashSet<Coords>();
+			Set<Coordinates> aktive = new HashSet<Coordinates>();
 			aktive.add(seed);
 
 			// die Startkoordinate braucht nicht mehr geklärt zu werden,
@@ -52,10 +53,10 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 
 			for (boolean gewachsen = true; gewachsen; ) {
 				gewachsen = false;
-				Set<Coords> neueAktive = new HashSet<Coords>();
+				Set<Coordinates> neueAktive = new HashSet<Coordinates>();
 
-				for (Coords c : aktive) {
-					for (Coords n : c.getNachbarn()) {
+				for (Coordinates c : aktive) {
+					for (Coordinates n : c.getNeighbours()) {
 						if (!zuKlaeren.contains(n)) continue;
 						if (aktuell.contains(n)) continue;
 
@@ -77,7 +78,7 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 		return partitionen;
 	}
 
-	public void add(Coords c) {
+	public void add(Coordinates c) {
 		int x = c.getX();
 		int y = c.getY();
 		this.add(x, y);
@@ -88,7 +89,7 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 		this.get(x).put(y, 1);
 	}
 
-	public boolean contains(Coords c) {
+	public boolean contains(Coordinates c) {
 		return contains(c.getX(), c.getY());
 	}
 
@@ -98,7 +99,7 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 		return true;
 	}
 
-	public void remove(Coords c) {
+	public void remove(Coordinates c) {
 		int x = c.getX();
 		int y = c.getY();
 		this.remove(x, y);
@@ -110,20 +111,20 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 		if (this.get(x).isEmpty()) this.remove(x);
 	}
 
-	public List<Coords> getCoords() {
-		List<Coords> retval = new ArrayList<Coords>();
+	public List<Coordinates> getCoordinates() {
+		List<Coordinates> retval = new ArrayList<Coordinates>();
 		for (int x : this.keySet()) {
 			for (int y : this.get(x).keySet()) {
-				retval.add(new Coords(x, y, 0));
+				retval.add(Coordinates.create(x, y, 0));
 			}
 		}
 		return retval;
 	}
 
-	public List<Coords> getGrenzen() {
-		List<Coords> retval = new ArrayList<Coords>();
-		for (Coords c : this.getCoords()) {
-			for (Coords n : c.getNachbarn()) {
+	public List<Coordinates> getGrenzen() {
+		List<Coordinates> retval = new ArrayList<Coordinates>();
+		for (Coordinates c : this.getCoordinates()) {
+			for (Coordinates n : c.getNeighbours()) {
 				if (!this.contains(n)) {
 					retval.add(c);
 					break;
@@ -134,18 +135,18 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 	}
 
 
-    public Coords getMittelpunkt() {
-		List<Coords> coords = this.getCoords();
+    public Coordinates getMittelpunkt() {
+		List<Coordinates> coords = this.getCoordinates();
 
         int sx = 0; int sy = 0;
         int swelt = 0;
-        for (Coords c : coords) {
+        for (Coordinates c : coords) {
             sx += c.getX();
             sy += c.getY();
-            swelt += c.getWelt();
+            swelt += c.getZ();
         }
 
-        return new Coords(
+        return Coordinates.create(
                 (int)Math.round((double)sx / (double)coords.size()),
                 (int)Math.round((double)sy / (double)coords.size()),
                 (int)Math.round((double)swelt / (double)coords.size())
@@ -160,8 +161,8 @@ public class WeltPartition extends TreeMap<Integer, Map<Integer, Integer>> imple
 		if (!(o instanceof WeltPartition)) throw new UnsupportedOperationException("Kann nur WeltPartitionen untereinander vergleichen.");
 		WeltPartition wp2 = (WeltPartition)o;
 
-		if (wp2.getCoords().size() > this.getCoords().size()) return 1;
-		if (wp2.getCoords().size() < this.getCoords().size()) return -1;
+		if (wp2.getCoordinates().size() > this.getCoordinates().size()) return 1;
+		if (wp2.getCoordinates().size() < this.getCoordinates().size()) return -1;
 		return 0;
 	}
 

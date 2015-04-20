@@ -78,6 +78,7 @@ import de.x8bit.Fantasya.Atlantis.Skills.Waffenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Wagenbau;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
 import de.x8bit.Fantasya.Atlantis.Units.Troll;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
 import de.x8bit.Fantasya.Host.EVA.Lehren.LehrenRecord;
@@ -94,6 +95,7 @@ import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.Random;
 import de.x8bit.Fantasya.util.StringUtils;
 import de.x8bit.Fantasya.util.UnitIDPool;
+
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.Set;
@@ -320,7 +322,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	public String getTarnRasse() { return TarnRasse; }
 	public void setTarnRasse(String value) {
 		if (value.length() != 0) {
-			new Fehler("Tarnung der Rasse beherrschen nur Echsen.", this, this.getCoords());
+			new Fehler("Tarnung der Rasse beherrschen nur Echsen.", this, this.getCoordinates());
 		} else {
 			TarnRasse = value;
 		}
@@ -511,11 +513,11 @@ public abstract class Unit extends Atlantis implements Comparable {
 
 		int retval = 0;
 		int nummer = 0;
-		try { nummer = Codierung.fromBase36(temp); } catch(Exception ex) { new Fehler(unit + " - die Temp-Nummer ist fehlerhaft.", unit, unit.getCoords()); return 0; }
+		try { nummer = Codierung.fromBase36(temp); } catch(Exception ex) { new Fehler(unit + " - die Temp-Nummer ist fehlerhaft.", unit, unit.getCoordinates()); return 0; }
 
-		Region r = Region.Load(unit.getCoords());
+		Region r = Region.Load(unit.getCoordinates());
 		// erst die eigenen Einheiten in der Region
-		for (Unit u : Unit.CACHE.getAll(unit.getCoords(), unit.getOwner())) {
+		for (Unit u : Unit.CACHE.getAll(unit.getCoordinates(), unit.getOwner())) {
 			if (u.getTempNummer() == nummer) return u.getNummer();
 		}
 
@@ -706,7 +708,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	public boolean cansee(Unit other) {
 		// Wenn wir die anderen an ihrem tatsächlichen Ort sehen könnten -
 		// tja, dann KÖNNEN wir sie sehen!
-		return couldSeeInRegion(other, Region.Load(other.getCoords()));
+		return couldSeeInRegion(other, Region.Load(other.getCoordinates()));
 	}
 
 	/**
@@ -729,7 +731,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		if (getOwner() == other.getOwner()) return true;
 
 		// Allianzen prüfen
-		if (Partei.getPartei(other.getOwner()).hatAllianz(getOwner(), AllianzOption.Kontaktiere)) {
+		if (Partei.getFaction(other.getOwner()).hatAllianz(getOwner(), AllianzOption.Kontaktiere)) {
 			return true;
 		}
 
@@ -750,7 +752,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 
 			int top = region.topTW(Wahrnehmung.class, this.getOwner());
 			
-			new Debug("Top-Wahrnehmung in " + this + " für " + Partei.getPartei(this.getOwner()) + ": " + top + " vs. Tarnung " + tarnungOther + " von " + other + ".");
+			new Debug("Top-Wahrnehmung in " + this + " für " + Partei.getFaction(this.getOwner()) + ": " + top + " vs. Tarnung " + tarnungOther + " von " + other + ".");
 			
 			if (top >= tarnungOther) return true;
 		} else {
@@ -775,13 +777,13 @@ public abstract class Unit extends Atlantis implements Comparable {
     public SortedSet<Unit> getVerhinderer(AllianzOption ao) {
         SortedSet<Unit> retval = new TreeSet<Unit>();
 
-        Region r = Region.Load(this.getCoords());
+        Region r = Region.Load(this.getCoordinates());
 
         for (Unit other : r.getUnits()) {
             if (!other.getBewacht()) continue;
             if (other.getOwner() == this.getOwner()) continue;
 
-            Partei otherP = Partei.getPartei(other.getOwner());
+            Partei otherP = Partei.getFaction(other.getOwner());
             if (!otherP.hatAllianz(this.getOwner(), ao)) retval.add(other);
         }
 
@@ -801,10 +803,10 @@ public abstract class Unit extends Atlantis implements Comparable {
 		SortedSet<Unit> dritteWahl = new TreeSet<Unit>();
 		SortedSet<Unit> vierteWahl = new TreeSet<Unit>();
 
-		Partei p = Partei.getPartei(this.getOwner());
+		Partei p = Partei.getFaction(this.getOwner());
 
 		// gibt es einen Empfänger fürs Kapitänsamt?
-		Set<Unit> alle = Region.Load(this.getCoords()).getUnits();
+		Set<Unit> alle = Region.Load(this.getCoordinates()).getUnits();
 		for (Unit erbe : alle) {
 			if (erbe.equals(this)) continue;
 			if (erbe.getPersonen() <= 0) continue;
@@ -963,7 +965,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 			if (other.Kontakte.get(i) == getNummer()) return true;
 		
 		// Allianz testen
-		Partei p = Partei.getPartei(other.getOwner());
+		Partei p = Partei.getFaction(other.getOwner());
 		if (required == null) {
 			if (p.hatAllianz(this.getOwner(), AllianzOption.Kontaktiere)) return true;
 			return false;
@@ -1085,19 +1087,19 @@ public abstract class Unit extends Atlantis implements Comparable {
 				Unit belagerer = building.istBelagert();
 				if (belagerer != null)	{
 					if (Talentwert(Tarnung.class) <= belagerer.Talentwert(Wahrnehmung.class)) {
-						new Fehler(this + " kann das belagerte Gebäude " + building + " nicht verlassen.", this, getCoords());
+						new Fehler(this + " kann das belagerte Gebäude " + building + " nicht verlassen.", this, getCoordinates());
 						return;
 					}
 				}
 				if (building.getOwner() != getNummer()) {
 					// einfach verlassen ... haben nicht das Kommando
 					setGebaeude(0);
-					new Info(this + " verlässt das Gebäude " + building + ".", this, getCoords());
+					new Info(this + " verlässt das Gebäude " + building + ".", this, getCoordinates());
 				} else {
 					Building.PROXY.remove(building);
 
 					building.setOwner(0);
-					new Info(this + " verlässt das Gebäude " + building + ".", this, getCoords());
+					new Info(this + " verlässt das Gebäude " + building + ".", this, getCoordinates());
 					
 					// Nachfolger suchen
 					SortedSet<Unit> erben = findeErben(true); // gleiches Gebäude
@@ -1134,10 +1136,10 @@ public abstract class Unit extends Atlantis implements Comparable {
                     // anrechnen
                     lehrtage += consum;
 
-                    new Info(lehrer + " lehrt " + this + " mit " + consum + " Lehrtagen.", lehrer, lehrer.getCoords());
+                    new Info(lehrer + " lehrt " + this + " mit " + consum + " Lehrtagen.", lehrer, lehrer.getCoordinates());
                 } else {
-                    new Fehler(lehrer + " ist in '" + skill.getSimpleName() + "' nicht besser als " + this + ".", this, getCoords());
-                    new Fehler(lehrer + " ist in '" + skill.getSimpleName() + "' nicht besser als " + this + ".", lehrer, lehrer.getCoords());
+                    new Fehler(lehrer + " ist in '" + skill.getSimpleName() + "' nicht besser als " + this + ".", this, getCoordinates());
+                    new Fehler(lehrer + " ist in '" + skill.getSimpleName() + "' nicht besser als " + this + ".", lehrer, lehrer.getCoordinates());
                     continue;
                 }
             }
@@ -1163,9 +1165,9 @@ public abstract class Unit extends Atlantis implements Comparable {
 
 		fields.put("nummer", getNummer());
 		fields.put("id", this.getNummerBase36());
-		fields.put("koordx", getCoords().getX());
-		fields.put("koordy", getCoords().getY());
-		fields.put("welt", getCoords().getWelt());
+		fields.put("koordx", getCoordinates().getX());
+		fields.put("koordy", getCoordinates().getY());
+		fields.put("welt", getCoordinates().getZ());
 		fields.put("name", getName());
 		fields.put("beschreibung", getBeschreibung());
 		fields.put("person", getPersonen());
@@ -1282,7 +1284,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	public boolean Rekrutieren(int anzahl) {
 		if (anzahl <= 0) return false;
 
-		Region r = Region.Load(getCoords());
+		Region r = Region.Load(getCoordinates());
 
 		// checken, ob zu viele Magier existieren:
 		if (this.Talentwert(Magie.class) > 0) {
@@ -1294,7 +1296,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 				}
 			}
 			if (vorhanden + getPersonen() + anzahl > this.maxMagier()) {
-				new Fehler(this + " - die Rekruten laufen schreiend weg: Zuviele Magier, es wären dann " + (vorhanden + getPersonen() + anzahl) + ".", this, getCoords());
+				new Fehler(this + " - die Rekruten laufen schreiend weg: Zuviele Magier, es wären dann " + (vorhanden + getPersonen() + anzahl) + ".", this, getCoordinates());
 				return false;
 			}
 		}
@@ -1348,13 +1350,13 @@ public abstract class Unit extends Atlantis implements Comparable {
 
 					try {
 						// neuen Befehl bei der Einheit erstellen...
-						Einzelbefehl tempBefehl = new Einzelbefehl(temp, temp.getCoords(), eb.getBefehlCanonical(), sortRank);
+						Einzelbefehl tempBefehl = new Einzelbefehl(temp, temp.getCoordinates(), eb.getBefehlCanonical(), sortRank);
 						temp.BefehleExperimental.add(tempBefehl);
 						BefehlsSpeicher.getInstance().add(tempBefehl);
 
 						sortRank ++;
 					} catch (IllegalArgumentException ex) {
-						new Fehler(ex.getMessage(), temp, temp.getCoords());
+						new Fehler(ex.getMessage(), temp, temp.getCoordinates());
 					}
 
 					// alten Befehl aus der Liste der Erzeuger-Einheit lÃ¶schen.
@@ -1373,7 +1375,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 
 					int nummer = Codierung.fromBase36(tempId);
 					boolean exists = false;
-						for(Unit unit : Unit.CACHE.getAll(getCoords(),getOwner())) {
+						for(Unit unit : Unit.CACHE.getAll(getCoordinates(),getOwner())) {
 							if (unit.getTempNummer() == nummer) { exists = true; break; } // Mist - schon vergeben
 						}
 					if (exists) {
@@ -1381,7 +1383,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 						new Fehler("Eine Temp-Einheit mit der Nummer [" + eb.getTargetUnit() + "] existiert bereits.", this);
 						temp = null;
 					} else {
-						temp = CreateUnit(getRasse(), getOwner(), getCoords());
+						temp = CreateUnit(getRasse(), getOwner(), getCoordinates());
 						temp.setTempNummer(nummer);
 						temp.setOwner(this.getOwner());
 						temp.setTarnPartei(this.getTarnPartei());
@@ -1394,7 +1396,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 
 				} catch(Exception ex) {
 					eb.setError();
-					new Fehler("Temp-Nummer '" + eb.getTargetUnit() + "' ist für diese Einheit ungültig.", this, getCoords());
+					new Fehler("Temp-Nummer '" + eb.getTargetUnit() + "' ist für diese Einheit ungültig.", this, getCoordinates());
 					new BigError(ex);
 				}
 			}
@@ -1449,7 +1451,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 			silber -= needed;
 			if (log) debug.append(" - alles okay, ").append(needed).append(" ausgegeben.");
 		} else {
-			Region region = Region.Load(getCoords());
+			Region region = Region.Load(getCoordinates());
 			silber += region.CollectMoney(this, needed - silber, null);
 			if (log) debug.append(" - nach dem Sammeln in der Region: ").append(silber);
 			// silber += region.CollectMoney(this, needed - silber, " für Lebensmittel");
@@ -1572,7 +1574,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 				if (getPersonen() > 0) {
 					new Fehler(msg.toString(), this);
 				} else {
-					new Fehler(msg.toString(), Partei.getPartei(this.getOwner()));
+					new Fehler(msg.toString(), Partei.getFaction(this.getOwner()));
 				}
 			}
 		}
@@ -1602,8 +1604,8 @@ public abstract class Unit extends Atlantis implements Comparable {
 	 * @param c - Koordinaten
 	 * @return eine neue Einheit ohne irgendwas
 	 */
-	public static Unit CreateUnit(String rasse, int owner, Coords c) {
-		return CreateUnit(rasse, owner, c.getX(), c.getY(), c.getWelt());
+	public static Unit CreateUnit(String rasse, int owner, Coordinates c) {
+		return CreateUnit(rasse, owner, c.getX(), c.getY(), c.getZ());
 	}
 
 	/**
@@ -1630,7 +1632,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		u.setName("Einheit " + u.getNummerBase36());
 		u.setOwner(owner);
 		u.setTarnPartei(owner);
-		u.setCoords(new Coords(x, y, welt));
+		u.setCoordinates(Coordinates.create(x, y, welt));
 		u.setLebenspunkte(0);
 
 		// zum Proxy
@@ -1658,7 +1660,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		try	{
 			u = (Unit) Class.forName("de.x8bit.Fantasya.Atlantis.Units." + rs.getString("rasse")).newInstance();
 			u.setNummer(rs.getInt("nummer"));
-			u.setCoords(new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
+			u.setCoordinates(Coordinates.create(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
 			u.setName(rs.getString("name"));
 			u.setBeschreibung(rs.getString("beschreibung"));
 			u.setPersonen(rs.getInt("person"));
@@ -1692,7 +1694,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	 * @param meldungMachen true, wenn Meldungen an den Besitzer und die evtl. Erben gegeben werden sollen.
 	 */
 	public void purge(boolean meldungMachen) {
-		Region r = Region.Load(getCoords());
+		Region r = Region.Load(getCoordinates());
 
 		for (Einzelbefehl eb : BefehleExperimental) {
 			// die Befehle stören und liefern Fehler in ZATBase::Action()
@@ -1728,12 +1730,12 @@ public abstract class Unit extends Atlantis implements Comparable {
 			if (sachen.size() > 0) {
 				if (meldungMachen) new Info(
 						erbe + " erbt " + StringUtils.aufzaehlung(sachen)
-						+ " von der aufgelösten Einheit " + this + ".", erbe, erbe.getCoords()
+						+ " von der aufgelösten Einheit " + this + ".", erbe, erbe.getCoordinates()
 				);
 			}
 		} else {
 			if (meldungMachen) {
-				new Info("Einheit " + this + " in " + r + " ist ohne Erben aufgelöst worden.", Partei.getPartei(getOwner()));
+				new Info("Einheit " + this + " in " + r + " ist ohne Erben aufgelöst worden.", Partei.getFaction(getOwner()));
 			}
 		}
 
@@ -1748,7 +1750,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 					if (!erben.isEmpty()) {
 						Unit erbe = erben.first();
 						b.setOwner(erbe.getNummer());
-						if (meldungMachen) new Info(erbe + " erbt das Kommando über " + b + " von der aufgelösten Einheit " + this + ".", erbe, erbe.getCoords());
+						if (meldungMachen) new Info(erbe + " erbt das Kommando über " + b + " von der aufgelösten Einheit " + this + ".", erbe, erbe.getCoordinates());
 					} else {
 						b.setOwner(0);
 					}
@@ -1768,7 +1770,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 					if (!erben.isEmpty()) {
 						Unit erbe = erben.first();
 						s.setOwner(erbe.getNummer());
-						if (meldungMachen) new Info(erbe + " erbt das Kommando über " + s + " von der aufgelösten Einheit " + this + ".", erbe, erbe.getCoords());
+						if (meldungMachen) new Info(erbe + " erbt das Kommando über " + s + " von der aufgelösten Einheit " + this + ".", erbe, erbe.getCoordinates());
 					} else {
 						s.setOwner(0);
 					}
@@ -1893,7 +1895,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		
 		// Sichtbarkeit von Einheiten mit Tarnung prüfen
 		if (!partei.cansee(this)) {
-			if (ZATMode.CurrentMode().isDebug()) new Debug(partei + " kann " + this + " in " + Region.Load(this.getCoords()) + " nicht sehen.");
+			if (ZATMode.CurrentMode().isDebug()) new Debug(partei + " kann " + this + " in " + Region.Load(this.getCoordinates()) + " nicht sehen.");
 			return;
 		}
         
@@ -2277,7 +2279,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	 */
 	public Region Movement(Richtung richtung)
 	{
-		Region r = Region.Load(getCoords());
+		Region r = Region.Load(getCoordinates());
 		
 		// Bewachen aufheben
 		if (getBewacht()) {
@@ -2296,7 +2298,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	 */
 	public Region Movement(Richtung richtung, Ship ship)
 	{
-		Region r = Region.Load(ship.getCoords());
+		Region r = Region.Load(ship.getCoordinates());
 		
 		// Bewachen aufheben
 		for(Unit unit : ship.getUnits()) {
@@ -2377,7 +2379,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 			if (ship == null) {
 				this.setSchiff(0);
 			} else {
-				new Fehler(this + " hat nicht das Kommando über das Schiff " + ship + ".", this, this.getCoords());
+				new Fehler(this + " hat nicht das Kommando über das Schiff " + ship + ".", this, this.getCoordinates());
 				return false;
 			}
 		}
@@ -2415,7 +2417,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		}
 		
 		// Startregion
-		Region region = Region.Load(this.getCoords());
+		Region region = Region.Load(this.getCoordinates());
 		
 		// Gewicht berechnen
 		int gewicht = 0;
@@ -2439,10 +2441,10 @@ public abstract class Unit extends Atlantis implements Comparable {
 			}
 		}
 		if (talent < ship.getMatrosen()) {
-			if (Region.Load(this.getCoords()).istBetretbar(this)) {
-				new Fehler("Das Schiff " + ship + " hat nicht genügend Matrosen zum Ablegen.", this, this.getCoords());
+			if (Region.Load(this.getCoordinates()).istBetretbar(this)) {
+				new Fehler("Das Schiff " + ship + " hat nicht genügend Matrosen zum Ablegen.", this, this.getCoordinates());
 			} else {
-				new Fehler("Die Mannschaft reicht nicht aus, um " + ship + " zu steuern!", this, this.getCoords());
+				new Fehler("Die Mannschaft reicht nicht aus, um " + ship + " zu steuern!", this, this.getCoordinates());
 			}
 			return false;
 		}
@@ -2451,7 +2453,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		// und einem Schiff gleichzeitig zu sein
 		for(Unit unit : region.getUnits()) {
 			if (unit.getGebaeude() != 0 && unit.getSchiff() == ship.getNummer()) {
-				new Fehler("Das Schiff " + ship + " hat noch die Werftarbeiter an Bord.", this, this.getCoords());
+				new Fehler("Das Schiff " + ship + " hat noch die Werftarbeiter an Bord.", this, this.getCoordinates());
 				return false;
 			}
 		}
@@ -2482,22 +2484,22 @@ public abstract class Unit extends Atlantis implements Comparable {
 	public void ReiseDoku(List<Region> bewegung, String reiseVerb) {
 		Region r = null;
 		
-		Partei p = Partei.getPartei(this.getOwner());
+		Partei p = Partei.getFaction(this.getOwner());
 		String msg = "";
 
 		// Ausgangspunkt dokumentieren
 		if (bewegung.size() > 0) {
             String rPrint = bewegung.get(0).toString();
             if (bewegung.get(0).getClass() == Ozean.class) {
-                Coords my = p.getPrivateCoords(bewegung.get(0).getCoords());
-                rPrint += " " + my.xy();
+                Coordinates my = p.getPrivateCoordinates(bewegung.get(0).getCoordinates());
+                rPrint += " " + my.toString(false);
             }
             msg = this + " " + reiseVerb + " von " + rPrint;
 			// für die Reporte (Karte) merken:
 			// TODO die Startregion mit Details (?)
 			p.addKnownRegion(bewegung.get(0), false, Unit.class);
 			// TODO die Nachbarn der StartRegion ohne Details (?)
-			for (Region nachbar : bewegung.get(0).getNachbarn()) {
+			for (Region nachbar : bewegung.get(0).getNeighbours()) {
 				p.addKnownRegion(nachbar, false, Unit.class);
 			}
 		}
@@ -2512,15 +2514,15 @@ public abstract class Unit extends Atlantis implements Comparable {
 				// TODO die durchreiste Region mit Details (?)
 				p.addKnownRegion(r, false, Unit.class);
 				// TODO die Nachbarn der durchreisten Region ohne Details (?)
-				for (Region nachbar : r.getNachbarn()) {
+				for (Region nachbar : r.getNeighbours()) {
 					p.addKnownRegion(nachbar, false, Unit.class);
 				}
 
                 // Region auflisten,
                 String rPrint = r.toString();
                 if (r.getClass() == Ozean.class) {
-                    Coords my = p.getPrivateCoords(r.getCoords());
-                    rPrint += " " + my.xy();
+                    Coordinates my = p.getPrivateCoordinates(r.getCoordinates());
+                    rPrint += " " + my.toString(false);
                 }
 				msg += rPrint;
 
@@ -2535,11 +2537,11 @@ public abstract class Unit extends Atlantis implements Comparable {
 			}
 		}
 		if (bewegung.size() > 0) {
-            r = Region.Load(this.getCoords());
+            r = Region.Load(this.getCoordinates());
             String rPrint = r.toString();
             if (r.getClass() == Ozean.class) {
-                Coords my = p.getPrivateCoords(r.getCoords());
-                rPrint += " " + my.xy();
+                Coordinates my = p.getPrivateCoordinates(r.getCoordinates());
+                rPrint += " " + my.toString(false);
             }
 			msg += " nach " + rPrint + ".";
 			new Bewegung(msg, this);

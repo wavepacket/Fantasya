@@ -71,7 +71,7 @@ public class MacheTemp extends TestBase {
 			u.Befehle.add("LERNE Katapultbedienung");
 			u.Befehle.add("ENDE");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -105,7 +105,7 @@ public class MacheTemp extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-				messages = Message.Retrieve(null, u.getCoords(), u);
+				messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -123,7 +123,7 @@ public class MacheTemp extends TestBase {
 
 			// unit 03
             if (tokens[1].equals("03")) {
-				messages = Message.Retrieve(null, u.getCoords(), u);
+				messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -132,7 +132,7 @@ public class MacheTemp extends TestBase {
                 if (!found) retval = fail(tokens[1] + ": Keine Meldung zur Silber-Gabe an TEMP-Einheit.");
 
 				// das kann bei jeder Einheit landen - ohne Angabe der Unit testen:
-				messages = Message.Retrieve(p, u.getCoords(), null);
+				messages = Message.Retrieve(p, u.getCoordinates(), null);
                 found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -148,7 +148,7 @@ public class MacheTemp extends TestBase {
 
 			// unit 05
 			if (tokens[1].equals("05")) {
-				messages = Message.Retrieve(null, u.getCoords(), u);
+				messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

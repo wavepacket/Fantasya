@@ -32,10 +32,10 @@ public class BewegungMitLasten extends TestBase {
 
 		for (Region maybe: getTestWorld().nurBetretbar(getRegions())) {
 			// wir suchen zweimal Ozean im NW
-			r1 = Region.Load(maybe.getCoords().shift(Richtung.Nordwesten));
+			r1 = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Nordwesten));
 			if (r1 == null) continue;
 			if (!r1.istBetretbar(null)) continue;
-			start = Region.Load(r1.getCoords().shift(Richtung.Nordwesten));
+			start = Region.Load(r1.getCoordinates().shiftDirection(Richtung.Nordwesten));
 			if (start == null) continue;
 			if (!start.istBetretbar(null)) continue;
 
@@ -54,7 +54,7 @@ public class BewegungMitLasten extends TestBase {
 			u.setSkill(Reiten.class, 30 * u.getPersonen());
 			u.setItem(Pferd.class, 1);
 			u.setItem(Speer.class, 2);
-            u.setName(this.getName()+" 01 " + r1.getCoords().getX() + " " + r1.getCoords().getY());
+            u.setName(this.getName()+" 01 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY());
 			u.Befehle.add("NACH so so");
 
             u = this.createUnit(p, start);
@@ -62,10 +62,10 @@ public class BewegungMitLasten extends TestBase {
 			u.setSkill(Reiten.class, 30 * u.getPersonen());
 			u.setItem(Pferd.class, 1);
 			u.setItem(Silber.class, 0);
-            u.setName(this.getName()+" 02 " + r.getCoords().getX() + " " + r.getCoords().getY());
+            u.setName(this.getName()+" 02 " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			u.Befehle.add("NACH so so");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -99,14 +99,14 @@ public class BewegungMitLasten extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-				if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+				if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
 					retval = fail(tokens[1] + ": Die Einheit ist nicht in der erwarteten Region.");
 				}
             }
 
             // unit 02
             if (tokens[1].equals("02")) {
-				if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+				if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
 					retval = fail(tokens[1] + ": Die Einheit ist nicht in der erwarteten Region.");
 				}
             }

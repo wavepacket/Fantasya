@@ -80,7 +80,7 @@ public class ZauberFeuerwalze extends TestBase {
 			b.Befehle.add("LERNE Hiebwaffen");
 
 
-            new Info(this.getName() + "-Kampf Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-Kampf Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -114,7 +114,7 @@ public class ZauberFeuerwalze extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-//                messages = Message.Retrieve(p, u.getCoords(), u);
+//                messages = Message.Retrieve(p, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();
@@ -125,7 +125,7 @@ public class ZauberFeuerwalze extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

@@ -50,7 +50,7 @@ public class Belagerung extends EVABase
 	}
 
     public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -71,7 +71,7 @@ public class Belagerung extends EVABase
                 continue;
             }
 
-            if (!building.getCoords().equals(u.getCoords())) {
+            if (!building.getCoordinates().equals(u.getCoordinates())) {
                 eb.setError();
                 new Fehler("Kann das Gebäude [" + id + "] nicht finden.", u);
                 continue;
@@ -124,7 +124,7 @@ public class Belagerung extends EVABase
             } else {
                 // entweder keine Katapulte oder kein Talent
                 eb.setError();
-                new Fehler("Wir wissen nicht, wie wir " + building + " belagern sollen.", u, u.getCoords());
+                new Fehler("Wir wissen nicht, wie wir " + building + " belagern sollen.", u, u.getCoordinates());
                 continue;
             }
 

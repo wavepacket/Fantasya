@@ -1,12 +1,13 @@
 package de.x8bit.Fantasya.Host.Terraforming;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.*;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class UnterweltKegelInsel extends ProtoInsel {
 		// den "Keim" pflanzen:
 		try {
 			Region keim = Berge.class.newInstance();
-			keim.setCoords(new Coords(0, 0, 1));
+			keim.setCoordinates(Coordinates.create(0, 0, 1));
 			this.putRegion(keim);
 		} catch (InstantiationException ex) {
 			new BigError(ex);
@@ -49,20 +50,20 @@ public class UnterweltKegelInsel extends ProtoInsel {
 		while (alleRegionen().size() < getZielGroesse()) {
 			// alle leeren Regionen in Nachbarschaft der existierenden finden
 			// Nähe zum Ursprung bevorzugen
-			List<Coords> kandidaten = new ArrayList<Coords>();
+			List<Coordinates> kandidaten = new ArrayList<Coordinates>();
 			kandidaten.addAll(this.getAussenKontur());
-			Coords c = null;
+			Coordinates c = null;
 			while (c == null) {
 				Collections.shuffle(kandidaten, rnd);
 				// ...und einsetzen:
 				c = kandidaten.get(0);
-				int distanceToZero = c.getDistance(new Coords(0,0,c.getWelt()));
+				int distanceToZero = c.getDistance(Coordinates.create(0,0,c.getZ()));
 				double pAccept = 1d / (double)distanceToZero;
 				pAccept *= pAccept;
 				if (rnd.nextDouble() > pAccept) c = null;
 			}
 			Region r = this.randomRegion(chances);
-			r.setCoords(c);
+			r.setCoordinates(c);
 			r.setName(getName() + "@" + loop);
 			this.putRegion(r);
 			loop++;
@@ -73,8 +74,8 @@ public class UnterweltKegelInsel extends ProtoInsel {
 			int summe = 0;
 			for (Region b : this.alleRegionen()) {
 				if (b.getClass() == Ozean.class) continue;
-				if (a.getCoords().equals(b.getCoords())) continue;
-				summe += a.getCoords().getDistance(b.getCoords());
+				if (a.getCoordinates().equals(b.getCoordinates())) continue;
+				summe += a.getCoordinates().getDistance(b.getCoordinates());
 			}
 			float avg = (float)summe / (float)this.alleRegionen().size();
 			String beschr = a.getBeschreibung();
@@ -85,7 +86,7 @@ public class UnterweltKegelInsel extends ProtoInsel {
 		binnenSeenFuellen();
 		// und der Mittelpunkt (ohne Berücksichtigung von Ozean) ist:
 		this.mittelpunkt = null;
-		Coords m = this.getMittelpunkt(false); // ohne Ozean
+		Coordinates m = this.getMittelpunkt(false); // ohne Ozean
 		if (this.getRegion(m.getX(), m.getY()) != null) {
 			Region r = this.getRegion(m.getX(), m.getY());
 			r.setName("M-" + r.getName());

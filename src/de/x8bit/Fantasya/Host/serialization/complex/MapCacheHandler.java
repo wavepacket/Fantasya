@@ -1,10 +1,12 @@
 package de.x8bit.Fantasya.Host.serialization.complex;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.basic.ObjectSerializer;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,14 +21,14 @@ public class MapCacheHandler<T extends Atlantis> implements ComplexHandler {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private ObjectSerializer<T> serializer;
-	private Map<Coords, T> cache;
+	private Map<Coordinates, T> cache;
 
 	/** Creates a new handler.
 	 *
 	 * @param serializer  the serializer that does the basic work.
 	 * @param cache       the map that we write to or save items from.
 	 */
-	public MapCacheHandler(ObjectSerializer<T> serializer, Map<Coords, T> cache) {
+	public MapCacheHandler(ObjectSerializer<T> serializer, Map<Coordinates, T> cache) {
 		if (serializer == null) {
 			throw new IllegalArgumentException("Need a valid serializer.");
 		}
@@ -54,13 +56,13 @@ public class MapCacheHandler<T extends Atlantis> implements ComplexHandler {
 		for (Map<String,String> item : input) {
 			T entry = serializer.load(item);
 			if (entry != null) {
-				if (cache.containsKey(entry.getCoords())) {
+				if (cache.containsKey(entry.getCoordinates())) {
 					logger.warn("Map already contains object with coords {}. Replacing object \"{}\" by \"{}\".",
-							entry.getCoords(),
-							cache.get(entry.getCoords()).getName(),
+							entry.getCoordinates(),
+							cache.get(entry.getCoordinates()).getName(),
 							entry.getName());
 				}
-				cache.put(entry.getCoords(), entry);
+				cache.put(entry.getCoordinates(), entry);
 			}
 		}
 	}
@@ -70,11 +72,11 @@ public class MapCacheHandler<T extends Atlantis> implements ComplexHandler {
 	public SerializedData saveAll() {
 		SerializedData output = new SerializedData();
 
-		for (Coords c : cache.keySet()) {
+		for (Coordinates c : cache.keySet()) {
 			T item = cache.get(c);
-			if (item.getCoords() != c) {
+			if (item.getCoordinates() != c) {
 				logger.warn("Coordinates {} of object \"{}\" differ from sorting key {}.",
-						item.getCoords(),
+						item.getCoordinates(),
 						item.getName(),
 						c);
 			}

@@ -1,9 +1,9 @@
 package de.x8bit.Fantasya.Host.ManualTests.Misc;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Items.Holz;
 import de.x8bit.Fantasya.Atlantis.Items.Schwert;
 import de.x8bit.Fantasya.Atlantis.Items.Silber;
+
 import java.util.List;
 
 import de.x8bit.Fantasya.Host.ManualTests.*;
@@ -17,7 +17,9 @@ import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Skills.Tarnung;
 import de.x8bit.Fantasya.Atlantis.Spells.Fernsicht;
 import de.x8bit.Fantasya.Atlantis.Units.Mensch;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
+
 import java.util.Collection;
 
 /**
@@ -33,9 +35,9 @@ public class ZauberFernsicht extends TestBase {
         // passendes Regions-Paar suchen:
         Region r = null; Region ziel = null;
         for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-            Coords c = maybe.getCoords();
-            Coords zielCoords = new Coords(c.getX() - 7, c.getY() + 4, c.getWelt());
-            Region maybeZiel = Region.Load(zielCoords);
+            Coordinates c = maybe.getCoordinates();
+            Coordinates zielCoordinates = Coordinates.create(c.getX() - 7, c.getY() + 4, c.getZ());
+            Region maybeZiel = Region.Load(zielCoordinates);
             if (!maybeZiel.istBetretbar(null)) continue;
             if (!getRegions().contains(maybeZiel)) continue;
             
@@ -71,7 +73,7 @@ public class ZauberFernsicht extends TestBase {
 			Unit magier = this.createMage(p3, r, 6);
 			magier.setName(this.getName() + " 01");
 			magier.setSpell(new Fernsicht());
-            magier.Befehle.add("URSPRUNG " + r.getCoords().getX() + " " + r.getCoords().getY());
+            magier.Befehle.add("URSPRUNG " + r.getCoordinates().getX() + " " + r.getCoordinates().getY());
 			magier.Befehle.add("ZAUBERE \"Fernsicht\" -7 +4");
 
             new Info(this.getName() + " Setup in " + r + ".", magier);
@@ -108,7 +110,7 @@ public class ZauberFernsicht extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

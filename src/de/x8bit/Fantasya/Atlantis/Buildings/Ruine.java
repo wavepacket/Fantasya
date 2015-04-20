@@ -9,7 +9,7 @@ public class Ruine extends Building
 {
 	public void Zerstoere(Unit u)
 	{
-		new Fehler(u + " ist der Meinung das dies eine schlechte Idee ist", u, u.getCoords());
+		new Fehler(u + " ist der Meinung das dies eine schlechte Idee ist", u, u.getCoordinates());
 	}
 	
 	public String getTyp() { return "Ruine"; }
@@ -20,7 +20,7 @@ public class Ruine extends Building
 	 */
 	public void Mache(Unit u)
 	{
-		new Fehler(u + " würde lieber gerne an einem qualitativ hochwertigem Gebäude bauen", u, u.getCoords());
+		new Fehler(u + " würde lieber gerne an einem qualitativ hochwertigem Gebäude bauen", u, u.getCoordinates());
 	}
 
 	@Override

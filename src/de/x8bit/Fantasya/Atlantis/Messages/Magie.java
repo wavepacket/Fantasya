@@ -13,7 +13,7 @@ public class Magie extends Message
 	public Magie(String msg, Unit u)
 	{
 		super();
-		print(0, msg, u.getCoords(), u);
+		print(0, msg, u.getCoordinates(), u);
 	}
 	
 }

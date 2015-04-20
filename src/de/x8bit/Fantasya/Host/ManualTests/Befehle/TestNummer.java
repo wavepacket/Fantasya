@@ -2,9 +2,9 @@ package de.x8bit.Fantasya.Host.ManualTests.Befehle;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Burg;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Items.Stein;
 import de.x8bit.Fantasya.Host.ManualTests.*;
+
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Message;
@@ -20,8 +20,10 @@ import de.x8bit.Fantasya.Atlantis.Units.Halbling;
 import de.x8bit.Fantasya.Atlantis.Units.Ork;
 import de.x8bit.Fantasya.Atlantis.Units.Troll;
 import de.x8bit.Fantasya.Atlantis.Units.Zwerg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.util.Codierung;
+
 import java.util.Collection;
 
 /**
@@ -68,7 +70,7 @@ public class TestNummer extends TestBase {
 			u.Befehle.add("NUMMER GEBAEUDE abc");
             u.setBeschreibung(u.Befehle.get(0));
 
-			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			b.setSize(10);
 
             u.setName(this.getName() + " 11 " + b.getNummerBase36());
@@ -77,7 +79,7 @@ public class TestNummer extends TestBase {
 			// vergebene Nummer
 			u = this.createUnit(p, r);
             u.setName(this.getName() + " 12");
-			b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			b.setSize(10);
 
 			u.Enter(b);
@@ -89,7 +91,7 @@ public class TestNummer extends TestBase {
 			u.Befehle.add("NUMMER BURG " + vergeben);
             u.setBeschreibung(u.Befehle.get(0));
 
-			b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			b.setSize(10);
 
 			u.Enter(b);
@@ -108,7 +110,7 @@ public class TestNummer extends TestBase {
 			u.Befehle.add("NUMMER SCHIFF abc");
             u.setBeschreibung(u.Befehle.get(0));
 
-			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoords());
+			Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(10);
 
             u.setName(this.getName() + " 21 " + s.getNummerBase36());
@@ -117,7 +119,7 @@ public class TestNummer extends TestBase {
 			// vergebene Nummer
 			u = this.createUnit(p, r);
             u.setName(this.getName() + " 22");
-			s = Ship.Create(Langboot.class.getSimpleName(), r.getCoords());
+			s = Ship.Create(Langboot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(10);
 
 			u.Enter(s);
@@ -129,7 +131,7 @@ public class TestNummer extends TestBase {
 			u.Befehle.add("NUMMER SCHIFF " + vergeben);
             u.setBeschreibung(u.Befehle.get(0));
 
-			s = Ship.Create(Langboot.class.getSimpleName(), r.getCoords());
+			s = Ship.Create(Langboot.class.getSimpleName(), r.getCoordinates());
 			s.setGroesse(10);
 
 			u.Enter(s);
@@ -213,13 +215,13 @@ public class TestNummer extends TestBase {
         for (Unit u:units) {
             // "fremde" Einheiten überspringen.
             if (!u.getName().startsWith(this.getName())) continue;
-            Partei p = Partei.getPartei(u.getOwner());
+            Partei p = Partei.getFaction(u.getOwner());
 
             String[] tokens = u.getName().split("\\ ");
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(null, (Coords)null, u);
+                messages = Message.Retrieve(null, (Coordinates)null, u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -230,7 +232,7 @@ public class TestNummer extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -250,7 +252,7 @@ public class TestNummer extends TestBase {
 					retval = fail(tokens[1] + ": NUMMER BURG fehlgeschlagen.");
 				}
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -263,7 +265,7 @@ public class TestNummer extends TestBase {
             if (tokens[1].equals("13")) {
 				Building b = Building.getBuilding(u.getGebaeude());
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -274,7 +276,7 @@ public class TestNummer extends TestBase {
 
             // unit 14
             if (tokens[1].equals("14")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -295,7 +297,7 @@ public class TestNummer extends TestBase {
 					retval = fail(tokens[1] + ": NUMMER SCHIFF fehlgeschlagen.");
 				}
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -308,7 +310,7 @@ public class TestNummer extends TestBase {
             if (tokens[1].equals("23")) {
 				Ship s = Ship.Load(u.getSchiff());
 
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -319,7 +321,7 @@ public class TestNummer extends TestBase {
 
             // unit 24
             if (tokens[1].equals("24")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -335,7 +337,7 @@ public class TestNummer extends TestBase {
 
             // unit 31
             if (tokens[1].equals("31")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -353,7 +355,7 @@ public class TestNummer extends TestBase {
 
             // unit 33
             if (tokens[1].equals("33")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -369,7 +371,7 @@ public class TestNummer extends TestBase {
 
             // unit 35
             if (tokens[1].equals("35")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

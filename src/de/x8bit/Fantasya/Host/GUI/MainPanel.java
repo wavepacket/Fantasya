@@ -155,11 +155,11 @@ public class MainPanel extends JPanel implements MouseWheelListener, MouseListen
 		for(int i = 0; i < proxy.size(); i++)
 		{
 			Region r = proxy.get(i);
-			x = (r.getCoords().getX() - minx) * ImageSize.x;
-			y = (r.getCoords().getY() - miny) * ImageSize.y;
+			x = (r.getCoordinates().getX() - minx) * ImageSize.x;
+			y = (r.getCoordinates().getY() - miny) * ImageSize.y;
 			g.drawImage(terrainPics.getImage(r), x, y, ImageSize.x, ImageSize.y, null);
 			
-			if (Cursor.x == r.getCoords().getX() && Cursor.y == r.getCoords().getY())
+			if (Cursor.x == r.getCoordinates().getX() && Cursor.y == r.getCoordinates().getY())
 			{
 				regionframe.UpdateRegion(r);
 				g.drawImage(img_cursor, x, y, ImageSize.x, ImageSize.y, null);

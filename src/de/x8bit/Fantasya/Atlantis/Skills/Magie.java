@@ -63,7 +63,7 @@ public class Magie extends Skill
 	private String neuerSpruch(Unit u)
 	{
 		// bei Bedarf einen Spruch aus der Unterwelt (nur in der Unterwelt)
-		boolean orcus = u.getCoords().getWelt() < 0 ? true : false;
+		boolean orcus = u.getCoordinates().getZ() < 0 ? true : false;
 		
 		ArrayList<Spell> spells = new ArrayList<Spell>();
 		for(Paket p : Paket.getPaket("Spells"))	{

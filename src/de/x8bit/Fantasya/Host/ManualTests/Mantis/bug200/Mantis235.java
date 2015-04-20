@@ -27,7 +27,7 @@ public class Mantis235 extends TestBase {
         getRegions().remove(r);
 
         {
-            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setSize(100);
 
 			Unit u1 = this.createUnit(p, r);
@@ -50,7 +50,7 @@ public class Mantis235 extends TestBase {
 			u3.Befehle.add("BETRETE GEBAEUDE " + burg.getNummerBase36());
 			u3.Befehle.add("LERNE Wahrnehmung");
 			
-            new Info(this.getName() + " Setup in " + r + ".", u1, u1.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u1, u1.getCoordinates());
         }
     }
 
@@ -88,7 +88,7 @@ public class Mantis235 extends TestBase {
 					retval = fail(tokens[1] + ": Da stimmt was mit HELFE GIB nicht.");
 				}
 
-//                messages = Message.Retrieve(p, u.getCoords(), u);
+//                messages = Message.Retrieve(p, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();

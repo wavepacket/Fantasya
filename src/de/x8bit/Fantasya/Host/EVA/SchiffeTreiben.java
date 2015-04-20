@@ -31,12 +31,12 @@ public class SchiffeTreiben extends EVABase implements NotACommand {
 
 		int cnt = 0;
 		for (Ship s : leereSchiffe) {
-			Region r = Region.Load(s.getCoords());
+			Region r = Region.Load(s.getCoordinates());
 			if (!(r instanceof Ozean)) continue;
 
 			// okay, das Schiff ist leer und auf dem Wasser
 			List<Region> kandidaten = new ArrayList<Region>();
-			for (Region n : r.getNachbarn()) {
+			for (Region n : r.getNeighbours()) {
 				if ((n instanceof Ozean) || n.istBetretbar(null)) kandidaten.add(n);
 			}
 
@@ -49,12 +49,12 @@ public class SchiffeTreiben extends EVABase implements NotACommand {
 			Region neu = kandidaten.get(0);
 
 			// Küste:
-			Richtung ri = neu.getCoords().getRichtungNach(r.getCoords());
+			Richtung ri = neu.getCoordinates().getRichtungNach(r.getCoordinates());
 
 			Ship.PROXY.remove(s);
 			r.getShips().remove(s); // TODO evtl. auf neue PROXY-Implementierung anpassen.
 
-			s.setCoords(neu.getCoords());
+			s.setCoordinates(neu.getCoordinates());
 			if (neu.istBetretbar(null)) s.setKueste(ri);
 
 			Ship.PROXY.add(s);

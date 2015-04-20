@@ -1,13 +1,14 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.Reports.Writer.CRWriter;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -17,7 +18,7 @@ import java.util.StringTokenizer;
  * @author hapebe
  */
 public class RegionsSicht {
-	protected final Coords c;
+	protected final Coordinates c;
 	protected final boolean details;
 	protected final Class<? extends Atlantis> quelle;
     protected final int runde;
@@ -37,7 +38,7 @@ public class RegionsSicht {
      */
     protected final Set<Richtung> strassen = new HashSet<Richtung>();
 
-	public Coords getCoords() {
+	public Coordinates getCoordinates() {
 		return c;
 	}
 
@@ -49,7 +50,7 @@ public class RegionsSicht {
 		return quelle;
 	}
 
-	public RegionsSicht(int runde, Coords c, boolean details, Class<? extends Atlantis> quelle) {
+	public RegionsSicht(int runde, Coordinates c, boolean details, Class<? extends Atlantis> quelle) {
 		this.runde = runde;
         this.c = c;
 		this.details = details;
@@ -90,7 +91,7 @@ public class RegionsSicht {
     }
     
     public static RegionsSicht FromCode(String code) {
-        Coords c = null;
+        Coordinates c = null;
         int runde = -1;
         String name = null;
         String terrain = null;
@@ -113,7 +114,7 @@ public class RegionsSicht {
                 // (8,-10,1)
                 if ((!t.startsWith("(")) || (!t.endsWith(")"))) throw new IllegalArgumentException("Erwarte Koordinatenangabe in Klammern: " + t );
                 t = t.replaceAll(",", " ");
-                c = Coords.fromString(t); // new Debug(t + " -> " + c);
+                c = Coordinates.fromString(t); // new Debug(t + " -> " + c);
             } else if (i == 1) {
                 // 187
                 runde = Integer.parseInt(t);
@@ -159,7 +160,7 @@ public class RegionsSicht {
      * @param r die reale Region (sollte tunlichst mit den Koordinaten der RegionsSicht übereinstimmen)
      */
     public void copyStrassen(Region r) {
-        if (!r.getCoords().equals(this.getCoords())) throw new IllegalStateException("RegionsSicht auf " + getCoords() + " soll die Straßen von " + r.getCoords() + " kopieren?");
+        if (!r.getCoordinates().equals(this.getCoordinates())) throw new IllegalStateException("RegionsSicht auf " + getCoordinates() + " soll die Straßen von " + r.getCoordinates() + " kopieren?");
         
         if (r.istBetretbar(null) && (r.getSteineFuerStrasse() > 0)) {
             strassen.clear();
@@ -194,19 +195,19 @@ public class RegionsSicht {
 	 * @param partei - die Partei für diese Region
 	 */
 	public void SaveCR(CRWriter writer, Partei partei)	{
-        Region gegenwart = Region.Load(getCoords());
+        Region gegenwart = Region.Load(getCoordinates());
         
 		boolean hidden = !partei.canAccess(gegenwart); // wenn die Region zu jung ist, soll sie "versteckt" werden.
 		int grenzid = 0;
 		
-		Coords my = partei.getPrivateCoords(getCoords());
+		Coordinates my = partei.getPrivateCoordinates(getCoordinates());
         if (!hidden) {
-            writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getWelt() + " ");
+            writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getZ() + " ");
             
             InselVerwaltung iv = InselVerwaltung.getInstance();
-            InselVerwaltung.ParteiReportDaten prd = iv.getParteiReportDaten(partei);
-            if (!prd.getNachbarnOhneInsel().contains(getCoords())) {
-                int inselId = iv.getPrivateInselNummer(partei, getCoords());
+            InselVerwaltung.ParteiReportDaten prd = iv.getFactionReportDaten(partei);
+            if (!prd.getNachbarnOhneInsel().contains(getCoordinates())) {
+                int inselId = iv.getPrivateInselNummer(partei, getCoordinates());
                 if (inselId != -1) writer.wl(inselId, "Insel");
             }
             
@@ -216,7 +217,7 @@ public class RegionsSicht {
                 writer.wl("", "Name");
             }
 			writer.wl(getTerrain(), "Terrain");
-            writer.wl(getCoords().asRegionID(false), "id" );
+            writer.wl(getCoordinates().hashCode(), "id" );
             writer.wl(getRunde(), "Runde");
 			writer.wl("historic", "visibility");
             
@@ -231,9 +232,9 @@ public class RegionsSicht {
 			}
             
         } else {
-            writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getWelt() + " ");
+            writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getZ() + " ");
             writer.wl(GameRules.TERRAIN_UNSICHTBARER_REGIONEN, "Terrain");
-            writer.wl(this.getCoords().asRegionID(false), "id" );
+            writer.wl(this.getCoordinates().hashCode(), "id" );
         }
 	}
 

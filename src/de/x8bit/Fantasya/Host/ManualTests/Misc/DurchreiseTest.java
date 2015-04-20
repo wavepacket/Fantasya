@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Host.ManualTests.Misc;
 
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -15,6 +14,7 @@ import de.x8bit.Fantasya.Atlantis.Ships.Boot;
 import de.x8bit.Fantasya.Atlantis.Skills.Reiten;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
 import de.x8bit.Fantasya.Atlantis.Units.Zwerg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ManualTests.TestBase;
 
@@ -44,8 +44,8 @@ public class DurchreiseTest extends TestBase {
 			// alliierte Einheit schaut zu.
             Region r = null; Region ost = null; Region west = null;
             for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-                ost = Region.Load(maybe.getCoords().shift(Richtung.Osten));
-                west = Region.Load(maybe.getCoords().shift(Richtung.Westen));
+                ost = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
+                west = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Westen));
                 if (ost.istBetretbar(null) && west.istBetretbar(null)) {
 					if (!getRegions().contains(ost)) continue;
 					if (!getRegions().contains(west)) continue;
@@ -58,7 +58,7 @@ public class DurchreiseTest extends TestBase {
             getRegions().remove(r); getRegions().remove(ost); getRegions().remove(west);
 
             Unit reiter = this.createUnit(partei, west);
-            reiter.setName(this.getClass().getSimpleName() + " 01 " + ost.getCoords().getX() + " " + ost.getCoords().getY());
+            reiter.setName(this.getClass().getSimpleName() + " 01 " + ost.getCoordinates().getX() + " " + ost.getCoordinates().getY());
             reiter.setBeschreibung("Erwartet: Reitet von West nach Ost, nach " + ost + ". Es gibt keine Ertappt-Meldung, weil ich mit dem fremden Beobachter alliiert bin.");
             reiter.setSkill(Reiten.class, 30);
             reiter.setItem(Pferd.class, 1);
@@ -78,8 +78,8 @@ public class DurchreiseTest extends TestBase {
         { // Szenario 2: Durchreise zu Lande, fremde Einheit schaut zu.
             Region r = null; Region ost = null; Region west = null;
             for (Region maybe : this.getTestWorld().nurBetretbar(getRegions())) {
-                ost = Region.Load(maybe.getCoords().shift(Richtung.Osten));
-                west = Region.Load(maybe.getCoords().shift(Richtung.Westen));
+                ost = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
+                west = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Westen));
                 if (ost.istBetretbar(null) && west.istBetretbar(null)) {
 					if (!getRegions().contains(ost)) continue;
 					if (!getRegions().contains(west)) continue;
@@ -92,7 +92,7 @@ public class DurchreiseTest extends TestBase {
             getRegions().remove(r); getRegions().remove(ost); getRegions().remove(west);
 
             Unit reiter = this.createUnit(partei, west);
-            reiter.setName(this.getClass().getSimpleName() + " 21 " + ost.getCoords().getX() + " " + ost.getCoords().getY());
+            reiter.setName(this.getClass().getSimpleName() + " 21 " + ost.getCoordinates().getX() + " " + ost.getCoordinates().getY());
             reiter.setBeschreibung("Erwartet: Reitet von West nach Ost, nach " + ost + ". Bekommt eine Warnung, dass die Durchreise bemerkt wurde.");
             reiter.setSkill(Reiten.class, 30);
             reiter.setItem(Pferd.class, 1);
@@ -106,8 +106,8 @@ public class DurchreiseTest extends TestBase {
         { // Szenario 3: Durchreise zur See, fremde Einheit schaut zu
             Region r = null; Region ost = null; Region west = null;
             for (Region maybe : this.getTestWorld().nurTerrain(getRegions(), Ozean.class)) {
-                ost = Region.Load(maybe.getCoords().shift(Richtung.Osten));
-                west = Region.Load(maybe.getCoords().shift(Richtung.Westen));
+                ost = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
+                west = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Westen));
                 if ((ost instanceof Ozean) && (west instanceof Ozean)) {
 					if (!getRegions().contains(ost)) continue;
 					if (!getRegions().contains(west)) continue;
@@ -120,7 +120,7 @@ public class DurchreiseTest extends TestBase {
             getRegions().remove(r); getRegions().remove(ost); getRegions().remove(west);
 
             Unit fahrer = this.createKapitaen(partei, west, Boot.class.getSimpleName());
-            fahrer.setName(this.getClass().getSimpleName() + " 31 " + ost.getCoords().getX() + " " + ost.getCoords().getY());
+            fahrer.setName(this.getClass().getSimpleName() + " 31 " + ost.getCoordinates().getX() + " " + ost.getCoordinates().getY());
             fahrer.setBeschreibung("Erwartet: Rudert von West nach Ost, nach " + ost + ". Bekommt eine Warnung, dass die Durchreise bemerkt wurde.");
             fahrer.Befehle.add("NACH o o");
 
@@ -132,8 +132,8 @@ public class DurchreiseTest extends TestBase {
         { // Szenario 4: Wie 3, aber mit ROUTE statt NACH
             Region r = null; Region ost = null; Region west = null;
             for (Region maybe : this.getTestWorld().nurTerrain(getRegions(), Ozean.class)) {
-                ost = Region.Load(maybe.getCoords().shift(Richtung.Osten));
-                west = Region.Load(maybe.getCoords().shift(Richtung.Westen));
+                ost = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Osten));
+                west = Region.Load(maybe.getCoordinates().shiftDirection(Richtung.Westen));
                 if ((ost instanceof Ozean) && (west instanceof Ozean)) {
 					if (!getRegions().contains(ost)) continue;
 					if (!getRegions().contains(west)) continue;
@@ -146,7 +146,7 @@ public class DurchreiseTest extends TestBase {
             getRegions().remove(r); getRegions().remove(ost); getRegions().remove(west);
 
             Unit fahrer = this.createKapitaen(partei, west, Boot.class.getSimpleName());
-            fahrer.setName(this.getClass().getSimpleName() + " 41 " + ost.getCoords().getX() + " " + ost.getCoords().getY());
+            fahrer.setName(this.getClass().getSimpleName() + " 41 " + ost.getCoordinates().getX() + " " + ost.getCoordinates().getY());
             fahrer.setBeschreibung("Erwartet: Rudert von West nach Ost, nach " + ost + ". Bekommt eine Warnung, dass die Durchreise bemerkt wurde.");
             fahrer.Befehle.add("ROUTE o o PAUSE w w PAUSE");
 
@@ -199,11 +199,11 @@ public class DurchreiseTest extends TestBase {
                 // unit 01 - der Reiter muss am Ziel sein und soll KEINE Warnung
                 // bekommen (wurde nur von seiner eigenen Partei gesehen).
                 if (tokens[1].equals("01")) {
-                    if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                    if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                         retval = fail(tokens[1] + ": " + u + " ist nicht in der Zielregion.");
                     }
 
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), u);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), u);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (
@@ -222,7 +222,7 @@ public class DurchreiseTest extends TestBase {
                 // unit 02 und 03 - soll keine Durchreisemeldung bekommen.
                 if (tokens[1].equals("02") || tokens[1].equals("03")) {
                     // alle Nachrichten zu den Koordinaten (Region, nicht Einheit)
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), null);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), null);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (
@@ -259,11 +259,11 @@ public class DurchreiseTest extends TestBase {
                 // Der Reiter muss am Ziel sein und SOLL EINE Warnung
                 // bekommen (wurde von einer fremden Partei gesehen).
                 if (tokens[1].equals("21")) {
-                    if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                    if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                         retval = fail(tokens[1] + ": " + u + " ist nicht in der Zielregion.");
                     }
 
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), (Coords)null, u);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), (Coordinates)null, u);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (
@@ -282,7 +282,7 @@ public class DurchreiseTest extends TestBase {
                 // unit 22 - muss die Durchreisemeldung bekommen.
                 if (tokens[1].equals("22")) {
                     // alle Nachrichten zu den Koordinaten (Region, nicht Einheit)
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), null);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), null);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (
@@ -319,11 +319,11 @@ public class DurchreiseTest extends TestBase {
                 // Der Käptn muss am Ziel sein und SOLL EINE Warnung
                 // bekommen (wurde von einer fremden Partei gesehen).
                 if (tokens[1].equals("31")) {
-                    if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                    if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                         retval = fail(tokens[1] + ": " + u + " ist nicht in der Zielregion.");
                     }
 
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), (Coords)null, u);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), (Coordinates)null, u);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (
@@ -342,7 +342,7 @@ public class DurchreiseTest extends TestBase {
                 // unit 32 - muss die Durchreisemeldung bekommen.
                 if (tokens[1].equals("32")) {
                     // alle Nachrichten zu den Koordinaten (Region, nicht Einheit)
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), null);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), null);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (
@@ -380,11 +380,11 @@ public class DurchreiseTest extends TestBase {
                 // Der Käptn muss am Ziel sein und SOLL EINE Warnung
                 // bekommen (wurde von einer fremden Partei gesehen).
                 if (tokens[1].equals("41")) {
-                    if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+                    if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                         retval = fail(tokens[1] + ": " + u + " ist nicht in der Zielregion.");
                     }
 
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), (Coords)null, u);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), (Coordinates)null, u);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (
@@ -403,7 +403,7 @@ public class DurchreiseTest extends TestBase {
                 // unit 42 - muss die Durchreisemeldung bekommen.
                 if (tokens[1].equals("42")) {
                     // alle Nachrichten zu den Koordinaten (Region, nicht Einheit)
-                    List<Message> messages = Message.Retrieve(Partei.getPartei(u.getOwner()), u.getCoords(), null);
+                    List<Message> messages = Message.Retrieve(Partei.getFaction(u.getOwner()), u.getCoordinates(), null);
                     boolean found = false;
                     for (Message msg : messages) {
                         if (

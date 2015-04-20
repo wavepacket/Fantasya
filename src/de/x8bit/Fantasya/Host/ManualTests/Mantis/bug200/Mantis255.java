@@ -70,7 +70,7 @@ public class Mantis255 extends TestBase {
 
 		r = tw.nurBetretbar(getRegions()).get(0);
 		{
-			Building b = Building.Create("Burg", r.getCoords());
+			Building b = Building.Create("Burg", r.getCoordinates());
 			b.setSize(10);
 
 			Unit altmeister = this.createUnit(alt, r);
@@ -118,7 +118,7 @@ public class Mantis255 extends TestBase {
 
 			// unit 02
 			if (tokens[1].equals("02")) {
-				messages = Message.Retrieve(null, u.getCoords(), u);
+				messages = Message.Retrieve(null, u.getCoordinates(), u);
 				boolean found = false;
 				for (Message msg : messages) {
 					String text = msg.getText().toLowerCase();

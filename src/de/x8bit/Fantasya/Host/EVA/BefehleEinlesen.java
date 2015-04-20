@@ -4,18 +4,15 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.mail.MessagingException;
 
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -25,7 +22,6 @@ import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
-import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.BefehlsCheck;
@@ -36,7 +32,7 @@ import de.x8bit.Fantasya.Host.EVA.util.FalschesPasswortException;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.io.EncodingDetector;
-import de.x8bit.Fantasya.util.net.IMAPConnector;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,60 +42,48 @@ import java.util.Set;
  */
 public class BefehleEinlesen extends EVABase
 {
-	private static String inboxDirectory = "befehle-inbox";
 	private static String befehleDirectory = "befehle";
 
 
 	public BefehleEinlesen()
 	{
 		super("lese Befehle der Spieler ein");
-
-        if (ZATMode.CurrentMode().isImapAbrufen()) {
-            try {
-                IMAPConnector conn = new IMAPConnector();
-                int count = conn.befehleHolen();
-                if (count > 0) {
-                    new ZATMsg(count + " Befehls-Mails vom IMAP-Server geholt.");
-                } else {
-                    new ZATMsg("Keine Befehls-Mails vom IMAP-Server geholt.");
-                }
-            } catch (MessagingException ex) {
-                new BigError(ex);
-            } catch (IOException ex) {
-                new BigError(ex);
+		
+		// Der Check wird so oder so durchgeführt - er bestimmt, welche Befehlsdateien verwendet werden.
+		FilenameFilter fileNameFilter = new FilenameFilter() {
+			@Override
+            public boolean accept(File dir, String name) {
+               if(name.lastIndexOf('.')>0)
+               {
+                  // get last index for '.' char
+                  int lastIndex = name.lastIndexOf('.');
+                  
+                  // get extension
+                  String str = name.substring(lastIndex);
+                  
+                  // match path name extension
+                  if(str.equals(".order"))
+                  {
+                     return true;
+                  }
+               }
+               return false;
             }
-        }
-
-        // Der Check wird so oder so durchgeführt - er bestimmt, welche Befehlsdateien verwendet werden.
+         };
+		File fileArray[] = new File(befehleDirectory + "/" + GameRules.getRunde()).listFiles(fileNameFilter);
 		BefehlsCheck check = BefehlsCheck.getInstance();
-		for (File f : this.getBefehlsInbox()) {
-			check.addFile(f);
-		}
-
-		// check enthält jetzt nur die jeweils besten Dateien - d.h. die neuesten bzw. diejenige mit gültigem Passwort:
-		for (Partei p : check.getParteien()) {
-			if (check.hasValidBefehle(p)) {
-				// okay, Datei kopieren:
-				kopieren(check.getCleanBefehle(p).getAbsolutePath(), 
-						befehleDirectory + "/" + p.getNummerBase36() + ".mail");
-			} else {
-				// Partei hat Befehle eingeschickt, aber keine gültigen:
-				new Fehler("Falsches Passwort (oder falsche Parteinummer)!", p);
-			}
-		}
-
-        InboxLeeren();
+		for (File f : fileArray) check.addFile(f);
 		
 		// Wenn Befehls-Check-Modus, dann Partei ohne (neue) Befehle ignorieren:
 		if (ZATMode.CurrentMode().isBefehlsCheck()) {
-			if (check.getParteien().isEmpty()) {
+			if (check.getFactionSet().isEmpty()) {
 				System.out.println("Es gibt keine neuen Befehlsdateien zum überprüfen.");
 				System.exit(0);
 			}
 
 			List<Partei> ignoreList = new ArrayList<Partei>();
-			ignoreList.addAll(Partei.PROXY);
-			for (Partei p : check.getParteien()) {
+			ignoreList.addAll(Partei.getPlayerFactionList());
+			for (Partei p : check.getFactionSet()) {
 				if (check.hasValidBefehle(p)) {
 					ignoreList.remove(p);
 				}
@@ -109,12 +93,11 @@ public class BefehleEinlesen extends EVABase
 			}
 			if (ZATMode.CurrentMode().hatIgnorierteParteien()) {
 				for (int pNr : ZATMode.CurrentMode().getIgnorierteParteiNummern()) {
-					new Debug("Ignoriere Partei " + Partei.getPartei(pNr));
+					new Debug("Ignoriere Partei " + Partei.getFaction(pNr));
 				}
 			}
 		}
 
-		
 		LoadBefehle();
 
 		
@@ -155,74 +138,6 @@ public class BefehleEinlesen extends EVABase
 	@Override
 	public boolean DoAction(Unit u, String befehl[]) { return true;	}
 	
-
-	/**
-	 * @return Alle Dateien, die sich im Ordner inboxDirectory befinden und die Endung .mail haben
-	 */
-	public List<File> getBefehlsInbox() {
-        List<File> retval = new ArrayList<File>();
-
-		File src = new File(inboxDirectory);
-        if (!src.exists()) {
-            new SysMsg("Warnung: Der Ordner " + inboxDirectory + " existiert nicht.");
-            return retval;
-        }
-
-		File file[] = new File(inboxDirectory).listFiles();
-		for(int i = 0; i < file.length; i++) {
-//			if (file[i].toString().toLowerCase().endsWith(".mail")) {
-				retval.add(file[i]);
-//			}
-		}
-		return retval;
-	}
-
-	private void kopieren(String srcFile, String dstFile) {
-		try {
-			File dst = new File(dstFile);
-			BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(new File(srcFile)), "UTF8"));
-			Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dst), "UTF8"));
-
-			String line;
-			while ((line = r.readLine()) != null) {
-				w.append(line + "\n");
-			}
-
-			w.flush();
-			w.close();
-
-			r.close();
-		} catch (FileNotFoundException ex) {
-			new BigError(ex);
-		} catch (UnsupportedEncodingException ex) {
-			new BigError(ex);
-		} catch (IOException ex) {
-			new BigError(ex);
-		}
-	}
-
-	/**
-     * <p>Löscht nach dem Einlesen der Befehle alle Quelldateien in inboxDirectory
-     * NICHT in befehleDirectory, die Dateien dort bleiben also für eine mögliche Wiederhoung der AW
-     * erhalten.</p>
-     */
-    private void InboxLeeren() {
-        File src = new File(inboxDirectory);
-        if (!src.exists()) {
-            new SysMsg("Warnung: Der Ordner " + inboxDirectory + " existiert nicht.");
-            return;
-        }
-
-        File file[] = new File(inboxDirectory).listFiles();
-        for(int i = 0; i < file.length; i++) {
-            boolean success = file[i].delete();
-			if (!success) {
-				new SysErr("Konnte Befehlsdatei " + file[i].getAbsolutePath() + " nicht löschen!");
-			}
-        }
-	}
-
-
     /** liest alle Befehle ein */
 	private void LoadBefehle() {
 		File file[] = new File(befehleDirectory + "/" + GameRules.getRunde()).listFiles();
@@ -237,8 +152,8 @@ public class BefehleEinlesen extends EVABase
 		}
 		new SysMsg(4, " - " + file.length + " Dateien gefunden");
 		for(int i = 0; i < file.length; i++) {
-			// *.mail sind die alten Formate ... *.cmd ist für jede einzelne Einheit
-			if (file[i].toString().toLowerCase().endsWith(".mail") || file[i].toString().toLowerCase().endsWith(".cmd")) {
+			// *.order ist für jede einzelne Partei
+			if (file[i].toString().toLowerCase().endsWith(".order")) {
                 // Befehle ins Objekt-Modell einlesen:
                 readBefehle(file[i].toString());
             }
@@ -344,7 +259,7 @@ public class BefehleEinlesen extends EVABase
 	 * @param cleanFile Befehlsdatei - muss vorher mit cleanFile() vorbehandelt sein!
 	 * @return Die authentifizierte Partei oder null.
 	 */
-	public static Partei getPartei(String cleanFile) throws FalschesPasswortException {
+	public static Partei getFaction(String cleanFile) throws FalschesPasswortException {
 		Partei partei = null;
 
 		try {
@@ -455,7 +370,7 @@ public class BefehleEinlesen extends EVABase
 						partei = holePartei(hs, cleanFile);
 					} catch (FalschesPasswortException ex) {
 						// Partei hat Befehle eingeschickt, aber keine gültigen:
-						new Fehler("Falsches Passwort (oder falsche Parteinummer)!", ex.getPartei());
+						new Fehler("Falsches Passwort (oder falsche Parteinummer)!", ex.getFaction());
 					}
 					if (partei != null) {
 						new SysMsg(" - Partei " + partei + " erkannt.");
@@ -514,7 +429,7 @@ public class BefehleEinlesen extends EVABase
 		// Partei holen
 		try	{
 			int nummer = Codierung.fromBase36(befehl[1]);
-			retval = Partei.getPartei(nummer);
+			retval = Partei.getFaction(nummer);
 		} catch(Exception ex) { new SysMsg("fehlerhafte Befehlsdatei '" + file + "', '" + line + "' - " + ex.toString()); return null; }
 		
 		if (retval == null) { new SysMsg("Partei " + befehl[1] + " nicht gefunden"); return null; }

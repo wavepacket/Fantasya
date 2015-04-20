@@ -95,7 +95,7 @@ public class VerschonungstestA extends TestBase {
 
             raeuber.Befehle.add("ATTACKIERE " + idB);
 
-            new Info(this.getName() + " Setup in " + r + ".", raeuber, raeuber.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", raeuber, raeuber.getCoordinates());
         }
     }
 
@@ -129,9 +129,9 @@ public class VerschonungstestA extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                Region r = Region.Load(u.getCoords());
-                Partei raeuber = Partei.getPartei(u.getOwner());
-                if (Unit.CACHE.getAll(r.getCoords(),raeuber.getNummer()).size() > 1) {
+                Region r = Region.Load(u.getCoordinates());
+                Partei raeuber = Partei.getFaction(u.getOwner());
+                if (Unit.CACHE.getAll(r.getCoordinates(),raeuber.getNummer()).size() > 1) {
                     retval = fail(uRef + "Es sind noch Räuber außer den verschonten am Leben.");
                 }
             }

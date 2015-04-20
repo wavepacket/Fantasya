@@ -60,7 +60,7 @@ public class HandelTest extends TestBase {
         {
             r.setName(getName() + "-1 (" + luxuryTokens + " )");
 
-			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+			Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setSize(50);
 
 			Unit u = this.createUnit(p, r);
@@ -130,7 +130,7 @@ public class HandelTest extends TestBase {
 			sold2Name = sold2.getSimpleName();
 			luxuryTokens = " " + produceName + " " + sold1Name + " " + sold2Name;
 
-            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building burg = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
 			burg.setSize(50);
             
 			Unit u = this.createUnit(p, r);
@@ -212,12 +212,12 @@ public class HandelTest extends TestBase {
 					retval = fail(uRef + sold1.getSimpleName() + "bestand ist unerwartet.");
 				}
 
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (r.getProduce() != produce) {
 					retval = fail(uRef + "Es wird/werden kein(e) " + produce.getSimpleName() + " mehr produziert?!?");
 				}
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
 				
                 boolean found = false;
                 for (Message msg : messages) {
@@ -251,7 +251,7 @@ public class HandelTest extends TestBase {
 					retval = fail(tokens[1] + ": " + produce + "bestand ist unerwartet.");
 				}
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
 
                 boolean found = false;
                 for (Message msg : messages) {

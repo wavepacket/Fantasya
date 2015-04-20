@@ -45,7 +45,7 @@ public class TestZerstoeren extends TestBase {
 
 
             u = this.createUnit(p, r);
-            Building b = Building.Create(Burg.class.getSimpleName(), r.getCoords());
+            Building b = Building.Create(Burg.class.getSimpleName(), r.getCoordinates());
             b.setSize(50);
 
             u.setName(this.getName()+" 02");
@@ -53,7 +53,7 @@ public class TestZerstoeren extends TestBase {
             u.Enter(b);
 
             u = this.createUnit(p, r);
-            Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoords());
+            Ship s = Ship.Create(Langboot.class.getSimpleName(), r.getCoordinates());
             s.setGroesse(50);
             s.setFertig(true);
 
@@ -61,14 +61,14 @@ public class TestZerstoeren extends TestBase {
             u.Befehle.add("ZERSTOERE");
             u.Enter(s);
 
-            new Info(this.getName() + "-Gebäude-und-Schiff Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + "-Gebäude-und-Schiff Setup in " + r + ".", u, u.getCoordinates());
         }
 
         { // Straße ohne Bewacher:
 			Region r = tw.nurTerrain(getRegions(), Gletscher.class).get(0);
 			getRegions().remove(r);
 
-			Region.Load(r.getCoords()).setStrassensteine(Richtung.Osten, 100);
+			Region.Load(r.getCoordinates()).setStrassensteine(Richtung.Osten, 100);
 
             Unit u = this.createUnit(p, r);
             u.setName(this.getName()+" 11");
@@ -85,7 +85,7 @@ public class TestZerstoeren extends TestBase {
 			Region r = tw.nurTerrain(getRegions(), Gletscher.class).get(0);
 			getRegions().remove(r);
 
-			Region.Load(r.getCoords()).setStrassensteine(Richtung.Osten, 100);
+			Region.Load(r.getCoordinates()).setStrassensteine(Richtung.Osten, 100);
 
             Unit u = this.createUnit(p, r);
             u.setName(this.getName()+" 21");
@@ -136,7 +136,7 @@ public class TestZerstoeren extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -147,7 +147,7 @@ public class TestZerstoeren extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -162,7 +162,7 @@ public class TestZerstoeren extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -177,12 +177,12 @@ public class TestZerstoeren extends TestBase {
 
             // unit 11
             if (tokens[1].equals("11")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (r.getStrassensteine(Richtung.Osten) != 99) {
 					retval = fail(tokens[1] + ": Nicht die erwarteten 99 Straßenstein Richtung Osten.");
 				}
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -193,7 +193,7 @@ public class TestZerstoeren extends TestBase {
 
             // unit 12
             if (tokens[1].equals("12")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -204,12 +204,12 @@ public class TestZerstoeren extends TestBase {
 
             // unit 21
             if (tokens[1].equals("21")) {
-				Region r = Region.Load(u.getCoords());
+				Region r = Region.Load(u.getCoordinates());
 				if (r.getStrassensteine(Richtung.Osten) != 100) {
 					retval = fail(tokens[1] + ": Nicht die erwarteten 100 Straßenstein Richtung Osten.");
 				}
 
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -221,7 +221,7 @@ public class TestZerstoeren extends TestBase {
             // unit 22
             if (tokens[1].equals("22")) {
 				// TODO auf Meldung über den Straßen-Zerstörungsversuch prüfen
-//                messages = Message.Retrieve(p, u.getCoords(), u);
+//                messages = Message.Retrieve(p, u.getCoordinates(), u);
 //                boolean found = false;
 //                for (Message msg : messages) {
 //                    String text = msg.getMessage().toLowerCase();

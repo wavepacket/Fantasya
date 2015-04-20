@@ -47,21 +47,21 @@ public class Mantis181 extends TestBase {
 		getRegions().remove(r2);
 
 		// Bergleute
-		Unit b1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
-		Unit b2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
-		Unit b3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
+		Unit b1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
+		Unit b2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
+		Unit b3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
 		b1.setBeschreibung("Eisen in der Region am Anfang: " + r1.getResource(Eisen.class).getAnzahl());
 
 		// Steinbrecher
-		Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
-		Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
-		Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
+		Unit s1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
+		Unit s2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
+		Unit s3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
 		s1.setBeschreibung("Stein in der Region am Anfang: " + r1.getResource(Stein.class).getAnzahl());
 
 		// Holzfäller
-		Unit h1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords()); h1.setName("Holzfäller-Chef");
-		Unit h2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
-		Unit h3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoords());
+		Unit h1 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates()); h1.setName("Holzfäller-Chef");
+		Unit h2 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
+		Unit h3 = Unit.CreateUnit(p.getRasse(), p.getNummer(), r1.getCoordinates());
 		h1.setBeschreibung("Holz in der Region am Anfang: " + r1.getResource(Holz.class).getAnzahl());
 
 
@@ -97,11 +97,11 @@ public class Mantis181 extends TestBase {
 			// neue Region, neues Glück!
 
 			// Gebäude:
-			Bergwerk g = (Bergwerk)Building.Create(Bergwerk.class.getSimpleName(), r2.getCoords());
+			Bergwerk g = (Bergwerk)Building.Create(Bergwerk.class.getSimpleName(), r2.getCoordinates());
 			g.setSize(250);
 
 			// Die Bergbauer:
-			Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r2.getCoords());
+			Unit u = Unit.CreateUnit(p.getRasse(), p.getNummer(), r2.getCoordinates());
 			u.setName("Bergleute");
 			u.setBeschreibung("Erwartet: Es wird die doppelte Anzahl des vorhandenen Eisens abgebaut. Hinterher ist wieder genausoviel Eisen wie vorher vorhanden. Eisen vorher: " + r2.getResource(Eisen.class).getAnzahl());
 			u.setPersonen(200);
@@ -113,7 +113,7 @@ public class Mantis181 extends TestBase {
 		}
 
 
-		new Info("Mantis #181 Setup in " + r1 + " " + r1.getCoords() + " und " + r2 + " " + r2.getCoords() + ".", p);
+		new Info("Mantis #181 Setup in " + r1 + " " + r1.getCoordinates() + " und " + r2 + " " + r2.getCoordinates() + ".", p);
 
 		this.getTestWorld().setContinueWithZAT(false);
 	}

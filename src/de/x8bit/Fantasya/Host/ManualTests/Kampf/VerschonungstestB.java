@@ -106,7 +106,7 @@ public class VerschonungstestB extends TestBase {
 
             raeuber.Befehle.add("ATTACKIERE PARTEI " + pb.getNummerBase36());
 
-            new Info(this.getName() + " Setup in " + r + ".", raeuber, raeuber.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", raeuber, raeuber.getCoordinates());
         }
     }
 
@@ -140,9 +140,9 @@ public class VerschonungstestB extends TestBase {
 
             // unit 12
             if (tokens[1].equals("12")) {
-                Region r = Region.Load(u.getCoords());
-                Partei zivile = Partei.getPartei(u.getOwner());
-                if (Unit.CACHE.getAll(r.getCoords(),zivile.getNummer()).size() > 1) {
+                Region r = Region.Load(u.getCoordinates());
+                Partei zivile = Partei.getFaction(u.getOwner());
+                if (Unit.CACHE.getAll(r.getCoordinates(),zivile.getNummer()).size() > 1) {
                     retval = fail(uRef + "Es sind noch Gendarmen außer den verschonten am Leben.");
                 }
             }

@@ -67,20 +67,20 @@ public class Allianzen extends EVABase {
     
     @Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
 
 			// Angaben über die "Akteure" selbst:
 			Unit u = eb.getUnit();
-			Partei p = Partei.getPartei(u.getOwner());
+			Partei p = Partei.getFaction(u.getOwner());
 
             int pid = -1;
             try {
                 pid = Codierung.fromBase36(eb.getTargetId());
             } catch(NumberFormatException ex) { new BigError(ex); }
-			Partei partner = Partei.getPartei(pid);
+			Partei partner = Partei.getFaction(pid);
 
             if (partner == null) {
                 eb.setError();
@@ -88,7 +88,7 @@ public class Allianzen extends EVABase {
                 continue;
             }
             
-            if (partner.isMonster()) {
+            if (!partner.isPlayerFaction()) {
                 eb.setError();
                 new Fehler("Kann keine Allianz mit " + eb.getTargetId() + " eingehen - ich mag Monster einfach nicht.", u);
                 continue;

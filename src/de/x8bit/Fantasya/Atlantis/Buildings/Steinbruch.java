@@ -40,7 +40,7 @@ public class Steinbruch extends Building
 		}
 		
 		// zusätzlichen Gebäude testen
-		Region region = Region.Load(u.getCoords());
+		Region region = Region.Load(u.getCoordinates());
 		if (!region.hatGebaeude(Burg.class, 10, u))
 		{
 			new Fehler(u + " - in " + region + " fehlt ein Turm um " + getTyp() + " bauen zu können.", u);

@@ -450,7 +450,7 @@ public class Krieger {
                 if (m) shorty.append(" -- " + defender.kurzCode() + "t"); // + "†");
                 
                 // pro Kill pauschal 10 Punkte - TODO Unterschiede machen - wie auch immer ?!
-                Partei p = Partei.getPartei(attacker.getUnit().getOwner());
+                Partei p = Partei.getFaction(attacker.getUnit().getOwner());
                 int punkte = p.getIntegerProperty("punkte.krieg", 0);
                 punkte += 10;
                 p.setProperty("punkte.krieg", punkte);

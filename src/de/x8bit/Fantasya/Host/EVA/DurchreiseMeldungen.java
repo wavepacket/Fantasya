@@ -23,7 +23,7 @@ class DurchreiseMeldungen extends EVABase implements NotACommand {
         super("Durchreisende...");
 
 		for (DurchreiseRecord dr : Reisen.durchReisen) {
-			Region region = Region.Load(dr.getCoords());
+			Region region = Region.Load(dr.getCoordinates());
             Unit reisender = Unit.Load(dr.getUnitId());
 			
 			if (reisender == null) {
@@ -31,12 +31,12 @@ class DurchreiseMeldungen extends EVABase implements NotACommand {
 				continue;
 			}
 
-			if (reisender.getCoords().equals(region.getCoords())) {
+			if (reisender.getCoordinates().equals(region.getCoordinates())) {
 				// die derzeitige Region der Einheit - hier braucht es keine Meldung
 				continue;
 			}
 
-			Partei rp = Partei.getPartei(reisender.getOwner());
+			Partei rp = Partei.getFaction(reisender.getOwner());
 
 			// so, alle (fremden?) Kandidaten-Parteien sammeln, die in dieser Region sind:
 			boolean ertappt = false;
@@ -59,7 +59,7 @@ class DurchreiseMeldungen extends EVABase implements NotACommand {
 				}
 
 				// Alliierte mit KONTAKTIEREN nicht benachrichtigen:
-				if (Partei.getPartei(beob.getOwner()).hatAllianz(reisender.getOwner(), AllianzOption.Kontaktiere)) continue;
+				if (Partei.getFaction(beob.getOwner()).hatAllianz(reisender.getOwner(), AllianzOption.Kontaktiere)) continue;
 				
 
 				sichtungen.add(new Record(beob.getOwner(), region, reisender));
@@ -67,7 +67,7 @@ class DurchreiseMeldungen extends EVABase implements NotACommand {
 
 			if (ertappt) {
 				// ... den Reisenden warnen:
-				String r = region + rp.getPrivateCoords(region.getCoords()).xy();
+				String r = region + rp.getPrivateCoordinates(region.getCoordinates()).toString(false);
 
 				new Bewegung(reisender + " ist bei der Durchreise in " + r + " beobachtet worden.", reisender);
 			}
@@ -77,20 +77,20 @@ class DurchreiseMeldungen extends EVABase implements NotACommand {
         // ... und jetzt alle verpetzen:
         for (Record rec : sichtungen) {
             Region r = rec.getRegion();
-            Partei p = Partei.getPartei(rec.getPartei());
+            Partei p = Partei.getFaction(rec.getFaction());
 
-            String region = r + p.getPrivateCoords(r.getCoords()).xy();
+            String region = r + p.getPrivateCoordinates(r.getCoordinates()).toString(false);
 
             if (rec.getReisender().getSchiff() == 0) {
                 // Reise zu Lande
                 new Bewegung("Beobachter melden: " + rec.getReisender() + " ist diesen Monat durch " + region + " gereist.",
-                        p, r.getCoords());
+                        p, r.getCoordinates());
             } else {
                 // Reise im Schiff (egal, ob zu Lande)
                 Ship ship = Ship.Load(rec.getReisender().getSchiff());
                 if (ship != null) {
                     new Bewegung("Beobachter melden: " + ship + " ist diesen Monat durch " + region + " gefahren.",
-                            p, r.getCoords());
+                            p, r.getCoordinates());
                 }
             }
         }
@@ -128,7 +128,7 @@ class DurchreiseMeldungen extends EVABase implements NotACommand {
             this.reisender = reisender;
         }
 
-        public int getPartei() {
+        public int getFaction() {
             return partei;
         }
 
@@ -155,7 +155,7 @@ class DurchreiseMeldungen extends EVABase implements NotACommand {
             if (!(o instanceof Record)) return false;
             
             Record other = (Record) o;
-            if (this.getPartei() != other.getPartei()) return false;
+            if (this.getFaction() != other.getFaction()) return false;
             if (!this.getRegion().equals(other.getRegion())) return false;
             if (!this.getReisender().equals(other.getReisender())) return false;
 

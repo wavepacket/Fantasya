@@ -55,7 +55,7 @@ public class BefehleSerializer implements ObjectSerializer<Unit> {
 		SerializedData data = new SerializedData();
 
 		// TODO: not sure what this is for; can be removed ???
-		if (object.getCoords().getWelt() == 0) {
+		if (object.getCoordinates().getZ() == 0) {
 			return data;  // virtuelle Einheiten haben keine Befehle! Schtonk!
 		}
 

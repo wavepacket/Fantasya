@@ -1,11 +1,11 @@
 package de.x8bit.Fantasya.Host.EVA.util;
 
 import de.x8bit.Fantasya.Atlantis.Allianz;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Effect;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -22,6 +22,7 @@ import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Chaos;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Steuer;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.Datenbank;
@@ -143,7 +144,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-        	Coords coords = Coords.fromRegionID(rs.getInt("id"));
+        	Coordinates coords = Coordinates.fromHashCode(rs.getInt("id"));
         	Region r = Region.Load(coords);
         	
             if (!(r instanceof Chaos))
@@ -159,7 +160,7 @@ public class EVAFastLoader {
 
 	public static void loadParteien(Datenbank db) throws SQLException {
 		// Parteien, konsequent ohne .Load() etc.
-        Partei.PROXY.clear();
+        Partei.clearPlayerFactionList();
         db.CreateSelect("partei", "p");
         ResultSet rs = db.Select();
 
@@ -167,15 +168,16 @@ public class EVAFastLoader {
 			@SuppressWarnings("deprecation")
 			Partei p = Partei.fromResultSet(rs);
 
-			if (!Partei.PROXY.contains(p)) Partei.PROXY.add(p);
+			// if (!Partei.getPlayerFactionList().contains(p)) Partei.PROXY.add(p);
         }
 
 		// Partei 0 kommt nicht in die DB/aus der DB, es gibt sie aber trotzdem:
-		Partei p0 = Partei.Create();
+        // 0 existiert schon. Partei.OMNI_FACTION
+		/* Partei p0 = Partei.Create();
 		p0.setNummer(0);
         p0.setEMail("");
 		p0.setMonster(1);
-		Partei.PROXY.add(p0);
+		Partei.PROXY.add(p0); */
 	}
 
 	public static int loadAllianzen(Datenbank db) throws SQLException {
@@ -184,7 +186,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-			Partei p = Partei.getPartei(rs.getInt("partei"));
+			Partei p = Partei.getFaction(rs.getInt("partei"));
 			int partner = rs.getInt("partner");
 
 			// hier wird das Allianz-Objekt ggf. auch erzeugt
@@ -211,7 +213,7 @@ public class EVAFastLoader {
         while (rs.next()) {
 			Steuer s = Steuer.fromResultSet(rs);
 
-			Partei.getPartei(s.getOwner()).getSteuern().add(s);
+			Partei.getFaction(s.getOwner()).getSteuern().add(s);
 
 			cnt ++;
         }
@@ -226,7 +228,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-			Partei p = Partei.getPartei(rs.getInt("partei"));
+			Partei p = Partei.getFaction(rs.getInt("partei"));
 			if (p != null) p.setProperty(rs.getString("name"), rs.getString("value"));
             if (p == null) new SysMsg("Warnung: Parteien-Properties für nicht-existente Partei " + p + ": "+ rs.getString("name") + "=" + rs.getString("value"));
 			// new Debug("@EVAFastLoader - Parteien-Property: " + u + " " + rs.getString("name") + "=" + rs.getString("value"));
@@ -246,11 +248,11 @@ public class EVAFastLoader {
         ResultSet rs = db.Select();
 
         while (rs.next()) {
-			// Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			// Coordinates c = new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
             // new TestMsg("loadAll: " + c);
 
             Region r = Region.fromResultSet(rs);
-            Region.CACHE.put(r.getCoords(), r);
+            Region.CACHE.put(r.getCoordinates(), r);
         }
 	}
 
@@ -260,7 +262,7 @@ public class EVAFastLoader {
         ResultSet rs = db.Select();
 		int cnt = 0;
         while (rs.next()) {
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			Coordinates c = Coordinates.create(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 			String r = rs.getString("resource").toLowerCase();
 			//System.out.println(c.toString() + " -> " + r);
 			Class<? extends Item> item = Item.getFor(r);
@@ -283,7 +285,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			Coordinates c = Coordinates.create(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 
             float nachfrage = rs.getFloat("nachfrage");
             // zur Umstellung bei Einführung von EVA:
@@ -309,7 +311,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			Coordinates c = Coordinates.create(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 			Richtung richtung = Richtung.getRichtung(rs.getString("richtung"));
 			Region.Load(c).setStrassensteine(richtung, rs.getInt("anzahl"));
 			cnt ++;
@@ -357,7 +359,7 @@ public class EVAFastLoader {
         }
 		
 		for (Ship s : Ship.PROXY) {
-			Region.Load(s.getCoords()).getShips().add(s);
+			Region.Load(s.getCoordinates()).getShips().add(s);
 		}
 	}
 

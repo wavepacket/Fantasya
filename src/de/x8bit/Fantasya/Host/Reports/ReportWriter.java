@@ -32,7 +32,7 @@ public class ReportWriter
         if (partei == null) throw new NullPointerException("ReportWriter soll für Partei null erstellt werden...");
 		this.partei = partei;
 
-        parteiReportDaten = InselVerwaltung.getInstance().getParteiReportDaten(partei);
+        parteiReportDaten = InselVerwaltung.getInstance().getFactionReportDaten(partei);
 	}
 
 	/**

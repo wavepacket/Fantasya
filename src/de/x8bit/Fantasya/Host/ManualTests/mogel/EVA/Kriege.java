@@ -13,14 +13,16 @@ public class Kriege extends TestBase {
 	protected void mySetupTest() {
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 		
+		Partei dark = Partei.MONSTER_FACTION; 
+		/*
 		Partei dark = new Partei();
 		dark.setNummer(Codierung.fromBase36("dark"));
 		dark.setMonster(3); // World-Report
-		
+		*/
 		Unit m1 = this.createUnit(dark, region);
 		m1.setItem(Schwert.class, 1);
 		
-		Unit p1 = this.createUnit(Partei.getPartei(1), region);
+		Unit p1 = this.createUnit(Partei.getFaction(1), region);
 		p1.Befehle.add("ATTACKIERE " + m1.getNummerBase36());
 	}
 

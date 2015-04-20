@@ -1,8 +1,8 @@
 package de.x8bit.Fantasya.Atlantis.Regions;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 
 /**
  * In Fantasya gibt es keine Feuerwände, die Klasse ist also nur ein Hilfsmittel
@@ -15,7 +15,7 @@ public class Feuerwand extends Region {
 
 	public Feuerwand(int x, int y, int welt) {
 		this();
-        this.setCoords(new Coords(x, y, welt));
+        this.setCoordinates(Coordinates.create(x, y, welt));
 	}
 
 	@Override

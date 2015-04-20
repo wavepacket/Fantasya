@@ -3,7 +3,6 @@ package de.x8bit.Fantasya.Atlantis.Spells;
 import java.util.ArrayList;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Spell;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -12,11 +11,13 @@ import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.Magie;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Spell.ConfusionSpell;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Krieger;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Side;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Effects.BFXErdbeben;
 import de.x8bit.Fantasya.Host.ZAT.Battle.KriegerCounter;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,8 +51,8 @@ public class KleinesErdbeben extends Spell implements ConfusionSpell {
 		if (param.length > 2) stufe = getSpellLevel(mage, param[2]);
 		if (stufe == 0) return 0; // Fehler kam schon in getSpellLevel
 
-		Region region = Region.Load(mage.getCoords());
-		makeEarthquake(stufe, mage.getCoords());
+		Region region = Region.Load(mage.getCoordinates());
+		makeEarthquake(stufe, mage.getCoordinates());
 		new Magie(mage + " lässt die Erde in " + region + " beben", mage);
 		
 		return stufe;
@@ -62,7 +63,7 @@ public class KleinesErdbeben extends Spell implements ConfusionSpell {
 	 * @param stufe - auf dieser Stufe wurde gezaubert
 	 * @param coords - Koordinaten der Region die das Erdbeben erhält
 	 */
-	private void makeEarthquake(int stufe, Coords coords)
+	private void makeEarthquake(int stufe, Coordinates coords)
 	{
 		Region region = Region.Load(coords);
 		for(Building b : region.getBuildings())
@@ -88,7 +89,7 @@ public class KleinesErdbeben extends Spell implements ConfusionSpell {
 			if (!found) alu.add(unit);
 		}
 		for(Unit unit : alu) {
-			new Info("Es gab ein Erdbeben in " + region + ".", Partei.getPartei(unit.getOwner()));
+			new Info("Es gab ein Erdbeben in " + region + ".", Partei.getFaction(unit.getOwner()));
 		}
 	}
 	

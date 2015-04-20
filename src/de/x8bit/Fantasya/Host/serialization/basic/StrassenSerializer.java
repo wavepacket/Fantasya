@@ -1,12 +1,14 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +18,13 @@ import org.slf4j.LoggerFactory;
 public class StrassenSerializer implements ObjectSerializer<Region> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Map<Coords, Region> map;
+	private Map<Coordinates, Region> map;
 
 	/** Constructs a new serializer.
 	 *
 	 * @param map a mapping from coordinates to regions to look up regions.
 	 */
-	public StrassenSerializer(Map<Coords,Region> map) {
+	public StrassenSerializer(Map<Coordinates,Region> map) {
 		if (map == null) {
 			throw new IllegalArgumentException("Need a valid region map.");
 		}
@@ -42,7 +44,7 @@ public class StrassenSerializer implements ObjectSerializer<Region> {
 	@Override
 	public Region load(Map<String, String> mapping) {
 		// check that the region exists
-		Coords coords = new Coords(
+		Coordinates coords = Coordinates.create(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));
@@ -91,13 +93,13 @@ public class StrassenSerializer implements ObjectSerializer<Region> {
 	@Override
 	public SerializedData save(Region object) {
 		SerializedData data = new SerializedData();
-		Coords coords = object.getCoords();
+		Coordinates coords = object.getCoordinates();
 
 		for (Richtung dir : Richtung.values()) {
 			if (object.getStrassensteine(dir) > 0) {
 				if (object.getStrassensteine(dir) > object.getSteineFuerStrasse()) {
 					logger.warn("Error saving street at {} in direction {}: too many stones ({}). Saving {} instead.",
-							object.getCoords(),
+							object.getCoordinates(),
 							dir,
 							object.getStrassensteine(dir),
 							object.getSteineFuerStrasse());
@@ -108,7 +110,7 @@ public class StrassenSerializer implements ObjectSerializer<Region> {
 
 				entry.put("koordx", String.valueOf(coords.getX()));
 				entry.put("koordy", String.valueOf(coords.getY()));
-				entry.put("welt", String.valueOf(coords.getWelt()));
+				entry.put("welt", String.valueOf(coords.getZ()));
 				entry.put("richtung", dir.getShortcut());
 				entry.put("anzahl", String.valueOf(object.getStrassensteine(dir)));
 				data.add(entry);

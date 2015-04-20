@@ -20,8 +20,8 @@ public class MonsterMeldungenAuswerten extends EVABase implements NotACommand {
     public void PreAction() {
         for (Unit u : Unit.CACHE) {
             if (u instanceof Monster) {
-                Partei p = Partei.getPartei(u.getOwner());
-                if (p.isMonster()) {
+                Partei p = Partei.getFaction(u.getOwner());
+                if (!p.isPlayerFaction()) {
                     
                     try {
                         ((Monster)u).meldungenAuswerten();

@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Allianz;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Spell;
 import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung;
 import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung.Insel;
@@ -23,6 +23,7 @@ import de.x8bit.Fantasya.Host.Paket;
 import de.x8bit.Fantasya.Host.Reports.Writer.CRWriter;
 import de.x8bit.Fantasya.Host.Reports.util.CoordComparatorLNR;
 import de.x8bit.Fantasya.util.StringUtils;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,7 +148,7 @@ public class ReportCR
 	{
 		for (int partnerNr : partei.getAllianzen().keySet()) {
 			Allianz a = partei.getAllianz(partnerNr);
-			Partei partner = Partei.getPartei(a.getPartner());
+			Partei partner = Partei.getFaction(a.getPartner());
 			if (partner == null) continue; // hier hat es den Partner ins Jenseits getragen...
 			
 			writer.wl("ALLIANZ " + partner.getNummer());
@@ -186,18 +187,18 @@ public class ReportCR
 		
         List<Message> messages = new ArrayList<Message>();
 		if (partei.getNummer() == 0) {
-			messages = Message.Retrieve(null, (Coords)null, null);
+			messages = Message.Retrieve(null, (Coordinates)null, null);
 		} else {
             // Regionsmeldungen (ohne Parteiangabe):
-            Set<Coords> beobachtete = new HashSet<Coords>();
+            Set<Coordinates> beobachtete = new HashSet<Coordinates>();
             for (RegionsSicht rs : partei.getKnownRegions(false)) {
-                if (rs.hasDetails()) beobachtete.add(rs.getCoords());
+                if (rs.hasDetails()) beobachtete.add(rs.getCoordinates());
             }
-            for (Message regionsMsg : Message.Retrieve(null, (Coords)null, null)) {
-                if (regionsMsg.getCoords() == null) continue;
-                if (regionsMsg.getPartei() != null) continue;
+            for (Message regionsMsg : Message.Retrieve(null, (Coordinates)null, null)) {
+                if (regionsMsg.getCoordinates() == null) continue;
+                if (regionsMsg.getFaction() != null) continue;
                 if (regionsMsg.getUnit() != null) continue;
-                if (!beobachtete.contains(regionsMsg.getCoords())) continue;
+                if (!beobachtete.contains(regionsMsg.getCoordinates())) continue;
                 
                 // gotcha:
                 messages.add(regionsMsg);
@@ -207,19 +208,19 @@ public class ReportCR
                 writer.wl("MESSAGE " + ++meldung);
                 writer.wl(cleanMessageText(m.getText()), "rendered");
                 writer.wl(4000, "type");
-                Coords c = partei.getPrivateCoords(m.getCoords());
-                writer.wl(c.getX() + " " + c.getY() + " " + c.getWelt(), "region");
+                Coordinates c = partei.getPrivateCoordinates(m.getCoordinates());
+                writer.wl(c.getX() + " " + c.getY() + " " + c.getZ(), "region");
             }
             
             
             messages.clear();
-			messages.addAll(Message.Retrieve(partei, (Coords)null, null));
+			messages.addAll(Message.Retrieve(partei, (Coordinates)null, null));
             
 			// Mantis #326:
-			for (Message botschaft : Message.Retrieve(null, (Coords)null, null, "Botschaft")) {
-				if (botschaft.getPartei() != null) continue; // entweder sind dann nicht wir gemeint, oder die Botschaft wurde schon mit den normalen Meldungen verarbeitet.
-				if (botschaft.getCoords() == null) { messages.add(botschaft); continue; }
-				if (Region.Load(botschaft.getCoords()).anwesendeParteien().contains(partei)) {
+			for (Message botschaft : Message.Retrieve(null, (Coordinates)null, null, "Botschaft")) {
+				if (botschaft.getFaction() != null) continue; // entweder sind dann nicht wir gemeint, oder die Botschaft wurde schon mit den normalen Meldungen verarbeitet.
+				if (botschaft.getCoordinates() == null) { messages.add(botschaft); continue; }
+				if (Region.Load(botschaft.getCoordinates()).anwesendeParteien().contains(partei)) {
 					messages.add(botschaft);
 				}
 			}
@@ -228,9 +229,9 @@ public class ReportCR
             writer.wl("MESSAGE " + ++meldung);
             writer.wl(cleanMessageText(m.getText()), "rendered");
             writer.wl(3000, "type");
-            if (m.getCoords() != null) {
-                Coords c = partei.getPrivateCoords(m.getCoords());
-                writer.wl(c.getX() + " " + c.getY() + " " + c.getWelt(), "region");
+            if (m.getCoordinates() != null) {
+                Coordinates c = partei.getPrivateCoordinates(m.getCoordinates());
+                writer.wl(c.getX() + " " + c.getY() + " " + c.getZ(), "region");
             }
             if (m.getUnit() != null) {
                 writer.wl(m.getUnit().getNummer(), "unit");
@@ -261,7 +262,7 @@ public class ReportCR
      */
     private void SaveInseln() {
         InselVerwaltung iv = InselVerwaltung.getInstance();
-        InselVerwaltung.ParteiReportDaten prd = iv.getParteiReportDaten(partei);
+        InselVerwaltung.ParteiReportDaten prd = iv.getFactionReportDaten(partei);
         for (Insel i : prd.getBekannteInseln()) {
             int privateId = i.getPrivateNummer(partei);
             writer.wl("ISLAND " + privateId);
@@ -269,7 +270,7 @@ public class ReportCR
             if (name != null) {
                 writer.wl(name, "name");
             } else {
-                writer.wl("Insel bei " + partei.getPrivateCoords(i.getMittelpunkt()), "name");
+                writer.wl("Insel bei " + partei.getPrivateCoordinates(i.getMittelpunkt()), "name");
             }
             
             // Beschreibung:
@@ -289,12 +290,12 @@ public class ReportCR
                 P.setMaximumFractionDigits(2);
                 P.setMinimumFractionDigits(2);
                 
-                SortedSet<InselVerwaltung.ParteiEinfluss> einfluesse = i.getParteiEinfluesse();
+                SortedSet<InselVerwaltung.ParteiEinfluss> einfluesse = i.getFactionEinfluesse();
                 float summeEinfluss = 0f;
                 for (InselVerwaltung.ParteiEinfluss pe : einfluesse) summeEinfluss += pe.getEinfluss();
                 List<String> meldung = new ArrayList<String>();
                 for (InselVerwaltung.ParteiEinfluss pe : einfluesse) {
-                    meldung.add(Partei.getPartei(pe.getPartei()) + " " + P.format(pe.getEinfluss() / summeEinfluss));
+                    meldung.add(Partei.getFaction(pe.getFaction()) + " " + P.format(pe.getEinfluss() / summeEinfluss));
                 }
                 if (!meldung.isEmpty()) beschreibung.append("Einfluss: " + StringUtils.aufzaehlung(meldung) + ". ");
                 
@@ -309,22 +310,22 @@ public class ReportCR
 	private void SaveRegionen() {
         InselVerwaltung iv = InselVerwaltung.getInstance();
         
-        Map<Coords, Region> bekannteRegionen = new HashMap<Coords, Region>();
-        SortedSet<Coords> bekannteCoords = new TreeSet<Coords>(new CoordComparatorLNR());
+        Map<Coordinates, Region> bekannteRegionen = new HashMap<Coordinates, Region>();
+        SortedSet<Coordinates> bekannteCoordinates = new TreeSet<Coordinates>(new CoordComparatorLNR());
         
-        for (Region r : iv.getParteiReportDaten(partei).getRegionen()) {
-            bekannteCoords.add(r.getCoords());
-            bekannteRegionen.put(r.getCoords(), r);
+        for (Region r : iv.getFactionReportDaten(partei).getRegionen()) {
+            bekannteCoordinates.add(r.getCoordinates());
+            bekannteRegionen.put(r.getCoordinates(), r);
         }
-        for (Region r : iv.getParteiReportDaten(partei).getNachbarn()) {
-            bekannteCoords.add(r.getCoords());
-            bekannteRegionen.put(r.getCoords(), r);
+        for (Region r : iv.getFactionReportDaten(partei).getNachbarn()) {
+            bekannteCoordinates.add(r.getCoordinates());
+            bekannteRegionen.put(r.getCoordinates(), r);
         }
-        for (RegionsSicht rs : iv.getParteiReportDaten(partei).getHistorische()) {
-            bekannteCoords.add(rs.getCoords());
+        for (RegionsSicht rs : iv.getFactionReportDaten(partei).getHistorische()) {
+            bekannteCoordinates.add(rs.getCoordinates());
         }
         
-        for (Coords c : bekannteCoords) {
+        for (Coordinates c : bekannteCoordinates) {
             if (bekannteRegionen.containsKey(c)) {
                 Region r = bekannteRegionen.get(c);
                 r.SaveCR(writer, partei, partei.getRegionsSicht(c));

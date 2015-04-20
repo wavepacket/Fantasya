@@ -8,9 +8,11 @@ import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.Info;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.EVA.EVABase;
 import de.x8bit.Fantasya.Host.Paket;
 import de.x8bit.Fantasya.util.Random;
+
 import java.util.Set;
 
 /**
@@ -129,10 +131,10 @@ public abstract class Item extends Dingens implements NamedItem {
 		// nicht zuviel übergeben
 		if (getAnzahl() < anzahl) {
 			if (getAnzahl() == 0) {
-				new Fehler(u + " hat gar keine " + this.getName() + " zum übergeben.", u, u.getCoords());
+				new Fehler(u + " hat gar keine " + this.getName() + " zum übergeben.", u, u.getCoordinates());
 				return; // keine Übergabe
 			}
-			new Fehler(u + " hat keine " + anzahl + " " + this.getName() + " zum übergeben.", u, u.getCoords());
+			new Fehler(u + " hat keine " + anzahl + " " + this.getName() + " zum übergeben.", u, u.getCoordinates());
 			anzahl = getAnzahl();
 		}
 		
@@ -142,11 +144,11 @@ public abstract class Item extends Dingens implements NamedItem {
 			i2.setAnzahl(i2.getAnzahl() + anzahl);
 			this.setAnzahl(getAnzahl() - anzahl);
 			String verbErhalten = (partner.getPersonen() > 1?" erhalten ":" erhält ");
-			new Info(partner +verbErhalten + anzahl + " " + getName() + " von " + u + ".", partner, partner.getCoords());
+			new Info(partner +verbErhalten + anzahl + " " + getName() + " von " + u + ".", partner, partner.getCoordinates());
 			String verbGeben = (u.getPersonen() > 1?" übergeben ":" übergibt ");
-			new Info(u + verbGeben + anzahl + " " + getName() + " an " + partner + ".", u, u.getCoords());
+			new Info(u + verbGeben + anzahl + " " + getName() + " an " + partner + ".", u, u.getCoordinates());
 		} else {
-			new Fehler(u + " hat keinen Kontakt zu '" + partner + "'.", u, u.getCoords());
+			new Fehler(u + " hat keinen Kontakt zu '" + partner + "'.", u, u.getCoordinates());
 		}
 	}
 
@@ -173,7 +175,7 @@ public abstract class Item extends Dingens implements NamedItem {
 		setAnzahl(getAnzahl() + punkte);
 		
 		// Meldung
-		new Info(unit + " produziert " + punkte + " " + this.getName() + ".", unit, unit.getCoords());
+		new Info(unit + " produziert " + punkte + " " + this.getName() + ".", unit, unit.getCoordinates());
 	}
 	
 	/** misserabler Hack ... signalisiert aber das hier noch was gemacht werden muss */
@@ -196,12 +198,12 @@ public abstract class Item extends Dingens implements NamedItem {
 	/**
 	 * @return Eine Map Feldname =&gt; Wert, die den Feldern der entsprechenden Datenbank-Tabelle (Regions-Resourcen) entspricht
 	 */
-	public Map<String, Object> getResourceDBValues(Coords c) {
+	public Map<String, Object> getResourceDBValues(Coordinates c) {
 		Map<String, Object> fields = new HashMap<String, Object>();
 
 		fields.put("koordx", c.getX());
 		fields.put("koordy", c.getY());
-		fields.put("welt", c.getWelt());
+		fields.put("welt", c.getZ());
 		fields.put("anzahl", this.getAnzahl());
 		fields.put("resource", this.getClass().getSimpleName());
 

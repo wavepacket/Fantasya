@@ -45,24 +45,24 @@ public class Website extends EVABase
 
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
 
 			Unit u = eb.getUnit();
-            Partei p = Partei.getPartei(u.getOwner());
+            Partei p = Partei.getFaction(u.getOwner());
 
             if (eb.getTokens().length < 2) {
-                new Info("Keine Website angeben, lösche die alte.", u, u.getCoords());
+                new Info("Keine Website angeben, lösche die alte.", u, u.getCoordinates());
                 p.setWebsite("");
             } else {
                 if (eb.getTokens()[1].equalsIgnoreCase("nicht")) {
-                    new Info("Lösche die alte Website.", u, u.getCoords());
+                    new Info("Lösche die alte Website.", u, u.getCoordinates());
                     p.setWebsite("");
                 } else {
                     p.setWebsite(eb.getTokens()[1]);
-                    new Info("Website auf '" + eb.getTokens()[1] + "' geändert, keine Überprüfung des Protokolls", u, u.getCoords());
+                    new Info("Website auf '" + eb.getTokens()[1] + "' geändert, keine Überprüfung des Protokolls", u, u.getCoordinates());
                 }
             }
 

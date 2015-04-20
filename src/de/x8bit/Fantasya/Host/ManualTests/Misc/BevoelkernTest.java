@@ -1,13 +1,12 @@
 package de.x8bit.Fantasya.Host.ManualTests.Misc;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Host.ManualTests.*;
-
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.TestMsg;
 import de.x8bit.Fantasya.Atlantis.Units.Mensch;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 
 /**
  *
@@ -21,7 +20,7 @@ public class BevoelkernTest extends TestBase {
         
 		Partei p = tw.createPartei(Mensch.class);
 		p.setName(getName() + "-Partei");
-        p.setUrsprung(new Coords(0,0,0));
+        p.setUrsprung(Coordinates.create(0,0,0));
 
         int cnt = 1;
         for (Region r : tw.nurBetretbar(getRegions())) {

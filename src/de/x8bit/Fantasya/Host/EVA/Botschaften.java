@@ -75,7 +75,7 @@ public class Botschaften extends EVABase {
 	
     @Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -112,7 +112,7 @@ public class Botschaften extends EVABase {
 					eb.setError();
 					new Fehler(u + " - Einheit [" + eb.getTargetUnit() + "] nicht gefunden.", u);
 					continue;
-				} else if (!targetUnit.getCoords().equals(u.getCoords())) {
+				} else if (!targetUnit.getCoordinates().equals(u.getCoordinates())) {
 					eb.setError();
 					new Fehler(u + " - Einheit [" + eb.getTargetUnit() + "] nicht gefunden.", u);
 					continue;
@@ -149,7 +149,7 @@ public class Botschaften extends EVABase {
 					continue;
 				}
 
-				Partei p = Partei.getPartei(partei);
+				Partei p = Partei.getFaction(partei);
 				if (p == null) {
 					new Fehler("Empfänger-Partei [" +eb.getTargetId() + "] nicht gefunden.", u);
 					eb.setError();

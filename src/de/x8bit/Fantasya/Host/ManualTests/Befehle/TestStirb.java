@@ -83,7 +83,7 @@ public class TestStirb extends TestBase {
 
             // unit 03
             if (tokens[1].equals("03")) {
-                Partei gestorben = Partei.getPartei(Integer.parseInt(tokens[2]));
+                Partei gestorben = Partei.getFaction(Integer.parseInt(tokens[2]));
                 if (gestorben != null) {
                     retval = fail(tokens[1] + ": Partei ist nicht gestorben.");
                 }

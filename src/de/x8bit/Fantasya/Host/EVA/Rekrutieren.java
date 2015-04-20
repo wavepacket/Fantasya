@@ -44,12 +44,12 @@ public class Rekrutieren extends EVABase
 	public void DoAction(Region r, String befehl) {
 		int wants = 0;	// die Summe aller benötigten Rekruten für diese Region
 		
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
             Unit u = eb.getUnit();
 			u.wants = 0; // reset
-			Partei p = Partei.getPartei(u.getOwner());
+			Partei p = Partei.getFaction(u.getOwner());
 
             int anzahl = eb.getAnzahl();
             // new Debug("Rekrutieren: " + u + " will " + anzahl + " Personen.");
@@ -66,7 +66,7 @@ public class Rekrutieren extends EVABase
 				// TODO Meldungen auch an die Bewacher geben.
             }
 
-			if (!p.isMonster()) {
+			if (p.isPlayerFaction()) {
 				// besteht die Einheit aus Migranten?
 				if (!p.getRasse().equalsIgnoreCase(u.getRasse())) {
 					eb.setError();
@@ -78,7 +78,7 @@ public class Rekrutieren extends EVABase
             // Anzahl auf das Verfügbare Silber anpassen
             int silber = u.getItem(Silber.class).getAnzahl();
             if (silber < u.getRekrutierungsKosten() * anzahl) {
-                new Fehler (u + " hat nicht genügend Silber zum Rekrutieren von " + anzahl + " Personen.", u, u.getCoords());
+                new Fehler (u + " hat nicht genügend Silber zum Rekrutieren von " + anzahl + " Personen.", u, u.getCoordinates());
                 anzahl = silber / u.getRekrutierungsKosten();
             }
 

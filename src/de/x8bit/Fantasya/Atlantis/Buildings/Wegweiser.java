@@ -16,7 +16,7 @@ public class Wegweiser extends Building
 {
 	public void Zerstoere(Unit u)
 	{
-		new Fehler(u + " - ein Wegweiser kann nicht zerstört werden", u, u.getCoords());
+		new Fehler(u + " - ein Wegweiser kann nicht zerstört werden", u, u.getCoordinates());
 		return;
 	}
 	
@@ -32,7 +32,7 @@ public class Wegweiser extends Building
 		int tw = u.Talentwert(Burgenbau.class);
 		if (tw < 1)
 		{
-			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoords());
+			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoordinates());
 			return;
 		}
 		
@@ -41,7 +41,7 @@ public class Wegweiser extends Building
 	
 	public void Enter(Unit unit)
 	{
-		new Fehler(unit + " - ein Wegweiser kann nicht betreten werden", unit, unit.getCoords());
+		new Fehler(unit + " - ein Wegweiser kann nicht betreten werden", unit, unit.getCoordinates());
 	}
 	
 	protected void Zerstoere(Unit u, Item items[])

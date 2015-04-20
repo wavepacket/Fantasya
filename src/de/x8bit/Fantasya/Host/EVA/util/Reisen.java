@@ -3,12 +3,12 @@ package de.x8bit.Fantasya.Host.EVA.util;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Seehafen;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Messages.Bewegung;
 import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -78,7 +78,7 @@ public class Reisen {
 
 		// in der neuen Region sind wir ganz am Ende der Report-Liste:
 		u.setSortierung(Integer.MAX_VALUE);
-		Sortieren.Normalisieren(Region.Load(u.getCoords()));
+		Sortieren.Normalisieren(Region.Load(u.getCoordinates()));
 	}
 
 	/**
@@ -92,14 +92,14 @@ public class Reisen {
 		Ship ship = Ship.Load(u.getSchiff());
 
 		// Startregion
-		Region r = Region.Load(u.getCoords());
+		Region r = Region.Load(u.getCoordinates());
 
 		// jede einzelne angegebene Richtung abklappern ... außer bei einem Fehler
 		List<Region> bewegung = new ArrayList<Region>();
         boolean pausiert = false;
 		while (r != null) {
 			// new Debug("befehl: " + befehl[1]);
-            if (LOG) new Debug("Bewegungspunkte(zu Wasser) von " + u + "@" + u.getCoords().xy() + ": " + u.getBewegungspunkte());
+            if (LOG) new Debug("Bewegungspunkte(zu Wasser) von " + u + "@" + u.getCoordinates().toString(false) + ": " + u.getBewegungspunkte());
 
             // aktuelle Region speichern
 			bewegung.add(r);
@@ -152,7 +152,7 @@ public class Reisen {
 				}
 
                 // gibt es einen Seehafen in der Zielregion?
-                Region ziel = Region.Load(r.getCoords().shift(richtung));
+                Region ziel = Region.Load(r.getCoordinates().shiftDirection(richtung));
                 if (ziel.istBetretbar(null)) {
                     for (Building b : ziel.getBuildings()) {
                        if (b instanceof Seehafen) {
@@ -163,7 +163,7 @@ public class Reisen {
                         	   continue;
                            }
                            if (hafenmeister.getOwner() == u.getOwner()) continue; // eigene Partei ist okay.
-                           Partei other = Partei.getPartei(hafenmeister.getOwner());
+                           Partei other = Partei.getFaction(hafenmeister.getOwner());
                            if (!other.hatAllianz(u.getOwner(), AllianzOption.Kontaktiere)) {
                                 new Fehler("Der Seehafen in " + ziel + " lässt uns nicht anlegen.", u);
                                 cansail = false;
@@ -209,7 +209,7 @@ public class Reisen {
 		// ggf. die letzte Region entfernen,
 		if (bewegung.size() > 0) {
 			// nämlich wenn es die aktuelle ist:
-			if (bewegung.get(bewegung.size() - 1).equals(Region.Load(u.getCoords()))) {
+			if (bewegung.get(bewegung.size() - 1).equals(Region.Load(u.getCoordinates()))) {
 				bewegung.remove(bewegung.size() - 1);
 			}
 		}
@@ -225,14 +225,14 @@ public class Reisen {
 	private static List<Region> Laufen(Einzelbefehl eb) {
 		Unit u = eb.getUnit();
 		// Startregion
-		Region r = Region.Load(u.getCoords());
+		Region r = Region.Load(u.getCoordinates());
 		// alle betretenen Regionen, außer der letzten - d.h. der hinterher aktuellen
 		List<Region> bewegung = new ArrayList<Region>();
 
         boolean pausiert = false;
 		while (r != null) {
 			// new Debug("befehl: " + befehl[1]);
-            if (LOG) new Debug("Bewegungspunkte(zu Land) von " + u + "@" + u.getCoords().xy() + ": " + u.getBewegungspunkte());
+            if (LOG) new Debug("Bewegungspunkte(zu Land) von " + u + "@" + u.getCoordinates().toString(false) + ": " + u.getBewegungspunkte());
 
             // aktuelle Region speichern
 			bewegung.add(r);
@@ -294,7 +294,7 @@ public class Reisen {
 		// ggf. die letzte Region entfernen,
 		if (bewegung.size() > 0) {
 			// nämlich wenn es die aktuelle ist:
-			if (bewegung.get(bewegung.size() - 1).equals(Region.Load(u.getCoords()))) {
+			if (bewegung.get(bewegung.size() - 1).equals(Region.Load(u.getCoordinates()))) {
 				bewegung.remove(bewegung.size() - 1);
 			}
 		}
@@ -309,10 +309,10 @@ public class Reisen {
 	private static List<String> ZieleZuSchritten(Einzelbefehl eb) {
 
 		Unit u = eb.getUnit();
-		Partei p = Partei.getPartei(u.getOwner());
-		Coords cursor = u.getCoords();
+		Partei p = Partei.getFaction(u.getOwner());
+		Coordinates cursor = u.getCoordinates();
 
-		// alle Zielangaben (Coords / "PAUSE") einsammeln:
+		// alle Zielangaben (Coordinates / "PAUSE") einsammeln:
 		List<String> zielAngaben = new ArrayList<String>();
 		for (int i=1; i<eb.getTokens().length; i++) zielAngaben.add(eb.getTokens()[i]);
 
@@ -324,20 +324,20 @@ public class Reisen {
 				continue;
 			}
 
-			Coords pvtEtappenZiel = Coords.fromString(token);
+			Coordinates pvtEtappenZiel = Coordinates.fromString(token);
 			if (pvtEtappenZiel == null) {
 				eb.setError();
 				new Fehler(u + " - habe die Koordinaten " + token + " nicht verstanden.", u);
 				return schritte;
 			}
 			// pvtEtappenZeil kann jetzt (nicht mehr null sein, wenn wir überhaupt hier landen:
-			Coords etappenZiel = p.getGlobalCoords(pvtEtappenZiel);
+			Coordinates etappenZiel = p.getGlobalCoordinates(pvtEtappenZiel);
 
 			int loops = 0;
 			while(!(cursor.equals(etappenZiel))) {
 				Richtung wohin = cursor.getRichtungNach(etappenZiel);
 				schritte.add(wohin.getShortcut());
-				cursor = cursor.shift(wohin);
+				cursor = cursor.shiftDirection(wohin);
 
 				if (++loops > 100000) throw new RuntimeException("Keine Route gefunden nach " + loops + " Iterationen:" + u + ", '" + eb + "'");
 			}
@@ -358,8 +358,8 @@ public class Reisen {
 		sb.append("NACH");
 
 		for (int i=1; i<reise.size(); i++) {
-			Coords from = reise.get(i - 1).getCoords();
-			Coords to = reise.get(i).getCoords();
+			Coordinates from = reise.get(i - 1).getCoordinates();
+			Coordinates to = reise.get(i).getCoordinates();
 			sb.append(" ").append(from.getRichtungNach(to).getShortcut());
 		}
 
@@ -367,7 +367,7 @@ public class Reisen {
 	}
 
 	public static void RegistriereDurchReise(Region r, Unit u) {
-		Reisen.durchReisen.add(Reisen.getInstance().new DurchreiseRecord(r.getCoords(), u.getNummer()));
+		Reisen.durchReisen.add(Reisen.getInstance().new DurchreiseRecord(r.getCoordinates(), u.getNummer()));
 	}
 
 //	/**
@@ -401,7 +401,7 @@ public class Reisen {
 		if (eb.getTokens().length == 1) throw new RuntimeException("Hier ist ein Bewegungsbefehl ohne Parameter angekommen: " + eb);
 
 		// hier ist die betreffende Einheit gerade:
-		Coords aufenthalt = eb.getUnit().getCoords();
+		Coordinates aufenthalt = eb.getUnit().getCoordinates();
 
 		String debug = "ZieleRotieren: " + eb.getBefehlCanonical() + " >>> ";
 
@@ -425,9 +425,9 @@ public class Reisen {
 		} else if ((eb.getVariante() == NachUndRoute.BEFEHL_NACH_KOORDS)
 			|| (eb.getVariante() == NachUndRoute.BEFEHL_ROUTE_KOORDS)) {
 			// bei Zielkoordinaten nur dann verschieben, falls wir das erste Ziel erreicht haben:
-			Coords ziel = Coords.fromString(erstesZiel);
-			Partei p = Partei.getPartei(eb.getUnit().getOwner());
-			ziel = p.getGlobalCoords(ziel);
+			Coordinates ziel = Coordinates.fromString(erstesZiel);
+			Partei p = Partei.getFaction(eb.getUnit().getOwner());
+			ziel = p.getGlobalCoordinates(ziel);
 			if (aufenthalt.equals(ziel)) {
 				if (LOG) new Debug(eb.getUnit() + " - Zielkoordinate " + ziel + " erreicht.");
 				Reisen.BefehlsTokensVerschieben(eb, kreislauf);
@@ -473,15 +473,15 @@ public class Reisen {
 
 
 	public class DurchreiseRecord {
-		final Coords c;
+		final Coordinates c;
 		final int unitId;
 
-		public DurchreiseRecord(Coords c, int unitId) {
+		public DurchreiseRecord(Coordinates c, int unitId) {
 			this.c = c;
 			this.unitId = unitId;
 		}
 
-		public Coords getCoords() {
+		public Coordinates getCoordinates() {
 			return c;
 		}
 

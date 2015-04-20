@@ -45,7 +45,7 @@ public class ZauberHain extends TestBase {
 			magier.setSpell(new HainDerTausendEichen());
 			magier.Befehle.add("ZAUBERE \"Hain der 1000 eichen\" 4");
 
-            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", magier, magier.getCoordinates());
         }
     }
 
@@ -79,7 +79,7 @@ public class ZauberHain extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -88,7 +88,7 @@ public class ZauberHain extends TestBase {
                 if (!found) retval = fail(tokens[1] + ": Meldung über Eichen fehlt.");
 
                 int anzahlVorher = Integer.parseInt(tokens[2]);
-                Region r = Region.Load(u.getCoords());
+                Region r = Region.Load(u.getCoordinates());
                 if (r.getResource(Holz.class).getAnzahl() - anzahlVorher < 2) {
                     retval = fail(tokens[1] + ": Da ist irgendwie nix gewachsen?");
                 }

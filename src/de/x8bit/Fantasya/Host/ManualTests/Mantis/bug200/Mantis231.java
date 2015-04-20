@@ -11,7 +11,7 @@ public class Mantis231 extends TestBase {
 
 	@Override
 	protected void mySetupTest() {
-		Partei partei = Partei.getPartei(1);
+		Partei partei = Partei.getFaction(1);
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 
 		Unit unit1 = this.createSpecialist(partei, region, "Schmiede", true);

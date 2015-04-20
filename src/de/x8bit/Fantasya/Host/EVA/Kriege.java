@@ -94,7 +94,7 @@ public class Kriege extends EVABase {
 	
     @Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 		
         Map<Unit, Set<Unit>> angriffe = new HashMap<Unit, Set<Unit>>();
         Map<Unit, Zielvorgabe> zielvorgaben = new HashMap<Unit, Zielvorgabe>();
@@ -170,7 +170,7 @@ public class Kriege extends EVABase {
 
         // dieser Bündnisfall enthält erstmal alle Angriffe zusammen:
         Set<GruppenKonflikt> konflikte = GruppenBuendnisfall.ausEinheitenAngriffen(angriffe);
-        // new Debug("Alle Konflikte in " + r + " " + r.getCoords() + " auf Gruppen-Ebene:\n" + konflikte);
+        // new Debug("Alle Konflikte in " + r + " " + r.getCoordinates() + " auf Gruppen-Ebene:\n" + konflikte);
 
         // alle Einheiten heraussuchen, die via ATTACKIERE explizit angegriffen werden,
         // das kann verwirrenderweise auch implizit via ATTACKIERE PARTEI ... sein
@@ -205,8 +205,8 @@ public class Kriege extends EVABase {
 
         // Angaben über die "Akteure" selbst:
         Unit unit = eb.getUnit();
-        Region r = Region.Load(unit.getCoords());
-        Partei wir = Partei.getPartei(unit.getOwner());
+        Region r = Region.Load(unit.getCoordinates());
+        Partei wir = Partei.getFaction(unit.getOwner());
 
         // TODO Temp-Einheiten werden nicht in den Kampf gezogen?
         if (unit.getTempNummer() > 0) return new ArrayList<Unit>();
@@ -233,7 +233,7 @@ public class Kriege extends EVABase {
             }
 
             // Feinde holen
-            Partei enemies = Partei.getPartei(nummer);
+            Partei enemies = Partei.getFaction(nummer);
             if (enemies == null) {
                 new Fehler(unit + " - die Feind-Partei [" + targetId + "] wurde nicht erkannt.", unit);
                 continue;
@@ -249,14 +249,14 @@ public class Kriege extends EVABase {
             // endlich: Die Einheiten auf die Zielliste setzen
             for (Unit enemy : r.getUnits()) {
                 if (enemy.getOwner() == wir.getNummer()) continue;
-                new Debug("Tarnpartei von " + enemy + " ist " + Partei.getPartei(enemy.getTarnPartei()) + ".");
+                new Debug("Tarnpartei von " + enemy + " ist " + Partei.getFaction(enemy.getTarnPartei()) + ".");
                 
                 // die ParteiTARNUNG entscheidet:
                 if (enemy.getTarnPartei() != enemies.getNummer()) continue;
                 
                 if (!wir.cansee(enemy)) continue;
                 
-                new Debug("Einheit " + enemy + " von " + Partei.getPartei(enemy.getOwner()) + " wird wegen Tarn-Parteizugehörigkeit zu " + Partei.getPartei(enemy.getTarnPartei()) + " auf die Liste der Ziele gesetzt.");
+                new Debug("Einheit " + enemy + " von " + Partei.getFaction(enemy.getOwner()) + " wird wegen Tarn-Parteizugehörigkeit zu " + Partei.getFaction(enemy.getTarnPartei()) + " auf die Liste der Ziele gesetzt.");
                 retval.add(enemy);
             }
         } // nächste Partei-ID
@@ -282,7 +282,7 @@ public class Kriege extends EVABase {
 	private List<Unit> angreifen(Einzelbefehl eb, int startToken) {
         // Angaben über die "Akteure" selbst:
         Unit unit = eb.getUnit();
-        Partei wir = Partei.getPartei(unit.getOwner());
+        Partei wir = Partei.getFaction(unit.getOwner());
 
         // TODO Temp-Einheiten werden nicht in den Kampf gezogen?
         if (unit.getTempNummer() > 0) return new ArrayList<Unit>();
@@ -316,7 +316,7 @@ public class Kriege extends EVABase {
             } else if (!wir.cansee(enemy)) {
                 new Fehler(unit + " - der Feind [" + targetId + "] ist nicht auffindbar, Paranoia?", unit);
                 continue;
-            } else if (!unit.getCoords().equals(enemy.getCoords())) {
+            } else if (!unit.getCoordinates().equals(enemy.getCoordinates())) {
                 // nicht in der gleichen Region!
                 new Fehler(unit + " - der Feind [" + targetId + "] ist nicht auffindbar, Paranoia?", unit);
                 continue;
@@ -328,7 +328,7 @@ public class Kriege extends EVABase {
 
             // Angriff auf eigene Einheiten testen
             if (unit.getOwner() == enemy.getOwner()) {
-                new Fehler(unit + " wollte " + enemy + " angreifen, der Amoklauf an einer eigenen Einheit konnte aber verhindert werden.", unit, unit.getCoords());
+                new Fehler(unit + " wollte " + enemy + " angreifen, der Amoklauf an einer eigenen Einheit konnte aber verhindert werden.", unit, unit.getCoordinates());
                 continue;
             }
 

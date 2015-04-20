@@ -8,12 +8,13 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.Stack;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Welt;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
 import de.x8bit.Fantasya.Host.EVA.util.EVAFastSaver;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.StringUtils;
@@ -309,7 +310,7 @@ public class Datenbank
 		String nummern[] = { "t", "te", "tem", "temp", "b", "ba", "bau", "baue" };
 
 		for(int i = 0; i < nummern.length; i++)	{
-			Unit u = Unit.CreateUnit("Mensch", 0, new Coords(0, 0, 0));
+			Unit u = Unit.CreateUnit("Mensch", 0, DefaultConstantsFactory.NO_COORDINATES_VALUE);
 
 			Unit.CACHE.remove(u);
 			u.setNummer(Codierung.fromBase36(nummern[i]));

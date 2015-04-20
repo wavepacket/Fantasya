@@ -19,12 +19,13 @@ public class Monsterplanung extends TestBase {
 		db.Close();
 		
 		// Monsterpartei erstellen
-		Partei dark = new Partei();
-		dark.setNummer(Codierung.fromBase36("dark"));
-		dark.setMonster(3); // World-Report
+		Partei dark = Partei.MONSTER_FACTION;
+		//Partei dark = new Partei();
+		/* dark.setNummer(Codierung.fromBase36("dark"));
+		dark.setMonster(3); // World-Report */
 		
 		// das Opfer laden
-		Partei partei = Partei.getPartei(1);
+		Partei partei = Partei.getFaction(1);
 		Region region = (this.getTestWorld().nurBetretbar(this.getTestWorld().getAlleRegionen())).get(0);
 		Unit unit = this.createUnit(partei, region);
 		unit.setSkill(Wahrnehmung.class, 20000);

@@ -29,7 +29,7 @@ public class Tempel extends de.x8bit.Fantasya.Atlantis.Building
 		int tw = u.Talentwert(Burgenbau.class);
 		if (tw < 2)
 		{
-			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoords());
+			new Fehler(u + " hat nicht genügend Talent um an " + this + " zu bauen", u, u.getCoordinates());
 			return;
 		}
 		

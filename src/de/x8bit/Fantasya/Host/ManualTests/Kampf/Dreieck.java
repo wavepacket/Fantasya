@@ -58,7 +58,7 @@ public class Dreieck extends TestBase {
             ub.Befehle.add("ATTACKIERE " + uc.getNummerBase36());
             uc.Befehle.add("ATTACKIERE " + ua.getNummerBase36());
 
-            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", ua, ua.getCoordinates());
         }
     }
 

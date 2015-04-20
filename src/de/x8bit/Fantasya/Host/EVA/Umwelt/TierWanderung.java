@@ -26,7 +26,7 @@ public final class TierWanderung {
 		for (Region r : Region.CACHE.values()) {
 
 			boolean isoliert = true;
-			for (Region n : r.getNachbarn()) {
+			for (Region n : r.getNeighbours()) {
 				if (n.istBetretbar(null)) { isoliert = false; break; }
 			}
 			if (isoliert) continue; // Aus isolierten Regionen wandert kein Tier aus.
@@ -58,7 +58,7 @@ public final class TierWanderung {
 				frei /= 2; // aber eigentlich wollen die Tiere ja weg!
 				reizSumme += frei;
 				reizvoll.put(r, frei);
-				for (Region n : r.getNachbarn()) {
+				for (Region n : r.getNeighbours()) {
 					if (!n.istBetretbar(null)) continue;
 					
 					frei = (n.freieArbeitsplaetze() > 0 ? n.freieArbeitsplaetze() : 0);

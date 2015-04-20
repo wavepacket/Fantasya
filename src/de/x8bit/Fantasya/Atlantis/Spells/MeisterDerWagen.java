@@ -25,14 +25,14 @@ public class MeisterDerWagen extends Spell {
 	@Override
 	public int ExecuteSpell(Unit mage, String[] param) {
 		if (param.length < 3) {
-			new Fehler(mage + " muss für den Zauber eine Zieleinheit aussuchen. ("+this.getSpruch()+")", mage, mage.getCoords());
+			new Fehler(mage + " muss für den Zauber eine Zieleinheit aussuchen. ("+this.getSpruch()+")", mage, mage.getCoordinates());
 			return 0;
 		}
 		
 		// Opfer holen
 		Unit victim = Unit.Load(Codierung.fromBase36(param[2]));
 		if (victim == null) {
-			new Fehler(mage + " kann nicht \"" + getName() + "\" zaubern, denn Einheit [" + param[2] + "] ist beim besten Willen nicht gefunden worden.", mage, mage.getCoords());
+			new Fehler(mage + " kann nicht \"" + getName() + "\" zaubern, denn Einheit [" + param[2] + "] ist beim besten Willen nicht gefunden worden.", mage, mage.getCoordinates());
 			return 0;
 		}
 		

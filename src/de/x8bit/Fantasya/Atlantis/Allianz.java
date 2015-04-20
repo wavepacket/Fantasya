@@ -124,12 +124,12 @@ public class Allianz
 
 
 	public boolean isValid() {
-		Partei me = Partei.getPartei(partei);
+		Partei me = Partei.getFaction(partei);
 		if (me == null) {
 			new SysMsg("Allianz von [" + Codierung.toBase36(getPartner())+ "] ist ungültig: Partei " + Codierung.toBase36(this.partei) + " gibt es nicht (mehr)");
 			return false;
 		}
-		Partei them = Partei.getPartei(this.getPartner());
+		Partei them = Partei.getFaction(this.getPartner());
 		if (them == null) {
 			new SysMsg("Allianz von " + me+  " ist ungültig: Partner " + Codierung.toBase36(this.getPartner()) + " gibt es nicht (mehr)");
 			return false;
@@ -168,7 +168,7 @@ public class Allianz
 	public static List<Allianz> getAlle() {
 		List<Allianz> alle = new ArrayList<Allianz>();
 
-		for (Partei p: Partei.PROXY) {
+		for (Partei p: Partei.getPlayerFactionList()) {
 			for (Integer partnerNr : p.getAllianzen().keySet()) {
 				alle.add(p.getAllianzen().get(partnerNr));
 			}

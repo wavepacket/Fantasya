@@ -40,7 +40,7 @@ public class ZauberMeisterDerSchmiede extends TestBase {
 			magier.setSpell(new MeisterDerSchmiede());
 			magier.Befehle.add("ZAUBERE \"Meister der Schmiede\" " + u.getNummerBase36());
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -74,7 +74,7 @@ public class ZauberMeisterDerSchmiede extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -89,7 +89,7 @@ public class ZauberMeisterDerSchmiede extends TestBase {
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(null, u.getCoords(), u);
+                messages = Message.Retrieve(null, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();

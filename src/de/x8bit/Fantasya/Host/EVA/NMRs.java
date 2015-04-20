@@ -15,7 +15,7 @@ public class NMRs extends EVABase implements NotACommand {
 	
 	@Override
 	public void PostAction() {
-		for(Partei partei : Partei.PROXY) {
+		for(Partei partei : Partei.getPlayerFactionList()) {
 			if (partei.getNMR() > (GameRules.getRunde() - 3)) {
 				if (partei.getNMR() == (GameRules.getRunde() - 2)) {
 					new Greetings(

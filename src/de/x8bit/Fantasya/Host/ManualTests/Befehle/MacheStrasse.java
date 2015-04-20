@@ -46,7 +46,7 @@ public class MacheStrasse extends TestBase {
             u.setItem(Stein.class, 40);
             u.Befehle.add("MACHE Strasse NW");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 
@@ -80,7 +80,7 @@ public class MacheStrasse extends TestBase {
 
             // unit 01
             if (tokens[1].equals("01")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -92,14 +92,14 @@ public class MacheStrasse extends TestBase {
                     retval = fail(tokens[1] + ": Unerwartete Restmenge an Steinen.");
                 }
 
-                if (Region.Load(u.getCoords()).getStrassensteine(Richtung.Suedosten) != 50) {
+                if (Region.Load(u.getCoordinates()).getStrassensteine(Richtung.Suedosten) != 50) {
                     retval = fail(tokens[1] + ": Straße nicht gebaut wie erwartet.");
                 }
             }
 
             // unit 02
             if (tokens[1].equals("02")) {
-                messages = Message.Retrieve(p, u.getCoords(), u);
+                messages = Message.Retrieve(p, u.getCoordinates(), u);
                 boolean found = false;
                 for (Message msg : messages) {
                     String text = msg.getText().toLowerCase();
@@ -111,7 +111,7 @@ public class MacheStrasse extends TestBase {
                     retval = fail(tokens[1] + ": Unerwartete Restmenge an Steinen.");
                 }
 
-                if (Region.Load(u.getCoords()).getStrassensteine(Richtung.Nordwesten) != 40) {
+                if (Region.Load(u.getCoordinates()).getStrassensteine(Richtung.Nordwesten) != 40) {
                     retval = fail(tokens[1] + ": Straße nicht gebaut wie erwartet.");
                 }
             }

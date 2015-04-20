@@ -23,7 +23,7 @@ public class GebaeudeUnterhalt extends EVABase implements NotACommand
 	public void PostAction() {
 		// wg. concurrent modification exception
 		for (Building building : new HashSet<Building>(Building.PROXY)) {
-			Region region = Region.Load(building.getCoords());
+			Region region = Region.Load(building.getCoordinates());
 
 			if (building.getOwner() == 0) {
 				Einsturz(building, region);
@@ -37,7 +37,7 @@ public class GebaeudeUnterhalt extends EVABase implements NotACommand
 		for (Building building : Building.PROXY) {
 			if (building.getSize() == 0) {
 				// Einheiten an die Luft setzen:
-				for (Unit u : Unit.CACHE.getAll(building.getCoords())) {
+				for (Unit u : Unit.CACHE.getAll(building.getCoordinates())) {
 					if (u.getGebaeude() == building.getNummer()) u.Leave();
 				}
 
@@ -117,7 +117,7 @@ public class GebaeudeUnterhalt extends EVABase implements NotACommand
 			// super ... der Boss kann Unterhalt zahlen
 			geld.setAnzahl(geld.getAnzahl() - unterhalt);
 			owner.setEinkommen(owner.getEinkommen() - unterhalt);
-			new Info(owner + " zahlt " + unterhalt + " Silber Unterhalt für " + building + ".", owner, owner.getCoords());
+			new Info(owner + " zahlt " + unterhalt + " Silber Unterhalt für " + building + ".", owner, owner.getCoordinates());
 			building.setFunktion(true);
 			return;
 		}

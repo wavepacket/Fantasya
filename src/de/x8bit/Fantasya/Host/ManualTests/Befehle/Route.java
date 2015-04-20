@@ -33,7 +33,7 @@ public class Route extends TestBase {
 			boolean okay = false;
 			while (!okay) {
 				int landNachbarn = 0;
-				for (Region n : r.getNachbarn()) {
+				for (Region n : r.getNeighbours()) {
 					if (n.istBetretbar(null)) landNachbarn ++;
 				}
 				if (landNachbarn > 2) {
@@ -47,7 +47,7 @@ public class Route extends TestBase {
 			Region r2 = null;
 
 			// so, Pfad finden:
-			for (Region temp:r.getNachbarn()) {
+			for (Region temp:r.getNeighbours()) {
 				if (temp.istBetretbar(null)) {
 					r1 = temp;
 					break;
@@ -55,9 +55,9 @@ public class Route extends TestBase {
 			}
 			if (r1 == null)	throw new RuntimeException("Keine Nachbarregion zum Bewegen gefunden, einfach nochmal versuchen!");
 
-			for (Region temp:r1.getNachbarn()) {
+			for (Region temp:r1.getNeighbours()) {
 				if (temp.istBetretbar(null)) {
-					if ( temp.getCoords().equals(r.getCoords()) ) continue; // nicht die Ursprungsregion akzeptieren
+					if ( temp.getCoordinates().equals(r.getCoordinates()) ) continue; // nicht die Ursprungsregion akzeptieren
 					r2 = temp;
 					break;
 				}
@@ -68,8 +68,8 @@ public class Route extends TestBase {
 			getRegions().remove(r2);
 
 			// Richtungen?
-			Richtung rHin1 = r.getCoords().getRichtungNach(r1.getCoords());
-			Richtung rHin2 = r1.getCoords().getRichtungNach(r2.getCoords());
+			Richtung rHin1 = r.getCoordinates().getRichtungNach(r1.getCoordinates());
+			Richtung rHin2 = r1.getCoordinates().getRichtungNach(r2.getCoordinates());
 			Richtung rWeg1 = rHin2.invert();
 			Richtung rWeg2 = rHin1.invert();
 			String hin1 = rHin1.getShortcut();
@@ -86,7 +86,7 @@ public class Route extends TestBase {
 
 			{
 				Unit u1 = this.createUnit(p, r);
-				u1.setName(this.getName() + " 01 " + r1.getCoords().getX() + " " + r1.getCoords().getY() + " Wanderer 1");
+				u1.setName(this.getName() + " 01 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY() + " Wanderer 1");
 				String befehl = "ROUTE " + hin1 + " " + hin2 + " PAUSE " + weg1 + " " + weg2 + " PAUSE";
 				u1.setBeschreibung("Erster Befehl war: " + befehl + ", erwartet: Die erste Richtungsangabe wandert ans Ende, die Einheit steht in " + r1 + ".");
 				u1.setItem(Silber.class, 500);
@@ -95,7 +95,7 @@ public class Route extends TestBase {
 
 			{
 				Unit u1 = this.createUnit(p, r1);
-				u1.setName(this.getName() + " 02 " + r2.getCoords().getX() + " " + r2.getCoords().getY() + " Wanderer 2");
+				u1.setName(this.getName() + " 02 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY() + " Wanderer 2");
 				String befehl = "ROUTE " + hin2 + " PAUSE " + weg1 + " " + weg2 + " PAUSE "  + hin1;
 				u1.setBeschreibung("Erster Befehl war: " + befehl + ", erwartet: Die erste Richtungsangabe (und die PAUSE!) wandert ans Ende, die Einheit steht in " + r2 + ".");
 				u1.setItem(Silber.class, 500);
@@ -104,7 +104,7 @@ public class Route extends TestBase {
 
 			{
 				Unit u1 = this.createUnit(p, r);
-				u1.setName(this.getName() + " 03 " + r1.getCoords().getX() + " " + r1.getCoords().getY() + " Reiter 1");
+				u1.setName(this.getName() + " 03 " + r1.getCoordinates().getX() + " " + r1.getCoordinates().getY() + " Reiter 1");
 				String befehl = "ROUTE " + hin1 + " PAUSE " + weg2 + " PAUSE";
 				u1.setBeschreibung("Erster Befehl war: " + befehl + ", erwartet: Die erste Richtungsangabe (und die PAUSE!) wandert ans Ende, die Einheit steht in " + r1 + ".");
 				u1.setItem(Silber.class, 500);
@@ -115,7 +115,7 @@ public class Route extends TestBase {
 
 			{
 				Unit u1 = this.createUnit(p, r);
-				u1.setName(this.getName() + " 04 " + r2.getCoords().getX() + " " + r2.getCoords().getY() + " Reiter 2");
+				u1.setName(this.getName() + " 04 " + r2.getCoordinates().getX() + " " + r2.getCoordinates().getY() + " Reiter 2");
 				String befehl = "ROUTE " + hin1 + " " + hin2 + " PAUSE " + weg1 + " " + weg2 + " PAUSE";
 				u1.setBeschreibung("Erster Befehl war: " + befehl + ", erwartet: Die ersten BEIDEN Richtungsangabe (und die PAUSE!) wandern ans Ende, die Einheit steht in " + r2 + ".");
 				u1.setItem(Silber.class, 500);
@@ -154,14 +154,14 @@ public class Route extends TestBase {
 
             String[] tokens = u.getName().split("\\ ");
 
-            boolean verifyCoords = false;
-            if (tokens[1].equals("01")) verifyCoords = true;
-            if (tokens[1].equals("02")) verifyCoords = true;
-            if (tokens[1].equals("03")) verifyCoords = true;
-            if (tokens[1].equals("04")) verifyCoords = true;
+            boolean verifyCoordinates = false;
+            if (tokens[1].equals("01")) verifyCoordinates = true;
+            if (tokens[1].equals("02")) verifyCoordinates = true;
+            if (tokens[1].equals("03")) verifyCoordinates = true;
+            if (tokens[1].equals("04")) verifyCoordinates = true;
 
-            if (verifyCoords) {
-                if (!this.verifyUnitCoords(tokens, u.getCoords())) {
+            if (verifyCoordinates) {
+                if (!this.verifyUnitCoordinates(tokens, u.getCoordinates())) {
                     retval = this.fail(tokens[1] + ": Ist nicht in der erwarteten Region.");
                 }
             }

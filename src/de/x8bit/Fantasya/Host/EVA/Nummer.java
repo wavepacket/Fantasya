@@ -8,7 +8,6 @@ import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -17,6 +16,7 @@ import de.x8bit.Fantasya.Atlantis.Steuer;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.Info;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.EVA.util.BefehlsMuster;
@@ -72,21 +72,21 @@ public class Nummer extends EVABase
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private boolean NummerVolk(Unit u, int nummer) {
-		Partei p = Partei.getPartei(u.getOwner());
+		Partei p = Partei.getFaction(u.getOwner());
 		int alt = p.getNummer();
 
 		String infoMsg = "";
-		if (Partei.getPartei(nummer) != null) {
+		if (Partei.getFaction(nummer) != null) {
 			int distance = 1;
 			int newNummer = -1;
 			for (boolean found = false; !found; ) {
-				if (Partei.getPartei(nummer + distance) == null) {
+				if (Partei.getFaction(nummer + distance) == null) {
 					newNummer = nummer + distance;
 					break;
 				}
 
 				if (nummer - distance > 0) {
-					if (Partei.getPartei(nummer - distance) == null) {
+					if (Partei.getFaction(nummer - distance) == null) {
 						newNummer = nummer - distance;
 						break;
 					}
@@ -107,7 +107,7 @@ public class Nummer extends EVABase
 				if (!geaenderte.contains(unit)) {
 					Unit.CACHE.remove(unit);
 
-					List<Message> my = Message.Retrieve(null, (Coords)null, u);
+					List<Message> my = Message.Retrieve(null, (Coordinates)null, u);
 					for (Message msg : my) {
 						Message.Cache().remove(msg);
 						betroffeneMessages.add(msg);
@@ -136,7 +136,7 @@ public class Nummer extends EVABase
 //			for(int partnerNr : partei.getAllianzen().keySet()) {
 //				if (partnerNr != alt) continue;
 		
-		for(Partei partei : Partei.PROXY) {
+		for(Partei partei : Partei.getPlayerFactionList()) {
 			if (partei.getNummer() == alt) partei.setNummer(nummer);
 			Object[] nummern = (new HashSet(partei.getAllianzen().keySet())).toArray();
 			for(int i = 0; i < nummern.length; i++) {
@@ -204,7 +204,7 @@ public class Nummer extends EVABase
 			infoMsg = "NUMMER EINHEIT - ändere von [" + Codierung.toBase36(alt) + "] auf [" + Codierung.toBase36(nummer) + "].";
 		}
 
-		List<Message> my = Message.Retrieve(null, (Coords)null, u);
+		List<Message> my = Message.Retrieve(null, (Coordinates)null, u);
 		Set<Message> betroffeneMessages = new HashSet<Message>();
 		for (Message msg : my) {
 			Message.Cache().remove(msg);
@@ -223,7 +223,7 @@ public class Nummer extends EVABase
 		// wichtig: ID aus dem Vorrat freier IDs entfernen
 		UnitIDPool.getInstance().remove(nummer);
 
-		// eigentlich müssen wir wirklich nur .setOwner() machen - weder Coords noch Partei ändern sich... ?
+		// eigentlich müssen wir wirklich nur .setOwner() machen - weder Coordinates noch Partei ändern sich... ?
 		Building tempbuilding = null;
 		for(Building b : Building.PROXY) if (b.getOwner() == alt) tempbuilding = b;
 		if (tempbuilding != null) {
@@ -278,7 +278,7 @@ public class Nummer extends EVABase
 		b.setNummer(nummer);
 		Building.PROXY.add(b);
 		
-		for(Unit unit : Unit.CACHE.getAll(b.getCoords())) {
+		for(Unit unit : Unit.CACHE.getAll(b.getCoordinates())) {
 			if (unit.getGebaeude() == alt) {
 				unit.setGebaeude(nummer);
 			}
@@ -325,7 +325,7 @@ public class Nummer extends EVABase
 		}
 
 		s.setNummer(nummer);
-		for(Unit unit : Unit.CACHE.getAll(s.getCoords())) {
+		for(Unit unit : Unit.CACHE.getAll(s.getCoordinates())) {
 			if (unit.getSchiff() == alt) unit.setSchiff(nummer);
 		}
 		
@@ -335,7 +335,7 @@ public class Nummer extends EVABase
 	
 	@Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());

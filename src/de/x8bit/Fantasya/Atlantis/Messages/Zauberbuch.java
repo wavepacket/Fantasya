@@ -17,7 +17,7 @@ public class Zauberbuch extends Message {
 
 	public Zauberbuch(String msg, Unit u) {
 		super();
-        print(0, msg, u.getCoords(), u);
+        print(0, msg, u.getCoordinates(), u);
     }
 	
 	/** gibt den Zauberspruch gleich formatiert für NR aus - sieht natürlich beim CR blöd aus */
@@ -38,6 +38,6 @@ public class Zauberbuch extends Message {
 		msg += "TW: " + spell.getStufe() + " - " + (spell.isOrcus() ? "Mana-Kosten" : "Aura-Kosten") + ": " + spell.getStufe() + "\n";
 		msg += "\n";
 
-		print(0, msg, Partei.getPartei(u.getOwner()));
+		print(0, msg, Partei.getFaction(u.getOwner()));
 	}
 }

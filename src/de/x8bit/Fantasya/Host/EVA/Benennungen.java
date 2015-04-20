@@ -61,7 +61,7 @@ public class Benennungen extends EVABase
 	
     @Override
 	public void DoAction(Region r, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), r.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
@@ -81,7 +81,7 @@ public class Benennungen extends EVABase
                 u.setName(name);
             } else if (bezug.equals("region")) {
                 // COMMAND BENENNE REGION "blabla"
-                Region region = Region.Load(u.getCoords());
+                Region region = Region.Load(u.getCoordinates());
                 if (region.hatGebaeude(Burg.class, 1, u)) {
                     new Info("Der Name von " + region + " sei ab jetzt: " + name + ".", u);
                     region.setName(name);
@@ -115,7 +115,7 @@ public class Benennungen extends EVABase
             } else if (bezug.equals("volk") || bezug.equals("partei")) {
                 // COMMAND BENENNE VOLK "blabla"
                 // COMMAND BENENNE PARTEI "blabla" - Syntax F1
-                Partei p = Partei.getPartei(u.getOwner());
+                Partei p = Partei.getFaction(u.getOwner());
                 new Info("Unser Volk soll ab jetzt als " + name + " bekannt sein.", u);
                 p.setName(name);
             } else if (bezug.equals("insel") || bezug.equals("kontinent")) {

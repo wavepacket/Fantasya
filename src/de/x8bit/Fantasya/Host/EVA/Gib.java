@@ -388,20 +388,20 @@ public class Gib extends EVABase {
 				Spell spell = spellClass.newInstance();
                 // new Debug("GIB ZAUBER " + spell.getName() + " " + mage + " > " + partner);
 				if (!spell.canUsedBy(mage))	{
-					new Fehler(mage + " kann mit dem Zauberspruch '" + spell + "' nichts anfangen.", mage, mage.getCoords());
+					new Fehler(mage + " kann mit dem Zauberspruch '" + spell + "' nichts anfangen.", mage, mage.getCoordinates());
 					continue;
 				}
 				if (spell.getStufe() > partner.Talentwert(Magie.class)) {
-					new Fehler(partner + " kann mit dem Zauberspruch '" + spell + "' nichts anfangen.", partner, partner.getCoords());
+					new Fehler(partner + " kann mit dem Zauberspruch '" + spell + "' nichts anfangen.", partner, partner.getCoordinates());
 					continue;
 				}
 
 				Spell s = partner.getSpell(spellClass);
 				if (s == null) {
 					partner.setSpell(spellClass.newInstance());
-					new Info(partner + " erhält den Spruch '" + spell + "'.", partner, partner.getCoords());
+					new Info(partner + " erhält den Spruch '" + spell + "'.", partner, partner.getCoordinates());
 				} else {
-					new Info(partner + " kennt den Spruch '" + spell + "' bereits.", partner, partner.getCoords());
+					new Info(partner + " kennt den Spruch '" + spell + "' bereits.", partner, partner.getCoordinates());
 				}
 			} catch (Exception ex) {
 				new BigError("Kann Zauberspruch " + spellClass.getSimpleName() + " nicht instantiieren?");
@@ -412,7 +412,7 @@ public class Gib extends EVABase {
 	}
 
 	private boolean GibEinheit(Unit u, Unit partner) {
-		Partei empfaenger = Partei.getPartei(partner.getOwner());
+		Partei empfaenger = Partei.getFaction(partner.getOwner());
 
 		// Magier involviert?
 		if (u.getSkill(Magie.class).getLerntage() > 0) {
@@ -428,7 +428,7 @@ public class Gib extends EVABase {
 		}
 		
 		if (partner.getRasse().equals(u.getRasse())) {
-			new Info(u + " wird an " + empfaenger + " übergeben.", Partei.getPartei(u.getOwner()));
+			new Info(u + " wird an " + empfaenger + " übergeben.", Partei.getFaction(u.getOwner()));
 
             Unit.CACHE.remove(u);
             u.setOwner(partner.getOwner());
@@ -471,7 +471,7 @@ public class Gib extends EVABase {
 				}
 				return false;
 			} else {
-				new Info(u + " wird an " + empfaenger + " übergeben.", Partei.getPartei(u.getOwner()));
+				new Info(u + " wird an " + empfaenger + " übergeben.", Partei.getFaction(u.getOwner()));
 
 				// int altePartei = u.getOwner();
                 
@@ -480,12 +480,12 @@ public class Gib extends EVABase {
 				u.setTarnPartei(partner.getTarnPartei());
 				Unit.CACHE.add(u);
                 
-                // new Debug("Geo: " + Unit.CACHE.bei(u.getCoords()).toString());
-                // new Debug("Alte Partei: " + Unit.CACHE.von(Partei.getPartei(altePartei)).toString());
-                // new Debug("Neue Partei: " + Unit.CACHE.von(Partei.getPartei(u.getOwner())).toString());
+                // new Debug("Geo: " + Unit.CACHE.bei(u.getCoordinates()).toString());
+                // new Debug("Alte Partei: " + Unit.CACHE.von(Partei.getFaction(altePartei)).toString());
+                // new Debug("Neue Partei: " + Unit.CACHE.von(Partei.getFaction(u.getOwner())).toString());
 
 
-				new Info(partner + " hat die Einheit " + u + " erhalten.", Partei.getPartei(u.getOwner()));
+				new Info(partner + " hat die Einheit " + u + " erhalten.", Partei.getFaction(u.getOwner()));
 				return true;
 			}
 		}
@@ -493,7 +493,7 @@ public class Gib extends EVABase {
 
 	@SuppressWarnings("unchecked")
 	private void GibPerson(Unit u, Unit partner, int anzahl) {
-		Partei empfaenger = Partei.getPartei(partner.getOwner());
+		Partei empfaenger = Partei.getFaction(partner.getOwner());
 
 		if (!partner.getRasse().equals(u.getRasse())) {
 			new Fehler(partner + " kann keinen " + u.getRasse() + " aufnehmen.", u);
@@ -502,7 +502,7 @@ public class Gib extends EVABase {
 		}
 
 		// Monster können beliebig viele verschiedene "Migranten" haben
-		if (!empfaenger.isMonster()) {
+		if (empfaenger.isPlayerFaction()) {
 			
 			// Migranten unter sich?
 			if (!partner.getRasse().equals(empfaenger.getRasse())) {
@@ -555,9 +555,9 @@ public class Gib extends EVABase {
 				if (anzahl <= 0) anzahl = 0;
 
 				if (anzahl > 0) {
-					new Info(u + " kann nur " + anzahl + " Personen übergeben - es wären sonst zu viele Magier bei " + Partei.getPartei(partner.getOwner()) + ".", u);
+					new Info(u + " kann nur " + anzahl + " Personen übergeben - es wären sonst zu viele Magier bei " + Partei.getFaction(partner.getOwner()) + ".", u);
 				} else {
-					new Fehler(u + " kann keine Personen übergeben - " + Partei.getPartei(partner.getOwner()) + " hätte dann zu viele Magier.", u);
+					new Fehler(u + " kann keine Personen übergeben - " + Partei.getFaction(partner.getOwner()) + " hätte dann zu viele Magier.", u);
 				}
 			}
 		}
@@ -616,7 +616,7 @@ public class Gib extends EVABase {
 		// Varianten 3 + 4: Tiere an die Bauern.
 		if ((eb.getVariante() == 3) || (eb.getVariante() == 4)) {
 			if (!region.istBetretbar(null)) {
-				new Fehler("'" + eb.getBefehl() + "'?!?", u, u.getCoords());
+				new Fehler("'" + eb.getBefehl() + "'?!?", u, u.getCoordinates());
 				eb.setError();
 				return;
 			}
@@ -628,7 +628,7 @@ public class Gib extends EVABase {
 				try {
 					Item it = item.newInstance();
 					it.setAnzahl(anzahl);
-					new Info(u + " wildert " + anzahl + " " + it.getName() + " aus.", u, u.getCoords());
+					new Info(u + " wildert " + anzahl + " " + it.getName() + " aus.", u, u.getCoordinates());
 					u.setItem(item, maxAnzahl - anzahl);
 					region.getResource(item).setAnzahl(region.getResource(item).getAnzahl() + anzahl);
 
@@ -653,16 +653,16 @@ public class Gib extends EVABase {
 
 		// Variante 14: Teilentlassung - XX Personen an die Bauern
 		if (!region.istBetretbar(null)) {
-			new Fehler("Die Leute von " + u + " weigern sich hier zu bleiben.", u, u.getCoords());
+			new Fehler("Die Leute von " + u + " weigern sich hier zu bleiben.", u, u.getCoordinates());
 			eb.setError();
 			return;
 		}
 		if (anzahl > u.getPersonen()) anzahl = u.getPersonen();
 		if (anzahl > 0) {
 			if (anzahl < u.getPersonen()) {
-				new Info(anzahl + " Personen von " + u + " freuen sich auf ihr neues Zuhause in " + region.getName() + ".", u, u.getCoords());
+				new Info(anzahl + " Personen von " + u + " freuen sich auf ihr neues Zuhause in " + region.getName() + ".", u, u.getCoordinates());
 			} else {
-				new Info(u + " widmet sich ganz dem einfachen Landleben in " + region.getName() + ".", Partei.getPartei(u.getOwner()));
+				new Info(u + " widmet sich ganz dem einfachen Landleben in " + region.getName() + ".", Partei.getFaction(u.getOwner()));
 			}
 			region.setBauern(region.getBauern() + anzahl);
 
@@ -747,9 +747,9 @@ public class Gib extends EVABase {
 			if (anzahl > u.getPersonen()) anzahl = u.getPersonen();
 			if (anzahl > 0) {
 				if (anzahl < u.getPersonen()) {
-					new Info(anzahl + " Personen von " + u + " begehen Selbstmord.", u, u.getCoords());
+					new Info(anzahl + " Personen von " + u + " begehen Selbstmord.", u, u.getCoordinates());
 				} else {
-					new Info(u + " begeht Selbstmord in " + region.getName() + ".", Partei.getPartei(u.getOwner()));
+					new Info(u + " begeht Selbstmord in " + region.getName() + ".", Partei.getFaction(u.getOwner()));
 				}
 				u.setPersonen(u.getPersonen() - anzahl);
 			}
@@ -762,14 +762,14 @@ public class Gib extends EVABase {
 	// EVA:
 	@Override
 	public void DoAction(Region region, String befehl) {
-		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), region.getCoords());
+		List<Einzelbefehl> befehle = BefehlsSpeicher.getInstance().get(this.getClass(), region.getCoordinates());
 
 		for (Einzelbefehl eb : befehle) {
 			if (eb.isPerformed()) throw new DoppelteAusfuehrungException(eb.toString());
 
 			// Angaben über die "Akteure" selbst:
 			Unit u = eb.getUnit();
-//			Partei p = Partei.getPartei(u.getOwner());
+//			Partei p = Partei.getFaction(u.getOwner());
 
 			if ("liefere".equalsIgnoreCase(eb.getTokens()[0])) eb.setKeep(true);
 
@@ -788,7 +788,7 @@ public class Gib extends EVABase {
 
 				if (tempnummer == 0) {
 					eb.setError();
-                    new Fehler(u + " - Temp-Einheit " + eb.getTargetUnit() + " nicht gefunden.", u, u.getCoords());
+                    new Fehler(u + " - Temp-Einheit " + eb.getTargetUnit() + " nicht gefunden.", u, u.getCoordinates());
 					continue;
 				}
 				eb.setTargetUnit(Codierung.toBase36(tempnummer));
@@ -815,27 +815,27 @@ public class Gib extends EVABase {
 
 			// okay, "normales" Übergeben an eine Einheit
 			if (targetUnit == null) {
-				new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoords());
+				new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoordinates());
 				eb.setError();
 				continue;
 			}
 			
-			if (!targetUnit.getCoords().equals(u.getCoords())) {
-				new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoords());
+			if (!targetUnit.getCoordinates().equals(u.getCoordinates())) {
+				new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoordinates());
 				eb.setError();
 				continue;
 			}
 
 			if (!u.cansee(targetUnit)) {
-				new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoords());
+				new Fehler(u + " - kann Einheit " + eb.getTargetUnit() + " nicht finden.", u, u.getCoordinates());
 				eb.setError();
 				continue;
 			}
 
 			// haben wir Kontakt?
 			if (!u.hatKontakt(targetUnit, AllianzOption.Gib)) {
-				new Fehler(u + " hat keinen Kontakt zu " + targetUnit + ".", u, u.getCoords());
-				new Fehler(u + " hat versucht, uns etwas zu geben, aber wir haben nichts angenommen.", targetUnit, targetUnit.getCoords());
+				new Fehler(u + " hat keinen Kontakt zu " + targetUnit + ".", u, u.getCoordinates());
+				new Fehler(u + " hat versucht, uns etwas zu geben, aber wir haben nichts angenommen.", targetUnit, targetUnit.getCoordinates());
 				eb.setError();
 				continue;
 			}
@@ -943,7 +943,7 @@ public class Gib extends EVABase {
      * @param anzahl
      */
     private void logAuswildern(Unit u, int anzahl) {
-        Partei p = Partei.getPartei(u.getOwner());
+        Partei p = Partei.getFaction(u.getOwner());
         int bisherAusgewildert = p.getIntegerProperty(Pferd.PROPERTY_ENTLASSEN, 0);
         p.setProperty(Pferd.PROPERTY_ENTLASSEN, bisherAusgewildert + anzahl);
     }

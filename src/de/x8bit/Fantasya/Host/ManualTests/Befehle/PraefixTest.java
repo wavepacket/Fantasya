@@ -32,7 +32,7 @@ public class PraefixTest extends TestBase {
             u.setName(this.getName()+" 02");
             u.Befehle.add("PRAEFIX \"\"");
 
-            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoords());
+            new Info(this.getName() + " Setup in " + r + ".", u, u.getCoordinates());
         }
     }
 

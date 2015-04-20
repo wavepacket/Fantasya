@@ -3,7 +3,6 @@ package de.x8bit.Fantasya.Atlantis.Units;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Skill;
@@ -27,6 +26,7 @@ import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Skills.Hiebwaffen;
 import de.x8bit.Fantasya.Atlantis.Skills.Tarnung;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.GameRules;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Krieger;
 import de.x8bit.Fantasya.Host.ZAT.Battle.Weapons.WKnueppel;
@@ -34,6 +34,7 @@ import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.Random;
 import de.x8bit.Fantasya.util.StringUtils;
 import de.x8bit.Fantasya.util.lang.NonsenseTexter;
+
 import java.util.Collections;
 
 public class Kobold extends Monster {
@@ -107,7 +108,7 @@ public class Kobold extends Monster {
 		//TODO Hungernde Kobolde greifen an (?)
 		if (this.getKampfposition() != Kampfposition.Nicht) Befehle.add("KÄMPFE NICHT");
 		
-		Region region = Region.Load(getCoords());
+		Region region = Region.Load(getCoordinates());
         
 		// ist etwas nennenswertes vorgefallen?
         if (getStatusStehlen() != null) {
@@ -115,7 +116,7 @@ public class Kobold extends Monster {
                 // wenn die andere Einheit noch da ist...
                 Unit polizist = Unit.Load(getStatusStehlenEinheit());
                 if (polizist != null) {
-                    if (polizist.getCoords().equals(this.getCoords())) {
+                    if (polizist.getCoordinates().equals(this.getCoordinates())) {
                         // hier sind wir nicht sicher!
                         
                         // Kollegen in der Stadt warnen:
@@ -287,7 +288,7 @@ public class Kobold extends Monster {
         List<Region> ziele = getGuteWanderziele();
         if (!ziele.isEmpty()) {
             Collections.shuffle(ziele);
-            ri = this.getCoords().getRichtungNach(ziele.get(0).getCoords());
+            ri = this.getCoordinates().getRichtungNach(ziele.get(0).getCoordinates());
         } else {
             ri = Richtung.random();
         }
@@ -349,7 +350,7 @@ public class Kobold extends Monster {
             if (!this.canWalk()) return false;
         }
         
-		Region region = Region.Load(getCoords());
+		Region region = Region.Load(getCoordinates());
         
         // mögliche Wanderziele:
         List<Region> guteZiele = getGuteWanderziele();
@@ -360,14 +361,14 @@ public class Kobold extends Monster {
 		
         if (!guteZiele.isEmpty()) {
             Collections.shuffle(guteZiele);
-            Richtung ri = region.getCoords().getRichtungNach(guteZiele.get(0).getCoords());
+            Richtung ri = region.getCoordinates().getRichtungNach(guteZiele.get(0).getCoordinates());
             Befehle.add("NACH " + ri.getShortcut());
             Befehle.add("// auswandern in ein gutes Land: NACH " + ri.getShortcut());
             return true;
         }
         if (!schlechteZiele.isEmpty()) {
             Collections.shuffle(schlechteZiele);
-            Richtung ri = region.getCoords().getRichtungNach(schlechteZiele.get(0).getCoords());
+            Richtung ri = region.getCoordinates().getRichtungNach(schlechteZiele.get(0).getCoordinates());
             Befehle.add("NACH " + ri.getShortcut());
             Befehle.add("// auswandern in ein schlechtes Land: NACH " + ri.getShortcut());
             return true;
@@ -504,11 +505,11 @@ public class Kobold extends Monster {
 		kobold.Befehle.add("LERNE Tarnung");
 	}
 
-	private static Unit createKoboldEVA(int insel, Coords coords) {
+	private static Unit createKoboldEVA(int insel, Coordinates coords) {
 		List<Region> regionen = Region.getInselRegionen(insel, true);
 		Unit unit = null;
 		if (coords == null)	{
-			unit = Unit.CreateUnit("Kobold", Codierung.fromBase36("dark"), regionen.get(Random.rnd(0, regionen.size())).getCoords());
+			unit = Unit.CreateUnit("Kobold", Codierung.fromBase36("dark"), regionen.get(Random.rnd(0, regionen.size())).getCoordinates());
 		} else {
 			unit = Unit.CreateUnit("Kobold", Codierung.fromBase36("dark"), coords);
 		}
@@ -557,7 +558,7 @@ public class Kobold extends Monster {
 	
 	
 	protected List<Region> getGuteWanderziele() {
-		List<Region> alleZiele = Region.Load(this.getCoords()).getNachbarn();
+		List<Region> alleZiele = Region.Load(this.getCoordinates()).getNeighbours();
 		List<Region> guteZiele = new ArrayList<Region>();
 		for (Region ziel : alleZiele) {
             if (ziel.istBetretbar(this) && !ziel.anwesendeParteien().isEmpty()) {
@@ -577,7 +578,7 @@ public class Kobold extends Monster {
 
 	protected List<Region> getMachbareWanderziele() {
 		List<Region> ziele = new ArrayList<Region>();
-		for (Region ziel : Region.Load(this.getCoords()).getNachbarn()) if (ziel.istBetretbar(this)) ziele.add(ziel);
+		for (Region ziel : Region.Load(this.getCoordinates()).getNeighbours()) if (ziel.istBetretbar(this)) ziele.add(ziel);
 		return ziele;
 	}
 
@@ -609,7 +610,7 @@ public class Kobold extends Monster {
 
     @Override
     public void meldungenAuswerten() {
-        List<Message> messages = Message.Retrieve(null, (Coords)null, this);
+        List<Message> messages = Message.Retrieve(null, (Coordinates)null, this);
         for (Message msg : messages) {
             String txt = msg.getText().toLowerCase();
             

@@ -7,7 +7,6 @@ import java.util.Map;
 import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
 import de.x8bit.Fantasya.Atlantis.Effect;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -26,10 +25,12 @@ import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
 import de.x8bit.Fantasya.Atlantis.Spells.HainDerTausendEichen;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Steuer;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.serialization.MigrationSerializerFactory;
 import de.x8bit.Fantasya.Host.serialization.Serializer;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -110,7 +111,7 @@ public class EVAFastSaver {
 		db.DisableKeys(table);
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.getPlayerFactionList()) {
 			// Partei 0 kommt nicht in die DB/aus der DB, es gibt sie aber trotzdem:
 			if (p.getNummer() == 0) {
 				continue;
@@ -135,7 +136,7 @@ public class EVAFastSaver {
 			cnt++;
 		}
 		if (values.length() > 0) {
-			db.myQuery = EVAFastSaver.makeQuery(table, Partei.PROXY.get(0).getDBValues(), values);
+			db.myQuery = EVAFastSaver.makeQuery(table, Partei.OMNI_FACTION.getDBValues(), values);
 			int result = db.Update();
 		}
 		db.EnableKeys(table);
@@ -158,7 +159,7 @@ public class EVAFastSaver {
 
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.getPlayerFactionList()) {
 			for (int partnerNr : p.getAllianzen().keySet()) {
 				Allianz a = p.getAllianz(partnerNr);
 				for (AllianzOption ao : AllianzOption.values()) {
@@ -202,7 +203,7 @@ public class EVAFastSaver {
 
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.getPlayerFactionList()) {
 			for (Steuer st : p.getSteuern()) {
 				// TODO Ist dieses Verhalten erwünscht?
 				// if (st.getRate() == p.getDefaultsteuer()) continue;
@@ -347,7 +348,7 @@ public class EVAFastSaver {
 		Set<Region> checkSet = new HashSet<Region>();
 		for (Region r : Region.CACHE.values()) {
 			if (checkSet.contains(r)) {
-				new BigError(new RuntimeException("Regions.CACHE enthält eine Dopplung:" + r + " " + r.getCoords().xy()));
+				new BigError(new RuntimeException("Regions.CACHE enthält eine Dopplung:" + r + " " + r.getCoordinates().toString(false)));
 			}
 			checkSet.add(r);
 		}
@@ -392,9 +393,9 @@ public class EVAFastSaver {
 		db.DisableKeys(table);
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
-		Coords c = null;
+		Coordinates c = null;
 		for (Region r : Region.CACHE.values()) {
-			c = r.getCoords();
+			c = r.getCoordinates();
 			for (Item res : r.getResourcen()) {
 				if (values.length() > 0) {
 					values.append(", ");
@@ -427,9 +428,9 @@ public class EVAFastSaver {
 		db.DisableKeys(table);
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
-		Coords c = null;
+		Coordinates c = null;
 		for (Region r : Region.CACHE.values()) {
-			c = r.getCoords();
+			c = r.getCoordinates();
 			for (Nachfrage n : r.getLuxus()) {
 				if (values.length() > 0) {
 					values.append(", ");
@@ -972,7 +973,7 @@ public class EVAFastSaver {
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
 		for (Unit u : Unit.CACHE) {
-			if (u.getCoords().getWelt() == 0) {
+			if (u.getCoordinates().getZ() == 0) {
 				continue; // virtuelle Einheiten haben keine Befehle! Schtonk!
 			}
 			for (Einzelbefehl eb : u.BefehleExperimental) {

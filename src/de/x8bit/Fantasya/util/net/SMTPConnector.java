@@ -31,6 +31,7 @@ public class SMTPConnector {
     private String SMTP_PORT = "465";
     private String USERNAME = "defaultUser";
     private String PASSWORD = "defaultPassword";
+    private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
     public SMTPConnector() {
         Datenbank db = new Datenbank("SMTPConnector auth settings");
@@ -40,6 +41,10 @@ public class SMTPConnector {
         USERNAME = db.ReadSettings("smtp.username", USERNAME);
         PASSWORD = db.ReadSettings("smtp.password", PASSWORD);
         db.Close();
+
+        System.out.println("Unter Java7 nicht verwendbar");
+        System.exit(1);
+//        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
     }
 
     public void sendBefehlsCheck(Partei p, String bericht) throws MessagingException {
@@ -64,6 +69,9 @@ public class SMTPConnector {
 			"\n" +
 			"hier kommt die Fantasya-Auswertung für " + p + ".\n" +
 			"\n" +
+			"Die Befehle gehen mit Betreff \"fantasya beta\" an hapebe@gmail.com .\n" +
+			"ZAT ist - irgendwann!\n" +
+			"\n" +
 			"Schöne Grüße, die Fantasyasten.";
 
         BodyPart bp0 = new MimeBodyPart();
@@ -87,13 +95,20 @@ public class SMTPConnector {
 
     public void sendSSLMessage(String recipients[], String subject,
             Multipart contents, String from) throws MessagingException {
-        Properties props = new Properties();
-        props.put("mail.smtps.host", SMTP_HOST_NAME);
-        props.put("mail.smtps.auth", "true");
-        props.put("mail.smtps.port", SMTP_PORT);
-        Session session = Session.getInstance(props, new MyAuthenticator());
+        boolean debug = false;
 
-		// construct the message
+        Properties props = new Properties();
+        props.put("mail.smtp.host", SMTP_HOST_NAME);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.debug", debug?"true":"false");
+        props.put("mail.smtp.port", SMTP_PORT);
+        props.put("mail.smtp.socketFactory.port", SMTP_PORT);
+        props.put("mail.smtp.socketFactory.class", SSL_FACTORY);
+        props.put("mail.smtp.socketFactory.fallback", "false");
+
+        Session session = Session.getInstance(props, new MyAuthenticator());
+        session.setDebug(debug);
+
         Message msg = new MimeMessage(session);
         InternetAddress addressFrom = new InternetAddress(from);
         msg.setFrom(addressFrom);
@@ -103,11 +118,12 @@ public class SMTPConnector {
             addressTo[i] = new InternetAddress(recipients[i]);
         }
         msg.setRecipients(Message.RecipientType.TO, addressTo);
+
+        // Setting the Subject and Content Type
+
         msg.setSubject(subject);
         msg.setContent(contents);
-
-		// send it
-		Transport.send(msg);
+        Transport.send(msg);
     }
 
     private class MyAuthenticator extends Authenticator {

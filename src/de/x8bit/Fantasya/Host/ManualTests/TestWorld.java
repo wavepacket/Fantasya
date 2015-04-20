@@ -109,7 +109,7 @@ public class TestWorld {
                         int i = 0;
                         for (String befehl : u.Befehle) {
                             try {
-                                Einzelbefehl eb = new Einzelbefehl(u, u.getCoords(), befehl, i);
+                                Einzelbefehl eb = new Einzelbefehl(u, u.getCoordinates(), befehl, i);
                                 u.BefehleExperimental.add(eb);
                             } catch (IllegalArgumentException ex) {
                                 new Fehler(ex.getMessage(), u);
@@ -165,7 +165,7 @@ public class TestWorld {
 		Region ebene = list.get(0);
 		Region wald = null;
 		Region berge = null;
-		for (Region r:ebene.getNachbarn()) {
+		for (Region r:ebene.getNeighbours()) {
 			if (r.getTyp().equalsIgnoreCase(Wald.class.getSimpleName())) wald = r;
 			if (r.getTyp().equalsIgnoreCase(Berge.class.getSimpleName())) berge = r;
 		}
@@ -178,10 +178,10 @@ public class TestWorld {
 		getAlleRegionen().remove(berge);
 
 		// Ursprung für Spieler "korrigieren"
-		p.setUrsprung(ebene.getCoords());
+		p.setUrsprung(ebene.getCoordinates());
 
 		// Chef:
-		Unit u = Unit.CreateUnit("Mensch", p.getNummer(), ebene.getCoords());
+		Unit u = Unit.CreateUnit("Mensch", p.getNummer(), ebene.getCoordinates());
 		u.setPersonen(1);
 		u.setSkill(Wahrnehmung.class, 840);
 		u.setItem(Silber.class, GameRules.getRunde() * 100 + 10000);
@@ -189,7 +189,7 @@ public class TestWorld {
 
 		// betroffene Region aus dem Cache entfernen:
 			//System.out.println("PROXY before: "+Region.PROXY.size());
-		if (!Main.getBFlag("EVA")) Region.CACHE.remove(ebene.getCoords());
+		if (!Main.getBFlag("EVA")) Region.CACHE.remove(ebene.getCoordinates());
 			//System.out.println("PROXY after: "+Region.PROXY.size());
 
 	}
@@ -217,7 +217,7 @@ public class TestWorld {
 //				f.setName("Lords of Atlantis");
 //				f.setMonster(1);
 //			}
-//			f = Partei.getPartei(0);
+//			f = Partei.getFaction(0);
 //			new SysMsg("Partei 0 erzeugt - " + f.toString());
 //		}
 
@@ -233,9 +233,9 @@ public class TestWorld {
 		new SysMsg("neuen Spieler erzeugt - " + f.toString());
 
 		// ...und noch 'dark' !
-		Partei schonDa = Partei.getPartei(Codierung.fromBase36("dark"));
+		Partei schonDa = Partei.getFaction(Codierung.fromBase36("dark"));
 		if (schonDa == null) {
-			f = createPartei(Goblin.class);
+			f = Partei.MONSTER_FACTION;
 			f.setName("Monster");
 			// zu 'dark' ändern:
 			if (!Main.getBFlag("EVA")) {
@@ -247,9 +247,8 @@ public class TestWorld {
 				db.Update();
 			} else {
 				f.setNummer(Codierung.fromBase36("dark"));
-				f.setMonster(1);
 			}
-			f = Partei.getPartei(Codierung.fromBase36("dark"));
+			f = Partei.getFaction(Codierung.fromBase36("dark"));
 			new SysMsg("Monster-Partei erzeugt - " + f.toString());
 		}
 
@@ -263,13 +262,13 @@ public class TestWorld {
 	}
 
 	public Partei createPartei(Class<? extends Unit> rasse) {
-		Partei f = Partei.Create();
+		Partei f = Partei.createNewPlayerFaction();
 		f.setName("Partei " + f.getNummer());
 		f.setEMail("none");
 		f.setRasse(rasse.getSimpleName());
 		f.setNMR(GameRules.getRunde());
 		f.setDefaultsteuer(10);
-		Partei.PROXY.add(f);
+		// Partei.PROXY.add(f);
 		return f;
 	}
 
@@ -334,7 +333,7 @@ public class TestWorld {
 	public List<Region> nurNachbarVon(List<Region> in, Class<?> type) {
 		List<Region> retval = new ArrayList<Region>();
 		for (Region r:in) {
-			for (Region nachbar:r.getNachbarn()) {
+			for (Region nachbar:r.getNeighbours()) {
 				if (nachbar.getTyp().equalsIgnoreCase(type.getSimpleName())) {
 					retval.add(r);
 					break;
@@ -354,7 +353,7 @@ public class TestWorld {
 	{
 		for(Richtung r : Richtung.values())
 		{
-			Region nachbar = Region.Load(source.getCoords().shift(r));
+			Region nachbar = Region.Load(source.getCoordinates().shiftDirection(r));
 			if (nachbar.getClass().equals(destinationregiontype)) return r;
 		}
 		return null;
@@ -363,7 +362,7 @@ public class TestWorld {
 	public Partei getSpieler1() {
         if (spieler1 == null) {
 			if (Main.getBFlag("EVA")) {
-				for (Partei maybe : Partei.PROXY) {
+				for (Partei maybe : Partei.getPlayerFactionList()) {
 					if (maybe.getName().equals("Test-Boss")) {
 						spieler1 = maybe;
 						break;
@@ -371,7 +370,7 @@ public class TestWorld {
 				}
 			} else {
 				// DB-ZAT
-				spieler1 = Partei.getPartei(1);
+				spieler1 = Partei.getFaction(1);
 			}
 		}
 		return spieler1;

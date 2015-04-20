@@ -1,6 +1,7 @@
 package de.x8bit.Fantasya.Atlantis;
 
 import de.x8bit.Fantasya.Atlantis.Helper.MessageCache;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
@@ -11,10 +12,12 @@ import java.util.List;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.EVA.util.EVAFastSaver;
 import de.x8bit.Fantasya.util.comparator.MeldungsKategorieComparator;
 import de.x8bit.Fantasya.util.PackageLister;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +45,7 @@ public class Message {
 	private Partei partei = null;
 	private Unit unit = null;
 	private String text = "";
-	private Coords coords = null;
+	private Coordinates coords = null;
     private Date timestamp = null;
 	private int evaId = -1;
 
@@ -130,12 +133,12 @@ public class Message {
 	}
 
 	/** Liefert Messages ohne Beruecksichtigung der Kategorie zurueck. */
-    public static List<Message> Retrieve(Partei p, Coords c, Unit u) {
+    public static List<Message> Retrieve(Partei p, Coordinates c, Unit u) {
 		// Kategorie ignorieren
 		return Retrieve(p, c, u, null);
     }
 
-	public static List<Message> Retrieve(Partei p, Coords c, Unit u, String kategorie) {		
+	public static List<Message> Retrieve(Partei p, Coordinates c, Unit u, String kategorie) {		
 		Collection<Message> candidateMessages = Messages;
 		
 		if (p != null && c != null) {
@@ -205,15 +208,15 @@ public class Message {
 	public Map<String, Object> getDBValues() {
 		Map<String, Object> fields = new HashMap<String, Object>();
 
-		Coords c = this.getCoords();
-		fields.put("partei", getPartei() == null? 0 : getPartei().getNummer());
+		Coordinates c = this.getCoordinates();
+		fields.put("partei", getFaction() == null? 0 : getFaction().getNummer());
 		fields.put("kategorie", getClass().getSimpleName());
 		fields.put("text", getText());
 		fields.put("debuglevel", 0);
 		fields.put("zeit", new Timestamp(timestamp.getTime()).toString());
 		fields.put("koordx", c == null ? 0 : c.getX());
 		fields.put("koordy", c == null ? 0 : c.getY());
-		fields.put("welt",  c == null ? 0 : c.getWelt());
+		fields.put("welt",  c == null ? 0 : c.getZ());
 		fields.put("einheit", getUnit() == null ? 0 : getUnit().getNummer());
 
 		return fields;
@@ -254,7 +257,7 @@ public class Message {
             }
 
 			int parteiNr = rs.getInt("partei");
-			if (parteiNr != 0) retval.setPartei(Partei.getPartei(parteiNr));
+			if (parteiNr != 0) retval.setPartei(Partei.getFaction(parteiNr));
 
 			int unitNr = rs.getInt("einheit");
 			if (unitNr != 0) retval.setUnit(Unit.Load(unitNr));
@@ -263,7 +266,7 @@ public class Message {
 			int koordy = rs.getInt("koordy");
 			int welt = rs.getInt("welt");
 			if ((koordx != 0) || (koordy != 0) || (welt != 0)) {
-				retval.setCoords(new Coords(koordx, koordy, welt));
+				retval.setCoordinates(Coordinates.create(koordx, koordy, welt));
 			}
 
 		} catch (SQLException ex) {
@@ -286,7 +289,7 @@ public class Message {
 	 * @param coords The coordinates of the region that the message refers to.
 	 * @param unit The unit that the message refers to.
 	 */
-	protected void print(int level, String msg, Partei partei, Coords coords, Unit unit) {
+	protected void print(int level, String msg, Partei partei, Coordinates coords, Unit unit) {
 		// first, some sanity checks.
 		if (msg == null || msg.trim().isEmpty()) {
 			throw new IllegalArgumentException("Messages must have a text!");
@@ -312,7 +315,7 @@ public class Message {
 	}
 	
 	/** Convenience function if only the party and the coordinates are set. */
-	protected void print(int level, String msg, Partei partei, Coords coords) {
+	protected void print(int level, String msg, Partei partei, Coordinates coords) {
 		this.print(level, msg, partei, coords, null);
 	}
 
@@ -320,8 +323,8 @@ public class Message {
 	 * 
 	 * The party is taken from the unit's owner. The unit must not be null.
 	 */
-	protected void print(int level, String msg, Coords coords, Unit u) {
-		this.print(level, msg, Partei.getPartei(u.getOwner()), coords, u);
+	protected void print(int level, String msg, Coordinates coords, Unit u) {
+		this.print(level, msg, Partei.getFaction(u.getOwner()), coords, u);
 	}
 	
 	@Override
@@ -353,9 +356,9 @@ public class Message {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName()).append(" ");
 		sb.append("id[").append(evaId).append("]");
-		if (getPartei() != null) sb.append("P[").append(getPartei().getNummerBase36()).append("] ");
+		if (getFaction() != null) sb.append("P[").append(getFaction().getNummerBase36()).append("] ");
 		if (getUnit() != null) sb.append("U[").append(getUnit().getNummerBase36()).append("] ");
-		if (getCoords() != null) sb.append(getCoords()).append(" ");
+		if (getCoordinates() != null) sb.append(getCoordinates()).append(" ");
 		int cut = 40;
 		if (getText().length() > cut) {
 			sb.append("'").append(getText().substring(0, cut-1)).append("'");
@@ -374,7 +377,7 @@ public class Message {
 	public void setPartei(Partei partei) {
 		this.partei = partei;
 	}
-	public Partei getPartei() {
+	public Partei getFaction() {
 		return partei;
 	}
 
@@ -392,10 +395,10 @@ public class Message {
 		return text;
 	}
 
-	public void setCoords(Coords coords) {
+	public void setCoordinates(Coordinates coords) {
 		this.coords = coords;
 	}
-	public Coords getCoords() {
+	public Coordinates getCoordinates() {
 		return coords;
 	}
 
