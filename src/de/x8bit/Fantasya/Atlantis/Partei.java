@@ -21,6 +21,7 @@ import de.x8bit.Fantasya.Atlantis.Skills.Magie;
 import de.x8bit.Fantasya.Atlantis.Skills.Tarnung;
 import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
 import de.x8bit.Fantasya.Atlantis.Units.Goblin;
+import de.x8bit.Fantasya.Atlantis.Units.Mensch;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.atlas.FactionAtlas;
@@ -65,6 +66,7 @@ public class Partei extends Atlantis {
 	private static final List<Partei> NPC_FACTION_LIST = new ArrayList<Partei>();
 
 	static {
+		OMNI_FACTION.Rasse = Mensch.class.getSimpleName();
 		OMNI_FACTION.NMR = GameRules.getRunde();
 		MONSTER_FACTION.Rasse = Goblin.class.getSimpleName();
 		ANIMAL_FACTION.Rasse = Greif.class.getSimpleName();
@@ -133,8 +135,15 @@ public class Partei extends Atlantis {
 				&& this.factionWay != FactionWay.OMNI
 				&& this.factionWay != FactionWay.UNKNOWN)
 			return true;
+		return false;			
+	}
+	
+	public boolean isNonPlayerFaction() {
+		// Das gleiche wie isNPCFaction() nur, daß Omni mit eingeschlossen ist.
+		if (this.factionWay != FactionWay.PLAYER
+				&& this.factionWay != FactionWay.UNKNOWN)
+			return true;
 		return false;
-					
 	}
 
 	public void setCheats(int value) {
@@ -559,6 +568,13 @@ public class Partei extends Atlantis {
 		for (Partei possibleFaction : NPC_FACTION_LIST)
 			if (id == possibleFaction.getNummer()) return possibleFaction;
 		return null;
+	}
+	
+	public static boolean isNonPlayerFaction(int id) {
+		if (OMNI_FACTION.getNummer() == id) return true;
+		for (Partei possibleFaction : NPC_FACTION_LIST)
+			if (id == possibleFaction.getNummer()) return true;
+		return false;
 	}
 	
 	public static void clearPlayerFactionList() {

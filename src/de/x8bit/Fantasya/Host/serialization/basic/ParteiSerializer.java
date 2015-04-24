@@ -42,7 +42,8 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 		
 		try {
 			int id = Integer.parseInt(mapping.get("id"), 36);
-			if (Partei.isNPCFaction(id) || id == Partei.OMNI_FACTION.getNummer()) {
+			if (Partei.isNonPlayerFaction(id)) {
+				logger.warn("Error while loading Faction \"{}\"; faction {} is an non player faction.", id, id);
 				return null;
 			}
 			object = Partei.createPlayerFaction(id, Integer.decode(mapping.get("age")));
