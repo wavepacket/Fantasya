@@ -122,7 +122,7 @@ public class HammerDerGoetter extends Spell {
 				if (tote > 0) ereignisse.add(tote + " Bauern starben");
 				if (gebaeudeSchaden) ereignisse.add("alle Gebaeude nahmen beträchtlichen Schaden");
 
-				new Info(StringUtils.aufzaehlung(ereignisse) + ".", r);
+				new Info(StringUtils.aufzaehlungUnd(ereignisse) + ".", r);
 			} else {
 				// das Land versinkt im Ozean - alle und alles ist futsch!
 				for (Item res : r.getResourcen()) res.setAnzahl(0);
@@ -142,7 +142,7 @@ public class HammerDerGoetter extends Spell {
 				if (tote > 0) ereignisse.add(tote + " Bauern ertrinken");
 				if (gebaeudeSchaden) ereignisse.add("alle Gebaeude sind verloren");
 
-				new Info(StringUtils.aufzaehlung(ereignisse) + ".", r);
+				new Info(StringUtils.aufzaehlungUnd(ereignisse) + ".", r);
 
 				// TODO Was soll mit dem Regions-Namen passieren?
 			}

@@ -80,8 +80,8 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 							}
 						}
 
-						if (!tiere.isEmpty()) meldung.append(" " + StringUtils.aufzaehlung(tiere) + " werden mit in die Tiefe gezogen.");
-						if (!gegenstaende.isEmpty()) meldung.append(" Auf Nimmerwiedersehen versinken " + StringUtils.aufzaehlung(gegenstaende) + ".");
+						if (!tiere.isEmpty()) meldung.append(" " + StringUtils.aufzaehlungUnd(tiere) + " werden mit in die Tiefe gezogen.");
+						if (!gegenstaende.isEmpty()) meldung.append(" Auf Nimmerwiedersehen versinken " + StringUtils.aufzaehlungUnd(gegenstaende) + ".");
 
 						for (Item it : items) { it.setAnzahl(0); }
 
@@ -115,8 +115,8 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 							}
 						}
 
-						if (!tiere.isEmpty()) meldung.append(" " + StringUtils.aufzaehlung(tiere) + " gehen ebenfalls zugrunde.");
-						if (!gegenstaende.isEmpty()) meldung.append(" " + StringUtils.aufzaehlung(gegenstaende) + " gehen in Rauch auf.");
+						if (!tiere.isEmpty()) meldung.append(" " + StringUtils.aufzaehlungUnd(tiere) + " gehen ebenfalls zugrunde.");
+						if (!gegenstaende.isEmpty()) meldung.append(" " + StringUtils.aufzaehlungUnd(gegenstaende) + " gehen in Rauch auf.");
 
 						for (Item it : items) { it.setAnzahl(0); }
 
@@ -218,7 +218,7 @@ public class SpielerLoeschen extends EVABase implements NotACommand
                         }
                     }
                     if (!sachen.isEmpty()) {
-                        new Info(erbe + " erbt " + StringUtils.aufzaehlung(sachen) + " von der aufgelösten Einheit " + u + ".", erbe);
+                        new Info(erbe + " erbt " + StringUtils.aufzaehlungUnd(sachen) + " von der aufgelösten Einheit " + u + ".", erbe);
                     }
 
                     break;

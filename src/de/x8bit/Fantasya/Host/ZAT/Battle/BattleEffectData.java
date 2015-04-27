@@ -42,7 +42,7 @@ public class BattleEffectData {
     }
 
     public String getMessage() {
-        return StringUtils.aufzaehlung(messages);
+        return StringUtils.aufzaehlungUnd(messages);
     }
 	
 }

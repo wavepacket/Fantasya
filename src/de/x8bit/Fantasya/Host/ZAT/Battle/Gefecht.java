@@ -1238,7 +1238,7 @@ public final class Gefecht {
             parts.add(desc);
         }
 
-        sb.append(StringUtils.aufzaehlung(parts) + ".\n");
+        sb.append(StringUtils.aufzaehlungUnd(parts) + ".\n");
 
 //        if (false) {
 //            // TODO: Einzelauflistung der Krieger wieder aktivieren?

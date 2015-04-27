@@ -219,7 +219,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 		for (PersonenHaufen gruppe : personen.keySet()) gruppen.add(gruppe);
 		Collections.sort(gruppen);
 		Collections.reverse(gruppen);
-		String personenBeschreibung = StringUtils.aufzaehlung(gruppen);
+		String personenBeschreibung = StringUtils.aufzaehlungUnd(gruppen);
 
 		int vermoegenProKopf = Math.round((float)vermoegen / (float)headcount);
 		int einkommenProKopf = Math.round((float)einkommen / (float)headcount);
@@ -450,7 +450,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 			);
 			nr ++;
 		}
-		writer.wl("Die Parteien " + StringUtils.aufzaehlung(ausgeschlossene) + " wurden nicht berücksichtigt, das sie weniger als 100 Personen umfassen.");
+		writer.wl("Die Parteien " + StringUtils.aufzaehlungUnd(ausgeschlossene) + " wurden nicht berücksichtigt, das sie weniger als 100 Personen umfassen.");
 		writer.wl("");
 		
 		writer.wl("Der größte Einfluss:");
@@ -928,7 +928,7 @@ public class SyntaxHighlightingNR extends ReportNR {
                 if ((resource instanceof AnimalResource) && (resource.getAnzahl() > 0)) tiere.add(resource);
             }
             if (!tiere.isEmpty()) {
-                msg.append("Hier können ").append(StringUtils.aufzaehlung(tiere)).append(" gefangen werden. ");
+                msg.append("Hier können ").append(StringUtils.aufzaehlungUnd(tiere)).append(" gefangen werden. ");
             }
 
             // Holz und Eisen
@@ -940,7 +940,7 @@ public class SyntaxHighlightingNR extends ReportNR {
                 rohstoffe.add(resource);
             }
             if (!rohstoffe.isEmpty()) {
-                msg.append(StringUtils.aufzaehlung(rohstoffe)).append(" können gewonnen werden. ");
+                msg.append(StringUtils.aufzaehlungUnd(rohstoffe)).append(" können gewonnen werden. ");
             }
         
 		
@@ -970,7 +970,7 @@ public class SyntaxHighlightingNR extends ReportNR {
                     }
                 }
             }
-            if (!landNachbarn.isEmpty()) msg.append(StringUtils.ucfirst(StringUtils.aufzaehlung(landNachbarn))).append(". ");
+            if (!landNachbarn.isEmpty()) msg.append(StringUtils.ucfirst(StringUtils.aufzaehlungUnd(landNachbarn))).append(". ");
 
             // Nachbarregionen: Wasser
             List<String> wasserNachbarn = new ArrayList<String>();
@@ -981,7 +981,7 @@ public class SyntaxHighlightingNR extends ReportNR {
                     wasserNachbarn.add(ri.toString() + " (Sturmwahrscheinlichkeit ist " + ((Ozean)hr).getSturmValue() + ")");
                 }
             }
-            if (!wasserNachbarn.isEmpty()) msg.append("Im ").append(StringUtils.aufzaehlung(wasserNachbarn)).append(" liegt die offene See. ");
+            if (!wasserNachbarn.isEmpty()) msg.append("Im ").append(StringUtils.aufzaehlungUnd(wasserNachbarn)).append(" liegt die offene See. ");
 
             // Beschreibung
             if (r.getBeschreibung().length() > 0) {
@@ -1017,7 +1017,7 @@ public class SyntaxHighlightingNR extends ReportNR {
                 }
                 parteiMeldungen.add(p + " (" + StringUtils.aufzaehlung(wachen) + ")");
             }
-            msg.append("Die Region wird von ").append(StringUtils.aufzaehlung(parteiMeldungen)).append(" bewacht. ");
+            msg.append("Die Region wird von ").append(StringUtils.aufzaehlungUnd(parteiMeldungen)).append(" bewacht. ");
         }
 		if (msg.length() > 0) {
 			writer.wl(msg.toString());
@@ -1070,7 +1070,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             } else {
                 msg = "Es führen Strassen nach ";
             }
-            msg += StringUtils.aufzaehlung(strassen);
+            msg += StringUtils.aufzaehlungUnd(strassen);
             msg += ".";
             writer.wl(msg);
             writer.wl("");
@@ -1102,8 +1102,8 @@ public class SyntaxHighlightingNR extends ReportNR {
             }
         }
 
-        msg.append(StringUtils.aufzaehlung(ankauf)).append(". ");
-        msg.append("Die Bauern produzieren ").append(StringUtils.aufzaehlung(verkauf)).append(". ");
+        msg.append(StringUtils.aufzaehlungUnd(ankauf)).append(". ");
+        msg.append("Die Bauern produzieren ").append(StringUtils.aufzaehlungUnd(verkauf)).append(". ");
 
         writer.wl(msg.toString());
         writer.wl("");
@@ -1241,8 +1241,8 @@ public class SyntaxHighlightingNR extends ReportNR {
 						} else {
 							msg.append("In der Summe ist ").append(gesamtBilanz).append(" Bauer zugewandert: ");
 						}
-						msg.append(StringUtils.aufzaehlung(descHer));
-						if (!descWeg.isEmpty()) msg.append("; ausgewandert sind ").append(StringUtils.aufzaehlung(descWeg));
+						msg.append(StringUtils.aufzaehlungUnd(descHer));
+						if (!descWeg.isEmpty()) msg.append("; ausgewandert sind ").append(StringUtils.aufzaehlungUnd(descWeg));
 						msg.append(".");
 					} else if (gesamtBilanz < 0) {
 						if (gesamtBilanz < -1) {
@@ -1250,8 +1250,8 @@ public class SyntaxHighlightingNR extends ReportNR {
 						} else {
 							msg.append("In der Summe ist ").append(-1 * gesamtBilanz).append(" Bauern abgewandert: ");
 						}
-						msg.append(StringUtils.aufzaehlung(descWeg));
-						if (!descHer.isEmpty()) msg.append("; eingewandert sind ").append(StringUtils.aufzaehlung(descHer));
+						msg.append(StringUtils.aufzaehlungUnd(descWeg));
+						if (!descHer.isEmpty()) msg.append("; eingewandert sind ").append(StringUtils.aufzaehlungUnd(descHer));
 						msg.append(".");
 					} else {
 						msg.append("Ein- und Auswanderung sind ausgeglichen.");
@@ -1554,7 +1554,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             if (talente.isEmpty()) {
                 msg.append("dumm wie Stroh");
             } else {
-                msg.append("Talente: ").append(StringUtils.aufzaehlung(talente));
+                msg.append("Talente: ").append(StringUtils.aufzaehlungUnd(talente));
             }
             msg.append(". ");
 
@@ -1573,7 +1573,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 				for(Spell spell : u.getSpells()) {
                     sprueche.add("'" + spell.getName() + "' (Stufe " + spell.getStufe() + ")" );
                 }
-				msg.append("Zaubersprüche: " + StringUtils.aufzaehlung(sprueche) + ". ");
+				msg.append("Zaubersprüche: " + StringUtils.aufzaehlungUnd(sprueche) + ". ");
 				
 				// Kampfzauber
                 msg.append("Aktive Kampfzauber - ");
@@ -1651,7 +1651,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 			if (items.isEmpty()) {
 				msg.append(verb).append(" nichts");
 			} else {
-				msg.append(verb).append(" ").append(StringUtils.aufzaehlung(items));
+				msg.append(verb).append(" ").append(StringUtils.aufzaehlungUnd(items));
 			}
 
 			if ((u.getOwner() == partei.getNummer()) || omniszienz) {
@@ -1668,7 +1668,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             if (befehlsTexte.isEmpty()) {
                 msg.append("Keine Befehle. ");
             } else {
-                msg.append("Befehle: ").append(StringUtils.aufzaehlung(befehlsTexte)).append(". ");
+                msg.append("Befehle: ").append(StringUtils.aufzaehlungUnd(befehlsTexte)).append(". ");
             }
 
 			// Meldungen
@@ -1691,7 +1691,7 @@ public class SyntaxHighlightingNR extends ReportNR {
                     }
                     texte.add(text);
 				}
-                String alles = StringUtils.aufzaehlung(texte);
+                String alles = StringUtils.aufzaehlungUnd(texte);
                 alles = alles.substring(0, 1).toUpperCase() + alles.substring(1) + ".";
                 writer.wl(alles + " <<");
 				writer.NRFront -= 3;

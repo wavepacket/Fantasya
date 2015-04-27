@@ -235,7 +235,7 @@ public class Cave extends Building {
 			}
 		}
 		if (!sperrige.isEmpty()) {
-			new Fehler(unit + " hat " + StringUtils.aufzaehlung(sperrige) + " dabei und kommt damit nicht in die Höhle.", unit);
+			new Fehler(unit + " hat " + StringUtils.aufzaehlungUnd(sperrige) + " dabei und kommt damit nicht in die Höhle.", unit);
 			return;
 		}
 

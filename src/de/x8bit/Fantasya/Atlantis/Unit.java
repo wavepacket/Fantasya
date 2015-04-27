@@ -1568,7 +1568,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 				
 				if (!verluste.isEmpty()) {
 					String verb = " gehen"; if (summeTierVerluste == 1) verb = " geht";
-					msg.append(" " + StringUtils.aufzaehlung(verluste) + verb + (opfer>0? " mit":"") + " zugrunde.");
+					msg.append(" " + StringUtils.aufzaehlungUnd(verluste) + verb + (opfer>0? " mit":"") + " zugrunde.");
 				}
 				
 				if (getPersonen() > 0) {
@@ -1729,7 +1729,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 			}
 			if (sachen.size() > 0) {
 				if (meldungMachen) new Info(
-						erbe + " erbt " + StringUtils.aufzaehlung(sachen)
+						erbe + " erbt " + StringUtils.aufzaehlungUnd(sachen)
 						+ " von der aufgelösten Einheit " + this + ".", erbe, erbe.getCoordinates()
 				);
 			}

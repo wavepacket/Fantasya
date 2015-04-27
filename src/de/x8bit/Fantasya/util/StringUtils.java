@@ -37,7 +37,7 @@ public final class StringUtils {
         return out.toString();
     }
 
-	public static String aufzaehlung(List parts) {
+	public static String aufzaehlungUnd(List parts) {
         StringBuilder sb = new StringBuilder();
         int i = 0;
         for (Object part : parts) {
@@ -82,7 +82,7 @@ public final class StringUtils {
 	public static String aufzaehlung(Set parts) {
 		List temp = new ArrayList();
 		temp.addAll(parts);
-		return StringUtils.aufzaehlung(temp);
+		return StringUtils.aufzaehlungUnd(temp);
 	}
 
     public static String liste(List parts) {
@@ -96,13 +96,6 @@ public final class StringUtils {
         return sb.toString();
     }
 
-	@SuppressWarnings("unchecked")
-    public static String liste(Set parts) {
-        List tmp = new ArrayList();
-        tmp.addAll(parts);
-        return StringUtils.liste(tmp);
-    }
-
 	/**
 	 * @param str
 	 * @return eine Kopie von str mit einem Großbuchstaben am Anfang (per String.toUpperCase())
@@ -112,7 +105,7 @@ public final class StringUtils {
 	}
 
 	public static String only7bit(String s) {
-	  StringBuffer r = new StringBuffer( s.length() );
+	  StringBuilder r = new StringBuilder( s.length() );
 	  r.setLength( s.length() );
 	  int current = 0;
 	  for (int i = 0; i < s.length(); i ++) {
@@ -124,7 +117,7 @@ public final class StringUtils {
 	}
 
 	public static String only8bit(String s) {
-	  StringBuffer r = new StringBuffer( s.length() );
+	  StringBuilder r = new StringBuilder( s.length() );
 	  r.setLength( s.length() );
 	  int current = 0;
 	  for (int i = 0; i < s.length(); i ++) {

@@ -914,7 +914,7 @@ public abstract class Region extends Atlantis implements Comparable<Region> {
 			}
 		}
 
-		sb.append(StringUtils.aufzaehlung(bewacher));
+		sb.append(StringUtils.aufzaehlungUnd(bewacher));
 
 		return sb.toString();
 	}

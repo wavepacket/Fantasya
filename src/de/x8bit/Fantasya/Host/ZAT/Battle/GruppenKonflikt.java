@@ -168,7 +168,7 @@ public class GruppenKonflikt {
             for (Gruppe g : getSeiteA()) {
                 beteiligte.add(g.beschreibeFuerPartei(Partei.getFaction(0)));
             }
-            sb.append("Die Verb\u00fcndeten ").append(StringUtils.aufzaehlung(beteiligte));
+            sb.append("Die Verb\u00fcndeten ").append(StringUtils.aufzaehlungUnd(beteiligte));
             sb.append(" greifen ");
         } else {
             sb.append(getSeiteA().iterator().next().beschreibeFuerPartei(Partei.getFaction(0)));
@@ -179,7 +179,7 @@ public class GruppenKonflikt {
             for (Gruppe g : getSeiteB()) {
                 beteiligte.add(g.beschreibeFuerPartei(Partei.getFaction(0)));
             }
-            sb.append("die Verb\u00fcndeten ").append(StringUtils.aufzaehlung(beteiligte));
+            sb.append("die Verb\u00fcndeten ").append(StringUtils.aufzaehlungUnd(beteiligte));
         } else {
             sb.append(getSeiteB().iterator().next().beschreibeFuerPartei(Partei.getFaction(0)));
         }

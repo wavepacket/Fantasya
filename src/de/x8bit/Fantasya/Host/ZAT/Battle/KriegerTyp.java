@@ -205,10 +205,10 @@ public class KriegerTyp {
                 }
                 parts.add(wBeschreibung);
             }
-            sb.append(" mit ").append(StringUtils.aufzaehlung(parts));
+            sb.append(" mit ").append(StringUtils.aufzaehlungUnd(parts));
         }
         if (!this.getFx().isEmpty()) {
-            sb.append(" unter dem Einfluss von ").append(StringUtils.aufzaehlung(getFx()));
+            sb.append(" unter dem Einfluss von ").append(StringUtils.aufzaehlungUnd(getFx()));
         }
 
         return sb.toString();
