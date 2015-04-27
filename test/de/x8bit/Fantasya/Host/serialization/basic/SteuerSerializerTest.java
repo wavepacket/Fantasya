@@ -18,16 +18,13 @@ public class SteuerSerializerTest {
 	Map<String,String> serializedMap = new HashMap<String,String>();
 	List<Partei> parteiList = new ArrayList<Partei>();
 
-	Partei owner = new Partei();
-	Partei faction = new Partei();
+	Partei owner = Partei.createPlayerFaction(1, 1);
+	Partei faction = Partei.createPlayerFaction(2, 1);
 
 	SteuerSerializer serializer;
 
 	@Before
 	public void setup() {
-		owner.setNummer(1);
-		faction.setNummer(2);
-
 		parteiList.add(owner);
 		parteiList.add(faction);
 		serializer = new SteuerSerializer(parteiList);
@@ -86,8 +83,7 @@ public class SteuerSerializerTest {
 
 	@Test
 	public void savingWorksProperly() {
-		Partei additionalFaction = new Partei();
-		additionalFaction.setNummer(3);
+		Partei additionalFaction = Partei.createPlayerFaction(3, 1);
 		parteiList.add(additionalFaction);
 
 		Map<String,String> secondMap = new HashMap<String,String>();

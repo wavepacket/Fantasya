@@ -7,10 +7,8 @@ import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,20 +24,23 @@ import java.util.Set;
 // documented anywhere as being in whatever way special.
 public class MessageSerializer implements ObjectSerializer<Message> {
 
+	private Collection<Partei> factionList;
 	private Collection<Coordinates> coordsList;
 	private MapCache<Unit> unitList;
 
 	/** Constructs a new serializer.
 	 * 
-	 * @param parteiList a list of all active parties
+	 * @param factionList a list of all active parties
 	 * @param coordsList a list of all available coordinates
 	 * @param unitList a list of all available units
 	 */
-	public MessageSerializer(Collection<Coordinates> coordsList, MapCache<Unit> unitList) {
-		if (coordsList == null || unitList == null) {
+	public MessageSerializer(Collection<Partei> factionList,
+			Collection<Coordinates> coordsList, MapCache<Unit> unitList) {
+		if (factionList == null || coordsList == null || unitList == null) {
 			throw new IllegalArgumentException("Serializer needs valid lists.");
 		}
 
+		this.factionList = factionList;
 		this.coordsList = coordsList;
 		this.unitList = unitList;
 	}
@@ -68,14 +69,9 @@ public class MessageSerializer implements ObjectSerializer<Message> {
 
 		msg.setText(mapping.get("text"));
 		
-    	List<Partei> allFactionList = new ArrayList<Partei>();
-    	allFactionList.addAll(Partei.getPlayerFactionList());
-    	allFactionList.addAll(Partei.getNPCFactionList());
-    	allFactionList.add(Partei.OMNI_FACTION);
-
 		// load the player that the message corresponds to
 		int pid = Integer.decode(mapping.get("partei"));
-		for (Partei p : allFactionList) {
+		for (Partei p : factionList) {
 			if (p.getNummer() == pid) {
 				msg.setPartei(p);
 			}

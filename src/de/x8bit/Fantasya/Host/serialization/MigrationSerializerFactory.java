@@ -15,9 +15,11 @@ import de.x8bit.Fantasya.Host.serialization.db.Database;
 import de.x8bit.Fantasya.Host.serialization.db.DatabaseAdapter;
 import de.x8bit.Fantasya.Host.serialization.postprocess.PostProcessor;
 import de.x8bit.Fantasya.Host.serialization.postprocess.RegionInitHandelProcessor;
+import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -44,7 +46,13 @@ public class MigrationSerializerFactory {
 		Adapter adapter = buildDatabaseAdapter(db);
 		
 		LinkedHashMap<String,ComplexHandler> handlerMap = new LinkedHashMap<String,ComplexHandler>();
-		
+
+		// Assemble a list of all factions; passed to some of the handlers.
+    	List<Partei> allFactionList = new ArrayList<Partei>();
+    	allFactionList.addAll(Partei.getPlayerFactionList());
+    	allFactionList.addAll(Partei.getNPCFactionList());
+    	allFactionList.add(Partei.OMNI_FACTION);
+
 		// Load Parteien and their data first.
 		handlerMap.put("partei", new CacheFillerHandler<Partei>(
 				new ParteiSerializer(),
@@ -95,7 +103,7 @@ public class MigrationSerializerFactory {
 
 		// load units and everything around them
 		handlerMap.put("einheiten", new CacheFillerHandler<Unit>(
-				new EinheitenSerializer(Region.CACHE.keySet()),
+				new EinheitenSerializer(allFactionList, Region.CACHE.keySet()),
 				Unit.CACHE));
 		handlerMap.put("items", new CacheLooperHandler<Unit>(
 				new ItemSerializer(Unit.CACHE),

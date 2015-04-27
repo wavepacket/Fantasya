@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
@@ -19,17 +19,17 @@ public class ResourcenSerializerTest {
 	private ResourcenSerializer serializer;
 
 	private Region region = new Ebene();
-	private Map<Coords, Region> regionMap = new HashMap<Coords, Region>();
+	private Map<Coordinates, Region> regionMap = new HashMap<Coordinates, Region>();
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(15,13,1);
-		region.setCoords(coords);
+		Coordinates coords = Coordinates.create(15,13,1);
+		region.setCoordinates(coords);
 		regionMap.put(coords, region);
 
 		serializedMap.put("koordx", String.valueOf(coords.getX()));
 		serializedMap.put("koordy", String.valueOf(coords.getY()));
-		serializedMap.put("welt", String.valueOf(coords.getWelt()));
+		serializedMap.put("welt", String.valueOf(coords.getZ()));
 		serializedMap.put("resource", "Eisen");
 		serializedMap.put("anzahl", "28");
 

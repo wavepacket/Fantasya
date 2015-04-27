@@ -18,16 +18,14 @@ public class ParteienPropertySerializerTest {
 
 	private Map<String, String> serializedMap = new HashMap<String, String>();
 	private Collection<Partei> parteiList = new ArrayList<Partei>();
-	private Partei object = new Partei();
+	private Partei object = Partei.createPlayerFaction(42, 1);
 	private ParteienPropertySerializer serializer = new ParteienPropertySerializer(parteiList);
 
 	@Before
 	public void setup() {
-		object.setNummer(42);
 		parteiList.add(object);
 
-		Partei otherEntry = new Partei();
-		otherEntry.setNummer(80);
+		Partei otherEntry = Partei.createPlayerFaction(80, 1);
 		parteiList.add(otherEntry);
 
 		serializedMap.put("id", String.valueOf(1));

@@ -1,8 +1,7 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
-import de.x8bit.Fantasya.Atlantis.Helper.Cache;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
@@ -21,14 +20,14 @@ public class BuildingSerializerTest {
 
 	private Map<String,String> serializedMap = new HashMap<String,String>();
 
-	private HashSet<Coords> coordSet = new HashSet<Coords>();
+	private HashSet<Coordinates> coordSet = new HashSet<Coordinates>();
 	private MapCache<Unit> unitCache = new MapCache<Unit>();
 
 	private BuildingSerializer serializer = new BuildingSerializer(coordSet, unitCache);
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(15,14,-2);
+		Coordinates coords = Coordinates.create(15,14,-2);
 		coordSet.add(coords);
 
 		// a unit with the id of the owning unit.
@@ -38,7 +37,7 @@ public class BuildingSerializerTest {
 
 		serializedMap.put("koordx", String.valueOf(coords.getX()));
 		serializedMap.put("koordy", String.valueOf(coords.getY()));
-		serializedMap.put("welt", String.valueOf(coords.getWelt()));
+		serializedMap.put("welt", String.valueOf(coords.getZ()));
 		serializedMap.put("nummer", "543");
 		serializedMap.put("name", "someBuilding");
 		serializedMap.put("beschreibung", "descriptionToDo");
@@ -74,14 +73,14 @@ public class BuildingSerializerTest {
 
 	@Test
 	public void loadingBasicallyWorks() {
-		Coords coords = new Coords(
+		Coordinates coords = Coordinates.create(
 				Integer.decode(serializedMap.get("koordx")),
 				Integer.decode(serializedMap.get("koordy")),
 				Integer.decode(serializedMap.get("welt")));
 		Building b = serializer.load(serializedMap);
 
 		assertEquals("Wrong coordinates set.",
-				coords, b.getCoords());
+				coords, b.getCoordinates());
 		assertEquals("Wrong id set",
 				(int)Integer.decode(serializedMap.get("nummer")), b.getNummer());
 		assertEquals("Wrong building type",

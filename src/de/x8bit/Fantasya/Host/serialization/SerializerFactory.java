@@ -26,6 +26,12 @@ public class SerializerFactory {
 		
 		LinkedHashMap<String,ComplexHandler> handlerMap = new LinkedHashMap<String,ComplexHandler>();
 		
+		// Assemble a list of all factions; passed to some of the handlers.
+    	List<Partei> allFactionList = new ArrayList<Partei>();
+    	allFactionList.addAll(Partei.getPlayerFactionList());
+    	allFactionList.addAll(Partei.getNPCFactionList());
+    	allFactionList.add(Partei.OMNI_FACTION);
+
 		// Load Parteien and their data first.
 		handlerMap.put("partei", new CacheFillerHandler<Partei>(
 				new ParteiSerializer(),
@@ -76,7 +82,7 @@ public class SerializerFactory {
 		
 		// load units and their various attributes
 		handlerMap.put("einheiten", new CacheFillerHandler<Unit>(
-				new EinheitenSerializer(Region.CACHE.keySet()),
+				new EinheitenSerializer(allFactionList, Region.CACHE.keySet()),
 				Unit.CACHE));
 		handlerMap.put("items", new CacheLooperHandler<Unit>(
 				new ItemSerializer(Unit.CACHE),
@@ -107,7 +113,7 @@ public class SerializerFactory {
 //				new BefehleSerializer(Unit.CACHE),
 //				Unit.CACHE));
 		handlerMap.put("meldungen", new CacheFillerHandler<Message>(
-				new MessageSerializer(Region.CACHE.keySet(), Unit.CACHE),
+				new MessageSerializer(allFactionList, Region.CACHE.keySet(), Unit.CACHE),
 				Message.Cache()));
 		handlerMap.put("neuespieler", new CacheFillerHandler<NeuerSpieler>(
 				new NeuerSpielerSerializer(),
