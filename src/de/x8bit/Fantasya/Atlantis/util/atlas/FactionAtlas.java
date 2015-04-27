@@ -202,4 +202,38 @@ public abstract class FactionAtlas {
         
         return true;
     }
+	
+	protected static void mergeIslands(Island newIsland, Set<Island> oldIslandSet, FactionAtlas factionAtlas) {
+		// Die neue Insel bekommt alle Koordinaten (Regionen) der alten Insel(teile)n
+		// Die alten Inseln werden aus der Inselliste entfernt
+		for (Island oldIsland : oldIslandSet) {
+				newIsland.coordinateSet.addAll(oldIsland.getCoordinateSet());
+				factionAtlas.islandSet.remove(oldIsland);
+		}
+	}
+	
+	protected static boolean selectIsland(Coordinates coordinates, Class<? extends Region> regionClass, Island island, boolean isRegion, FactionAtlas factionAtlas) {
+		if (!FactionAtlas.isIslandModus(regionClass, island.getIslandType())) return false;
+		
+		LOGGER.info("RegionSight " + coordinates + " [" + regionClass.getSimpleName() + "] wird der Insel (" + island.getID() + ") mit dem Modus " + island.getIslandType() + " hinzugefügt werden.");
+		island.coordinateSet.add(coordinates);
+		// Insel soll temporär ganz erfasst werden, um ggf. neu generierte inseln, die mit alten zusammenhängen,
+        // mit diesen zusammen zu legen.
+		Class<? extends Region> newRegionClass;
+		for (Coordinates neighbourCoordinates : coordinates.getNeighbours()) {
+			if (isRegion) {
+				Region region = Region.Load(neighbourCoordinates);
+				if (region == null || region.getClass() == DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS) continue;
+				newRegionClass = region.getClass();
+			} else {
+				RegionSight rs = factionAtlas.getRegionSight(neighbourCoordinates);
+				if (rs == null || rs.isInvisibleTerrain()) continue;
+				newRegionClass = rs.getTerrain();
+			}
+			
+			if (!island.coordinateSet.contains(neighbourCoordinates)) selectIsland(neighbourCoordinates, newRegionClass, island, isRegion, factionAtlas);
+		}
+        
+        return true;
+	}
 }

@@ -286,74 +286,68 @@ public class PlayerFactionAtlas extends FactionAtlas {
 		addForUpdate(unitRegionSightAtlas);
 		
 		// ------------------------------------- Inseln ----------------------------------------
-		// 1. Die Inseln, die existieren ihre Koordinaten zuweisen
-		for (Island privateIsland : islandSet) {
-			
-		}
-		// 1. Alle Regionen, die eine Insel haben, dieser zuweisen.
-		List<Region> regionWithoutIslandList = new ArrayList<Region>();
-		// Inseln werden geladen und sollen nur ein update bekommen...
+		boolean identifiedCoordinatesForIsland;
+		Class<? extends Region> regionClass;
+		Coordinates regionSightCoordinates;
+		// 1. Jede Insel auf centralCoordinate testen.
+		//	- Ist diese (nicht-land) / null oder invisible, wird eine neue Koordinate aus der Liste genommen.
+		//		Hat die Insel keine Koordinate, die nicht (nicht-land) / null oder invisible ist,
+		//		werden die Nachtbarkoordinaten der (nicht-land) / invisible kontrolliert, ob diese nicht null und
+		//		nicht invisible / (also land) sind.
+		//	- Sind auch die Nachtbarkoordinaten alle nicht-land, wird die Insel gelöscht.
+		// 2. Jede Insel über select mit evtl. angrenzenden coordinaten auffüllen.
+		// 3. Überprüfen, ob Inseln sich Koordinaten teilen und diese zusammenfügen.
 		
+		// 2. Alle RegionSight darauf testen, ob diese einer Insel zugewiesen sind.
+		// Dabei werden die Ozeanfelder, Lavaströme und Sandströme rausgenommen.
+		prepareIslands();
+		// Es gibt nur Landinseln
+		List<RegionSight> regionSightWithoutIslandList = new ArrayList<RegionSight>();
 		for (RegionSight rs : factionAtlas) {
-			if (rs.getTerrain() == DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS) {
-				continue;
-			}
-
-			Region region = Region.CACHE.get(rs.getCoordinates());
-			if (region.getPublicIslandID() == 0) {
-				regionWithoutIslandList.add(region);
-				continue;
-			}
-			
-			Island island = getIsland(region.getCoordinates());
-			if (island == null) { island = new PublicIsland(region.getPublicIslandID(), FactionAtlas.getIslandType(region.getClass())); islandSet.add(island);}
-			island.coordinateSet.add(region.getCoordinates());
+			// Nur Landinseln werden berücksichtigt.
+			if (!FactionAtlas.isIslandModus(rs.getTerrain(), Island.IslandType.LAND)) continue;
+			// Wenn diese RegionSight keiner Insel zugeordnet ist, dann wird diese als Insellos bezeichnet.
+			if (getIsland(rs.getCoordinates()) == null) regionSightWithoutIslandList.add(rs);
 		}
-
-		// 2. neue Insel erstellen und die Regionen dieser Insel erfassen.
+		
+		// 3. neue Insel erstellen und die Regionen dieser Insel erfassen.
 		int currentId = 1;
-		Set<Island> islandsOfRegionSet = new HashSet<Island>();
-		for (Region region : regionWithoutIslandList) {
+		Set<Island> islandsOfRegionSightSet = new HashSet<Island>();
+		for (RegionSight rs : regionSightWithoutIslandList) {
+			// Da RegionSight schon einer Insel zugefügt sein kann (ab dem zweiten Element), muß darauf getestet werden.
+			if (getIsland(rs.getCoordinates()) != null) continue;
 			for (; currentId < Integer.MAX_VALUE; currentId++) {
 				if (getIsland(currentId) == null) {
 					break;
 				}
 			}
-
-			if (region.getCoordinates().getZ() == 0) {
+			
+			regionClass = rs.getTerrain();
+			regionSightCoordinates = rs.getCoordinates();
+			
+			if (regionSightCoordinates.getZ() == 0) {
+				// Loggen!!
 				continue; // imaginäre Region...
 			}
-			Island island = new PublicIsland(currentId, FactionAtlas.getIslandType(region.getClass()));
-
-			// new Debug("Modus @ " + c + " = " + modus);
-			// eine noch nicht erfasste Region:
-// compiliert nicht; z.Z. deaktiviert
-//			boolean erkannt = selectIsland(region, island);
-boolean erkannt = true;
-
-			if (erkannt) {
+			Island island = new PrivateIsland(currentId, GameRules.getRunde(), FactionAtlas.getIslandType(rs.getTerrain()));
+			
+			identifiedCoordinatesForIsland = FactionAtlas.selectIsland(regionSightCoordinates, regionClass, island, false, this);
+			
+			if (identifiedCoordinatesForIsland) {
 				Island newIsland;
-				Island regionIsland;
-				Region islandRegion;
-				islandsOfRegionSet.clear();
+				Island regionSightIsland;
+				islandsOfRegionSightSet.clear();
+				// 3. Überprüfen, ob Inseln sich Koordinaten teilen und diese zusammenfügen.
 				for (Coordinates islandCoordinates : island.coordinateSet) {
-					islandRegion = Region.Load(islandCoordinates);
-					if (islandRegion.getPublicIslandID() == 0) {
-						continue;
-					}
-					regionIsland = getIsland(islandRegion.getPublicIslandID());
-					islandsOfRegionSet.add(regionIsland);
+					regionSightIsland = getIsland(islandCoordinates);
+					if (regionSightIsland == null) continue;
+					islandsOfRegionSightSet.add(regionSightIsland);
 				}
 				/* Wenn er keine Regionen anderer Inseln hat:
-				 * 1. Alle Regionen bekommen die InselID
-				 * 2. Die Insel wird dem SET hinzugefügt
-				 * 3. currentId++
+				 * 1. Die Insel wird dem SET hinzugefügt
+				 * 2. currentId++
 				 */
-				if (islandsOfRegionSet.isEmpty()) {
-					for (Coordinates islandCoordinates : island.coordinateSet) {
-						islandRegion = Region.Load(islandCoordinates);
-						islandRegion.setPublicIslandID(island.getID());
-					}
+				if (islandsOfRegionSightSet.isEmpty()) {
 					islandSet.add(island);
 					currentId++;
 				} /* Wenn er Regionen einer anderen Insel zuordnen kann:
@@ -364,7 +358,7 @@ boolean erkannt = true;
 				 * 5. Die Parteiinseln beachten und diese anpassen. Wie auch immer... <- FEHLT
 				 */ else {
 					int minID = Integer.MAX_VALUE;
-					for (Island possibleIsland : islandsOfRegionSet) {
+					for (Island possibleIsland : islandsOfRegionSightSet) {
 						if (possibleIsland.getID() < minID) {
 							minID = possibleIsland.getID();
 						}
@@ -375,64 +369,36 @@ boolean erkannt = true;
 						currentId++;
 					} else {
 						newIsland = getIsland(minID);
-						islandsOfRegionSet.remove(newIsland);
-						islandsOfRegionSet.add(island);
+						islandsOfRegionSightSet.remove(newIsland);
+						islandsOfRegionSightSet.add(island);
 					}
 
 					/* aktuelle Insel übernimmt alle
 					 * Koordinaten der anderen insel */
-// compiliert nicht; z.Z. deaktiviert
-//					mergeIslands(newIsland, islandsOfRegionSet);
+					mergeIslands(newIsland, islandsOfRegionSightSet, this);
 					islandSet.add(newIsland);
-
-					for (Coordinates newIslandCoordinates : newIsland.getCoordinateSet()) {
-						islandRegion = Region.Load(newIslandCoordinates);
-						islandRegion.setPublicIslandID(newIsland.getID());
-					}
 				}
 			}
 		}
-			        for (Island island : islandSet) {
-		            	island.centralCoordinates = Coordinates.getCentralCoordinates(island.getCoordinateSet());
-		            }
+		for (Island island : islandSet) {
+        	island.centralCoordinates = Coordinates.getCentralCoordinates(island.getCoordinateSet());
+        }
 	}
 	
-	public Island addDataBaseIsland(int id, IslandType type, String name, String description, Coordinates coordinates) {
-		Island island = new PrivateIsland(id, type);
+	public Island addDataBaseIsland(int id, int explorationTurn, IslandType type, String name, String description, Coordinates anchorCoordinates) {
+		Island island = new PrivateIsland(id, explorationTurn, type);
 		island.setName(name);
 		island.setDescription(description);
-		island.centralCoordinates = coordinates;
+		island.anchorCoordinates = anchorCoordinates;
 		
 		islandSet.add(island);
 		
 		return island;
 	}
 	
-	private boolean selectIsland(RegionSight rs, Island island) {
-        if (!FactionAtlas.isIslandModus(rs.getTerrain(), island.getIslandType())) return false;
-        
-        LOGGER.info("Region " + rs.getCoordinates() + " [" + rs.getTerrain().getSimpleName() + "] wird der Insel (" + island.getID() + ") mit dem Modus " + island.getIslandType() + " hinzugefügt werden.");
-        island.coordinateSet.add(rs.getCoordinates());
-        // region.setPublicIslandID(island.getPublicID());
-        // hinzufügen der Region
-        
-        // Insel soll temporär ganz erfasst werden, um ggf. neu generierte inseln, die mit alten zusammenhängen,
-        // mit diesen zusammen zu legen.
-        RegionSight neighbourRegionSight;
-        for (Coordinates neighbourCoordinates : rs.getCoordinates().getNeighbours()) {
-        	neighbourRegionSight = getRegionSight(neighbourCoordinates);
-        	if (neighbourRegionSight == null || neighbourRegionSight.isInvisibleTerrain()) continue;
-            //if (getPublicID(neighbourCoordinate) == ConstantFactory.NO_INT_VALUE) {
-                // eine noch nicht erfasste Region:
-        	if (!island.coordinateSet.contains(neighbourCoordinates)) selectIsland(neighbourRegionSight, island);
-            //}
-        }
-        
-        return true;
-    }
-	
 	@Override
 	protected void prepareForTurn() {
+		prepareIslands();
 		// historischer Atlas wird gelöscht ...
 		historicAtlas.clear();
 		// ... und aktualisiert ...
@@ -448,8 +414,100 @@ boolean erkannt = true;
 		factionAtlas.clear();
 	}
 	
+	private void prepareIslands() {
+		// 1. Jede Insel auf centralCoordinate testen.
+		//	- Ist diese (nicht-land) / null oder invisible, wird eine neue Koordinate aus der Liste genommen.
+		//		Hat die Insel keine Koordinate, die nicht (nicht-land) / null oder invisible ist,
+		//		werden die Nachtbarkoordinaten der (nicht-land) / invisible kontrolliert, ob diese nicht null und
+		//		nicht invisible / (also land) sind.
+		//	- Sind auch die Nachtbarkoordinaten alle nicht-land, wird die Insel gelöscht.
+		// 2. Jede Insel über select mit evtl. angrenzenden coordinaten auffüllen.
+		// 3. Überprüfen, ob Inseln sich Koordinaten teilen und diese zusammenfügen.
+		
+		// 2. Alle RegionSight darauf testen, ob diese einer Insel zugewiesen sind.
+		// Dabei werden die Ozeanfelder, Lavaströme und Sandströme rausgenommen.
+		boolean identifiedCoordinatesForIsland;
+		Class<? extends Region> regionClass;
+		Coordinates regionSightCoordinates = null;
+		RegionSight rs = null;
+		Set<Island> deletedIslands = new HashSet<Island>();
+		for (Island privateIsland : islandSet) {
+			rs = getRegionSight(privateIsland.anchorCoordinates);
+			if (rs.isInvisibleTerrain()) {
+				for (Coordinates possibleCoordinates : privateIsland.coordinateSet) {
+					rs = getRegionSight(possibleCoordinates);
+					if (!rs.isInvisibleTerrain()) {
+						regionSightCoordinates = rs.getCoordinates();
+						break;
+					}
+				}
+				if (regionSightCoordinates == null) {
+					for (Coordinates possibleCoordinates : privateIsland.coordinateSet) {
+						// Nachtbarn der gelisteteten Koordinaten prüfen. 
+						for (Coordinates neighbourCoordinates : possibleCoordinates.getNeighbours()) {
+							rs = getRegionSight(neighbourCoordinates);
+							if (!rs.isInvisibleTerrain()) {
+								regionSightCoordinates = rs.getCoordinates();
+								break;
+							}
+						}
+						if (regionSightCoordinates != null) break;
+						
+					}
+					// Wenn diese nicht gültig sind, wird die Insel gelöscht.
+					if (regionSightCoordinates == null) {
+						deletedIslands.add(privateIsland);
+						continue;
+					}
+				}
+				privateIsland.anchorCoordinates = regionSightCoordinates;
+				rs = getRegionSight(privateIsland.anchorCoordinates);
+				privateIsland.coordinateSet.clear();
+				
+				regionClass = rs.getTerrain();
+				regionSightCoordinates = rs.getCoordinates();
+				identifiedCoordinatesForIsland = FactionAtlas.selectIsland(regionSightCoordinates, regionClass, privateIsland, false, this);
+				
+				if (!identifiedCoordinatesForIsland)
+					deletedIslands.add(privateIsland);
+			}
+		}
+		islandSet.removeAll(deletedIslands);
+		// Inseln mit gemeinsamen Koordinaten zusammenfügen
+		Set<Island> islandsOfRegionSightSet = new HashSet<Island>();
+		for (Island privateIsland : islandSet) {
+			if (deletedIslands.contains(privateIsland)) continue;
+			islandsOfRegionSightSet.clear();
+			// 3. Überprüfen, ob Inseln sich Koordinaten teilen und diese zusammenfügen.
+			for (Coordinates islandCoordinates : privateIsland.coordinateSet) {
+				for (Island possibleIsland : islandSet) {
+					if (privateIsland.getID() != possibleIsland.getID()
+							&& possibleIsland.hasCoordinate(islandCoordinates)
+							&& !deletedIslands.contains(possibleIsland)) islandsOfRegionSightSet.add(possibleIsland);
+				}
+			}
+			if (!islandsOfRegionSightSet.isEmpty()) {
+				islandsOfRegionSightSet.add(privateIsland);
+				int minID = Integer.MAX_VALUE;
+				for (Island possibleIsland : islandsOfRegionSightSet) {
+					if (possibleIsland.getID() < minID) {
+						minID = possibleIsland.getID();
+					}
+				}
+				Island newIsland = getIsland(minID);
+				islandsOfRegionSightSet.remove(newIsland);
+				mergeIslands(newIsland, islandsOfRegionSightSet, this);
+				deletedIslands.addAll(islandsOfRegionSightSet);
+			}
+		}
+		// zentrale Koordinate festlegen
+		for (Island island : islandSet) {
+        	island.centralCoordinates = Coordinates.getCentralCoordinates(island.getCoordinateSet());
+        }
+	}
+	
 	@Override
 	protected void prepareForReport() {
-		// Inseln mit den koordinaten
+		prepareIslands();
 	}
 }

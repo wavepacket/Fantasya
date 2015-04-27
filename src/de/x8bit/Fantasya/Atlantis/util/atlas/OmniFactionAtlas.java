@@ -82,24 +82,29 @@ public class OmniFactionAtlas extends FactionAtlas {
 				if (region.getClass() == DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS) continue;
 				if (region.getPublicIslandID() == 0) {regionWithoutIslandList.add(region); continue;}
 				Island island = getIsland(region.getCoordinates());
-				if (island == null) { island = new PublicIsland(region.getPublicIslandID(), FactionAtlas.getIslandType(region.getClass())); islandSet.add(island);}
+				if (island == null) { island = new PublicIsland(region.getPublicIslandID(), 0, FactionAtlas.getIslandType(region.getClass())); islandSet.add(island);}
 				island.coordinateSet.add(region.getCoordinates());
 			}
 			// 2. neue Insel erstellen und die Regionen dieser Insel erfassen.
 			int currentId = 1;
 			Set<Island> islandsOfRegionSet = new HashSet<Island>();
+			Class<? extends Region> regionClass;
+			Coordinates regionCoordinates;
 	        for (Region region: regionWithoutIslandList) {
 	        	for (; currentId < Integer.MAX_VALUE; currentId++) {
 	        		if (getIsland(currentId) == null) break;
 	        	}
 	        	
-	            if (region.getCoordinates().getZ() == 0) continue; // imaginäre Region...
+	        	regionClass = region.getClass();
+	        	regionCoordinates = region.getCoordinates();
+	        	
+	            if (regionCoordinates.getZ() == 0) continue; // imaginäre Region...
 	            
-	            Island island = new PublicIsland(currentId, FactionAtlas.getIslandType(region.getClass()));
+	            Island island = new PublicIsland(currentId, 0, FactionAtlas.getIslandType(regionClass));
 	            
 	            // new Debug("Modus @ " + c + " = " + modus);
 	            // eine noch nicht erfasste Region:
-	            boolean erkannt = selectIsland(region, island);
+	            boolean erkannt = FactionAtlas.selectIsland(regionCoordinates, regionClass, island, true, this);
 
 	            if (erkannt) {
 	            	Island newIsland;
@@ -150,7 +155,7 @@ public class OmniFactionAtlas extends FactionAtlas {
 	            		
 	            		/* aktuelle Insel übernimmt alle
             			 * Koordinaten der anderen insel */
-            			mergeIslands(newIsland, islandsOfRegionSet);
+            			FactionAtlas.mergeIslands(newIsland, islandsOfRegionSet, this);
             			islandSet.add(newIsland);
             			
             			for (Coordinates newIslandCoordinates : newIsland.getCoordinateSet()) {
@@ -172,36 +177,5 @@ public class OmniFactionAtlas extends FactionAtlas {
 	@Override
 	protected void prepareForReport() {
 		prepareForTurnReport();
-	}
-	
-	
-	// ------------------------------------- Inseln ----------------------------------------
-	private boolean selectIsland(Region region, Island island) {
-        if (!FactionAtlas.isIslandModus(region.getClass(), island.getIslandType())) return false;
-        
-        LOGGER.info("Region " + region.getCoordinates() + " [" + region.getClass().getSimpleName() + "] wird der Insel (" + island.getID() + ") mit dem Modus " + island.getIslandType() + " hinzugefügt werden.");
-        island.coordinateSet.add(region.getCoordinates());
-        // region.setPublicIslandID(island.getPublicID());
-        // hinzufügen der Region
-        
-        // Insel soll temporär ganz erfasst werden, um ggf. neu generierte inseln, die mit alten zusammenhängen,
-        // mit diesen zusammen zu legen.
-        for (Region neighbourRegion : region.getNeighbours()) {
-            //if (getPublicID(neighbourCoordinate) == ConstantFactory.NO_INT_VALUE) {
-                // eine noch nicht erfasste Region:
-        	if (!island.coordinateSet.contains(neighbourRegion.getCoordinates())) selectIsland(neighbourRegion, island);
-            //}
-        }
-        
-        return true;
-    }
-	
-	private void mergeIslands(Island newIsland, Set<Island> oldIslandSet) {
-		// Die neue Insel bekommt alle Koordinaten (Regionen) der alten Insel(teile)n
-		// Die alten Inseln werden aus der Inselliste entfernt
-		for (Island oldIsland : oldIslandSet) {
-				newIsland.coordinateSet.addAll(oldIsland.getCoordinateSet());
-				islandSet.remove(oldIsland);
-		}
 	}
 }

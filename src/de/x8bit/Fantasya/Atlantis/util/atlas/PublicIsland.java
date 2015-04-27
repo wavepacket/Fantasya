@@ -2,8 +2,8 @@ package de.x8bit.Fantasya.Atlantis.util.atlas;
 
 public final class PublicIsland extends Island {
 	
-	public PublicIsland(int id, IslandType type) {
-		super(id, type);
+	public PublicIsland(int id, int explorationTurn, IslandType type) {
+		super(id, explorationTurn, type);
 	}
 	
 	@Override

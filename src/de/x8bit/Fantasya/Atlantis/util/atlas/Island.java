@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
 
 public abstract class Island implements Comparable<Island>  {
 	
@@ -16,19 +15,27 @@ public abstract class Island implements Comparable<Island>  {
 	private final int id;
 	private final IslandType type;
 	protected final Set<Coordinates> coordinateSet = new TreeSet<Coordinates>();
-	protected Coordinates centralCoordinates = DefaultConstantsFactory.NO_COORDINATES_VALUE;
+	protected Coordinates centralCoordinates;
+	protected Coordinates anchorCoordinates;
+	protected int explorationTurn = 0;
 	protected String name = null;
 	protected String description = null;
 	
-	public Island(int id, IslandType type) {
-		if (id < 0) throw new IllegalArgumentException("An Island ID cannot be lower than 0");
-		if (id == 0 && type != IslandType.UNKNOWN) throw new IllegalArgumentException("Only the unknonwn Island can have id 0");
+	public Island(int id, int explorationTurn, IslandType type) {
+		if (id < 0) throw new IllegalArgumentException("An Island ID cannot be lower than 0.");
+		if (explorationTurn < 0) throw new IllegalArgumentException("An Island cannot be explored before the world exists.");
+		if (id == 0 && type != IslandType.UNKNOWN) throw new IllegalArgumentException("Only the unknonwn Island can have id 0.");
 		this.id = id;
+		this.explorationTurn = explorationTurn;
 		this.type = type;
 	}
 	
 	public int getID() {
 		return id;
+	}
+	
+	public int getExplorationTurn() {
+		return explorationTurn;
 	}
 	
 	public IslandType getIslandType() {
@@ -55,6 +62,10 @@ public abstract class Island implements Comparable<Island>  {
 	
 	public Coordinates getCentralCoordinates() {
 		return centralCoordinates;
+	}
+	
+	public Coordinates getAnchorCoordinates() {
+		return anchorCoordinates;
 	}
 	
 	public abstract void setName(String name);
