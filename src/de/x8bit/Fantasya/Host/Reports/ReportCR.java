@@ -297,7 +297,7 @@ public class ReportCR
                 for (InselVerwaltung.ParteiEinfluss pe : einfluesse) {
                     meldung.add(Partei.getFaction(pe.getFaction()) + " " + P.format(pe.getEinfluss() / summeEinfluss));
                 }
-                if (!meldung.isEmpty()) beschreibung.append("Einfluss: " + StringUtils.aufzaehlung(meldung) + ". ");
+                if (!meldung.isEmpty()) beschreibung.append("Einfluss: " + StringUtils.aufzaehlungUnd(meldung) + ". ");
                 
                 writer.wl(beschreibung.toString(), "beschr");
             }

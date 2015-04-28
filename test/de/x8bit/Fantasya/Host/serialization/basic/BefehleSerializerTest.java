@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
 import de.x8bit.Fantasya.Host.serialization.util.DataAnalyzer;
@@ -27,7 +27,7 @@ public class BefehleSerializerTest {
 	@Before
 	public void setup() {
 		unit.setNummer(15);
-		unit.setCoords(new Coords(1,1,1));
+		unit.setCoordinates(Coordinates.create(1,1,1));
 		unitCache.add(unit);
 
 		serializedMap.put("nummer", String.valueOf(unit.getNummer()));

@@ -72,9 +72,10 @@ public class HistoricRegionRoadSerializer implements ObjectSerializer<Partei> {
 				return null;
 			}
 		} catch (IllegalArgumentException ex) {
-			logger.warn("Error loading street at {}; Invalid direction \"{}\"",
+			logger.warn("Error loading street at {}; Invalid direction \"{}\"; detailed error: {}",
 					coords,
-					mapping.get("direction"));
+					mapping.get("direction"),
+					ex);
 			return null;
 		}
 		

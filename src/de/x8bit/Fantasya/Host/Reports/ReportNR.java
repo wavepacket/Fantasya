@@ -133,7 +133,7 @@ public class ReportNR
 		for (PersonenHaufen gruppe : personen.keySet()) gruppen.add(gruppe);
 		Collections.sort(gruppen);
 		Collections.reverse(gruppen);
-		String personenBeschreibung = StringUtils.aufzaehlung(gruppen);
+		String personenBeschreibung = StringUtils.aufzaehlungUnd(gruppen);
 
 		int vermoegenProKopf = Math.round((float)vermoegen / (float)headcount);
 		int einkommenProKopf = Math.round((float)einkommen / (float)headcount);
@@ -424,7 +424,7 @@ public class ReportNR
 				}
 			}
 		}
-		if (!parts.isEmpty()) msg += StringUtils.ucfirst(StringUtils.aufzaehlung(parts)) + ". ";
+		if (!parts.isEmpty()) msg += StringUtils.ucfirst(StringUtils.aufzaehlungUnd(parts)) + ". ";
 
 		// Nachbarregionen: Wasser
 		parts = new ArrayList<String>();
@@ -433,7 +433,7 @@ public class ReportNR
 			if (hr == null)	continue;
 			if ((hr instanceof Ozean) && (partei.canAccess(hr))) parts.add(ri.toString());
 		}
-		if (!parts.isEmpty()) msg += "Im " + StringUtils.aufzaehlung(parts) + " liegt die offene See. ";
+		if (!parts.isEmpty()) msg += "Im " + StringUtils.aufzaehlungUnd(parts) + " liegt die offene See. ";
 		
 		if (!hidden) {
 			// Beschreibung
@@ -467,7 +467,7 @@ public class ReportNR
 				}
 				parteiMeldungen.add(p + " (" + StringUtils.aufzaehlung(wachen) + ")");
 			}
-			msg = "Die Region wird von " + StringUtils.aufzaehlung(parteiMeldungen) + " bewacht. ";
+			msg = "Die Region wird von " + StringUtils.aufzaehlungUnd(parteiMeldungen) + " bewacht. ";
 		}
 		if (msg != null) {
 			writer.wl(msg);
@@ -526,7 +526,7 @@ public class ReportNR
 			}
 		}
 		
-		msg += StringUtils.aufzaehlung(kaufen) + ". ";
+		msg += StringUtils.aufzaehlungUnd(kaufen) + ". ";
 		msg += msg2;
 		writer.wl(msg);
 		writer.wl("");
@@ -906,7 +906,7 @@ public class ReportNR
 			if (liste.isEmpty()) {
 				msg += "hat nichts";
 			} else {
-				msg += "hat " + StringUtils.aufzaehlung(liste);
+				msg += "hat " + StringUtils.aufzaehlungUnd(liste);
 			}
 
 			if ((u.getOwner() == partei.getNummer()) || (partei.getNummer() == 0)) {
@@ -935,7 +935,7 @@ public class ReportNR
 			if (befehlsTexte.isEmpty()) {
 				msg += "Keine.";
 			} else {
-				msg += StringUtils.aufzaehlung(befehlsTexte);
+				msg += StringUtils.aufzaehlungUnd(befehlsTexte);
 			}
 		}
 

@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
 import java.util.ArrayList;
@@ -21,13 +21,13 @@ public class SortedCacheTest {
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(1,2,3);
+		Coordinates coords = Coordinates.create(1,2,3);
 
 		for (int i = 1; i < 10; i++) {
 			Unit entry = new Elf();
 			entry.setNummer(rng.nextInt(Integer.MAX_VALUE));
 			entry.setOwner(5);
-			entry.setCoords(coords);
+			entry.setCoordinates(coords);
 			entry.setSortierung(i);
 
 			units.add(entry);
@@ -93,7 +93,7 @@ public class SortedCacheTest {
 	@Test
 	public void getAllAtCoordsReturnsProperlySortedSet() {
 		int index = 0;
-		for (Atlantis entry : cache.getAll(chosen.getCoords())) {
+		for (Atlantis entry : cache.getAll(chosen.getCoordinates())) {
 			assertEquals("Elements were not properly ordered.",
 					units.get(index), entry);
 			index++;
@@ -106,7 +106,7 @@ public class SortedCacheTest {
 	@Test
 	public void getAllForCoordsAndOwnerReturnsSortedSet() {
 		int index = 0;
-		for (Atlantis entry : cache.getAll(chosen.getCoords(), chosen.getOwner())) {
+		for (Atlantis entry : cache.getAll(chosen.getCoordinates(), chosen.getOwner())) {
 			assertEquals("Elements were not properly ordered.",
 					units.get(index), entry);
 			index++;
@@ -126,8 +126,8 @@ public class SortedCacheTest {
 		Collection<Collection<Atlantis>> allCases = new ArrayList<Collection<Atlantis>>();
 		allCases.add(cache);
 		allCases.add(cache.getAll(chosen.getOwner()));
-		allCases.add(cache.getAll(chosen.getCoords()));
-		allCases.add(cache.getAll(chosen.getCoords(), chosen.getOwner()));
+		allCases.add(cache.getAll(chosen.getCoordinates()));
+		allCases.add(cache.getAll(chosen.getCoordinates(), chosen.getOwner()));
 
 		// first entry should be the one with the lowest sorting order now.
 		for (Collection<Atlantis> collection : allCases) {

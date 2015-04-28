@@ -31,7 +31,6 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 				&& keys.contains("originx")
 				&& keys.contains("originy")
 				&& keys.contains("cheats")
-				//&& keys.contains("monster")
 				&& keys.contains("steuern");
 	}
 
@@ -57,7 +56,6 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 			object.setUrsprung(Coordinates.create(Integer.decode(mapping.get("originx")),
 					Integer.decode(mapping.get("originy")), 1));
 			object.setCheats(Integer.decode(mapping.get("cheats")));
-			//object.setMonster(Integer.decode(mapping.get("monster")));
 			object.setDefaultsteuer(Integer.decode(mapping.get("steuern")));
 
 			logger.debug("Loaded Partei \"{}\" with id \"{}\"",
@@ -89,7 +87,6 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 		results.put("originx", String.valueOf(object.getUrsprung().getX()));
 		results.put("originy", String.valueOf(object.getUrsprung().getY()));
 		results.put("cheats", String.valueOf(object.getCheats()));
-		//results.put("monster", String.valueOf(object.getMonster()));
 		results.put("steuern", String.valueOf(object.getDefaultsteuer()));
 
 		return new SerializedData(results);

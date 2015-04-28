@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Kampfposition;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -19,17 +19,16 @@ import org.junit.Test;
 public class EinheitenSerializerTest {
 
 	private Map<String,String> serializedMap = new HashMap<String,String>();
-	private Set<Coords> regionList = new HashSet<Coords>();
+	private Set<Coordinates> regionList = new HashSet<Coordinates>();
 	private Collection<Partei> partyList = new HashSet<Partei>();
 
 	private EinheitenSerializer serializer = new EinheitenSerializer(partyList, regionList);
 
 	@Before
 	public void setup() {
-		regionList.add(new Coords(1, 2, 3));
+		regionList.add(Coordinates.create(1, 2, 3));
 
-		Partei p = new Partei();
-		p.setNummer(42);
+		Partei p = Partei.createPlayerFaction(42, 1);
 		partyList.add(p);
 		
 		// fill the serialized map with valid data
@@ -91,11 +90,11 @@ public class EinheitenSerializerTest {
 		assertEquals("Wrong number set.",
 				(int)Integer.decode(serializedMap.get("nummer")), unit.getNummer());
 		assertEquals("Wrong x coordinate set.",
-				(int)Integer.decode(serializedMap.get("koordx")), unit.getCoords().getX());
+				(int)Integer.decode(serializedMap.get("koordx")), unit.getCoordinates().getX());
 		assertEquals("Wrong y coordinate set.",
-				(int)Integer.decode(serializedMap.get("koordy")), unit.getCoords().getY());
+				(int)Integer.decode(serializedMap.get("koordy")), unit.getCoordinates().getY());
 		assertEquals("Wrong world coordinate set.",
-				(int)Integer.decode(serializedMap.get("welt")), unit.getCoords().getWelt());
+				(int)Integer.decode(serializedMap.get("welt")), unit.getCoordinates().getZ());
 		assertEquals("Wrong name set.",
 				serializedMap.get("name"), unit.getName());
 		assertEquals("Wrong description set.",

@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
@@ -21,7 +21,7 @@ public class ShipSerializerTest {
 
 	private Map<String, String> serializedMap = new HashMap<String,String>();
 
-	private Map<Coords, Region> regionMap = new HashMap<Coords,Region>();
+	private Map<Coordinates, Region> regionMap = new HashMap<Coordinates,Region>();
 	private MapCache<Unit> unitCache = new MapCache<Unit>();
 	private Region region = new Ebene();
 
@@ -29,7 +29,7 @@ public class ShipSerializerTest {
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(1,2,3);
+		Coordinates coords = Coordinates.create(1,2,3);
 
 		Unit unit = new Elf();
 		unit.setNummer(638);
@@ -42,7 +42,7 @@ public class ShipSerializerTest {
 		serializedMap.put("kapitaen", "1");
 		serializedMap.put("koordx", String.valueOf(coords.getX()));
 		serializedMap.put("koordy", String.valueOf(coords.getY()));
-		serializedMap.put("welt", String.valueOf(coords.getWelt()));
+		serializedMap.put("welt", String.valueOf(coords.getZ()));
 		serializedMap.put("groesse", "99");
 		serializedMap.put("fertig", "0");
 		serializedMap.put("kueste", Richtung.Nordosten.getShortcut());
@@ -51,7 +51,7 @@ public class ShipSerializerTest {
 		serializedMap.put("id", " ");
 
 		// also add a region that gets the ship attached.
-		region.setCoords(coords);
+		region.setCoordinates(coords);
 		regionMap.put(coords, region);
 
 		// and of course set up the serializer to test.
@@ -98,11 +98,11 @@ public class ShipSerializerTest {
 		assertEquals("Wrong captain assigned.",
 				(int)Integer.decode(serializedMap.get("kapitaen")), s.getOwner());
 		assertEquals("Wrong x coordinate loaded.",
-				(int)Integer.decode(serializedMap.get("koordx")), s.getCoords().getX());
+				(int)Integer.decode(serializedMap.get("koordx")), s.getCoordinates().getX());
 		assertEquals("Wrong y coordinate loaded.",
-				(int)Integer.decode(serializedMap.get("koordy")), s.getCoords().getY());
+				(int)Integer.decode(serializedMap.get("koordy")), s.getCoordinates().getY());
 		assertEquals("Wrong world coordinate loaded.",
-				(int)Integer.decode(serializedMap.get("welt")), s.getCoords().getWelt());
+				(int)Integer.decode(serializedMap.get("welt")), s.getCoordinates().getZ());
 		assertEquals("Wrong size loaded.",
 				(int)Integer.decode(serializedMap.get("groesse")), s.getGroesse());
 		assertFalse("Finishing incorrectly loaded.", s.istFertig());
@@ -121,7 +121,7 @@ public class ShipSerializerTest {
 
 	@Test
 	public void invalidRegionWarnsAndReturnsNull() {
-		regionMap.remove(region.getCoords());
+		regionMap.remove(region.getCoordinates());
 		FakeAppender.reset();
 
 		assertNull(serializer.load(serializedMap));

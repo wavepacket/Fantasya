@@ -658,7 +658,7 @@ public class Krieger {
         }
 		if (talenteZeigen && (!this.effects.isEmpty())) {
             if (retval.length() > 0) retval.append(" ");
-			retval.append("[Effekte: " + StringUtils.aufzaehlung(this.effects) + "]");
+			retval.append("[Effekte: " + StringUtils.aufzaehlungUnd(this.effects) + "]");
 		}
         return retval.toString();
     }
@@ -667,9 +667,9 @@ public class Krieger {
     @Override
     public String toString() {
         if (this.getUnit().getPersonen() == 1) {
-            return this.getUnit() + (effects.isEmpty()?"":" (" + StringUtils.aufzaehlung(effects) + ")");
+            return this.getUnit() + (effects.isEmpty()?"":" (" + StringUtils.aufzaehlungUnd(effects) + ")");
         } else {
-            return "Nr. " + this.getIndex() + " von " + this.getUnit() + (effects.isEmpty()?"":" (" + StringUtils.aufzaehlung(effects) + ")");
+            return "Nr. " + this.getIndex() + " von " + this.getUnit() + (effects.isEmpty()?"":" (" + StringUtils.aufzaehlungUnd(effects) + ")");
         }
     }
 
@@ -792,7 +792,7 @@ public class Krieger {
             int cnt = counts.get(dienstgrad);
             beschr.add(cnt + " " + dienstgrad);
         }
-        return StringUtils.aufzaehlung(beschr); // + sb.toString() + "\n";
+        return StringUtils.aufzaehlungUnd(beschr); // + sb.toString() + "\n";
     }
 
 	/**

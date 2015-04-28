@@ -55,6 +55,6 @@ public class StartPosition extends HashSet<Coordinates> {
 			}
 		}
 
-		return "{" + StringUtils.aufzaehlung(parts) + "}";
+		return "{" + StringUtils.aufzaehlungUnd(parts) + "}";
 	}
 }

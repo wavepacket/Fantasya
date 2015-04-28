@@ -130,7 +130,7 @@ public class Kontaktierungen extends EVABase {
             
             String verb = "haben";
             if (u.getPersonen() == 1) verb = "hat";
-            new Info(verb + " diesen Monat volles Vertrauen in " + StringUtils.aufzaehlung(namen) + ".", u);
+            new Info(verb + " diesen Monat volles Vertrauen in " + StringUtils.aufzaehlungUnd(namen) + ".", u);
         }
     }
 

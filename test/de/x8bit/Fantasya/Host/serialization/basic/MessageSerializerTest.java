@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
@@ -22,11 +22,11 @@ public class MessageSerializerTest {
 	Map<String,String> serializedMapWoRefs;
 	
 	private Collection<Partei> parteiList = new ArrayList<Partei>();
-	private Collection<Coords> coordsList = new ArrayList<Coords>();
+	private Collection<Coordinates> coordsList = new ArrayList<Coordinates>();
 	private MapCache<Unit> unitList = new MapCache<Unit>();
 	
-	Partei partei = new Partei();
-	Coords coords = new Coords(1,2,3);
+	Partei partei = Partei.createPlayerFaction(42, 1);
+	Coordinates coords = Coordinates.create(1,2,3);
 	Unit unit = new Elf();
 	
 	private MessageSerializer serializer = new MessageSerializer(
@@ -46,7 +46,7 @@ public class MessageSerializerTest {
 		serializedMap.put("partei", String.valueOf(partei.getNummer()));
 		serializedMap.put("koordx", String.valueOf(coords.getX()));
 		serializedMap.put("koordy", String.valueOf(coords.getY()));
-		serializedMap.put("welt", String.valueOf(coords.getWelt()));
+		serializedMap.put("welt", String.valueOf(coords.getZ()));
 		serializedMap.put("einheit", String.valueOf(unit.getNummer()));
 		
 		// make another map without references to units etc.
@@ -89,8 +89,8 @@ public class MessageSerializerTest {
 		
 		assertTrue("Incorrect class loaded.", msg instanceof BigError);
 		assertEquals("Incorrect text set.", serializedMap.get("text"), msg.getText());
-		assertEquals("Incorrect party set.", partei, msg.getPartei());
-		assertEquals("Incorrect coordinates set.", coords, msg.getCoords());
+		assertEquals("Incorrect party set.", partei, msg.getFaction());
+		assertEquals("Incorrect coordinates set.", coords, msg.getCoordinates());
 		assertEquals("Incorrect unit set.", unit, msg.getUnit());
 	}
 	
@@ -98,8 +98,8 @@ public class MessageSerializerTest {
 	public void loadingWorksWithoutParteiCoordsAndUnit() {
 		Message msg = serializer.load(serializedMapWoRefs);
 		
-		assertNull("Partei set although not requested.", msg.getPartei());
-		assertNull("Coordinates set although not requested.", msg.getCoords());
+		assertNull("Partei set although not requested.", msg.getFaction());
+		assertNull("Coordinates set although not requested.", msg.getCoordinates());
 		assertNull("Unit set although not requested.", msg.getUnit());
 	}
 	

@@ -6,9 +6,8 @@ import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,12 +29,14 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private Set<Coordinates> regionList;
+	private Collection<Partei> factionList;
 
-	public EinheitenSerializer(Set<Coordinates> regionList) {
-		if (regionList == null) {
-			throw new IllegalArgumentException("Require a valid regionList for unit serialization.");
+	public EinheitenSerializer(Collection<Partei> factionList, Set<Coordinates> regionList) {
+		if (factionList == null || regionList == null) {
+			throw new IllegalArgumentException("Require a valid faction and regionList for unit serialization.");
 		}
 
+		this.factionList = factionList;
 		this.regionList = regionList;
 	}
 
@@ -130,11 +131,7 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 
 		Partei owner = null;
 		
-    	List<Partei> allFactionList = new ArrayList<Partei>();
-    	allFactionList.addAll(Partei.getPlayerFactionList());
-    	allFactionList.addAll(Partei.getNPCFactionList());
-    	allFactionList.add(Partei.OMNI_FACTION);
-		for (Partei p : allFactionList) {
+		for (Partei p : factionList) {
 			if (p.getNummer() == unit.getOwner()) {
 				owner = p;
 			}

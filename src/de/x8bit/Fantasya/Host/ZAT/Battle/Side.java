@@ -447,7 +447,7 @@ public class Side {
         jackpot.clear();
         
         for (Unit u : beuteMeldungen.keySet()) {
-            new Battle(u + " sammelt " + StringUtils.aufzaehlung(beuteMeldungen.get(u))  + " auf.", u);
+            new Battle(u + " sammelt " + StringUtils.aufzaehlungUnd(beuteMeldungen.get(u))  + " auf.", u);
         }
         
         
@@ -492,7 +492,7 @@ public class Side {
 
         for (Partei p : ausgeloeschte.keySet()) {
             if (chefs.get(p) != null) {
-                new Info(StringUtils.aufzaehlung(ausgeloeschte.get(p)) + " sind komplett aufgerieben worden.", chefs.get(p));
+                new Info(StringUtils.aufzaehlungUnd(ausgeloeschte.get(p)) + " sind komplett aufgerieben worden.", chefs.get(p));
             } else {
                 // oha, keiner ist übrig...
                 Set<Unit> ehemalige = new HashSet<Unit>();
@@ -1108,7 +1108,7 @@ public class Side {
             parts.add(part.toString());
         }
 
-        return StringUtils.aufzaehlung(parts);
+        return StringUtils.aufzaehlungUnd(parts);
     }
 
     /**

@@ -33,7 +33,6 @@ public class ParteiSerializerTest {
 		serializedMap.put("originx", "7");
 		serializedMap.put("originy", "9");
 		serializedMap.put("cheats", "1");
-		serializedMap.put("monster", "3");
 		serializedMap.put("steuern", "15");
 	}
 
@@ -84,8 +83,6 @@ public class ParteiSerializerTest {
 				Integer.decode(serializedMap.get("originy")).intValue(),partei.getUrsprung().getY());
 		assertEquals("cheats was not properly set.",
 				Integer.decode(serializedMap.get("cheats")).intValue(), partei.getCheats());
-		assertEquals("Monster was not properly set.",
-				Integer.decode(serializedMap.get("monster")).intValue(), partei.getMonster());
 		assertEquals("Steuern was not properly set.",
 				Integer.decode(serializedMap.get("steuern")).intValue(), partei.getDefaultsteuer());
 	}

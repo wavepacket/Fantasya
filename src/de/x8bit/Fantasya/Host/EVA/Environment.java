@@ -527,7 +527,7 @@ public class Environment extends EVABase implements NotACommand {
 							}
 						}
 						String itemMsg = "";
-						if (!verloreneItems.isEmpty()) itemMsg = " " + StringUtils.aufzaehlung(verloreneItems) + " wurden mitgerissen.";
+						if (!verloreneItems.isEmpty()) itemMsg = " " + StringUtils.aufzaehlungUnd(verloreneItems) + " wurden mitgerissen.";
 						new Info(u + " - " + opfer + " von uns sind in den Treibsand von " + regionsName + " geraten und verschwunden." + itemMsg, u);
 					}
                     

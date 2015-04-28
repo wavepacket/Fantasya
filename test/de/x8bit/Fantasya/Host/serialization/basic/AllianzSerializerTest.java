@@ -19,16 +19,13 @@ public class AllianzSerializerTest {
 	Map<String,String> serializedMap = new HashMap<String,String>();
 	List<Partei> parteiList = new ArrayList<Partei>();
 
-	Partei owner = new Partei();
-	Partei faction = new Partei();
+	Partei owner = Partei.createPlayerFaction(1, 1);
+	Partei faction = Partei.createPlayerFaction(2, 1);
 
 	AllianzSerializer serializer;
 
 	@Before
 	public void setup() {
-		owner.setNummer(1);
-		faction.setNummer(2);
-
 		parteiList.add(owner);
 		parteiList.add(faction);
 		serializer = new AllianzSerializer(parteiList);

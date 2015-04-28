@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import java.util.Collections;
@@ -20,18 +20,18 @@ public class MessageCacheTest {
 	private Message msgWithCoords = new Message();
 	private Message msgWithPlayerAndCoords = new Message();
 	
-	private Partei partei = new Partei();
-	private Coords coords = new Coords(1,1,1);
+	private Partei partei = Partei.createPlayerFaction(1, 1);
+	private Coordinates coords = Coordinates.create(1,1,1);
 	
 	@Before
 	public void setup() {
 		partei.setNummer(1);
 		
 		msgWithPlayer.setPartei(partei);
-		msgWithCoords.setCoords(coords);
+		msgWithCoords.setCoordinates(coords);
 		
 		msgWithPlayerAndCoords.setPartei(partei);
-		msgWithPlayerAndCoords.setCoords(coords);
+		msgWithPlayerAndCoords.setCoordinates(coords);
 		
 		cache.add(msg);
 		cache.add(msgWithPlayer);
@@ -80,7 +80,7 @@ public class MessageCacheTest {
 	
 	@Test
 	public void getAllMessagesOfASinglePlayer() {
-		Set<Message> ownedMessages = cache.getAll(msgWithPlayerAndCoords.getPartei().getNummer());
+		Set<Message> ownedMessages = cache.getAll(msgWithPlayerAndCoords.getFaction().getNummer());
 		
 		assertEquals("Wrong number of messages returned.", 2, ownedMessages.size());
 		
@@ -118,7 +118,7 @@ public class MessageCacheTest {
 	
 	@Test
 	public void returnEmptySetForInvalidCoordinate() {
-		Set<Message>  locatedMessages = cache.getAll(new Coords(7,7,0));
+		Set<Message>  locatedMessages = cache.getAll(Coordinates.create(7,7,0));
 		
 		assertTrue("No empty set returned.", locatedMessages.isEmpty());
 	}
@@ -127,7 +127,7 @@ public class MessageCacheTest {
 	public void getAllMessageAtASingleCoordinateAndForAPlayer() {
 		// create another message with a definitely higher id.
 		Message secondMsg = new Message();
-		secondMsg.setCoords(coords);
+		secondMsg.setCoordinates(coords);
 		secondMsg.setPartei(partei);
 		cache.add(secondMsg);
 		

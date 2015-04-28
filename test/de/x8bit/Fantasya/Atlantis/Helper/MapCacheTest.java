@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,8 +24,8 @@ public class MapCacheTest {
 
 	@Before
 	public void setup() {
-		Coords c1 = new Coords(1, 2, 1);
-		Coords c2 = new Coords(5, 4, 1);
+		Coordinates c1 = Coordinates.create(1, 2, 1);
+		Coordinates c2 = Coordinates.create(5, 4, 1);
 
 		object.setNummer(1);
 		object2.setNummer(2);
@@ -37,15 +37,15 @@ public class MapCacheTest {
 		objectWithSameOwner.setOwner(1);
 		objectWithSamePosition.setOwner(3);
 
-		object.setCoords(c1);
-		object2.setCoords(c2);
-		objectWithSameOwner.setCoords(c2);
-		objectWithSamePosition.setCoords(c1);
+		object.setCoordinates(c1);
+		object2.setCoordinates(c2);
+		objectWithSameOwner.setCoordinates(c2);
+		objectWithSamePosition.setCoordinates(c1);
 
 		// and an invalid object for a change...
 		objectWithSameId.setNummer(object.getNummer());
 		objectWithSameId.setOwner(5);
-		objectWithSameId.setCoords(c1);
+		objectWithSameId.setCoordinates(c1);
 
 		// for testing multiple xxxAll().
 		elements.add(object);
@@ -199,7 +199,7 @@ public class MapCacheTest {
 		cacheWithObject.add(objectWithSamePosition);
 		cacheWithObject.add(object2);
 
-		Set<Atlantis> items = cacheWithObject.getAll(object.getCoords());
+		Set<Atlantis> items = cacheWithObject.getAll(object.getCoordinates());
 
 		assertEquals("Incorrect size of objects at given position.", 2, items.size());
 		assertTrue("Returned set was incorrect.", items.contains(object));
@@ -211,7 +211,7 @@ public class MapCacheTest {
 		cacheWithObject.add(objectWithSamePosition);
 		cacheWithObject.add(object2);
 
-		Set<Atlantis> items = cacheWithObject.getAll(object.getCoords(), object.getOwner());
+		Set<Atlantis> items = cacheWithObject.getAll(object.getCoordinates(), object.getOwner());
 		assertEquals("Incorrect size of returned set.", 1, items.size());
 		assertTrue("Returned set was incorrect.", items.contains(object));
 	}
@@ -225,11 +225,11 @@ public class MapCacheTest {
 		assertNull("Object was not properly removed.",
 				cacheWithObject.get(object.getNummer()));
 		assertTrue("Object was not properly removed.",
-				cacheWithObject.getAll(object.getCoords()).isEmpty());
+				cacheWithObject.getAll(object.getCoordinates()).isEmpty());
 		assertTrue("Object was not properly removed.",
 				cacheWithObject.getAll(object.getOwner()).isEmpty());
 		assertTrue("Object was not properly removed.",
-				cacheWithObject.getAll(object.getCoords(), object.getOwner()).isEmpty());
+				cacheWithObject.getAll(object.getCoordinates(), object.getOwner()).isEmpty());
 	}
 
 	@Test
@@ -241,11 +241,11 @@ public class MapCacheTest {
 		assertNull("Object was not properly removed.",
 				cacheWithObject.get(object.getNummer()));
 		assertTrue("Object was not properly removed.",
-				cacheWithObject.getAll(object.getCoords()).isEmpty());
+				cacheWithObject.getAll(object.getCoordinates()).isEmpty());
 		assertTrue("Object was not properly removed.",
 				cacheWithObject.getAll(object.getOwner()).isEmpty());
 		assertTrue("Object was not properly removed.",
-				cacheWithObject.getAll(object.getCoords(), object.getOwner()).isEmpty());
+				cacheWithObject.getAll(object.getCoordinates(), object.getOwner()).isEmpty());
 	}
 
 	@Test
@@ -263,7 +263,7 @@ public class MapCacheTest {
 		otherNonequalSet.add(object);
 		otherNonequalSet.add(objectWithSameOwner);
 
-		assertFalse("Equality matches null object.", cacheWithObject.equals(null));
+		assertNotNull("Equality matches null object.", cacheWithObject);
 		assertFalse("Equality matches wrong class.", cacheWithObject.equals(5));
 		assertFalse("Equality matches wrong collection.", cacheWithObject.equals(nonequalSet));
 		assertFalse("Equality matches wrong collection.", cacheWithObject.equals(otherNonequalSet));
@@ -295,12 +295,12 @@ public class MapCacheTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void emptyLocationSetIsUnmodifiable() {
-		emptyCache.getAll(object.getCoords()).clear();
+		emptyCache.getAll(object.getCoordinates()).clear();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void emptyLocationOwnedSetIsUnmodifiable() {
-		emptyCache.getAll(object.getCoords(), object.getOwner()).clear();
+		emptyCache.getAll(object.getCoordinates(), object.getOwner()).clear();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
@@ -310,12 +310,12 @@ public class MapCacheTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void fullLocationSetIsUnmodifiable() {
-		cacheWithObject.getAll(object.getCoords()).clear();
+		cacheWithObject.getAll(object.getCoordinates()).clear();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void fullLocationOwnedSetIsUnmodifiable() {
-		cacheWithObject.getAll(object.getCoords(), object.getOwner()).clear();
+		cacheWithObject.getAll(object.getCoordinates(), object.getOwner()).clear();
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

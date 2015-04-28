@@ -48,7 +48,7 @@ public class GruppenBuendnisfall {
         List<GruppenKnaeuel> einzeln = new ArrayList<GruppenKnaeuel>();
         einzeln.addAll(rohstoff);
 
-        new Debug("Zusammenfassen #1:\n" + StringUtils.aufzaehlung(einzeln));
+        new Debug("Zusammenfassen #1:\n" + StringUtils.aufzaehlungUnd(einzeln));
 
         // jetzt schauen, ob die einzelnen Fälle völlig disjunkt sind.
         boolean weitersuchen = true;
@@ -524,7 +524,7 @@ public class GruppenBuendnisfall {
         if (gruppen.isEmpty()) return "(Leere Gruppenmenge)";
         List<String> l = new ArrayList<String>();
         for (Gruppe g : gruppen) l.add(g.shortDesc());
-        return "Gruppenmenge: " + StringUtils.aufzaehlung(l);
+        return "Gruppenmenge: " + StringUtils.aufzaehlungUnd(l);
     }
     
     public class GruppenKnaeuel {

@@ -77,7 +77,7 @@ public class Buendnisfall {
             einzeln.add(b);
         }
 
-        new Debug("Vereinzeln #1:\n" + StringUtils.aufzaehlung(einzeln));
+        new Debug("Vereinzeln #1:\n" + StringUtils.aufzaehlungUnd(einzeln));
 
         // jetzt schauen, ob die einzelnen Fälle völlig disjunkt sind.
         boolean weitersuchen = true;

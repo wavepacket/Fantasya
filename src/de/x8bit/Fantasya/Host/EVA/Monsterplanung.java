@@ -75,7 +75,7 @@ public class Monsterplanung extends EVABase implements NotACommand
 				try {
 					u.BefehleExperimental.add(eb);
 				} catch (IllegalArgumentException ex) {
-					new SysMsg("Monsterplanung für " + u.getRasse() + " " + u + ": " + ex.getMessage() + "\n" + StringUtils.aufzaehlung(u.Befehle) + "\n" + StringUtils.aufzaehlung(u.BefehleExperimental));
+					new SysMsg("Monsterplanung für " + u.getRasse() + " " + u + ": " + ex.getMessage() + "\n" + StringUtils.aufzaehlungUnd(u.Befehle) + "\n" + StringUtils.aufzaehlungUnd(u.BefehleExperimental));
 				}
 			}
 		}
