@@ -381,7 +381,7 @@ public class PlayerFactionAtlas extends FactionAtlas {
 			}
 		}
 		for (Island island : islandSet) {
-        	island.centralCoordinates = Coordinates.getCentralCoordinates(island.getCoordinateSet());
+        	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinateSet()));
         }
 	}
 	
@@ -502,7 +502,7 @@ public class PlayerFactionAtlas extends FactionAtlas {
 		}
 		// zentrale Koordinate festlegen
 		for (Island island : islandSet) {
-        	island.centralCoordinates = Coordinates.getCentralCoordinates(island.getCoordinateSet());
+        	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinateSet()));
         }
 	}
 	

@@ -10,6 +10,7 @@ import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.atlas.Island.IslandType;
 import de.x8bit.Fantasya.Atlantis.util.atlas.RegionSight.RegionSightSource;
 
 public class OmniFactionAtlas extends FactionAtlas {
@@ -49,6 +50,11 @@ public class OmniFactionAtlas extends FactionAtlas {
 	public boolean addDataBaseRegionSightRoad(Coordinates coordinates,
 			Richtung direction) {
 		throw new UnsupportedOperationException("Omni faction [" + faction.getNummerBase36() + "] does not load regions out of database.");
+	}
+	
+	@Override
+	public Island addDataBaseIsland(int id, int explorationTurn, IslandType type, String name, String description, Coordinates anchorCoordinates) {
+		throw new UnsupportedOperationException("Omni faction [" + faction.getNummerBase36() + "] does not load islands out of database.");
 	}
 
 	@Override
@@ -166,7 +172,7 @@ public class OmniFactionAtlas extends FactionAtlas {
 	            }
 	        }
 	        for (Island island : islandSet) {
-            	island.centralCoordinates = Coordinates.getCentralCoordinates(island.getCoordinateSet());
+            	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinateSet()));
             }
 		}
 	}

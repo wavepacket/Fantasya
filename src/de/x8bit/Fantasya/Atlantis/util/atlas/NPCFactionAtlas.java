@@ -10,6 +10,7 @@ import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
+import de.x8bit.Fantasya.Atlantis.util.atlas.Island.IslandType;
 import de.x8bit.Fantasya.Atlantis.util.atlas.RegionSight.RegionSightSource;
 import de.x8bit.Fantasya.Host.GameRules;
 
@@ -48,6 +49,11 @@ public class NPCFactionAtlas extends FactionAtlas {
 	public boolean addDataBaseRegionSightRoad(Coordinates coordinates,
 			Richtung direction) {
 		throw new UnsupportedOperationException("NPC faction [" + faction.getNummerBase36() + "] does not load regions out of database.");
+	}
+	
+	@Override
+	public Island addDataBaseIsland(int id, int explorationTurn, IslandType type, String name, String description, Coordinates anchorCoordinates) {
+		throw new UnsupportedOperationException("NPC faction [" + faction.getNummerBase36() + "] does not load islands out of database.");
 	}
 
 	@Override

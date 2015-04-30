@@ -69,6 +69,10 @@ public class SerializerFactory {
 		handlerMap.put("HistoricRegionRoads", new CacheLooperHandler<Partei>(
 				new HistoricRegionRoadSerializer(), Partei.PLAYER_FACTION_LIST));
 		
+		// load islands for player
+		handlerMap.put("islands", new CacheLooperHandler<Partei>(
+				new IslandSerializer(), Partei.PLAYER_FACTION_LIST));
+		
 		// Load buildings and ships
 		handlerMap.put("gebaeude", new CacheFillerHandler<Building>(
 				new BuildingSerializer(Region.CACHE.keySet(), Unit.CACHE),

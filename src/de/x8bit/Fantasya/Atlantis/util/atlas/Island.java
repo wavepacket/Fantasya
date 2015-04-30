@@ -15,7 +15,7 @@ public abstract class Island implements Comparable<Island>  {
 	private final int id;
 	private final IslandType type;
 	protected final Set<Coordinates> coordinateSet = new TreeSet<Coordinates>();
-	protected Coordinates centralCoordinates;
+	private Coordinates centralCoordinates;
 	protected Coordinates anchorCoordinates;
 	protected int explorationTurn = 0;
 	protected String name = null;
@@ -53,7 +53,7 @@ public abstract class Island implements Comparable<Island>  {
 		if (coordinateSet == null) return;
 		this.coordinateSet.clear();
 		this.coordinateSet.addAll(coordinateSet);
-		this.centralCoordinates = Coordinates.getCentralCoordinates(coordinateSet);
+		setCentralCoordinates(Coordinates.getCentralCoordinates(coordinateSet));
 	}
 	
 	public Set<Coordinates> getCoordinateSet() {
@@ -64,8 +64,16 @@ public abstract class Island implements Comparable<Island>  {
 		return centralCoordinates;
 	}
 	
+	protected void setCentralCoordinates(Coordinates centralCoordinates) {
+		this.centralCoordinates = centralCoordinates;
+	}
+	
 	public Coordinates getAnchorCoordinates() {
 		return anchorCoordinates;
+	}
+	
+	public void setAnchorCoordinates(Coordinates anchorCoordinates) {
+		this.anchorCoordinates = anchorCoordinates;
 	}
 	
 	public abstract void setName(String name);

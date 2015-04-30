@@ -171,9 +171,7 @@ public abstract class FactionAtlas {
 		return null;
 	}
 	
-	public boolean addIsland(Island island) {
-		return islandSet.add(island);
-	}
+	public abstract Island addDataBaseIsland(int id, int explorationTurn, IslandType type, String name, String description, Coordinates anchorCoordinates);
 	
 	// ------------------------------------- Inseln ----------------------------------------
 	
