@@ -294,6 +294,10 @@
 							<key>silber</key>
 							<value>5000000</value>
 						</entry>
+						<entry>
+							<key>PublicIslandID</key>
+							<value>1</value>
+						</entry>
 					</entries>
 				</row>
 				<row>
@@ -342,6 +346,10 @@
 							<key>silber</key>
 							<value>0</value>
 						</entry>
+						<entry>
+							<key>PublicIslandID</key>
+							<value>1</value>
+						</entry>
 					</entries>
 				</row>
 				<row>
@@ -389,6 +397,10 @@
 						<entry>
 							<key>silber</key>
 							<value>30000</value>
+						</entry>
+						<entry>
+							<key>PublicIslandID</key>
+							<value>1</value>
 						</entry>
 					</entries>
 				</row>

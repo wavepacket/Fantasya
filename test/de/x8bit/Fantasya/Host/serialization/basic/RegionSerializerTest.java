@@ -31,6 +31,7 @@ public class RegionSerializerTest {
 		serializedMap.put("insel", "87");
 		serializedMap.put("silber", "1000000");
 		serializedMap.put("luxus", "none");
+		serializedMap.put("publicIslandID", "5");
 	}
 
 	@Test

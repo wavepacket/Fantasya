@@ -2,7 +2,7 @@ package de.x8bit.Fantasya.Host.serialization.integration;
 
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Items.Eisen;
 import de.x8bit.Fantasya.Atlantis.Items.Seide;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -67,7 +67,7 @@ public class SerializationIntegrationTest {
 		serializer.saveAll();
 
 		// 3. Clean a few lists
-		Partei.PROXY.clear();
+		Partei.PLAYER_FACTION_LIST.clear();
 		Unit.CACHE.clear();
 
 		// 4. Load the saved data again
@@ -84,19 +84,19 @@ public class SerializationIntegrationTest {
 	private void checkGameIsLoadedCorrectly() {
 		// There should be two parties in the game with some specific data,
 		// plus one with id 0
-		assertEquals("Wrong number of players loaded.", 3, Partei.PROXY.size());
+		assertEquals("Wrong number of players loaded.", 3, Partei.PLAYER_FACTION_LIST.size());
 
 		// the following tests are conceptually simpler if we remove the party with
 		// id 0, so we do this here.
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.PLAYER_FACTION_LIST) {
 			if (p.getNummer() == 0) {
-				Partei.PROXY.remove(p);
+				Partei.PLAYER_FACTION_LIST.remove(p);
 				break;
 			}
 		}
 
 		// now the other tests.
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.PLAYER_FACTION_LIST) {
 			if (p.getNummer() == 1) {
 				assertEquals("Wrong player name", "Partei1", p.getName());
 			} else if (p.getNummer() == 2) {
@@ -111,28 +111,28 @@ public class SerializationIntegrationTest {
 		partner.put(2, 1);
 
 		// They have enabled Gib as Alliance option
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.PLAYER_FACTION_LIST) {
 			assertTrue("Allianzoption not set.",
 					p.hatAllianz(partner.get(p.getNummer()), AllianzOption.Gib));
 		}
 
 		// They have 50% tax rate on each other
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.PLAYER_FACTION_LIST) {
 			assertEquals("Wrong tax rate set.",
 					50, p.getSteuern(partner.get(p.getNummer())).getRate());
 		}
 
 		// They have some property "someProperty" set to "set"
-		for (Partei p : Partei.PROXY) {
+		for (Partei p : Partei.PLAYER_FACTION_LIST) {
 			assertEquals("Wrong property set.",
 					"set", p.getStringProperty("someProperty"));
 		}
 
 
 		// Three regions were loaded: Ebene, Ocean, and mountains
-		Coords coordEbene = new Coords(0,0,0);
-		Coords coordOzean = new Coords(0,1,0);
-		Coords coordBerge = new Coords(1,1,0);
+		Coordinates coordEbene = Coordinates.create(0,0,0);
+		Coordinates coordOzean = Coordinates.create(0,1,0);
+		Coordinates coordBerge = Coordinates.create(1,1,0);
 
 		assertEquals("Wrong number of regions loaded.", 3, Region.CACHE.size());
 		assertEquals("Ebene not loaded.",

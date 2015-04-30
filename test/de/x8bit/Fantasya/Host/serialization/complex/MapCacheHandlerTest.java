@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.serialization.complex;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.basic.ObjectSerializer;
 import de.x8bit.Fantasya.Host.serialization.util.DataAnalyzer;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
@@ -23,7 +23,7 @@ public class MapCacheHandlerTest {
 	private MapCacheHandler<Atlantis> handler;
 
 	private ObjectSerializer<Atlantis> mockSerializer;
-	private Map<Coords, Atlantis> cache = new HashMap<Coords, Atlantis>();
+	private Map<Coordinates, Atlantis> cache = new HashMap<Coordinates, Atlantis>();
 
 	private Map<String,String> input1 = new HashMap<String,String>();
 	private Map<String,String> input2 = new HashMap<String,String>();
@@ -48,10 +48,10 @@ public class MapCacheHandlerTest {
 
 		// create some data for saving; also this checks that the cache is
 		// cleared on loading.
-		entry1.setCoords(new Coords(5, 4, 3));
-		entry2.setCoords(new Coords(4, 4, 1));
-		cache.put(entry1.getCoords(), entry1);
-		cache.put(entry2.getCoords(), entry2);
+		entry1.setCoordinates(Coordinates.create(5, 4, 3));
+		entry2.setCoordinates(Coordinates.create(4, 4, 1));
+		cache.put(entry1.getCoordinates(), entry1);
+		cache.put(entry2.getCoordinates(), entry2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -90,8 +90,8 @@ public class MapCacheHandlerTest {
 	public void loadingWorksProperly() {
 		final Atlantis item1 = new Atlantis();
 		final Atlantis item2 = new Atlantis();
-		item1.setCoords(new Coords(4, 3, 1));
-		item2.setCoords(new Coords(7,8,0));
+		item1.setCoordinates(Coordinates.create(4, 3, 1));
+		item2.setCoordinates(Coordinates.create(7,8,0));
 
 		context.checking(new Expectations() {{
 			atLeast(1).of(mockSerializer).isValidKeyset(with(equal(inputData.keySet())));
@@ -107,14 +107,14 @@ public class MapCacheHandlerTest {
 		context.assertIsSatisfied();
 
 		assertEquals("Incorrect cache size.", 2, cache.size());
-		assertEquals("Incorrect item loaded", item1, cache.get(item1.getCoords()));
-		assertEquals("Incorrect item loaded", item2, cache.get(item2.getCoords()));
+		assertEquals("Incorrect item loaded", item1, cache.get(item1.getCoordinates()));
+		assertEquals("Incorrect item loaded", item2, cache.get(item2.getCoordinates()));
 	}
 
 	@Test
 	public void loadingWarnsForTwoRegionsWithIdenticalCoordinates() {
 		final Atlantis item = new Atlantis();
-		item.setCoords(new Coords(1,2,3));
+		item.setCoordinates(Coordinates.create(1,2,3));
 
 		context.checking(new Expectations() {{
 			allowing(mockSerializer).isValidKeyset(with(equal(inputData.keySet())));
@@ -151,7 +151,7 @@ public class MapCacheHandlerTest {
 
 	@Test
 	public void savingWarnsOnBadKeys() {
-		entry1.setCoords(new Coords(8, 9, 1));
+		entry1.setCoordinates(Coordinates.create(8, 9, 1));
 		context.checking(new Expectations() {{
 			allowing(mockSerializer).save(with(any(Atlantis.class)));
 				will(returnValue(new SerializedData(input1)));
