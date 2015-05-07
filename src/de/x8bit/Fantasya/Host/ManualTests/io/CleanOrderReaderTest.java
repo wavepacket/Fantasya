@@ -20,24 +20,13 @@ public class CleanOrderReaderTest {
 	private static String s10 = "BESCHREIBE EINHEIT \"bla// hilfe nochmal Gold absahnen :)\"// ... und es macht Spaß\nSTIRB"; // Merkmal des bleibenden Kommentars innerhalb und außerhalb einer Beschreibung
 	private static String s11 = "BESCHREIBE EINHEIT \"bla// hilfe nochmal Gold absahnen :) // tja, mal sehen ;)\"// ... und es macht Spaß\nSTIRB"; // Merkmal des bleibenden Kommentars innerhalb und außerhalb einer Beschreibung
 	private static String s12 = "MACHE 15 Schwert\n\nBETRETE GEBAEUDE tx\n  \nNACH o w"; // Befehle gehen so durch, sind aber leerzeilen bzw. nur mit leerzeichen vorhanden
+	private static String s13 = "BESCHREIBE EINHEIT 7 \"bli blopp\\"; // Befehle Zusammenfuegen
+	private static String s14 = "BESCHREIBE EINHEIT 7 \"bli blopp\\\n bla blupp \\\n test\""; // Befehle Zusammenfuegen
 	
 	
 	public static void main(String[] args) {
-		// testTrim();
 		testComplete();
 	}
-	
-	/*private static void testTrim() {
-		StringBuffer buf = CleanOrderReader.tempBuf;
-		buf.setLength(0);
-		buf.append(s0);
-		CleanOrderReader.trim(true);
-		System.out.println("'" + buf + "'");
-		buf.setLength(0);
-		buf.append(s2);
-		CleanOrderReader.trim(true);
-		System.out.println("'" + buf + "'");
-	} */
 	
 	private static void testComplete() {
 		CleanOrderReader cOR00 = new CleanOrderReader(new BufferedReader(new StringReader(s00)));
@@ -53,6 +42,8 @@ public class CleanOrderReaderTest {
 		CleanOrderReader cOR10 = new CleanOrderReader(new BufferedReader(new StringReader(s10)));
 		CleanOrderReader cOR11 = new CleanOrderReader(new BufferedReader(new StringReader(s11)));
 		CleanOrderReader cOR12 = new CleanOrderReader(new BufferedReader(new StringReader(s12)));
+		CleanOrderReader cOR13 = new CleanOrderReader(new BufferedReader(new StringReader(s13)));
+		CleanOrderReader cOR14 = new CleanOrderReader(new BufferedReader(new StringReader(s14)));
 		
 		System.out.println("Test 00:");
 		System.out.println("Befehlstext: ");
@@ -170,6 +161,24 @@ public class CleanOrderReaderTest {
 		while (s != null) {
 			System.out.println("'" + s + "'");
 			s = cOR12.readOrder();
+		}
+		System.out.println("\nTest 13:");
+		System.out.println("Befehlstext: ");
+		System.out.println(s13 + '\n');
+		System.out.println("Befehle:");
+		s = cOR13.readOrder();
+		while (s != null) {
+			System.out.println("'" + s + "'");
+			s = cOR13.readOrder();
+		}
+		System.out.println("\nTest 14:");
+		System.out.println("Befehlstext: ");
+		System.out.println(s14 + '\n');
+		System.out.println("Befehle:");
+		s = cOR14.readOrder();
+		while (s != null) {
+			System.out.println("'" + s + "'");
+			s = cOR14.readOrder();
 		}
 	}
 	

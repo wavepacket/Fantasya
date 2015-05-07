@@ -5,71 +5,87 @@ import java.io.IOException;
 
 public class CleanOrderReader {
 	
-	private static StringBuffer buf = new StringBuffer();
-	private static StringBuffer tempBuf = new StringBuffer();
-	private static String nextLineComment = null;
+	private static final String TEMP_COMMENT_START = ";";
+	private static final String PERMANENT_COMMENT_START = "//";
+	
+	private static final int TRIM_BOTH = 0;
+	private static final int TRIM_START = 1;
+	private static final int TRIM_END = 2;
 	
 	private BufferedReader in;
+	private String nextLineComment = null;
 
 	public CleanOrderReader(BufferedReader in) {
-		if (in == null) throw new IllegalArgumentException("BufferedReader in is 'NULL'. CleanOrderReader needs a BufferedReader.");
+		if (in == null) {
+			throw new IllegalArgumentException("BufferedReader in is 'NULL'. CleanOrderReader needs a BufferedReader.");
+		}
 		this.in = in;
 	}
 	
-	public synchronized String readOrder() {
-		try {
-			if (nextLineComment != null) {
-				String comment = nextLineComment;
-				nextLineComment = null;
-				return comment;
-			}
-			
-			
-			buf.setLength(0);
-			
-			if (!newLine(in, true)) return null;
-			
-			// Zeile mit Zeichen wird buf hinzugefügt
-			buf.append(tempBuf);
-			
-			// Zeile wird mit nächster Zeile bei "\\" am Ende zusammengefügt.
-			while (buf.charAt(buf.length() - 1) == '\\') {
-				buf.delete(buf.length() - 1, buf.length());
-				if (!newLine(in, false)) break;
-				buf.append(tempBuf);
-			}
-			
-			// Wenn die gesamte Zeile ein bleibende Kommentar ('//') ist, zurueckgeben
-			if (buf.charAt(0) == '/' && buf.charAt(1) == '/')
-				return buf.toString();
-			
-			// Wenn die gesamte Zeile ein temporärer Kommentar (';') ist, löschen und neue Zeile suchen
-			if (buf.charAt(0) == ';')
-				return readOrder();
-			
-			// Wenn der bleibende Kommentar nach einem Befehl kommt, den Kommentar temporär abtrennen.
-			
-			if (buf.indexOf("//")> -1) {
-				cutOutCommentAfterOrder(false, 0);
-			}
-			
-			if (buf.indexOf(";")> -1) {
-				cutOutCommentAfterOrder(true, 0);
-			}
-			
-			// Mehrfache Leerzeichen aus dem buf herausholen
-			cutOutDoubleSpace();
-			
-			return buf.toString();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public String readOrder() {
+		if (nextLineComment != null) {
+			String comment = nextLineComment;
+			nextLineComment = null;
+			return comment;
 		}
-		return "BUG";
-	}
+		
+		final StringBuffer buf = new StringBuffer();
+		buf.setLength(0);
+		
+		if (!trimmedNewLine(buf, TRIM_BOTH)) {
+			return null;
+		}
+		
+		if (buf.charAt(buf.length() - 1) == '\\') {
+			StringBuffer addBuf = new StringBuffer();
+			do {
+				buf.delete(buf.length() - 1, buf.length());
+				addBuf.setLength(0);
+				if (!trimmedNewLine(addBuf, TRIM_END)) {
+					break;
+				}
+				buf.append(addBuf);
+			} while (buf.charAt(buf.length() - 1) == '\\');
+		}
+		// Zeile wird mit nächster Zeile bei "\\" am Ende zusammengefügt.
+		/*while (buf.charAt(buf.length() - 1) == '\\') {
+			buf.delete(buf.length() - 1, buf.length());
+			if (!trimmedNewLine(tempBuf, TRIM_END)) {
+				break;
+			}
+			buf.append(tempBuf);
+		} */
+		
+		// Wenn die gesamte Zeile ein bleibende Kommentar ('//') ist, zurueckgeben
+		if (buf.charAt(0) == '/' && buf.charAt(1) == '/') {
+			return buf.toString();
+		}
+		
+		// Wenn die gesamte Zeile ein temporärer Kommentar (';') ist, löschen und neue Zeile suchen
+		if (buf.charAt(0) == ';') {
+			return readOrder();
+		}
+		
+		// Wenn der Kommentar hinter einem Befehl steht.
+		cutOutCommentAfterOrder(buf, 0);
+		
+		// Mehrfache Leerzeichen aus dem buf herausholen
+		cutOutRepeatedSpace(buf);
+		
+		return buf.toString();
+	}	
 	
-	private static void cutOutCommentAfterOrder(boolean tempComment, int begin) {
-		String commentType = (tempComment) ? ";" : "//";
+	private void cutOutCommentAfterOrder(StringBuffer buf, int begin) {
+		String commentType = null;
+		if (buf.indexOf(PERMANENT_COMMENT_START, begin)> -1) {
+			commentType = PERMANENT_COMMENT_START;
+		}
+		else if (buf.indexOf(TEMP_COMMENT_START, begin)> -1) {
+			commentType = TEMP_COMMENT_START;
+		}
+		if (commentType == null) {
+			return;
+		}
 		int commentMark = buf.indexOf(commentType, begin);
 		int quotationMark = buf.indexOf("\"");
 		int quotationMarks = 0;
@@ -83,92 +99,113 @@ public class CleanOrderReader {
 			if (quotationMarks == 0 || quotationMarks % 2 == 0) {
 				isComment = true;
 			}
-		} else {
+		}
+		else {
 			isComment = true;
 		}
 		int newCommentMark = buf.indexOf(commentType, quotationMark + 1);
 		if (isComment) {
-			if (!tempComment) {
+			if (commentType != TEMP_COMMENT_START) {
 				nextLineComment = buf.substring(commentMark);
 			}
 			buf.delete(commentMark, buf.length());
-			tempBuf.setLength(0);
-			tempBuf.append(buf);
-			trim(false);
-			buf.setLength(0);
-			buf.append(tempBuf);
-		} else if (newCommentMark > -1) {
-			cutOutCommentAfterOrder(tempComment, newCommentMark);
+			trimBuf(buf, TRIM_END);
+		}
+		else if (newCommentMark > -1) {
+			cutOutCommentAfterOrder(buf, newCommentMark);
 		}
 	}
 	
-	private static void cutOutDoubleSpace() {
-		tempBuf.setLength(0);
-		tempBuf.append(buf);
-		for(int index = 1; index < tempBuf.length(); index++) {
-			if (tempBuf.charAt(index - 1) == ' ' && tempBuf.charAt(index) == ' ') {
+	private void cutOutRepeatedSpace(StringBuffer buf) {
+		for(int index = 1; index < buf.length(); index++) {
+			if (buf.charAt(index - 1) == ' ' && buf.charAt(index) == ' ') {
 				buf.deleteCharAt(index);
-				cutOutDoubleSpace();
+				cutOutRepeatedSpace(buf);
 				return;
 			}
 		}
 	}
 	
-	private static boolean newLine(BufferedReader in, boolean trimBoth) throws IOException {
-		// tempBuf wird geleert
-		tempBuf.setLength(0);
-		// Neue Zeile holen
-		String line = in.readLine();
-		// Solange die Zeile leer ist, wird eine Neue geholt
-		while (line != null && line.length() == 0) {
-			line = in.readLine();
-		}
-		// Wenn keine Zeile vorhanden ist, wird false zurückgegeben
-		if (line == null) return false;
-		// Zeile wird dem tempBuf hinzugefügt
-		tempBuf.append(line);
-		// vordere und hintere Leerzeichen werden entfernt
-		trim(trimBoth);
-		/* das vorhergehende wird solange praktiziert 
-		 * bis eine Zeile mindestens ein Zeichen hat oder
-		 *  der BufferedReader leer ist ('NULL') */
-		while (tempBuf.length() == 0) {
-			if (!newLine(in, trimBoth)) return false;
-		}
+	private boolean trimmedNewLine(StringBuffer buf, int trimIt) {
+		try {
+			// buf wird geleert
+			buf.setLength(0);
+			// Neue Zeile holen
+			String line;
 		
-		return true;
+			line = in.readLine();
+ 
+			// Solange die Zeile leer ist, wird eine Neue geholt
+			while (line != null && line.length() == 0) {
+				line = in.readLine();
+			}
+			// Wenn keine Zeile vorhanden ist, wird false zurückgegeben
+			if (line == null) {
+				return false;
+			}
+			// Zeile wird dem buf hinzugefügt
+			buf.append(line);
+			// vordere und/oder hintere Leerzeichen werden entfernt
+			trimBuf(buf, trimIt);
+			/* das vorhergehende wird solange praktiziert 
+			 * bis eine Zeile mindestens ein Zeichen hat oder
+			 *  der BufferedReader leer ist ('NULL') */
+			while (buf.length() == 0) {
+				if (!trimmedNewLine(buf, trimIt)) {
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
-	private static void trim(boolean both){
+	private void trimBuf(StringBuffer buf, int trimIt) {
 		int index;
 		
 		// find \t and replace with ' '
-		for (index = 0; index < tempBuf.length(); index++) {
-			if (tempBuf.charAt(index) == '\t') tempBuf.setCharAt(index, ' ');
+		for (index = 0; index < buf.length(); index++) {
+			if (buf.charAt(index) == '\t') {
+				buf.setCharAt(index, ' ');
+			}
 		}
-         
-       //find the last character which is not space
-		for(index = tempBuf.length(); index > 0; index--) {
-			if(tempBuf.charAt(index-1) != ' ')
-				break;
+		
+		if (trimIt == TRIM_END || trimIt == TRIM_BOTH) {
+	         
+	       //find the last character which is not space
+			for(index = buf.length(); index > 0; index--) {
+				if(buf.charAt(index-1) != ' ') {
+					break;
+				}
+			}
+	         
+	        if (index == 1 && buf.charAt(0) == ' ') {
+	        	buf.setLength(0);
+	        	return;
+	        }
+	        else if (index < buf.length()) {
+	        	buf.delete(index, buf.length());
+			}
 		}
-         
-        if (index == 1 && tempBuf.charAt(0) == ' ') {
-        	tempBuf.setLength(0);
-        	return;
-        } else if (index < tempBuf.length()) {
-        	tempBuf.delete(index, tempBuf.length());
-		}
+		
+		
         
-        if (both) {
+        if (trimIt == TRIM_START || trimIt == TRIM_BOTH) {
         	//find the first character which is not space
-            for(index = 0; index < tempBuf.length(); index++){
-            	if(tempBuf.charAt(index) != ' ')
+            for(index = 0; index < buf.length(); index++) {
+            	if(buf.charAt(index) != ' ') {
             		break;
+            	}
             }
             
-            if (index > 0)
-            	tempBuf.delete(0, index);
+            if (index > 0) {
+            	buf.delete(0, index);
+            }
         }
 	}
 }
