@@ -14,6 +14,7 @@ public class CleanOrderReader {
 	
 	private BufferedReader in;
 	private String nextLineComment = null;
+	private final StringBuffer buf = new StringBuffer();
 
 	public CleanOrderReader(BufferedReader in) {
 		if (in == null) {
@@ -23,38 +24,39 @@ public class CleanOrderReader {
 	}
 	
 	public String readOrder() {
+		
+		String line;
+		
 		if (nextLineComment != null) {
-			String comment = nextLineComment;
+			line = nextLineComment;
 			nextLineComment = null;
-			return comment;
+			return line;
 		}
 		
-		final StringBuffer buf = new StringBuffer();
 		buf.setLength(0);
 		
-		if (!trimmedNewLine(buf, TRIM_BOTH)) {
+		line = nextLine();
+		
+		// Wenn das Ende des Streams erreicht ist oder ein Fehler aufgetreten ist, wird null zurückgegeben.
+		if (line == null) {
 			return null;
 		}
 		
-		if (buf.charAt(buf.length() - 1) == '\\') {
-			StringBuffer addBuf = new StringBuffer();
-			do {
-				buf.delete(buf.length() - 1, buf.length());
-				addBuf.setLength(0);
-				if (!trimmedNewLine(addBuf, TRIM_END)) {
-					break;
-				}
-				buf.append(addBuf);
-			} while (buf.charAt(buf.length() - 1) == '\\');
-		}
+		// StringBuffer bekommt die Zeile.
+		buf.append(line);
+		
 		// Zeile wird mit nächster Zeile bei "\\" am Ende zusammengefügt.
-		/*while (buf.charAt(buf.length() - 1) == '\\') {
+		while (buf.charAt(buf.length() - 1) == '\\') {
 			buf.delete(buf.length() - 1, buf.length());
-			if (!trimmedNewLine(tempBuf, TRIM_END)) {
+			line = nextLine();
+			if (line == null) {
 				break;
 			}
-			buf.append(tempBuf);
-		} */
+			buf.append(line);
+		}
+		
+		// Die Zeile wird getrimmt.
+		trimStringBuffer(buf, TRIM_BOTH);
 		
 		// Wenn die gesamte Zeile ein bleibende Kommentar ('//') ist, zurueckgeben
 		if (buf.charAt(0) == '/' && buf.charAt(1) == '/') {
@@ -72,6 +74,13 @@ public class CleanOrderReader {
 		// Mehrfache Leerzeichen aus dem buf herausholen
 		cutOutRepeatedSpace(buf);
 		
+		// deutsche Umlaute aendern
+		replaceGermanSpecialCharactersInStringBuffer(buf);
+		
+		// Befehle in Kleinbuchstaben
+		toLowerCaseStringBuffer(buf);
+		
+		// Als String zurueckgeben.
 		return buf.toString();
 	}	
 	
@@ -109,7 +118,7 @@ public class CleanOrderReader {
 				nextLineComment = buf.substring(commentMark);
 			}
 			buf.delete(commentMark, buf.length());
-			trimBuf(buf, TRIM_END);
+			trimStringBuffer(buf, TRIM_END);
 		}
 		else if (newCommentMark > -1) {
 			cutOutCommentAfterOrder(buf, newCommentMark);
@@ -126,46 +135,58 @@ public class CleanOrderReader {
 		}
 	}
 	
-	private boolean trimmedNewLine(StringBuffer buf, int trimIt) {
+	private String nextLine() {
 		try {
-			// buf wird geleert
-			buf.setLength(0);
-			// Neue Zeile holen
-			String line;
-		
-			line = in.readLine();
- 
-			// Solange die Zeile leer ist, wird eine Neue geholt
-			while (line != null && line.length() == 0) {
-				line = in.readLine();
-			}
-			// Wenn keine Zeile vorhanden ist, wird false zurückgegeben
-			if (line == null) {
-				return false;
-			}
-			// Zeile wird dem buf hinzugefügt
-			buf.append(line);
-			// vordere und/oder hintere Leerzeichen werden entfernt
-			trimBuf(buf, trimIt);
-			/* das vorhergehende wird solange praktiziert 
-			 * bis eine Zeile mindestens ein Zeichen hat oder
-			 *  der BufferedReader leer ist ('NULL') */
-			while (buf.length() == 0) {
-				if (!trimmedNewLine(buf, trimIt)) {
-					return false;
+			
+			String line = "";
+			
+			// bis eine Zeile mindestens ein Zeichen (außer Leer- und Tabzeichen) hat oder das Ende des Streams erreicht ist. 
+			while (line.length() == 0) {
+				// Solange die Zeile leer ist, wird eine Neue geholt.
+				do {
+					// Neue Zeile holen.
+					line = in.readLine();
+				} while (line != null && line.length() == 0);
+				
+				// Wenn das Ende des Streams erreicht ist, wird null zurueckgegeben.
+				if (line == null) {
+					return null;
+				}
+				
+				// Eine Zeile darf nicht nur aus Leerzeichen (inkl. Tab) bestehen.
+				if (!hasStringOrder(line)) {
+					line = "";
 				}
 			}
 			
-			return true;
+			return line;
+
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	private boolean hasStringOrder(String line) {
+		
+		int length = line.length();
+		
+		if (length == 0) return false;
+		
+		char c;
+		
+		for (int i = 0; i < length; i++) {
+			c = line.charAt(i);
+			if (c != ' ' && c != '\t') {
+				return true;
+			}
+		}
 		return false;
 	}
 	
-	private void trimBuf(StringBuffer buf, int trimIt) {
+	private void trimStringBuffer(StringBuffer buf, int trimIt) {
 		int index;
 		
 		// find \t and replace with ' '
@@ -207,5 +228,49 @@ public class CleanOrderReader {
             	buf.delete(0, index);
             }
         }
+	}
+	
+	private void replaceGermanSpecialCharactersInStringBuffer(StringBuffer buf) {
+		// Alle Zeichen nach Sonderzeichen durchsuchen.
+		char c;
+		for (int i = 0; i < buf.length(); i++) {
+			// Wenn ein Anfuehrungszeichen, oder Kommentar kommt, dann aufhoeren.
+			c = buf.charAt(i);
+			if (c == '\"' || c == ';' || (c == '/' && (i + 1) < buf.length() && buf.charAt(i + 1) == '/')) {
+				break;
+			}
+			if (c == '\u00c4' || c == '\u00e4') { // Ä oder ä
+				buf.delete(i, i + 1);
+				buf.insert(i, "ae");
+			}
+			else if (c == '\u00d6' || c == '\u00f6') { // Ö oder ö
+				buf.delete(i, i + 1);
+				buf.insert(i,  "oe");
+			}
+			else if (c == '\u00dc' || c == '\u00fc') { // Ü oder ü
+				buf.delete(i, i + 1);
+				buf.insert(i,  "ue");
+			}
+			else if (c == '\u00df') { // ß
+				buf.delete(i, i + 1);
+				buf.insert(i,  "ss");
+			}
+		}
+	}
+	
+	private void toLowerCaseStringBuffer(StringBuffer buf) {
+		// Alle Zeichen nach Grossbuchstaben durchsuchen und zu kleinbuchstaben zu machen durchsuchen.
+		char c;
+		for (int i = 0; i < buf.length(); i++) {
+			// Wenn ein Anfuehrungszeichen, oder Kommentar kommt, dann aufhoeren.
+			c = buf.charAt(i);
+			if (c == '\"' || c == ';' || (c == '/' && (i + 1) < buf.length() && buf.charAt(i + 1) == '/')) {
+				break;
+			}
+			// Wenn ein Grossbuchstabe, dann mache daraus einen Kleinbuchstaben
+			if (Character.isUpperCase(c)) {
+				buf.setCharAt(i, Character.toLowerCase(c));
+			}
+		}
 	}
 }
