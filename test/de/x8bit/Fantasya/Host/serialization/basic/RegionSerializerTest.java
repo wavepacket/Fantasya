@@ -36,12 +36,13 @@ public class RegionSerializerTest {
 
 	@Test
 	public void validityOfKeysetsIsProperlyRecognized() {
-		assertTrue("Valid keyset is not recognized.",
-				serializer.isValidKeyset(serializedMap.keySet()));
+		assertTrue( serializer.isValidKeyset(serializedMap.keySet()) );
+
+		serializedMap.remove("publicIslandID");
+		assertTrue( serializer.isValidKeyset(serializedMap.keySet()) );
 
 		serializedMap.remove("typ");
-		assertFalse("Invalid keyset is not recognized.",
-				serializer.isValidKeyset(serializedMap.keySet()));
+		assertFalse( serializer.isValidKeyset(serializedMap.keySet()) );
 	}
 
 	@Test
@@ -72,6 +73,17 @@ public class RegionSerializerTest {
 				Integer.decode(serializedMap.get("insel")), (Integer)r.getInselKennung());
 		assertEquals("Wrong age loaded.",
 				Integer.decode(serializedMap.get("silber")), (Integer)r.getSilber());
+		assertEquals("Wrong public island id.",
+				Integer.decode(serializedMap.get("publicIslandID")), (Integer)r.getPublicIslandID());
+	}
+
+	@Test
+	public void setStandardPublicIslandID() {
+		serializedMap.remove("publicIslandID");
+		Region r = serializer.load(serializedMap);
+
+		assertEquals("Public island id was not set to the correct default.",
+				(Integer)0, (Integer)r.getPublicIslandID());
 	}
 
 	@Test

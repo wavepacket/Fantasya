@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.After;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SerializationIntegrationTest {
@@ -29,6 +30,16 @@ public class SerializationIntegrationTest {
 	private final String inputFile = this.getClass().getResource("files/gamedata.xml").getFile();
 	private final String outputFile = "output.xml";
 
+
+	@Before
+	public void cleanAllStaticVariables() {
+		Partei.PLAYER_FACTION_LIST.clear();
+		Region.CACHE.clear();
+		Building.PROXY.clear();
+		Ship.PROXY.clear();
+		Unit.CACHE.clear();
+		NeuerSpieler.PROXY.clear();
+	}
 
 	@After
 	public void tearDown() {
@@ -71,7 +82,7 @@ public class SerializationIntegrationTest {
 		Unit.CACHE.clear();
 
 		// 4. Load the saved data again
-		inputAdapter = new XmlReadAdapter(inputFile);
+		inputAdapter = new XmlReadAdapter(outputFile);
 		serializer = SerializerFactory.buildSerializer(inputAdapter);
 		serializer.loadAll();
 
@@ -84,16 +95,7 @@ public class SerializationIntegrationTest {
 	private void checkGameIsLoadedCorrectly() {
 		// There should be two parties in the game with some specific data,
 		// plus one with id 0
-		assertEquals("Wrong number of players loaded.", 3, Partei.PLAYER_FACTION_LIST.size());
-
-		// the following tests are conceptually simpler if we remove the party with
-		// id 0, so we do this here.
-		for (Partei p : Partei.PLAYER_FACTION_LIST) {
-			if (p.getNummer() == 0) {
-				Partei.PLAYER_FACTION_LIST.remove(p);
-				break;
-			}
-		}
+		assertEquals("Wrong number of players loaded.", 2, Partei.PLAYER_FACTION_LIST.size());
 
 		// now the other tests.
 		for (Partei p : Partei.PLAYER_FACTION_LIST) {
