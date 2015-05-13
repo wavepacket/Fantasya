@@ -8,6 +8,7 @@ import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
 import de.x8bit.Fantasya.Host.serialization.util.DataAnalyzer;
+import de.x8bit.Fantasya.log.FakeAppender;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class MessageSerializerTest {
 	Map<String,String> serializedMapWoRefs;
 	
 	private Collection<Partei> parteiList = new ArrayList<Partei>();
+	private ArrayList<Partei> systemFactions = new ArrayList<Partei>();
 	private Collection<Coordinates> coordsList = new ArrayList<Coordinates>();
 	private MapCache<Unit> unitList = new MapCache<Unit>();
 	
@@ -30,7 +32,7 @@ public class MessageSerializerTest {
 	Unit unit = new Elf();
 	
 	private MessageSerializer serializer = new MessageSerializer(
-			parteiList, coordsList, unitList);
+			parteiList, systemFactions, coordsList, unitList);
 	
 	@Before
 	public void setup() {
@@ -38,6 +40,7 @@ public class MessageSerializerTest {
 		unit.setNummer(43);
 		
 		parteiList.add(partei);
+		systemFactions.add(Partei.createPlayerFaction(11, 1));
 		coordsList.add(coords);
 		unitList.add(unit);
 		
@@ -60,99 +63,127 @@ public class MessageSerializerTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorRequiresValidParteiList() {
-		new MessageSerializer(null, coordsList, unitList);
+		new MessageSerializer(null, systemFactions, coordsList, unitList);
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void constructorRequiresValidSystemFactions() {
+		new MessageSerializer(parteiList, null, coordsList, unitList);
+}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorRequiresValidRegionList() {
-		new MessageSerializer(parteiList, null, unitList);
+		new MessageSerializer(parteiList, systemFactions, null, unitList);
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void constructorRequiresValidUnitList() {
-		new MessageSerializer(parteiList, coordsList, null);
+		new MessageSerializer(parteiList, systemFactions, coordsList, null);
 	}
-	
+
 	@Test
 	public void keysetValidityIsRecognized() {
 		assertTrue("Valid keysets are recognized as valid.",
 				serializer.isValidKeyset(serializedMap.keySet()));
-		
+
 		serializedMap.remove("text");
 		assertFalse("Invalid keysets are not recognized as invalid.",
 				serializer.isValidKeyset(serializedMap.keySet()));
 	}
-	
+
 	@Test
 	public void loadingWorksProperly() {
 		Message msg = serializer.load(serializedMap);
-		
+
 		assertTrue("Incorrect class loaded.", msg instanceof BigError);
 		assertEquals("Incorrect text set.", serializedMap.get("text"), msg.getText());
 		assertEquals("Incorrect party set.", partei, msg.getFaction());
 		assertEquals("Incorrect coordinates set.", coords, msg.getCoordinates());
 		assertEquals("Incorrect unit set.", unit, msg.getUnit());
 	}
-	
+
 	@Test
 	public void loadingWorksWithoutParteiCoordsAndUnit() {
 		Message msg = serializer.load(serializedMapWoRefs);
-		
+
 		assertNull("Partei set although not requested.", msg.getFaction());
 		assertNull("Coordinates set although not requested.", msg.getCoordinates());
 		assertNull("Unit set although not requested.", msg.getUnit());
 	}
-	
+
 	@Test
 	public void idIsAlwaysSetAndIncreasing() {
 		int maxId = 0;
-		
+
 		for (int i = 0; i < 1000; i++) {
 			Message msg = serializer.load(serializedMap);
-			
+
 			assertTrue("Ids are not strictly monotonically increasing.", msg.getEvaId() > maxId);
 			maxId = msg.getEvaId();
 		}
 	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void exceptionOnInvalidMessageType() {
+
+	@Test
+	public void warnAndReturnNullOnBadMessageType() {
 		serializedMap.put("kategorie", "NotExistantMessageType");
-		serializer.load(serializedMap);
+		FakeAppender.reset();
+
+		assertNull(serializer.load(serializedMap));
+		assertTrue(FakeAppender.receivedWarningMessage());
 	}
-	
-/*	@Test(expected = IllegalArgumentException.class)
-	public void exceptionOnNonExistantPartei() {
+
+	@Test
+	public void loadingWorksWithSystemFaction() {
+		serializedMap.put("partei",
+				String.valueOf(systemFactions.iterator().next().getNummer()));
+
+		Message msg = serializer.load(serializedMap);
+
+		assertNotNull(msg);
+		assertEquals(systemFactions.iterator().next(), msg.getFaction());
+	}
+
+	@Test
+	public void warnAndReturnNullOnBadPartei() {
 		serializedMap.put("partei", "100000");
-		serializer.load(serializedMap);
+		FakeAppender.reset();
+
+		assertNull(serializer.load(serializedMap));
+		assertTrue(FakeAppender.receivedWarningMessage());
 	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void exceptionOnInvalidCoordinate() {
+
+	@Test
+	public void warnAndReturnNullOnBadRegion() {
 		serializedMap.put("koordx", "78");
-		serializer.load(serializedMap);
+		FakeAppender.reset();
+
+		assertNull(serializer.load(serializedMap));
+		assertTrue(FakeAppender.receivedWarningMessage());
 	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void exceptionOnInvalidUnit() {
+
+	@Test
+	public void warnAndReturnNullOnBadUnit() {
 		serializedMap.put("einheit", "78");
-		serializer.load(serializedMap);
+		FakeAppender.reset();
+
+		assertNull(serializer.load(serializedMap));
+		assertTrue(FakeAppender.receivedWarningMessage());
 	}
-*/
+
 	@Test
 	public void savingWithReferencesWorks() {
 		Message msg = serializer.load(serializedMap);
 		DataAnalyzer analyzer = new DataAnalyzer(serializer.save(msg));
-		
+
 		assertEquals("Wrong number of saved items.", 1, analyzer.size());
 		assertTrue("Wrong saved item.", analyzer.contains(serializedMap));
 	}
-	
+
 	@Test
 	public void savingWithoutReferencesWorks() {
 		Message msg = serializer.load(serializedMapWoRefs);
 		DataAnalyzer analyzer = new DataAnalyzer(serializer.save(msg));
-		
+
 		assertEquals("Wrong number of saved items.", 1, analyzer.size());
 		assertTrue("Wrong saved item.", analyzer.contains(serializedMapWoRefs));
 	}

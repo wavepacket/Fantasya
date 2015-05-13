@@ -21,8 +21,9 @@ public class EinheitenSerializerTest {
 	private Map<String,String> serializedMap = new HashMap<String,String>();
 	private Set<Coordinates> regionList = new HashSet<Coordinates>();
 	private Collection<Partei> partyList = new HashSet<Partei>();
+	private Collection<Partei> systemList = new HashSet<Partei>();
 
-	private EinheitenSerializer serializer = new EinheitenSerializer(partyList, regionList);
+	private EinheitenSerializer serializer = new EinheitenSerializer(partyList, systemList, regionList);
 
 	@Before
 	public void setup() {
@@ -30,6 +31,7 @@ public class EinheitenSerializerTest {
 
 		Partei p = Partei.createPlayerFaction(42, 1);
 		partyList.add(p);
+		systemList.add( Partei.createPlayerFaction(1, 1) );
 		
 		// fill the serialized map with valid data
 		serializedMap.put("rasse", "Echse");
@@ -63,12 +65,17 @@ public class EinheitenSerializerTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void requireRegionListInConstructor() {
-		serializer = new EinheitenSerializer(partyList, null);
+		serializer = new EinheitenSerializer(partyList, systemList, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void requireParteiListInConstructor() {
-		serializer = new EinheitenSerializer(null, regionList);
+	public void requireFactionListInConstructor() {
+		serializer = new EinheitenSerializer(null, systemList, regionList);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void requireSystemFactionsInConstructor() {
+		serializer = new EinheitenSerializer(partyList, null, regionList);
 	}
 
 	@Test
@@ -163,6 +170,17 @@ public class EinheitenSerializerTest {
 
 		assertNull(serializer.load(serializedMap));
 		assertTrue(FakeAppender.receivedWarningMessage());
+	}
+
+	@Test
+	public void loadingWorksWithSystemFaction() {
+		serializedMap.put("partei",
+				String.valueOf(systemList.iterator().next().getNummer()));
+
+		Unit unit = serializer.load(serializedMap);
+		
+		assertNotNull(unit);
+		assertEquals( (int)Integer.decode(serializedMap.get("partei")), unit.getOwner() );
 	}
 
 	@Test

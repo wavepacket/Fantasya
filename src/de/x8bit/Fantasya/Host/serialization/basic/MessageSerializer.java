@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Serializer to load/save messages. 
  *
@@ -24,23 +26,34 @@ import java.util.Set;
 // documented anywhere as being in whatever way special.
 public class MessageSerializer implements ObjectSerializer<Message> {
 
-	private Collection<Partei> factionList;
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	private Collection<Partei> playerFactions;
+	private Collection<Partei> systemFactions;
 	private Collection<Coordinates> coordsList;
 	private MapCache<Unit> unitList;
 
 	/** Constructs a new serializer.
 	 * 
-	 * @param factionList a list of all active parties
+	 * Note: We use player and system factions, because only the latter are
+	 * populated at the time of the setup of the serializer. So we have to
+	 * supply the playerFactions as a pointer to the list that is going to be
+	 * populated over the course of the loading.
+	 * 
+	 * @param playerFactions a list of all active parties
+	 * @param systemFactions a list of all non-player parties (monsters etc.)
 	 * @param coordsList a list of all available coordinates
 	 * @param unitList a list of all available units
 	 */
-	public MessageSerializer(Collection<Partei> factionList,
+	public MessageSerializer(Collection<Partei> playerFactions,
+			Collection<Partei> systemFactions,
 			Collection<Coordinates> coordsList, MapCache<Unit> unitList) {
-		if (factionList == null || coordsList == null || unitList == null) {
+		if (playerFactions == null || systemFactions == null || coordsList == null || unitList == null) {
 			throw new IllegalArgumentException("Serializer needs valid lists.");
 		}
 
-		this.factionList = factionList;
+		this.playerFactions = playerFactions;
+		this.systemFactions = systemFactions;
 		this.coordsList = coordsList;
 		this.unitList = unitList;
 	}
@@ -64,23 +77,31 @@ public class MessageSerializer implements ObjectSerializer<Message> {
 			msg = (Message) Class.forName(
 					"de.x8bit.Fantasya.Atlantis.Messages." + mapping.get("kategorie")).newInstance();
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Could not load message type.", e);
+			logger.warn("Error loading message: message type \"{}\" not found.",
+					mapping.get("kategorie"));
+			return null;
 		}
 
 		msg.setText(mapping.get("text"));
 		
 		// load the player that the message corresponds to
 		int pid = Integer.decode(mapping.get("partei"));
-		for (Partei p : factionList) {
+		for (Partei p : playerFactions) {
+			if (p.getNummer() == pid) {
+				msg.setPartei(p);
+			}
+		}
+		for (Partei p : systemFactions) {
 			if (p.getNummer() == pid) {
 				msg.setPartei(p);
 			}
 		}
 
 		if (pid != 0 && msg.getFaction() == null) {
-			// TODO: proper logging
-			return msg;
-			//throw new IllegalArgumentException("Partei not found in list.");
+			logger.warn("Error loading message of type \"{}\": Partei {} not found",
+					mapping.get("kategorie"),
+					mapping.get("partei"));
+			return null;
 		}
 
 		// load the coordinates that the message refers to
@@ -89,9 +110,12 @@ public class MessageSerializer implements ObjectSerializer<Message> {
 				Integer.decode(mapping.get("welt")));
 		if (coords.getX() != 0 || coords.getY() != 0 || coords.getZ() != 0) {
 			if (!coordsList.contains(coords)) {
-				// TODO: proper logging
-				return msg;
-				//throw new IllegalArgumentException("Coordinate not found on map.");
+				logger.warn("Error loading message of type \"{}\": Region at ({},{},{}) not found.",
+						mapping.get("kategorie"),
+						mapping.get("koordx"),
+						mapping.get("koordy"),
+						mapping.get("welt"));
+				return null;
 			}
 			msg.setCoordinates(coords);
 		}
@@ -104,9 +128,10 @@ public class MessageSerializer implements ObjectSerializer<Message> {
 		}
 
 		if (uid != 0 && msg.getUnit() == null) {
-			// TODO: proper logging
-			return msg;
-			//throw new IllegalArgumentException("Unit not found in list.");
+			logger.warn("Error loading message of type \"{}\": Unit {} not found.",
+					mapping.get("kategorie"),
+					mapping.get("einheit"));
+			return null;
 		}
 
 		return msg;

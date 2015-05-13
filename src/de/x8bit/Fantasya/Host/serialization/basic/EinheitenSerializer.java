@@ -29,14 +29,27 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private Set<Coordinates> regionList;
-	private Collection<Partei> factionList;
+	private Collection<Partei> playerFactions;
+	private Collection<Partei> systemFactions;
 
-	public EinheitenSerializer(Collection<Partei> factionList, Set<Coordinates> regionList) {
-		if (factionList == null || regionList == null) {
+	/** Constructs the new serializer.
+	 *
+	 * Note: We use player and system factions, because only the latter are
+	 * populated at the time of the setup of the serializer. So we have to
+	 * supply the playerFactions as a pointer to the list that is going to be
+	 * populated over the course of the loading.
+	 */
+	public EinheitenSerializer(
+			Collection<Partei> playerFactions,
+			Collection<Partei> systemFactions,
+			Set<Coordinates> regionList)
+	{
+		if (playerFactions == null || systemFactions == null || regionList == null) {
 			throw new IllegalArgumentException("Require a valid faction and regionList for unit serialization.");
 		}
 
-		this.factionList = factionList;
+		this.playerFactions = playerFactions;
+		this.systemFactions = systemFactions;
 		this.regionList = regionList;
 	}
 
@@ -131,11 +144,17 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 
 		Partei owner = null;
 		
-		for (Partei p : factionList) {
+		for (Partei p : playerFactions) {
 			if (p.getNummer() == unit.getOwner()) {
 				owner = p;
 			}
 		}
+		for (Partei p : systemFactions) {
+			if (p.getNummer() == unit.getOwner()) {
+				owner = p;
+			}
+		}
+
 		if (owner == null) {
 			logger.warn("Error loading unit \"{}\": Owner \"{}\" does not exist.",
 					unit.getNummer(),
