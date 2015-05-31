@@ -23,7 +23,7 @@ import de.x8bit.Fantasya.Atlantis.Skills.Wahrnehmung;
 import de.x8bit.Fantasya.Atlantis.Units.Goblin;
 import de.x8bit.Fantasya.Atlantis.Units.Mensch;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.atlas.FactionAtlas;
 import de.x8bit.Fantasya.Atlantis.util.atlas.NPCFactionAtlas;
 import de.x8bit.Fantasya.Atlantis.util.atlas.OmniFactionAtlas;
@@ -62,14 +62,23 @@ public class Partei extends Atlantis {
 	public static final Partei MONSTER_FACTION = new Partei(620480, FactionWay.MONSTER); // Partei dark
 	public static final Partei ANIMAL_FACTION = new Partei(1376883, FactionWay.ANIMAL); // Partei tier
 
-	public static final List<Partei> PLAYER_FACTION_LIST = new ArrayList<Partei>();
+	private static final List<Partei> PLAYER_FACTION_LIST = new ArrayList<Partei>();
 	private static final List<Partei> NPC_FACTION_LIST = new ArrayList<Partei>();
 
 	static {
 		OMNI_FACTION.Rasse = Mensch.class.getSimpleName();
 		OMNI_FACTION.NMR = GameRules.getRunde();
+		OMNI_FACTION.setName("Tarnpartei");
+		OMNI_FACTION.setEMail("");
+		OMNI_FACTION.Ursprung = Coordinates.create(0, 0, 1);
 		MONSTER_FACTION.Rasse = Goblin.class.getSimpleName();
+		MONSTER_FACTION.setName("Monster");
+		MONSTER_FACTION.setEMail("");
+		MONSTER_FACTION.Ursprung = Coordinates.create(0, 0, 1);
 		ANIMAL_FACTION.Rasse = Greif.class.getSimpleName();
+		ANIMAL_FACTION.Ursprung = Coordinates.create(0, 0, 1);
+		ANIMAL_FACTION.setName("Tiere");
+		ANIMAL_FACTION.setEMail("");
 		// NON_PLAYER_FACTION_LIST.add(OMNI_FACTION);
 		NPC_FACTION_LIST.add(MONSTER_FACTION);
 		NPC_FACTION_LIST.add(ANIMAL_FACTION);
@@ -79,7 +88,7 @@ public class Partei extends Atlantis {
 	private String Website = "";
 	private String Password = "empty";
 	private int NMR = 0;
-	private Coordinates Ursprung = DefaultConstantsFactory.NO_COORDINATES_VALUE;
+	private Coordinates Ursprung = ConstantsFactory.NO_COORDINATES_VALUE;
 	private int Alter = 0;
 	private int Defaultsteuer = 0;
 	private Map<Integer, Allianz> allianzen = new HashMap<Integer, Allianz>();
@@ -118,7 +127,7 @@ public class Partei extends Atlantis {
 	//	this.Alter = Alter;
 	//}
 	
-	public FactionAtlas getFactionAtlas() {
+	public FactionAtlas getAtlas() {
 		return factionAtlas;
 	}
 	
@@ -558,123 +567,7 @@ public class Partei extends Atlantis {
 		return moeglich;
 	}
 
-	public static boolean isNPCFaction(int id) {
-		for (Partei possibleFaction : NPC_FACTION_LIST)
-			if (id == possibleFaction.getNummer()) return true;
-		return false;
-	}
 	
-	private static Partei getNPCFaction(int id) {
-		for (Partei possibleFaction : NPC_FACTION_LIST)
-			if (id == possibleFaction.getNummer()) return possibleFaction;
-		return null;
-	}
-	
-	public static boolean isNonPlayerFaction(int id) {
-		if (OMNI_FACTION.getNummer() == id) return true;
-		for (Partei possibleFaction : NPC_FACTION_LIST)
-			if (id == possibleFaction.getNummer()) return true;
-		return false;
-	}
-	
-	public static void clearPlayerFactionList() {
-		PLAYER_FACTION_LIST.clear();
-	}
-	
-	/**
-	 * returns only player factions
-	 * @return player factions
-	 */
-	
-	public static List<Partei> getPlayerFactionList() {
-		return Collections.unmodifiableList(PLAYER_FACTION_LIST);
-	}
-	
-	/**
-	 * returns only non player factions
-	 * @return non player factions
-	 */
-	
-	public static List<Partei> getNPCFactionList() {
-		return Collections.unmodifiableList(NPC_FACTION_LIST);
-	}
-	
-//	/**
-//	 * Returns all factions
-//	 * @return all factions
-//	 */
-//	
-//	public static List<Partei> getAllFactionList() {
-//		List<Partei> allFactionList = new ArrayList<Partei>();
-//		allFactionList.addAll(PLAYER_FACTION_LIST);
-//		allFactionList.addAll(NON_PLAYER_FACTION_LIST);
-//		return Collections.unmodifiableList(allFactionList);
-//	}
-	
-	public static boolean removePlayerFaction(Partei faction) {
-		if (PLAYER_FACTION_LIST.contains(faction)) return PLAYER_FACTION_LIST.remove(faction);
-		return false;
-	}
-	
-	public static boolean removePlayerFaction(int id) {
-		for (Partei possibleFaction : PLAYER_FACTION_LIST) {
-			if (possibleFaction.getNummer() == id) {
-				return PLAYER_FACTION_LIST.remove(possibleFaction);
-			}
-		}
-		// loggen
-		return false;
-	}
-	
-	/**
-	 * Sucht und gibt eine Partei zur�ck. Wenn es die Partei nicht gibt, wird UNKNOWN_FACTION zur�ckgegeben.
-	 */
-	public static Partei getFaction(int id) {
-		if (id == OMNI_FACTION.getNummer()) return OMNI_FACTION;
-		Partei faction = getNPCFaction(id);
-		if (faction != null) return faction;
-		for (Partei possibleFaction : PLAYER_FACTION_LIST)
-			if (possibleFaction.getNummer() == id)
-				return possibleFaction;
-		return null;
-	}
-	
-	/**
-	 * erzeugt eine neue Spielerpartei
-	 */
-	public static Partei createNewPlayerFaction() {
-		// Nummer und Art der Partei vergeben
-		Partei faction = new Partei(FreieNummern.freieNummer(PLAYER_FACTION_LIST), FactionWay.PLAYER);
-
-		// das Alter der Volkes setzen
-		faction.Alter = GameRules.getRunde();
-		faction.setNMR(GameRules.getRunde());
-
-		// ein sicheres Passwort erzeugen ... wird am
-		// Ende aber wieder vom Management �berschrieben
-		faction.GeneratePasswort();
-		faction.setPassword(faction.Password);
-		
-		PLAYER_FACTION_LIST.add(faction);
-
-		return faction;
-	}
-
-	/**
-	 * erzeugt eine Spielerpartei
-	 */
-	public static Partei createPlayerFaction(int id, int alter) {
-		// Nummer und Art der Partei vergeben
-		Partei faction = new Partei(id, FactionWay.PLAYER);
-
-		// das Alter der Volkes setzen
-		faction.Alter = alter;
-		
-		// Wird durch den Serializer hinzugefügt -> AENDERN!!!!!!!!!
-		// PROXY.add(faction);
-
-		return faction;
-	}
 
 	/**
 	 * erzeugt ein neues Passwort
@@ -946,5 +839,134 @@ public class Partei extends Atlantis {
 				privat.getY() + this.getUrsprung().getY(),
 				privat.getZ());
 
+	}
+	
+	public static boolean isNPCFaction(int id) {
+		for (Partei possibleFaction : NPC_FACTION_LIST) {
+			if (id == possibleFaction.getNummer()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static Partei getNPCFaction(int id) {
+		for (Partei possibleFaction : NPC_FACTION_LIST) {
+			if (id == possibleFaction.getNummer()) {
+				return possibleFaction;
+			}
+		}
+		return null;
+	}
+	
+	public static boolean isNonPlayerFaction(int id) {
+		if (OMNI_FACTION.getNummer() == id) { return true; }
+		for (Partei possibleFaction : NPC_FACTION_LIST) {
+			if (id == possibleFaction.getNummer()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static void clearPlayerFactionList() {
+		PLAYER_FACTION_LIST.clear();
+	}
+	
+	/**
+	 * returns only player factions
+	 * @return player factions
+	 */
+	
+	public static List<Partei> getPlayerFactionList() {
+		return Collections.unmodifiableList(PLAYER_FACTION_LIST);
+	}
+	
+	/**
+	 * returns only non player factions
+	 * @return non player factions
+	 */
+	
+	public static List<Partei> getNPCFactionList() {
+		return Collections.unmodifiableList(NPC_FACTION_LIST);
+	}
+	
+//	/**
+//	 * Returns all factions
+//	 * @return all factions
+//	 */
+//	
+//	public static List<Partei> getAllFactionList() {
+//		List<Partei> allFactionList = new ArrayList<Partei>();
+//		allFactionList.addAll(PLAYER_FACTION_LIST);
+//		allFactionList.addAll(NON_PLAYER_FACTION_LIST);
+//		return Collections.unmodifiableList(allFactionList);
+//	}
+	
+	public static boolean removePlayerFaction(Partei faction) {
+		if (PLAYER_FACTION_LIST.contains(faction)) { return PLAYER_FACTION_LIST.remove(faction); }
+		return false;
+	}
+	
+	public static boolean removePlayerFaction(int id) {
+		for (Partei possibleFaction : PLAYER_FACTION_LIST) {
+			if (possibleFaction.getNummer() == id) {
+				return PLAYER_FACTION_LIST.remove(possibleFaction);
+			}
+		}
+		// loggen
+		return false;
+	}
+	
+	/**
+	 * Sucht und gibt eine Partei zur�ck. Wenn es die Partei nicht gibt, wird UNKNOWN_FACTION zur�ckgegeben.
+	 */
+	public static Partei getFaction(int id) {
+		if (id == OMNI_FACTION.getNummer()) { return OMNI_FACTION; }
+		Partei faction = getNPCFaction(id);
+		if (faction != null) { return faction; }
+		for (Partei possibleFaction : PLAYER_FACTION_LIST) {
+			if (possibleFaction.getNummer() == id) {
+				return possibleFaction;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * erzeugt eine neue Spielerpartei
+	 */
+	public static Partei createNewPlayerFaction() {
+		// Nummer und Art der Partei vergeben
+		Partei faction = new Partei(FreieNummern.freieNummer(PLAYER_FACTION_LIST), FactionWay.PLAYER);
+
+		// das Alter der Volkes setzen
+		faction.Alter = GameRules.getRunde();
+		faction.setNMR(GameRules.getRunde());
+
+		// ein sicheres Passwort erzeugen ... wird am
+		// Ende aber wieder vom Management �berschrieben
+		faction.GeneratePasswort();
+		faction.setPassword(faction.Password);
+		
+		Partei.PLAYER_FACTION_LIST.add(faction);
+
+		return faction;
+	}
+
+	/**
+	 * erzeugt eine Spielerpartei
+	 */
+	public static Partei createPlayerFaction(int id, int alter) {
+		// Nummer und Art der Partei vergeben
+		Partei faction = new Partei(id, FactionWay.PLAYER);
+
+		// das Alter der Volkes setzen
+		faction.Alter = alter;
+		
+		
+		Partei.PLAYER_FACTION_LIST.add(faction);
+
+		return faction;
 	}
 }

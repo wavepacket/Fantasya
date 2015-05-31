@@ -1,18 +1,16 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
+import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Serializer to load/save messages. 
  *
@@ -26,37 +24,13 @@ import org.slf4j.LoggerFactory;
 // documented anywhere as being in whatever way special.
 public class MessageSerializer implements ObjectSerializer<Message> {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	private Collection<Partei> playerFactions;
-	private Collection<Partei> systemFactions;
-	private Collection<Coordinates> coordsList;
-	private MapCache<Unit> unitList;
-
 	/** Constructs a new serializer.
 	 * 
-	 * Note: We use player and system factions, because only the latter are
-	 * populated at the time of the setup of the serializer. So we have to
-	 * supply the playerFactions as a pointer to the list that is going to be
-	 * populated over the course of the loading.
-	 * 
-	 * @param playerFactions a list of all active parties
-	 * @param systemFactions a list of all non-player parties (monsters etc.)
+	 * @param factionList a list of all active parties
 	 * @param coordsList a list of all available coordinates
 	 * @param unitList a list of all available units
 	 */
-	public MessageSerializer(Collection<Partei> playerFactions,
-			Collection<Partei> systemFactions,
-			Collection<Coordinates> coordsList, MapCache<Unit> unitList) {
-		if (playerFactions == null || systemFactions == null || coordsList == null || unitList == null) {
-			throw new IllegalArgumentException("Serializer needs valid lists.");
-		}
-
-		this.playerFactions = playerFactions;
-		this.systemFactions = systemFactions;
-		this.coordsList = coordsList;
-		this.unitList = unitList;
-	}
+	public MessageSerializer() {}
 
 	@Override
 	public boolean isValidKeyset(Set<String> keys) {
@@ -77,31 +51,29 @@ public class MessageSerializer implements ObjectSerializer<Message> {
 			msg = (Message) Class.forName(
 					"de.x8bit.Fantasya.Atlantis.Messages." + mapping.get("kategorie")).newInstance();
 		} catch (Exception e) {
-			logger.warn("Error loading message: message type \"{}\" not found.",
-					mapping.get("kategorie"));
-			return null;
+			throw new IllegalArgumentException("Could not load message type.", e);
 		}
 
 		msg.setText(mapping.get("text"));
 		
+		Set<Partei> allFactions = new HashSet<Partei>();
+		allFactions.add(Partei.OMNI_FACTION);
+		allFactions.addAll(Partei.getNPCFactionList());
+		allFactions.addAll(Partei.getPlayerFactionList());
+		
 		// load the player that the message corresponds to
 		int pid = Integer.decode(mapping.get("partei"));
-		for (Partei p : playerFactions) {
-			if (p.getNummer() == pid) {
-				msg.setPartei(p);
-			}
-		}
-		for (Partei p : systemFactions) {
-			if (p.getNummer() == pid) {
-				msg.setPartei(p);
-			}
+		
+		Partei p = Partei.getFaction(pid);
+		
+		if (p != null) {
+			msg.setPartei(p);
 		}
 
 		if (pid != 0 && msg.getFaction() == null) {
-			logger.warn("Error loading message of type \"{}\": Partei {} not found",
-					mapping.get("kategorie"),
-					mapping.get("partei"));
-			return null;
+			// TODO: proper logging
+			return msg;
+			//throw new IllegalArgumentException("Partei not found in list.");
 		}
 
 		// load the coordinates that the message refers to
@@ -109,29 +81,25 @@ public class MessageSerializer implements ObjectSerializer<Message> {
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));
 		if (coords.getX() != 0 || coords.getY() != 0 || coords.getZ() != 0) {
-			if (!coordsList.contains(coords)) {
-				logger.warn("Error loading message of type \"{}\": Region at ({},{},{}) not found.",
-						mapping.get("kategorie"),
-						mapping.get("koordx"),
-						mapping.get("koordy"),
-						mapping.get("welt"));
-				return null;
+			if (!Region.CACHE.keySet().contains(coords)) {
+				// TODO: proper logging
+				return msg;
+				//throw new IllegalArgumentException("Coordinate not found on map.");
 			}
 			msg.setCoordinates(coords);
 		}
 
 		// load the unit that the message refers to
 		int uid = Integer.decode(mapping.get("einheit"));
-		Unit u = unitList.get(uid);
+		Unit u = Unit.CACHE.get(uid);
 		if (u != null) {
 			msg.setUnit(u);
 		}
 
 		if (uid != 0 && msg.getUnit() == null) {
-			logger.warn("Error loading message of type \"{}\": Unit {} not found.",
-					mapping.get("kategorie"),
-					mapping.get("einheit"));
-			return null;
+			// TODO: proper logging
+			return msg;
+			//throw new IllegalArgumentException("Unit not found in list.");
 		}
 
 		return msg;

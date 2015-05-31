@@ -7,7 +7,7 @@ import java.util.Set;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Host.GameRules;
 
 public final class RegionSight implements Comparable<RegionSight> {
@@ -206,10 +206,10 @@ public final class RegionSight implements Comparable<RegionSight> {
 		this.source = source;
 		isInvisibleTerrain = false;
 		
-		if (terrain.equals(DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS)) {
+		if (terrain.equals(ConstantsFactory.INVISIBLE_TERRAIN_CLASS)) {
 			setRoads(null);
-			setName(DefaultConstantsFactory.INVISIBLE_TERRAIN_STRING_VALUE);
-			setTerrain(DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS);
+			setName(ConstantsFactory.INVISIBLE_TERRAIN_NAME);
+			setTerrain(ConstantsFactory.INVISIBLE_TERRAIN_CLASS);
 			islandID = 0;
 			isInvisibleTerrain = true;
 		} else {

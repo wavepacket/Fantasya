@@ -2,12 +2,13 @@ package de.x8bit.Fantasya.Host.serialization.basic;
 
 import de.x8bit.Fantasya.Atlantis.Kampfposition;
 import de.x8bit.Fantasya.Atlantis.Partei;
+import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,30 +29,7 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Set<Coordinates> regionList;
-	private Collection<Partei> playerFactions;
-	private Collection<Partei> systemFactions;
-
-	/** Constructs the new serializer.
-	 *
-	 * Note: We use player and system factions, because only the latter are
-	 * populated at the time of the setup of the serializer. So we have to
-	 * supply the playerFactions as a pointer to the list that is going to be
-	 * populated over the course of the loading.
-	 */
-	public EinheitenSerializer(
-			Collection<Partei> playerFactions,
-			Collection<Partei> systemFactions,
-			Set<Coordinates> regionList)
-	{
-		if (playerFactions == null || systemFactions == null || regionList == null) {
-			throw new IllegalArgumentException("Require a valid faction and regionList for unit serialization.");
-		}
-
-		this.playerFactions = playerFactions;
-		this.systemFactions = systemFactions;
-		this.regionList = regionList;
-	}
+	public EinheitenSerializer() {}
 
 	@Override
 	public boolean isValidKeyset(Set<String> keys) {
@@ -135,26 +113,15 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 		}
 
 		// now check if the unit is valid at all, otherwise return null.
-		if (!regionList.contains(unit.getCoordinates())) {
+		if (!Region.CACHE.keySet().contains(unit.getCoordinates())) {
 			logger.warn("Error loading unit \"{}\": No region at location {}.",
 					unit.getNummer(),
 					unit.getCoordinates());
 			return null;
 		}
 
-		Partei owner = null;
+		Partei owner = Partei.getFaction(unit.getOwner());
 		
-		for (Partei p : playerFactions) {
-			if (p.getNummer() == unit.getOwner()) {
-				owner = p;
-			}
-		}
-		for (Partei p : systemFactions) {
-			if (p.getNummer() == unit.getOwner()) {
-				owner = p;
-			}
-		}
-
 		if (owner == null) {
 			logger.warn("Error loading unit \"{}\": Owner \"{}\" does not exist.",
 					unit.getNummer(),

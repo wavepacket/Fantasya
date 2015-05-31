@@ -107,7 +107,7 @@ public class NPCFactionAtlas extends FactionAtlas {
 		// Nachtbarregionen
 		for (RegionSight rs : factionAtlas) {
 			for (Coordinates nCoords : rs.getCoordinates().getNeighbours()) {
-				if (factionAtlas.contains(nCoords)) continue;
+				if (factionAtlas.contains(rs)) continue;
 	            factionAtlas.add(getNewRegionSight(nCoords, RegionSightSource.NEIGHBOUR));
 	        }
 		}
@@ -115,7 +115,7 @@ public class NPCFactionAtlas extends FactionAtlas {
 		// Zu allen Regionen die öffentlichen Inseln raussuchen und dem islandSet hinzufügen
 		for (RegionSight rs : factionAtlas) {
 			if (rs.isInvisibleTerrain()) continue;
-			islandSet.add(Partei.OMNI_FACTION.getFactionAtlas().getIsland(rs.getCoordinates()));
+			islandSet.add(Partei.OMNI_FACTION.getAtlas().getIsland(rs.getCoordinates()));
 		}
 	}
 

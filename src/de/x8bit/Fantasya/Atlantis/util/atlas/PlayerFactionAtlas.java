@@ -13,7 +13,7 @@ import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.atlas.Island.IslandType;
 import de.x8bit.Fantasya.Atlantis.util.atlas.RegionSight.RegionSightSource;
 import de.x8bit.Fantasya.Host.GameRules;
@@ -140,8 +140,8 @@ public class PlayerFactionAtlas extends FactionAtlas {
 	}
 	
 	public void addBuildingSeen(Coordinates coords, RegionSightSource source) {
-		if (!source.isBuilding() || !Region.hasRegion(coords)) return;
-		if (buildingAtlas == Collections.EMPTY_MAP) buildingAtlas = new HashSet<RegionSight>();
+		if (!source.isBuilding() || !Region.hasRegion(coords)) { return; }
+		if (buildingAtlas == Collections.EMPTY_SET) { buildingAtlas = new HashSet<RegionSight>(); }
 		setRegionSightForUpdate(getNewRegionSight(coords, source), buildingAtlas);
 	}
 	
@@ -152,8 +152,8 @@ public class PlayerFactionAtlas extends FactionAtlas {
 	
 	@Override
 	public void addMagicalSeen(Coordinates coords, RegionSightSource source) {
-		if (!source.isMagic() || !Region.hasRegion(coords)) return;
-		if (magicAtlas == Collections.EMPTY_MAP) magicAtlas = new HashSet<RegionSight>();
+		if (!source.isMagic() || !Region.hasRegion(coords)) { return; }
+		if (magicAtlas == Collections.EMPTY_SET) { magicAtlas = new HashSet<RegionSight>(); }
 		setRegionSightForUpdate(getNewRegionSight(coords, source), magicAtlas);
 	}
 	
@@ -171,14 +171,14 @@ public class PlayerFactionAtlas extends FactionAtlas {
 	}
 	
 	private RegionSight moveRegionSightToChaos(RegionSight rs) {
-		return new RegionSight(rs.getTurn(), rs.getCoordinates(), (rs.getRegionSightSource().canBeUnseenTerritory()) ? rs.getRegionSightSource() : RegionSightSource.HISTORIC, DefaultConstantsFactory.INVISIBLE_TERRAIN_STRING_VALUE, DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS);
+		return new RegionSight(rs.getTurn(), rs.getCoordinates(), (rs.getRegionSightSource().canBeUnseenTerritory()) ? rs.getRegionSightSource() : RegionSightSource.HISTORIC, ConstantsFactory.INVISIBLE_TERRAIN_NAME, ConstantsFactory.INVISIBLE_TERRAIN_CLASS);
 	}
 	
 	private boolean setRegionSightForUpdate(RegionSight rs, Set<RegionSight> atlas) {
 		Coordinates coordinates = rs.getCoordinates(); 
 		
 		// 1. Existiert die RegionsSicht noch nicht im Atlas, wird sie einfach hinzugefuegt.
-		if (!atlas.contains(coordinates)) return atlas.add(rs);
+		if (!atlas.contains(rs)) return atlas.add(rs);
 		
 		RegionSight oldRS = getRegionSight(coordinates, atlas);
 		atlas.remove(oldRS); // Ein Set fügt kein Element hinzu, daß es schon gibt. Das existierende wird auch nicht ersetzt.
@@ -213,7 +213,7 @@ public class PlayerFactionAtlas extends FactionAtlas {
 		Coordinates coords = rs.getCoordinates();
 		Region region = Region.Load(coords);
 		
-		if (region.getClass() == DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS || !faction.canAccess(region)) rs = moveRegionSightToChaos(rs);
+		if (region.getClass() == ConstantsFactory.INVISIBLE_TERRAIN_CLASS || !faction.canAccess(region)) rs = moveRegionSightToChaos(rs);
 		
 		return setRegionSightForUpdate(rs, factionAtlas);
 	}
@@ -381,7 +381,7 @@ public class PlayerFactionAtlas extends FactionAtlas {
 			}
 		}
 		for (Island island : islandSet) {
-        	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinateSet()));
+        	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinatesSet()));
         }
 	}
 	
@@ -482,7 +482,7 @@ public class PlayerFactionAtlas extends FactionAtlas {
 			for (Coordinates islandCoordinates : privateIsland.coordinateSet) {
 				for (Island possibleIsland : islandSet) {
 					if (privateIsland.getID() != possibleIsland.getID()
-							&& possibleIsland.hasCoordinate(islandCoordinates)
+							&& possibleIsland.hasCoordinates(islandCoordinates)
 							&& !deletedIslands.contains(possibleIsland)) islandsOfRegionSightSet.add(possibleIsland);
 				}
 			}
@@ -502,7 +502,7 @@ public class PlayerFactionAtlas extends FactionAtlas {
 		}
 		// zentrale Koordinate festlegen
 		for (Island island : islandSet) {
-        	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinateSet()));
+        	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinatesSet()));
         }
 	}
 	

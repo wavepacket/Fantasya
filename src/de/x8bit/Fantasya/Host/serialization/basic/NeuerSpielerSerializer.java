@@ -3,6 +3,7 @@ package de.x8bit.Fantasya.Host.serialization.basic;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 import de.x8bit.Fantasya.Host.EVA.util.NeuerSpieler;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,9 @@ public class NeuerSpielerSerializer implements ObjectSerializer<NeuerSpieler> {
 				&& keys.contains("holz")
 				&& keys.contains("eisen")
 				&& keys.contains("steine")
+				&& keys.contains("name")
+				&& keys.contains("description")
+				&& keys.contains("password")
 				&& keys.contains("insel"));
 	}
 
@@ -46,6 +50,9 @@ public class NeuerSpielerSerializer implements ObjectSerializer<NeuerSpieler> {
 		ns.setSteine(Integer.decode(mapping.get("steine")));
 		ns.setInsel(Integer.decode(mapping.get("insel")));
 		ns.setEmail(mapping.get("email"));
+		ns.setName(mapping.get("name"));
+		ns.setDescription(mapping.get("description"));
+		ns.setPassword(mapping.get("password"));
 		
 		return ns;
 	}
@@ -64,6 +71,9 @@ public class NeuerSpielerSerializer implements ObjectSerializer<NeuerSpieler> {
 		data.put("steine", String.valueOf(object.getSteine()));
 		data.put("insel", String.valueOf(object.getInsel()));
 		data.put("email", String.valueOf(object.getEmail()));
+		data.put("name", String.valueOf(object.getName()));
+		data.put("description", String.valueOf(object.getDescription()));
+		data.put("password", String.valueOf(object.getPassword()));
 		
 		return new SerializedData(data);
 	}

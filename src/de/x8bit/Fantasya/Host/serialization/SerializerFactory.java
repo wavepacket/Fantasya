@@ -14,10 +14,8 @@ import de.x8bit.Fantasya.Host.EVA.util.NeuerSpieler;
 import de.x8bit.Fantasya.Host.serialization.postprocess.RegionInitHandelProcessor;
 import de.x8bit.Fantasya.Host.serialization.postprocess.UnitIDPoolProcessor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SerializerFactory {
@@ -25,25 +23,20 @@ public class SerializerFactory {
 	public static Serializer buildSerializer(Adapter adapter) {
 		
 		LinkedHashMap<String,ComplexHandler> handlerMap = new LinkedHashMap<String,ComplexHandler>();
-		
-		// Assemble a list of all factions; passed to some of the handlers.
-    	List<Partei> systemFactions = new ArrayList<Partei>();
-    	systemFactions.addAll(Partei.getNPCFactionList());
-    	systemFactions.add(Partei.OMNI_FACTION);
 
 		// Load Parteien and their data first.
-		handlerMap.put("partei", new CacheFillerHandler<Partei>(
+		handlerMap.put("partei", new CacheLooperHandler<Partei>(
 				new ParteiSerializer(),
-				Partei.PLAYER_FACTION_LIST));
+				Partei.getPlayerFactionList()));
 		handlerMap.put("allianzen", new CacheLooperHandler<Partei>(
-				new AllianzSerializer(Partei.PLAYER_FACTION_LIST),
-				Partei.PLAYER_FACTION_LIST));
+				new AllianzSerializer(),
+				Partei.getPlayerFactionList()));
 		handlerMap.put("steuern", new CacheLooperHandler<Partei>(
-				new SteuerSerializer(Partei.PLAYER_FACTION_LIST),
-				Partei.PLAYER_FACTION_LIST));
+				new SteuerSerializer(),
+				Partei.getPlayerFactionList()));
 		handlerMap.put("property_parteien", new CacheLooperHandler<Partei>(
-				new ParteienPropertySerializer(Partei.PLAYER_FACTION_LIST),
-				Partei.PLAYER_FACTION_LIST));
+				new ParteienPropertySerializer(),
+				Partei.getPlayerFactionList()));
 		
 		// Load regions and their associated data
 		handlerMap.put("regionen", new MapCacheHandler<Region>(
@@ -64,13 +57,13 @@ public class SerializerFactory {
 		
 		// load historic regions
 		handlerMap.put("HistoricRegions", new CacheLooperHandler<Partei>(
-				new HistoricRegionSerializer(), Partei.PLAYER_FACTION_LIST));
+				new HistoricRegionSerializer(), Partei.getPlayerFactionList()));
 		handlerMap.put("HistoricRegionRoads", new CacheLooperHandler<Partei>(
-				new HistoricRegionRoadSerializer(), Partei.PLAYER_FACTION_LIST));
+				new HistoricRegionRoadSerializer(), Partei.getPlayerFactionList()));
 		
 		// load islands for player
 		handlerMap.put("islands", new CacheLooperHandler<Partei>(
-				new IslandSerializer(), Partei.PLAYER_FACTION_LIST));
+				new IslandSerializer(), Partei.getPlayerFactionList()));
 		
 		// Load buildings and ships
 		handlerMap.put("gebaeude", new CacheFillerHandler<Building>(
@@ -85,7 +78,7 @@ public class SerializerFactory {
 		
 		// load units and their various attributes
 		handlerMap.put("einheiten", new CacheFillerHandler<Unit>(
-				new EinheitenSerializer(Partei.PLAYER_FACTION_LIST, systemFactions, Region.CACHE.keySet()),
+				new EinheitenSerializer(),
 				Unit.CACHE));
 		handlerMap.put("items", new CacheLooperHandler<Unit>(
 				new ItemSerializer(Unit.CACHE),
@@ -116,8 +109,7 @@ public class SerializerFactory {
 //				new BefehleSerializer(Unit.CACHE),
 //				Unit.CACHE));
 		handlerMap.put("meldungen", new CacheFillerHandler<Message>(
-				new MessageSerializer(Partei.PLAYER_FACTION_LIST,
-						systemFactions, Region.CACHE.keySet(), Unit.CACHE),
+				new MessageSerializer(),
 				Message.Cache()));
 		handlerMap.put("neuespieler", new CacheFillerHandler<NeuerSpieler>(
 				new NeuerSpielerSerializer(),

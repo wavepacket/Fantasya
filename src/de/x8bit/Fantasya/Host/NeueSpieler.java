@@ -54,7 +54,20 @@ public class NeueSpieler
 		for (NeuerSpieler n : NeuerSpieler.PROXY) {
 			// jetzt den Spieler anlegen
 			Partei f = Partei.createNewPlayerFaction();
-			f.setName("Volk " + f.getNummerBase36());
+			String value = n.getName();
+			if (value != null && value.length() > 0) {
+				f.setName(value);
+			} else {
+				f.setName("Volk " + f.getNummerBase36());
+			}
+			value = n.getPassword();
+			if (value != null && value.length() > 0) {
+				f.setPassword(value);
+			}
+			value = n.getDescription();
+			if (value != null && value.length() > 0) {
+				f.setBeschreibung(value);
+			}
 			f.setEMail(n.getEmail());
 			f.setRasse(n.getRasse().getSimpleName());
 			f.setDefaultsteuer(10);
@@ -140,8 +153,8 @@ public class NeueSpieler
                             Handel.class,
                             Ausdauer.class, 
                             Tarnung.class,
-							Religion.class,
-                            Kraeuterkunde.class, 
+							// Religion.class,
+                            // Kraeuterkunde.class, 
 						 };
 		
 		

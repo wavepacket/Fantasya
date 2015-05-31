@@ -100,7 +100,7 @@ public class EVAFastSaver {
 
 //		EVAFastSaver.saveProperties(db, clear);
 
-		EVAFastSaver.saveNeueSpieler(db);
+//		EVAFastSaver.saveNeueSpieler(db);
 
 		db.Close();
 	}

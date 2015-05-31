@@ -3,6 +3,7 @@ package de.x8bit.Fantasya.Host.EVA.util;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.Paket;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,9 @@ public class NeuerSpieler {
     public static final List<NeuerSpieler> PROXY = new ArrayList<NeuerSpieler>();
 
     String email;
+    String name;
+    String description;
+    String password;
     Class<? extends Unit> rasse;
     Class<? extends Unit> tarnung;
     int holz;
@@ -137,6 +141,30 @@ public class NeuerSpieler {
 
     public void setTarnung(Class<? extends Unit> tarnung) {
         this.tarnung = tarnung;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

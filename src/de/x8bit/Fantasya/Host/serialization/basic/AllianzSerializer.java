@@ -4,7 +4,6 @@ import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,19 +22,6 @@ import org.slf4j.LoggerFactory;
 public class AllianzSerializer implements ObjectSerializer<Partei> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Collection<Partei> cache;
-
-	/** Creates a new serializer.
-	 *
-	 * @param cache the cache where we look for the parties that make up an alliance.
-	 */
-	public AllianzSerializer(Collection<Partei> cache) {
-		if (cache == null) {
-			throw new IllegalArgumentException("Cache needs to be valid.");
-		}
-
-		this.cache = cache;
-	}
 
 	@Override
 	public boolean isValidKeyset(Set<String> keys) {
@@ -56,16 +42,8 @@ public class AllianzSerializer implements ObjectSerializer<Partei> {
 		AllianzOption option = AllianzOption.ordinal(mapping.get("optionen"));
 
 		// find the two parties.
-		Partei partei = null;
-		Partei partner = null;
-		for (Partei p : cache) {
-			if (p.getNummer() == parteiId) {
-				partei = p;
-			}
-			if (p.getNummer() == partnerId) {
-				partner = p;
-			}
-		}
+		Partei partei = Partei.getFaction(parteiId);
+		Partei partner = Partei.getFaction(partnerId);
 
 		// log all sorts of errors
 		if (option == AllianzOption.Alles) {
@@ -95,13 +73,7 @@ public class AllianzSerializer implements ObjectSerializer<Partei> {
 
 		for (int partner : partei.getAllianzen().keySet()) {
 			// check that the partner exists.
-			boolean found = false;
-			for (Partei p : cache) {
-				if (p.getNummer() == partner) {
-					found = true;
-					break;
-				}
-			}
+			boolean found = (Partei.getFaction(partner) != null);
 
 			if (!found) {
 				logger.warn("Partner " + partner + " of alliances of " + partei.getNummer()

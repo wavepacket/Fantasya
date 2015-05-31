@@ -6,7 +6,7 @@ import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.CommandLineArg;
@@ -52,7 +52,7 @@ public class DuellAnalyse implements CommandLineArg {
     public DuellAnalyse() {
         r = new Ebene();
         r.setName("Arena");
-        r.setCoordinates(DefaultConstantsFactory.NO_COORDINATES_VALUE);
+        r.setCoordinates(ConstantsFactory.NO_COORDINATES_VALUE);
         r.Init();
 
         einheitA = -1;

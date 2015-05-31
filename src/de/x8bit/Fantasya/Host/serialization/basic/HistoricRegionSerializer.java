@@ -45,13 +45,7 @@ public class HistoricRegionSerializer implements ObjectSerializer<Partei> {
 		// check for faction
 		int factionID = Integer.decode(mapping.get("factionID"));
 		
-		Partei faction = null;
-		for (Partei possibleFaction : Partei.getPlayerFactionList()) {
-			if (possibleFaction.getNummer() == factionID) {
-				faction = possibleFaction;
-				break;
-			}
-		}
+		Partei faction = Partei.getFaction(factionID);
 		
 		if (faction == null) {
 			logger.warn("Invalid historic region of {}; player faction not found.",
@@ -84,7 +78,7 @@ public class HistoricRegionSerializer implements ObjectSerializer<Partei> {
 		}
 		String name = mapping.get("name");
 		
-		faction.getFactionAtlas().addDataBaseRegionSight(turn, coords, source, name, terrain);
+		faction.getAtlas().addDataBaseRegionSight(turn, coords, source, name, terrain);
 		
 		return faction;
 	}
@@ -102,7 +96,7 @@ public class HistoricRegionSerializer implements ObjectSerializer<Partei> {
 		if (faction.getFactionWay() != FactionWay.PLAYER) return data;
 		
 		
-		Collection<RegionSight> rsCollection = faction.getFactionAtlas().getFactionAtlas();
+		Collection<RegionSight> rsCollection = faction.getAtlas().getFactionAtlas();
 		
 		for (RegionSight rs : rsCollection) {
 			Map<String, String> rsMap = new HashMap<String, String>();

@@ -4,7 +4,6 @@ import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Steuer;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,20 +14,6 @@ import org.slf4j.LoggerFactory;
 public class SteuerSerializer implements ObjectSerializer<Partei> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Collection<Partei> partylist;
-
-	/** Creates a new serializer.
-	 *
-	 * @param collection the collection that contains all relevant partys.
-	 * @throws IllegalArgumentException if the collection is not supplied.
-	 */
-	public SteuerSerializer(Collection<Partei> collection) {
-		if (collection == null) {
-			throw new IllegalArgumentException("Invalid partei list.");
-		}
-
-		this.partylist = collection;
-	}
 
 	@Override
 	public boolean isValidKeyset(Set<String> keys) {
@@ -50,15 +35,8 @@ public class SteuerSerializer implements ObjectSerializer<Partei> {
 		int clientId = Integer.decode(mapping.get("partei"));
 
 		// look if the party exists
-		Partei taxmaster = null;
-		Partei client = null;
-		for (Partei p : partylist) {
-			if (p.getNummer() == taxmasterId) {
-				taxmaster = p;
-			} else if (p.getNummer() == clientId) {
-				client = p;
-			}
-		}
+		Partei taxmaster = Partei.getFaction(taxmasterId);
+		Partei client = Partei.getFaction(clientId);
 
 		if (taxmaster == null) {
 			logger.warn("Invalid taxation of {} by {}; Tax-collecting party not found.",

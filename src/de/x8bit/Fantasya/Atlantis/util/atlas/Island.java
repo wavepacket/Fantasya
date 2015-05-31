@@ -42,21 +42,21 @@ public abstract class Island implements Comparable<Island>  {
 		return type;
 	}
 	
-	public boolean hasCoordinate(Coordinates coordinate) {
+	public boolean hasCoordinates(Coordinates coordinate) {
 		for (Coordinates possibleCoordinate : coordinateSet) {
 			if (possibleCoordinate.equals(coordinate)) return true;
 		}
 		return false;
 	}
 	
-	protected void setCoordinates(Set<Coordinates> coordinateSet) {
+	protected void setCoordinatesSet(Set<Coordinates> coordinateSet) {
 		if (coordinateSet == null) return;
 		this.coordinateSet.clear();
 		this.coordinateSet.addAll(coordinateSet);
 		setCentralCoordinates(Coordinates.getCentralCoordinates(coordinateSet));
 	}
 	
-	public Set<Coordinates> getCoordinateSet() {
+	public Set<Coordinates> getCoordinatesSet() {
 		return Collections.unmodifiableSet(this.coordinateSet);
 	}
 	

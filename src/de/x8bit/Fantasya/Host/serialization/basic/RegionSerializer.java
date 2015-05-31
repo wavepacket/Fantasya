@@ -38,6 +38,7 @@ public class RegionSerializer implements ObjectSerializer<Region> {
 				&& keys.contains("ralter")
 				&& keys.contains("entstandenin")
 				&& keys.contains("insel")
+				&& keys.contains("publicIslandId")
 				&& keys.contains("silber"));
 	}
 
@@ -64,10 +65,7 @@ public class RegionSerializer implements ObjectSerializer<Region> {
 		region.setEnstandenIn(Integer.decode(mapping.get("entstandenin")));
 		region.setInselKennung(Integer.decode(mapping.get("insel")));
 		region.setSilber(Integer.decode(mapping.get("silber")));
-
-		if (mapping.containsKey("publicIslandID")) {
-			region.setPublicIslandID(Integer.decode(mapping.get("publicIslandID")));
-		}
+		region.setPublicIslandID(Integer.decode(mapping.get("publicIslandId")));
 
 		logger.debug("Loaded region \"{}\" with type \"{}\" at coordinate {}.",
 				region.getName(),
@@ -97,7 +95,7 @@ public class RegionSerializer implements ObjectSerializer<Region> {
 		output.put("entstandenin", String.valueOf(region.getEnstandenIn()));
 		output.put("insel", String.valueOf(region.getInselKennung()));
 		output.put("silber", String.valueOf(region.getSilber()));
-		output.put("publicIslandID", String.valueOf(region.getPublicIslandID()));
+		output.put("publicIslandId", String.valueOf(region.getPublicIslandID()));
 
 		// FIXME: Column "luxus" is required in the table, but never used.
 		output.put("luxus", "none");

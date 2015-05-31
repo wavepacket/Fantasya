@@ -37,12 +37,7 @@ public class HistoricRegionRoadSerializer implements ObjectSerializer<Partei> {
 		// check for faction
 		int factionID = Integer.decode(mapping.get("factionID"));
 		
-		Partei faction = null;
-		for (Partei possibleFaction : Partei.getPlayerFactionList())
-			if (possibleFaction.getNummer() == factionID) {
-				faction = possibleFaction;
-				break;
-			}
+		Partei faction = Partei.getFaction(factionID);
 		
 		if (faction == null) {
 			logger.warn("Invalid roads for historic region of {}; player faction not found.",
@@ -67,7 +62,7 @@ public class HistoricRegionRoadSerializer implements ObjectSerializer<Partei> {
 		Richtung direction;
 		try {
 			direction = Richtung.getRichtung(mapping.get("direction"));
-			if (!faction.getFactionAtlas().addDataBaseRegionSightRoad(coords, direction)) {
+			if (!faction.getAtlas().addDataBaseRegionSightRoad(coords, direction)) {
 				logger.warn("Error loading roads for historic region sight: Region sight not found for faction {} at {}", faction, coords);
 				return null;
 			}
@@ -90,7 +85,7 @@ public class HistoricRegionRoadSerializer implements ObjectSerializer<Partei> {
 		if (faction.getFactionWay() != FactionWay.PLAYER) return data;
 				
 		
-		Collection<RegionSight> rsCollection = faction.getFactionAtlas().getFactionAtlas();
+		Collection<RegionSight> rsCollection = faction.getAtlas().getFactionAtlas();
 		
 		for (RegionSight rs : rsCollection) {
 			for (Richtung direction : rs.getRoads()) {

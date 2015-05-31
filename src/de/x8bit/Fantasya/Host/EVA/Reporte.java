@@ -70,7 +70,7 @@ public class Reporte extends EVABase implements NotACommand
 	public void PostAction() {
 		spieler = new ArrayList<Partei>();
 		spieler.addAll(Partei.getPlayerFactionList());
-		spieler.addAll(Partei.getNPCFactionList());
+		// spieler.addAll(Partei.getNPCFactionList()); // erstmal raus, bis der Fehler gefunden ist.
 
         int nSpieler = 0;
         int nMonster = 0;

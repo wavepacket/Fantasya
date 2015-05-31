@@ -32,13 +32,13 @@ public final class Coordinates implements Comparable {
 	
 	
 	private Coordinates(int x, int y, int z) {
-		if ((x < DefaultConstantsFactory.MIN_COORDINATES_XY) || (x > DefaultConstantsFactory.MAX_COORDINATES_XY)) {
+		if ((x < ConstantsFactory.MIN_COORDINATES_XY) || (x > ConstantsFactory.MAX_COORDINATES_XY)) {
 			throw new IllegalArgumentException("Der Koordinatenbereich für x ist -8192 bis 8191 - versucht " + x);
 		}
-		if ((y < DefaultConstantsFactory.MIN_COORDINATES_XY) || (y > DefaultConstantsFactory.MAX_COORDINATES_XY)) {
+		if ((y < ConstantsFactory.MIN_COORDINATES_XY) || (y > ConstantsFactory.MAX_COORDINATES_XY)) {
 			throw new IllegalArgumentException("Der Koordinatenbereich für y ist -8192 bis 8191 - versucht " + y);
 		}
-		if ((z < DefaultConstantsFactory.MIN_COORDINATES_Z) || (z > DefaultConstantsFactory.MAX_COORDINATES_Z)) {
+		if ((z < ConstantsFactory.MIN_COORDINATES_Z) || (z > ConstantsFactory.MAX_COORDINATES_Z)) {
 			throw new IllegalArgumentException("Der Koordinatenbereich für Welt ist -4 bis +3 - versucht " + z);
 		}
 
@@ -162,9 +162,10 @@ public final class Coordinates implements Comparable {
 	public int compareTo(Object obj) {
 		if (obj == null) throw new IllegalArgumentException("Coordinate cannot be compared. Object is 'NULL'!");
 		
-		if (!(obj instanceof Coordinates))
+		if (!(obj instanceof Coordinates)) {
 			throw new IllegalArgumentException("Coordinate cannot be compared. "
 					+ "Object is class " + obj.getClass().getSimpleName() + " .");
+		}
 
 		return compareTo((Coordinates) obj);
 	}

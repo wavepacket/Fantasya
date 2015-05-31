@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Partei.FactionWay;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.util.atlas.Island;
 import de.x8bit.Fantasya.Atlantis.util.atlas.Island.IslandType;
@@ -25,13 +26,13 @@ public class IslandSerializer implements ObjectSerializer<Partei> {
 				&& keys.contains("coordX")
 				&& keys.contains("coordY")
 				&& keys.contains("coordZ")
-				&& keys.contains("isLandID")
+				&& keys.contains("islandID")
 				&& keys.contains("name")
 				&& keys.contains("description")
 				&& keys.contains("explorationTurn"));
 	}
 	
-	/** Load historic region for a faction.
+	/** Load islands for a faction.
 	 *
 	 * @param mapping a key/value map that describes the taxing behavior.
 	 * @return the faction for historic regions.
@@ -43,13 +44,7 @@ public class IslandSerializer implements ObjectSerializer<Partei> {
 		// check for faction
 		int factionID = Integer.decode(mapping.get("factionID"));
 		
-		Partei faction = null;
-		for (Partei possibleFaction : Partei.getPlayerFactionList()) {
-			if (possibleFaction.getNummer() == factionID) {
-				faction = possibleFaction;
-				break;
-			}
-		}
+		Partei faction = Partei.getFaction(factionID);
 		
 		if (faction == null) {
 			logger.warn("Invalid island of player faction {}; player faction not found.",
@@ -68,7 +63,7 @@ public class IslandSerializer implements ObjectSerializer<Partei> {
 			Integer.decode(mapping.get("coordY")),
 			Integer.decode(mapping.get("coordZ")));
 		
-		int islandID = Integer.decode(mapping.get("isLandID"));
+		int islandID = Integer.decode(mapping.get("islandID"));
 		int explorationTurn = Integer.decode(mapping.get("explorationTurn"));
 		
 		String name = mapping.get("name");
@@ -79,7 +74,7 @@ public class IslandSerializer implements ObjectSerializer<Partei> {
 		if (description.length() == 0)
 			description = null;
 		
-		faction.getFactionAtlas().addDataBaseIsland(islandID, explorationTurn, IslandType.LAND, name, description, anchorCoordinates);
+		faction.getAtlas().addDataBaseIsland(islandID, explorationTurn, IslandType.LAND, name, description, anchorCoordinates);
 		
 		return faction;
 	}
@@ -97,7 +92,7 @@ public class IslandSerializer implements ObjectSerializer<Partei> {
 		if (faction.getFactionWay() != FactionWay.PLAYER) return data;
 		
 		
-		Collection<Island> islandCollection = faction.getFactionAtlas().getIslandSet();
+		Collection<Island> islandCollection = faction.getAtlas().getIslandSet();
 		
 		for (Island island : islandCollection) {
 			Coordinates anchorCoordinates = island.getAnchorCoordinates();
@@ -106,15 +101,15 @@ public class IslandSerializer implements ObjectSerializer<Partei> {
 			islandMap.put("coordX", String.valueOf(anchorCoordinates.getX()));
 			islandMap.put("coordY", String.valueOf(anchorCoordinates.getY()));
 			islandMap.put("coordZ", String.valueOf(anchorCoordinates.getZ()));
-			islandMap.put("isLandID", String.valueOf(island.getID()));
+			islandMap.put("islandID", String.valueOf(island.getID()));
 			String value = island.getName();
 			if (value == null)
-				islandMap.put("name", "");
+				islandMap.put("name", ConstantsFactory.EMPTY_STRING);
 			else
 				islandMap.put("name", value);
 			value = island.getDescription();
 			if (value == null)
-				islandMap.put("description", "");
+				islandMap.put("description", ConstantsFactory.EMPTY_STRING);
 			else
 				islandMap.put("description", value);
 			islandMap.put("explorationTurn", String.valueOf(island.getExplorationTurn()));

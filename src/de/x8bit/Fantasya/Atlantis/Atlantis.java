@@ -7,7 +7,7 @@ import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.util.Codierung;
 
 /**
@@ -34,7 +34,7 @@ public class Atlantis {
 	/** Beschreibung des Objektes ("sammelt Beeren") */
 	private String Beschreibung = "";
 	/** Koordinaten für dieses Objekt. */
-	private Coordinates coords = DefaultConstantsFactory.NO_COORDINATES_VALUE;
+	private Coordinates coords = ConstantsFactory.NO_COORDINATES_VALUE;
 	/** Eigentümer des Objectes (genauer: dessen ID); 0 fuer keinen Besitzer. */
 	private int Owner;
 	/** Nummer (Id) des Objektes */

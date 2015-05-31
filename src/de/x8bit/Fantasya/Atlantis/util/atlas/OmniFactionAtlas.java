@@ -9,7 +9,7 @@ import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.atlas.Island.IslandType;
 import de.x8bit.Fantasya.Atlantis.util.atlas.RegionSight.RegionSightSource;
 
@@ -85,7 +85,7 @@ public class OmniFactionAtlas extends FactionAtlas {
 			// 1. Alle Regionen, die eine Insel haben, dieser zuweisen.
 			List<Region> regionWithoutIslandList = new ArrayList<Region>();
 			for (Region region : Region.CACHE.values()) {
-				if (region.getClass() == DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS) continue;
+				if (region.getClass() == ConstantsFactory.INVISIBLE_TERRAIN_CLASS) continue;
 				if (region.getPublicIslandID() == 0) {regionWithoutIslandList.add(region); continue;}
 				Island island = getIsland(region.getCoordinates());
 				if (island == null) { island = new PublicIsland(region.getPublicIslandID(), 0, FactionAtlas.getIslandType(region.getClass())); islandSet.add(island);}
@@ -164,7 +164,7 @@ public class OmniFactionAtlas extends FactionAtlas {
             			FactionAtlas.mergeIslands(newIsland, islandsOfRegionSet, this);
             			islandSet.add(newIsland);
             			
-            			for (Coordinates newIslandCoordinates : newIsland.getCoordinateSet()) {
+            			for (Coordinates newIslandCoordinates : newIsland.getCoordinatesSet()) {
             				islandRegion = Region.Load(newIslandCoordinates);
                 			islandRegion.setPublicIslandID(newIsland.getID());
                 		}
@@ -172,7 +172,7 @@ public class OmniFactionAtlas extends FactionAtlas {
 	            }
 	        }
 	        for (Island island : islandSet) {
-            	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinateSet()));
+            	island.setCentralCoordinates(Coordinates.getCentralCoordinates(island.getCoordinatesSet()));
             }
 		}
 	}

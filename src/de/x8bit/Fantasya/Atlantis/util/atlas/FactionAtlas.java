@@ -17,7 +17,7 @@ import de.x8bit.Fantasya.Atlantis.Regions.Lavastrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Regions.Sandstrom;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
-import de.x8bit.Fantasya.Atlantis.util.DefaultConstantsFactory;
+import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.atlas.Island.IslandType;
 import de.x8bit.Fantasya.Atlantis.util.atlas.RegionSight.RegionSightSource;
 
@@ -104,7 +104,7 @@ public abstract class FactionAtlas {
 	
 	public static void prepareAllFactionsForTurnReport() {
 		for (Partei faction : Partei.getPlayerFactionList()) {
-			faction.getFactionAtlas().clearBuildingSeen();
+			faction.getAtlas().clearBuildingSeen();
 		}
 		for (Building b : Building.PROXY) {
 			if (b.getClass() == Leuchtturm.class) {
@@ -112,30 +112,30 @@ public abstract class FactionAtlas {
 			}
 		}
 		for (Partei faction : Partei.getPlayerFactionList()) {
-			faction.getFactionAtlas().prepareForTurnReport();
-			new Debug("Partei " + faction + " hat einen Atlas mit " + faction.getFactionAtlas().factionAtlas.size() + " Regionen im Regal.");
+			faction.getAtlas().prepareForTurnReport();
+			new Debug("Partei " + faction + " hat einen Atlas mit " + faction.getAtlas().factionAtlas.size() + " Regionen im Regal.");
 		}
 		
-		Partei.OMNI_FACTION.getFactionAtlas().prepareForTurnReport();
+		Partei.OMNI_FACTION.getAtlas().prepareForTurnReport();
 		
 		for (Partei faction : Partei.getNPCFactionList()) {
-			faction.getFactionAtlas().prepareForTurnReport();
-			new Debug("Partei " + faction + " hat einen Atlas mit " + faction.getFactionAtlas().factionAtlas.size() + " Regionen im Regal.");
+			faction.getAtlas().prepareForTurnReport();
+			new Debug("Partei " + faction + " hat einen Atlas mit " + faction.getAtlas().factionAtlas.size() + " Regionen im Regal.");
 		}
 	}
 	
 	public static void prepareAllFactionsForTurn() {
 		for (Partei faction : Partei.getPlayerFactionList()) {
-			faction.getFactionAtlas().prepareForTurn();
+			faction.getAtlas().prepareForTurn();
 		}
 		// FactionAtlas.updateAtlasAllFactions();
 	}
 	
 	public static void prepareAllFactionsForReport() {
-		Partei.OMNI_FACTION.getFactionAtlas().prepareForReport();
+		Partei.OMNI_FACTION.getAtlas().prepareForReport();
 		
 		for (Partei faction : Partei.getNPCFactionList()) {
-			faction.getFactionAtlas().prepareForReport();
+			faction.getAtlas().prepareForReport();
 		}
 		
 	}
@@ -150,9 +150,9 @@ public abstract class FactionAtlas {
 	
 	public int getID(Coordinates coordinate) {
 		for (Island island : islandSet) {
-			if (island.hasCoordinate(coordinate)) return island.getID();
+			if (island.hasCoordinates(coordinate)) return island.getID();
 		}
-		return DefaultConstantsFactory.NO_INT_VALUE;
+		return ConstantsFactory.NO_INT_VALUE;
 	}
 	
 	public Island getIsland(int id) {
@@ -164,7 +164,7 @@ public abstract class FactionAtlas {
 	
 	public Island getIsland(Coordinates coordinate) {
 		for (Island island : islandSet) {
-			for (Coordinates possibleCoordinate : island.getCoordinateSet()) {
+			for (Coordinates possibleCoordinate : island.getCoordinatesSet()) {
 				if (possibleCoordinate.equals(coordinate)) return island;
 			}
 		}
@@ -184,7 +184,7 @@ public abstract class FactionAtlas {
 	}
 	
 	protected static boolean isIslandModus(Class<? extends Region> regionClass, IslandType modus) {
-        if (regionClass == DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS) return false;
+        if (regionClass == ConstantsFactory.INVISIBLE_TERRAIN_CLASS) return false;
         
         if (modus == IslandType.LAND) {
             if (regionClass == Ozean.class) return false;
@@ -205,7 +205,7 @@ public abstract class FactionAtlas {
 		// Die neue Insel bekommt alle Koordinaten (Regionen) der alten Insel(teile)n
 		// Die alten Inseln werden aus der Inselliste entfernt
 		for (Island oldIsland : oldIslandSet) {
-				newIsland.coordinateSet.addAll(oldIsland.getCoordinateSet());
+				newIsland.coordinateSet.addAll(oldIsland.getCoordinatesSet());
 				factionAtlas.islandSet.remove(oldIsland);
 		}
 	}
@@ -221,7 +221,7 @@ public abstract class FactionAtlas {
 		for (Coordinates neighbourCoordinates : coordinates.getNeighbours()) {
 			if (isRegion) {
 				Region region = Region.Load(neighbourCoordinates);
-				if (region == null || region.getClass() == DefaultConstantsFactory.INVISIBLE_TERRAIN_CLASS) continue;
+				if (region == null || region.getClass() == ConstantsFactory.INVISIBLE_TERRAIN_CLASS) continue;
 				newRegionClass = region.getClass();
 			} else {
 				RegionSight rs = factionAtlas.getRegionSight(neighbourCoordinates);

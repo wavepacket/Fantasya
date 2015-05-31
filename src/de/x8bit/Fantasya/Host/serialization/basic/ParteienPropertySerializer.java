@@ -2,7 +2,6 @@ package de.x8bit.Fantasya.Host.serialization.basic;
 
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,18 +22,8 @@ import org.slf4j.LoggerFactory;
 public class ParteienPropertySerializer implements ObjectSerializer<Partei> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Collection<Partei> parteiList;
 
 	private static int uniqueId = 1;
-
-	
-	public ParteienPropertySerializer(Collection<Partei> parteiList) {
-		if (parteiList == null) {
-			throw new IllegalArgumentException("List of parties must not be null");
-		}
-
-		this.parteiList = parteiList;
-	}
 
 	@Override
 	public boolean isValidKeyset(Set<String> keys) {
@@ -51,20 +40,20 @@ public class ParteienPropertySerializer implements ObjectSerializer<Partei> {
 		}
 
 		int id = Integer.decode(mapping.get("partei"));
+		
+		Partei faction = Partei.getFaction(id);
+		
+		if (faction != null) {
+			faction.setProperty(mapping.get("name"), mapping.get("value"));
 
-		for (Partei entry : parteiList) {
-			if (entry.getNummer() == id) {
-				entry.setProperty(mapping.get("name"), mapping.get("value"));
-
-				// some logging coding
-				String shortProperty = mapping.get("value");
-				if (shortProperty.length() > 100) {
-					shortProperty = shortProperty.substring(0, 100) + "...";
-				}
-				logger.debug("Loading property for partei {}:  {} = {}",
-						id, mapping.get("name"), shortProperty);
-				return entry;
+			// some logging coding
+			String shortProperty = mapping.get("value");
+			if (shortProperty.length() > 100) {
+				shortProperty = shortProperty.substring(0, 100) + "...";
 			}
+			logger.debug("Loading property for partei {}:  {} = {}",
+					id, mapping.get("name"), shortProperty);
+			return faction;
 		}
 
 		logger.warn("Error with property \"{}\" of partei {}: Partei does not exist.",
