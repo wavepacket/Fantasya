@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Partei.FactionWay;
-import de.x8bit.Fantasya.Atlantis.util.ConstantsFactory;
 import de.x8bit.Fantasya.Atlantis.util.Coordinates;
 import de.x8bit.Fantasya.Atlantis.util.atlas.Island;
 import de.x8bit.Fantasya.Atlantis.util.atlas.Island.IslandType;
@@ -104,12 +103,12 @@ public class IslandSerializer implements ObjectSerializer<Partei> {
 			islandMap.put("islandID", String.valueOf(island.getID()));
 			String value = island.getName();
 			if (value == null)
-				islandMap.put("name", ConstantsFactory.EMPTY_STRING);
+				islandMap.put("name", "");
 			else
 				islandMap.put("name", value);
 			value = island.getDescription();
 			if (value == null)
-				islandMap.put("description", ConstantsFactory.EMPTY_STRING);
+				islandMap.put("description", "");
 			else
 				islandMap.put("description", value);
 			islandMap.put("explorationTurn", String.valueOf(island.getExplorationTurn()));
