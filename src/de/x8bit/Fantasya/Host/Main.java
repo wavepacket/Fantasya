@@ -162,8 +162,8 @@ public class Main
 	 * <tr><td>zat</td><td>&nbsp;-&nbsp;</td><td>startet die Auswertung</td></tr>
 	 * <tr><td>checkdb</td><td>&nbsp;-&nbsp;</td><td>testet die Verbindung zur Datenbank</td></tr>
 	 * <tr><td>initdb</td><td>&nbsp;-&nbsp;</td><td>initialisiert die Datenbank</td></tr>
-	 * <tr><td>testworld</td><td>&nbsp;-&nbsp;</td><td>erwartet ein Argument: Name der Test-Klasse (@see de.x8bit.Fantasya.Host.ManualTests.TestBase). Leert die Test-Datenbank, erzeugt eine komplette Test-Welt und führt einen ZAT darauf durch. Löst automatisch den Debug-ZAT aus (Option -debug)</td></tr>
-	 * <tr><td>verify</td><td>&nbsp;-&nbsp;</td><td>nur zusammen mit -testworld: Die Ergebnisse des entsprechenden Tests werden überprüft.</td></tr>
+	 * <tr><td>testworld</td><td>&nbsp;-&nbsp;</td><td>AUSKOMMENTIERT! erwartet ein Argument: Name der Test-Klasse (@see de.x8bit.Fantasya.Host.ManualTests.TestBase). Leert die Test-Datenbank, erzeugt eine komplette Test-Welt und führt einen ZAT darauf durch. Löst automatisch den Debug-ZAT aus (Option -debug)</td></tr>
+	 * <tr><td>verify</td><td>&nbsp;-&nbsp;</td><td>AUSKOMMENTIERT! nur zusammen mit -testworld: Die Ergebnisse des entsprechenden Tests werden überprüft.</td></tr>
 	 * <tr><td>clrmsg</td><td>&nbsp;-&nbsp;</td><td>löscht alle Meldungen aus der Datenbank</td></tr>
 	 * <tr><td>datenbank [name]</td><td>&nbsp;-&nbsp;</td><td>legt den Namen der Datenbank fest (default fantasya)</td></tr>
 	 * <tr><td>server [server:port]</td><td>&nbsp;-&nbsp;</td><td>legt den Server & Port fest (default 127.0.0.1:3306)</td></tr>
@@ -388,14 +388,14 @@ public class Main
 				  "                     Quellcode angelegt werden!!!)\n");
 		sb.append("\n");
 		sb.append("Halbautomatisches Testen:\n");
-		sb.append("testworld [class]    Erstellt das Test-Szenario in [class] (Name einer Java-\n" +
+		/* sb.append("testworld [class]    Erstellt das Test-Szenario in [class] (Name einer Java-\n" +
 				  "                     Klasse) oder überprüft die Ergebnisse.\n" +
 				  "                     (siehe de.x8bit.Fantasya.Host.ManualTests.TestBase).\n" +
 				  "                     Leert die Test-Datenbank, erzeugt eine komplette Test-Welt\n" +
 				  "                     und löst (je nach Festlegung in [class]) automatisch den\n" +
 				  "                     Debug-ZAT aus. (setzt implizit die Option -debug)\n");
 		sb.append("verify               Optionsschalter zu -testworld : Ergebnisse prüfen statt\n" +
-				  "                     Test anlegen.\n");
+				  "                     Test anlegen.\n"); */
 		sb.append("\n");
 		sb.append("Erweiterte Aktionen:\n");
 		sb.append("X [aktion]           Führt erweiterte Prozeduren durch, die dynamisch im Code\n" +
