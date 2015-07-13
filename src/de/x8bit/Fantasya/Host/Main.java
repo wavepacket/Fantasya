@@ -17,7 +17,7 @@ import de.x8bit.Fantasya.Host.EVA.EVABase;
 import de.x8bit.Fantasya.Host.EVA.util.EVAFastLoader;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.Host.GUI.MainFrame;
-import de.x8bit.Fantasya.Host.ManualTests.TestWorld;
+// import de.x8bit.Fantasya.Host.ManualTests.TestWorld;
 import de.x8bit.Fantasya.Host.Reports.ReportXML;
 import de.x8bit.Fantasya.Host.Reports.Zipping;
 
@@ -50,11 +50,11 @@ public class Main
 	private static boolean args_debug = false;
 	private static boolean args_checkdb = false;
 	private static boolean args_initdb = false;
-	private static String args_testworld = null;
-	private static boolean args_verify = false;
+	// private static String args_testworld = null;
+	// private static boolean args_verify = false;
 	private static boolean args_clrmessages = false;
 	private static boolean args_reporte = false;
-	private static boolean args_email = false;
+	// private static boolean args_email = false;
 	private static boolean args_newplayers = false;
 	private static boolean args_crmap = false;
 	private static boolean args_bugfix = false;
@@ -209,8 +209,8 @@ public class Main
 			if (args[i].compareToIgnoreCase("-debug") == 0) { args_debug = true; flags.put("DEBUG", 1); }
 			if (args[i].compareToIgnoreCase("-checkdb") == 0) args_checkdb = true;
 			if (args[i].compareToIgnoreCase("-initdb") == 0) args_initdb = true;
-			if (args[i].compareToIgnoreCase("-testworld") == 0) if (args.length > i+1) args_testworld = args[i+1];
-			if (args[i].compareToIgnoreCase("-verify") == 0) args_verify = true;
+			// if (args[i].compareToIgnoreCase("-testworld") == 0) if (args.length > i+1) args_testworld = args[i+1];
+			// if (args[i].compareToIgnoreCase("-verify") == 0) args_verify = true;
 			if (args[i].compareToIgnoreCase("-clrmsg") == 0) args_clrmessages = true;
 			if (args[i].compareToIgnoreCase("-datenbank") == 0) Datenbank.SetDatenbank(args[i + 1]);
 			if (args[i].compareToIgnoreCase("-server") == 0) Datenbank.SetServer(args[i + 1]);
@@ -243,10 +243,10 @@ public class Main
         }
 
         // Korrekte Parameter überprüfen:
-        if (args_verify && (args_testworld == null)) {
+        /*if (args_verify && (args_testworld == null)) {
             System.err.println("-verify kann nur zusammen mit -testworld verwendet werden!");
             System.exit(-1);
-        }
+        }*/
 		
 		// new SysMsg(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date()) + " - es geht los!");
 
@@ -267,13 +267,13 @@ public class Main
 		if (args_initdb) { Datenbank db = new Datenbank("InitDB"); db.InitDB(FANTAVERSION); db.Close(); return; }
 
 		// testworld: DB leeren, Test-Welt anlegen, ZAT ausführen.
-		if (args_testworld != null) {
+		/* if (args_testworld != null) {
 			if (!Datenbank.GetDatenbank().contains("test")) {
 				System.err.println("'-testworld' ist nur zulässig, wenn auch eine -datenbank angegeben wird, deren Name 'test' enthält. Grund: Verhindern, dass echte Spieldaten gelöscht werden.");
 				System.exit(-1);
 			}
 			testWorld();
-		}
+		} */
 
 		// Updates checken ... aber nur wenn nicht gerade die DB vorbereitet wird
 		// -- entfernt für Server-Umstellung -- 17.02.2011 !! if (!args_initdb) new Updates(FANTAVERSION);
@@ -409,7 +409,7 @@ public class Main
 		System.out.print(sb.toString());
 	}
 
-	private static void testWorld() {
+	/* private static void testWorld() {
         if (!args_verify) {
             Datenbank db = new Datenbank("Testworld - Truncate Tables");
             db.TruncateAll(); db.Close();
@@ -427,7 +427,7 @@ public class Main
             
             if (!Main.getBFlag("EVA")) args_debug = true; // damit nicht die Befehle überschrieben werden.
         }
-	}
+	} */
 	
 	/**
 	 * repariert irgend ein blöden <b><u><i>katastrophalen</i></u></b> Fehler
