@@ -10,15 +10,10 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.mail.MessagingException;
-
 import de.x8bit.Fantasya.Atlantis.Partei;
-import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
-import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
 import de.x8bit.Fantasya.Host.Datenbank;
 import de.x8bit.Fantasya.Host.GameRules;
-import de.x8bit.Fantasya.util.net.SMTPConnector;
 
 /**
  * Ob wirklich e-mails versendet werden, wird über
@@ -88,21 +83,6 @@ public class Zipping
 		} catch (IOException e) 
 		{
 			new SysErr(e.toString());
-		}
-		
-		if (p.getEMail().length() == 0) {
-			new SysMsg("Partei " + p + " hat keine E-Mail-Adresse - der Report wird nicht verschickt.");
-			return;
-		}
-
-		SMTPConnector conn = new SMTPConnector();
-		File zip = new File("zip/" + GameRules.getRunde() + "/" + p.getNummerBase36() + ".zip");
-		try {
-			conn.sendReport(p, zip);
-		} catch (IOException ex) {
-			new BigError(ex);
-		} catch (MessagingException ex) {
-			new BigError(ex);
 		}
 	}
 

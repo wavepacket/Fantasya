@@ -1,7 +1,5 @@
 package de.x8bit.Fantasya.util.net;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -19,7 +17,6 @@ import javax.mail.internet.MimeMultipart;
 
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.Datenbank;
-import de.x8bit.Fantasya.Host.GameRules;
 
 /**
  *
@@ -53,33 +50,6 @@ public class SMTPConnector {
         this.sendSSLMessage(
                 new String[]{ p.getEMail() },
                 "[Fantasya] Befehlsverarbeitung",
-                mp,
-                SMTP_FROM
-        );
-    }
-
-    public void sendReport(Partei p, File f) throws MessagingException, IOException {
-        String message =
-			"Hi,\n" +
-			"\n" +
-			"hier kommt die Fantasya-Auswertung für " + p + ".\n" +
-			"\n" +
-			"Schöne Grüße, die Fantasyasten.";
-
-        BodyPart bp0 = new MimeBodyPart();
-        bp0.setText(message);
-
-        MimeBodyPart bp1 = new MimeBodyPart();
-        bp1.attachFile(f);
-
-        Multipart mp = new MimeMultipart();
-        mp.addBodyPart(bp0);
-        mp.addBodyPart(bp1);
-
-
-        this.sendSSLMessage(
-                new String[]{ p.getEMail() },
-                "[Fantasya] Auswertung - Runde " + GameRules.getRunde(),
                 mp,
                 SMTP_FROM
         );
