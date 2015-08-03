@@ -162,6 +162,18 @@ public final class StringUtils {
         
         return retval;
     }
-
-
+    
+    public static String normalize(String notNormal) {
+    	notNormal = notNormal.replace("=C4", "\u00e4"); // -> ä
+    	notNormal = notNormal.replace("=C3", "\u00fc"); // -> ü
+		notNormal = notNormal.replace("\u00e4", "ae"); // ä
+		notNormal = notNormal.replace("\u00f6", "oe"); // ö
+		notNormal = notNormal.replace("\u00fc", "ue"); // ü
+		notNormal = notNormal.replace("\u00c4", "AE"); // Ä
+		notNormal = notNormal.replace("\u00d6", "OE"); // Ö
+		notNormal = notNormal.replace("\u00dc", "UE"); // Ü
+		notNormal = notNormal.replace("\u00df", "ss"); // ß
+		
+		return notNormal;
+    }
 }

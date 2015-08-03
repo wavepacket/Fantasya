@@ -39,6 +39,8 @@ import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.ComplexName;
 import de.x8bit.Fantasya.util.comparator.UnitSortierungComparator;
+import fantasya.library.io.order.DirectoryOrderReader;
+
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -484,7 +486,8 @@ abstract public class EVABase {
 		// das ist jetzt unabhängig von args_debug !
 		if (ZATMode.CurrentMode().isBefehleLesen()) {
 			Datenbank.Enable();
-			new BefehleEinlesen();	// TEST ... ok
+			new DirectoryOrderReader("befehle").readOrderFiles();
+			// new BefehleEinlesen();	// TEST ... ok
 			Datenbank.Disable();
 		}
 

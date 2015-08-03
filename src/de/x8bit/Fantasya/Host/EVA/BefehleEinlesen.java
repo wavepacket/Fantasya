@@ -81,7 +81,7 @@ public class BefehleEinlesen extends EVABase
 			if (check.hasValidBefehle(p)) {
 				// okay, Datei kopieren:
 				kopieren(check.getCleanBefehle(p).getAbsolutePath(), 
-						befehleDirectory + "/" + p.getNummerBase36() + ".order");
+						befehleDirectory + "/" + p.getNummerBase36() + ".mail");
 			} else {
 				// Partei hat Befehle eingeschickt, aber keine gültigen:
 				new Fehler("Falsches Passwort (oder falsche Parteinummer)!", p);
@@ -238,7 +238,7 @@ public class BefehleEinlesen extends EVABase
 		new SysMsg(4, " - " + file.length + " Dateien gefunden");
 		for(int i = 0; i < file.length; i++) {
 			// *.mail sind die alten Formate ... *.cmd ist für jede einzelne Einheit
-			if (file[i].toString().toLowerCase().endsWith(".order") || file[i].toString().toLowerCase().endsWith(".cmd")) {
+			if (file[i].toString().toLowerCase().endsWith(".mail") || file[i].toString().toLowerCase().endsWith(".cmd")) {
                 // Befehle ins Objekt-Modell einlesen:
                 readBefehle(file[i].toString());
             }
