@@ -31,7 +31,8 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 				&& keys.contains("originy")
 				&& keys.contains("cheats")
 				&& keys.contains("monster")
-				&& keys.contains("steuern");
+				&& keys.contains("steuern")
+				&& (keys.contains("playerId"));
 	}
 
 	/** Creates the new partei from the mapping. */
@@ -54,6 +55,7 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 			object.setCheats(Integer.decode(mapping.get("cheats")));
 			object.setMonster(Integer.decode(mapping.get("monster")));
 			object.setDefaultsteuer(Integer.decode(mapping.get("steuern")));
+			object.setPlayerId(Integer.decode(mapping.get("playerId")));
 
 			logger.debug("Loaded Partei \"{}\" with id \"{}\"",
 					object.getName(), object.getNummer());
@@ -86,6 +88,7 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 		results.put("cheats", String.valueOf(object.getCheats()));
 		results.put("monster", String.valueOf(object.getMonster()));
 		results.put("steuern", String.valueOf(object.getDefaultsteuer()));
+		results.put("playerId", String.valueOf(object.getPlayerId()));
 
 		return new SerializedData(results);
 	}

@@ -27,7 +27,7 @@ public class CleanOrderReader {
 		// "\").
 		String order = nextLine();
 		
-		// delet a possible old comment
+		// delete a possible old comment
 		comment = null;
 
 		while (order != null && order.trim().endsWith("\\")) {

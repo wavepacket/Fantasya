@@ -49,6 +49,8 @@ public class Partei extends Atlantis {
 	private Map<Integer, Allianz> allianzen = new HashMap<Integer, Allianz>();
 	private ArrayList<Steuer> steuern = new ArrayList<Steuer>();
 	private int cheats = 0;
+	
+	private int playerId = 0;
 
 	/** Muss noch mit Leben gefuellt werden... */
 	public Partei() {
@@ -807,5 +809,13 @@ public class Partei extends Atlantis {
 				privat.getY() + this.getUrsprung().getY(),
 				privat.getWelt());
 
+	}
+	
+	public int getPlayerId() {
+		return playerId;
+	}
+	
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
 	}
 }
