@@ -3,6 +3,7 @@ package de.x8bit.Fantasya.Host.serialization.basic;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 import de.x8bit.Fantasya.Host.EVA.util.NeuerSpieler;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,7 @@ public class NeuerSpielerSerializer implements ObjectSerializer<NeuerSpieler> {
 				&& keys.contains("PlayerId"));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public NeuerSpieler load(Map<String, String> mapping) {
 		NeuerSpieler ns = new NeuerSpieler();

@@ -1,6 +1,7 @@
 package de.x8bit.Fantasya.Host.serialization;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Effect;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -8,6 +9,7 @@ import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Ship;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.Datenbank;
+import de.x8bit.Fantasya.Host.EVA.util.NeuerSpieler;
 import de.x8bit.Fantasya.Host.serialization.basic.*;
 import de.x8bit.Fantasya.Host.serialization.complex.*;
 import de.x8bit.Fantasya.Host.serialization.db.Database;
@@ -15,6 +17,7 @@ import de.x8bit.Fantasya.Host.serialization.db.DatabaseAdapter;
 import de.x8bit.Fantasya.Host.serialization.postprocess.LegacyParteiZeroProcessor;
 import de.x8bit.Fantasya.Host.serialization.postprocess.PostProcessor;
 import de.x8bit.Fantasya.Host.serialization.postprocess.RegionInitHandelProcessor;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -111,6 +114,11 @@ public class MigrationSerializerFactory {
 		handlerMap.put("property_effekt", new CacheLooperHandler<Effect>(
 				new PropertySerializer<Effect>(Effect.PROXY),
 				Effect.PROXY));
+		
+		// Load new player
+		handlerMap.put("neuespieler", new CacheFillerHandler<NeuerSpieler>(
+				new NeuerSpielerSerializer(),
+				NeuerSpieler.PROXY));
 
 
 		// additional post-processors

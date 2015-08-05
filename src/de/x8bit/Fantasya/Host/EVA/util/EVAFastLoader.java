@@ -130,8 +130,8 @@ public class EVAFastLoader {
 		cnt = EVAFastLoader.loadMessages(db);
 		new SysMsg(" " + cnt + " Meldungen...");
 
-		cnt = EVAFastLoader.loadNeueSpieler(db);
-		new SysMsg(" " + cnt + " neue Spieler...");
+		// cnt = EVAFastLoader.loadNeueSpieler(db);
+		// new SysMsg(" " + cnt + " neue Spieler...");
 
 		db.Close();
     }
