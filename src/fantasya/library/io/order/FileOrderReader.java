@@ -36,27 +36,43 @@ public class FileOrderReader {
 				return;
 			}
 			
-			// unit get the order
-			// IMPORTANT: CleanOrderReader should never return an empty string!
-			// Because of that, we do not check for 'order.length() != 0'
-			if ((faction != null) && (unit != null) 
-					&& (!order.toLowerCase().startsWith("einheit")) 
-					&& (!order.toLowerCase().startsWith("naechster"))
-					/*
-					 * 'faulenze' is already a correct long order
-					 * implement it as a correct order!
-					 */
-					 && (!order.toLowerCase().startsWith("faulenze"))
-					) {
-				try {
-					unit.BefehleExperimental.add(unit, order);
-					unit.Befehle.add(order);
-				} catch (IllegalArgumentException e) {
-					// e.printStackTrace();
-					// LOGGER.info(ExceptionFactory.getExceptionDetails(e));
-					LOGGER.info(e.getMessage());
-					new Fehler(e.getMessage(), unit);
+			// new faction for orders
+			if (order.toLowerCase().startsWith("fantasya") || order.toLowerCase().startsWith("eressea") || order.toLowerCase().startsWith("partei")) {
+				// well, only one faction per file? at the moment the webinterface check only first line ode text for faction an pw. what is for second or third faction in one file?
+				if (faction != null) {
+					OrdersOfSeveralFactionsInOneFileException e = new OrdersOfSeveralFactionsInOneFileException("File has orders of more faction(s) than faction [" + faction.getNummerBase36() + "].");
+					e.printStackTrace();
+					LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+					return;
 				}
+				// reset faction : Do not need, if one file can only have orders for one faction
+				// faction = null;
+				// reset unit
+				unit = null;
+				
+				String[] orderTokenArray = order.split(" ");
+				
+				try {
+					faction = Partei.getPartei(Codierung.fromBase36(orderTokenArray[1]));
+					if (faction == null) {
+						LOGGER.warn("Faction " + orderTokenArray[1] + " not found.");
+					}
+					else {
+						LOGGER.info("Faction " + faction + " identified.");
+					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+					e.printStackTrace();
+					LOGGER.warn("Order " + orderTokenArray[0] + " has no token for faction id.\n" + ExceptionFactory.getExceptionDetails(e));
+				}
+			}
+			// end of orders of a faction
+			else if (order.toLowerCase().startsWith("naechster")) {
+				// reset faction
+				faction = null;
+				// reset unit
+				unit = null;
+				// one faction each file
+				return;
 			}
 			// new unit of given faction
 			else if (order.toLowerCase().startsWith("einheit") && (faction != null)) {
@@ -94,43 +110,27 @@ public class FileOrderReader {
 					LOGGER.warn("Order " + orderTokenArray[0] + " has no token for unit id.\n" + ExceptionFactory.getExceptionDetails(e));
 				}
 			}
-			// new faction for orders
-			else if (order.toLowerCase().startsWith("fantasya") || order.toLowerCase().startsWith("eressea") || order.toLowerCase().startsWith("partei")) {
-				// well, only one faction per file? at the moment the webinterface check only first line ode text for faction an pw. what is for second or third faction in one file?
-				if (faction != null) {
-					OrdersOfSeveralFactionsInOneFileException e = new OrdersOfSeveralFactionsInOneFileException("File has orders of more faction(s) than faction [" + faction.getNummerBase36() + "].");
-					e.printStackTrace();
-					LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
-					return;
-				}
-				// reset faction : Do not need, if one file can only have orders for one faction
-				// faction = null;
-				// reset unit
-				unit = null;
-				
-				String[] orderTokenArray = order.split(" ");
-				
+			// unit get the order
+			// IMPORTANT: CleanOrderReader should never return an empty string!
+			// Because of that, we do not check for 'order.length() != 0'
+			else if ((faction != null) && (unit != null) 
+					// && (!order.toLowerCase().startsWith("einheit")) 
+					// && (!order.toLowerCase().startsWith("naechster"))
+					/*
+					 * 'faulenze' is already a correct long order
+					 * implement it as a correct order!
+					 */
+					 && (!order.toLowerCase().startsWith("faulenze"))
+					) {
 				try {
-					faction = Partei.getPartei(Codierung.fromBase36(orderTokenArray[1]));
-					if (faction == null) {
-						LOGGER.warn("Faction " + orderTokenArray[1] + " not found.");
-					}
-					else {
-						LOGGER.info("Faction " + faction + " identified.");
-					}
-				} catch (ArrayIndexOutOfBoundsException e) {
-					e.printStackTrace();
-					LOGGER.warn("Order " + orderTokenArray[0] + " has no token for faction id.\n" + ExceptionFactory.getExceptionDetails(e));
+					unit.BefehleExperimental.add(unit, order);
+					unit.Befehle.add(order);
+				} catch (IllegalArgumentException e) {
+					// e.printStackTrace();
+					// LOGGER.info(ExceptionFactory.getExceptionDetails(e));
+					LOGGER.info(e.getMessage());
+					new Fehler(e.getMessage(), unit);
 				}
-			}
-			// end of orders of a faction
-			else if (order.toLowerCase().startsWith("naechster")) {
-				// reset faction
-				faction = null;
-				// reset unit
-				unit = null;
-				// one faction each file
-				return;
 			}
 		}
 	}
