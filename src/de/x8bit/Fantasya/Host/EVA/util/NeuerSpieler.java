@@ -16,13 +16,17 @@ import java.util.Map;
 public class NeuerSpieler {
     public static final List<NeuerSpieler> PROXY = new ArrayList<NeuerSpieler>();
 
-    String email;
-    Class<? extends Unit> rasse;
-    Class<? extends Unit> tarnung;
-    int holz;
-    int eisen;
-    int steine;
-    int insel;
+    private String description;
+    private String name;
+    private int playerId;
+    
+    private String email;
+    private Class<? extends Unit> rasse;
+    private Class<? extends Unit> tarnung;
+    private int holz;
+    private int eisen;
+    private int steine;
+    private int insel;
 
     public NeuerSpieler() {
     }
@@ -137,6 +141,30 @@ public class NeuerSpieler {
 
     public void setTarnung(Class<? extends Unit> tarnung) {
         this.tarnung = tarnung;
+    }
+    
+    public void setName(String name) {
+    	this.name = name;
+    }
+    
+    public String getName() {
+    	return name;
+    }
+    
+    public void setDescription(String description) {
+    	this.description = description;
+    }
+    
+    public String getDescription() {
+    	return description;
+    }
+    
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
     @Override

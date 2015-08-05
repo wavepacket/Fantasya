@@ -51,6 +51,7 @@ public class Partei extends Atlantis {
 	private int cheats = 0;
 	
 	private int playerId = 0;
+	private int playerFactionId = 0;
 
 	/** Muss noch mit Leben gefuellt werden... */
 	public Partei() {
@@ -817,5 +818,13 @@ public class Partei extends Atlantis {
 	
 	public void setPlayerId(int playerId) {
 		this.playerId = playerId;
+	}
+	
+	public int getPlayerFactionId() {
+		return playerFactionId;
+	}
+	
+	public void setPlayerFactionId(int playerFactionId) {
+		this.playerFactionId = playerFactionId;
 	}
 }

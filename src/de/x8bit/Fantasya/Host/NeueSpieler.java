@@ -53,11 +53,21 @@ public class NeueSpieler
 		for (NeuerSpieler n : NeuerSpieler.PROXY) {
 			// jetzt den Spieler anlegen
 			Partei f = Partei.Create();
-			f.setName("Volk " + f.getNummerBase36());
+			if (n.getName() == null || n.getName().length() == 0) {
+				f.setName("Volk " + f.getNummerBase36());
+			}
+			else {
+				f.setName(n.getName());
+			}
+			if (n.getDescription() != null || n.getDescription().length() > 0) {
+				f.setBeschreibung(n.getDescription());
+			}
 			f.setEMail(n.getEmail());
 			f.setRasse(n.getRasse().getSimpleName());
 			f.setNMR(GameRules.getRunde());
 			f.setDefaultsteuer(10);
+			f.setPlayerId(n.getPlayerId());
+			f.setPlayerFactionId(n.getPlayerId() * 1000 + f.getAlter());
 			Partei.PROXY.add(f);
 			new SysMsg("neuen Spieler erzeugt - " + f);
 
@@ -140,8 +150,8 @@ public class NeueSpieler
                             Handel.class,
                             Ausdauer.class, 
                             Tarnung.class,
-							Religion.class,
-                            Kraeuterkunde.class, 
+							// Religion.class,
+                            // Kraeuterkunde.class, 
 						 };
 		
 		

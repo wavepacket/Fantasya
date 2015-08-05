@@ -35,6 +35,8 @@ public class ParteiSerializerTest {
 		serializedMap.put("cheats", "1");
 		serializedMap.put("monster", "3");
 		serializedMap.put("steuern", "15");
+		serializedMap.put("PlayerId", "10");
+		serializedMap.put("PlayerFactionId", "10005");
 	}
 
 	@Test

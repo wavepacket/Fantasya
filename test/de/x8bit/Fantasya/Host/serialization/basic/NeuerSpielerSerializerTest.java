@@ -25,6 +25,9 @@ public class NeuerSpielerSerializerTest {
 		serializedMap.put("eisen", "30");
 		serializedMap.put("steine", "48");
 		serializedMap.put("insel", "35");
+		serializedMap.put("Name", "Test");
+		serializedMap.put("Description", "This is a test.");
+		serializedMap.put("PlayerId", "10");
 	}
 	
 	@Test
