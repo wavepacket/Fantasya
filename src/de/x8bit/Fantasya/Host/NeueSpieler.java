@@ -59,7 +59,7 @@ public class NeueSpieler
 			else {
 				f.setName(n.getName());
 			}
-			if (n.getDescription() != null || n.getDescription().length() > 0) {
+			if (n.getDescription() != null && n.getDescription().length() > 0) {
 				f.setBeschreibung(n.getDescription());
 			}
 			f.setEMail(n.getEmail());

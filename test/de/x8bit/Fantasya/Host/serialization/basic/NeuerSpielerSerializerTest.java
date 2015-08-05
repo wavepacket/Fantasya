@@ -57,6 +57,12 @@ public class NeuerSpielerSerializerTest {
 				Integer.decode(serializedMap.get("steine")), (Integer)ns.getSteine());
 		assertEquals("Incorrect island set.",
 				Integer.decode(serializedMap.get("insel")), (Integer)ns.getInsel());
+		assertEquals("Incorrect name.",
+				serializedMap.get("Name"), ns.getName());
+		assertEquals("Incorrect description.",
+				serializedMap.get("Description"), ns.getDescription());
+		assertEquals("Incorrect playerId.",
+				Integer.decode(serializedMap.get("PlayerId")), (Integer)ns.getPlayerId());
 	}
 	
 	@Test
