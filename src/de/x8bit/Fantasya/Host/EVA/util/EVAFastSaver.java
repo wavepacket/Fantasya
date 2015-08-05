@@ -74,6 +74,7 @@ public class EVAFastSaver {
 		// - Regionenproperties
 		// - Gebaeude + Properties
 		// - Schiffe
+		// - New Player
 		newStuff.saveAll();
 		//-------------------------------------------------------------
 
@@ -99,7 +100,7 @@ public class EVAFastSaver {
 
 //		EVAFastSaver.saveProperties(db, clear);
 
-		EVAFastSaver.saveNeueSpieler(db);
+//		EVAFastSaver.saveNeueSpieler(db);
 
 		db.Close();
 	}

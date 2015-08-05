@@ -71,6 +71,7 @@ public class EVAFastLoader {
 		// - Regionenproperties
 		// - Gebaeude + Properties
 		// - Schiffe
+		// - New Player
 		newStuff.loadAll();
 		//--------------------------------------------------------------
 
