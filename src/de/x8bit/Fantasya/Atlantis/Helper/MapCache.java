@@ -70,6 +70,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 	 * @return whether the element was successfully removed.
 	 * @throws NullPointerException if the argument was null.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean remove(Object o) {
 		if (o == null) {
@@ -208,6 +209,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 		return allObjects.toArray();
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public <T> T[] toArray(T[] a) {
 		return allObjects.toArray(a);
@@ -220,6 +222,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 		return hash;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) {
