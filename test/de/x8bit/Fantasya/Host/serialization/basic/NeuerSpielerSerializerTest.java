@@ -25,9 +25,10 @@ public class NeuerSpielerSerializerTest {
 		serializedMap.put("eisen", "30");
 		serializedMap.put("steine", "48");
 		serializedMap.put("insel", "35");
-		serializedMap.put("Name", "Test");
-		serializedMap.put("Description", "This is a test.");
-		serializedMap.put("PlayerId", "10");
+		serializedMap.put("name", "Test");
+		serializedMap.put("description", "This is a test.");
+		serializedMap.put("user_id", "10");
+		serializedMap.put("password", "11234");
 	}
 	
 	@Test
@@ -58,11 +59,13 @@ public class NeuerSpielerSerializerTest {
 		assertEquals("Incorrect island set.",
 				Integer.decode(serializedMap.get("insel")), (Integer)ns.getInsel());
 		assertEquals("Incorrect name.",
-				serializedMap.get("Name"), ns.getName());
+				serializedMap.get("name"), ns.getName());
 		assertEquals("Incorrect description.",
-				serializedMap.get("Description"), ns.getDescription());
-		assertEquals("Incorrect playerId.",
-				Integer.decode(serializedMap.get("PlayerId")), (Integer)ns.getPlayerId());
+				serializedMap.get("description"), ns.getDescription());
+		assertEquals("Incorrect userId.",
+				Integer.decode(serializedMap.get("user_id")), (Integer)ns.getUserId());
+		assertEquals("Incorrect password.",
+				serializedMap.get("password"), ns.getPassword());
 	}
 	
 	@Test

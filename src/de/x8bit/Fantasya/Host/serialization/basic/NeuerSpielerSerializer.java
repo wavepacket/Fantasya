@@ -20,9 +20,10 @@ public class NeuerSpielerSerializer implements ObjectSerializer<NeuerSpieler> {
 				&& keys.contains("eisen")
 				&& keys.contains("steine")
 				&& keys.contains("insel")
-				&& keys.contains("Name")
-				&& keys.contains("Description")
-				&& keys.contains("PlayerId"));
+				&& keys.contains("name")
+				&& keys.contains("description")
+				&& keys.contains("password")
+				&& keys.contains("user_id"));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,9 +52,10 @@ public class NeuerSpielerSerializer implements ObjectSerializer<NeuerSpieler> {
 		ns.setSteine(Integer.decode(mapping.get("steine")));
 		ns.setInsel(Integer.decode(mapping.get("insel")));
 		ns.setEmail(mapping.get("email"));
-		ns.setName(mapping.get("Name"));
-		ns.setDescription(mapping.get("Description"));
-		ns.setPlayerId(Integer.decode(mapping.get("PlayerId")));
+		ns.setName(mapping.get("name"));
+		ns.setDescription(mapping.get("description"));
+		ns.setPassword(mapping.get("password"));
+		ns.setUserId(Integer.decode(mapping.get("user_id")));
 		
 		return ns;
 	}
@@ -72,9 +74,10 @@ public class NeuerSpielerSerializer implements ObjectSerializer<NeuerSpieler> {
 		data.put("steine", String.valueOf(object.getSteine()));
 		data.put("insel", String.valueOf(object.getInsel()));
 		data.put("email", String.valueOf(object.getEmail()));
-		data.put("Name", String.valueOf(object.getName()));
-		data.put("Description", String.valueOf(object.getDescription()));
-		data.put("PlayerId", String.valueOf(object.getPlayerId()));
+		data.put("name", String.valueOf(object.getName()));
+		data.put("description", String.valueOf(object.getDescription()));
+		data.put("password", String.valueOf(object.getPassword()));
+		data.put("user_id", String.valueOf(object.getUserId()));
 		
 		return new SerializedData(data);
 	}

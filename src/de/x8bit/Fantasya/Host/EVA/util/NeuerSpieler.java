@@ -18,7 +18,8 @@ public class NeuerSpieler {
 
     private String description;
     private String name;
-    private int playerId;
+    private String password;
+    private int userId;
     
     private String email;
     private Class<? extends Unit> rasse;
@@ -159,12 +160,20 @@ public class NeuerSpieler {
     	return description;
     }
     
-    public int getPlayerId() {
-        return playerId;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+    
+    public void setPassword(String password) {
+    	this.password = password;
+    }
+    
+    public String getPassword() {
+    	return password;
     }
 
     @Override

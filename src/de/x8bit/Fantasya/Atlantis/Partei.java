@@ -50,8 +50,8 @@ public class Partei extends Atlantis {
 	private ArrayList<Steuer> steuern = new ArrayList<Steuer>();
 	private int cheats = 0;
 	
-	private int playerId = 0;
-	private int playerFactionId = 0;
+	private int userId = 0;
+	private int factionId = 0;
 
 	/** Muss noch mit Leben gefuellt werden... */
 	public Partei() {
@@ -812,19 +812,19 @@ public class Partei extends Atlantis {
 
 	}
 	
-	public int getPlayerId() {
-		return playerId;
+	public int getUserId() {
+		return userId;
 	}
 	
-	public void setPlayerId(int playerId) {
-		this.playerId = playerId;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 	
-	public int getPlayerFactionId() {
-		return playerFactionId;
+	public int getFactionId() {
+		return factionId;
 	}
 	
-	public void setPlayerFactionId(int playerFactionId) {
-		this.playerFactionId = playerFactionId;
+	public void setFactionId(int factionId) {
+		this.factionId = factionId;
 	}
 }
