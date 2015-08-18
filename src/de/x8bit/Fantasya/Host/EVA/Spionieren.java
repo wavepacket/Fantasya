@@ -32,9 +32,9 @@ public class Spionieren extends EVABase {
 		BefehlsMuster bm = null;
         List<BefehlsMuster> retval = new ArrayList<BefehlsMuster>();
 
-        bm = new BefehlsMuster(Spionieren.class, 0, "^@?(spioniere)[n]? [a-z0-9]{1,4}([ ]+(\\/\\/).*)?", "s", Art.LANG);
-        bm.setKeywords("spioniere", "spionieren");
-        retval.add(bm);
+        // bm = new BefehlsMuster(Spionieren.class, 0, "^@?(spioniere)[n]? [a-z0-9]{1,4}([ ]+(\\/\\/).*)?", "s", Art.LANG);
+        // bm.setKeywords("spioniere", "spionieren");
+        // retval.add(bm);
 
         return retval;
     }
