@@ -50,7 +50,7 @@
 	<target name="build" description="compiles the Java code and builds a jar file">
 		<mkdir dir="bin" />
 
-		<javac srcdir="src" destdir="bin" debug="true" includeantruntime="false">
+		<javac srcdir="src" destdir="bin" debug="true" includeantruntime="false" encoding="UTF-8">
 			<compilerarg value="-Xlint:unchecked"/>
 			<classpath refid="path.libraries" />
 		</javac>
@@ -69,7 +69,7 @@
 	<target name="build-tests" depends="build" description="Compiles all unit tests">
 		<mkdir dir="built-tests" />
 
-		<javac srcdir="test" destdir="built-tests" debug="true" includeantruntime="false">
+		<javac srcdir="test" destdir="built-tests" debug="true" includeantruntime="false" encoding="UTF-8">
 			<compilerarg value="-Xlint:unchecked"/>
 			<classpath>
 				<path refid="path.testlibs" />
@@ -83,7 +83,7 @@
 	<target name="build-applicationtests" depends="build,build-tests" description="Build complex tests that require a valid database">
 		<mkdir dir="built-applicationtests" />
 
-		<javac srcdir="applicationtest" destdir="built-applicationtests" debug="true" includeantruntime="false">
+		<javac srcdir="applicationtest" destdir="built-applicationtests" debug="true" includeantruntime="false" encoding="UTF-8">
 			<compilerarg value="-Xlint:unchecked"/>
 			<classpath>
 				<path refid="path.testlibs" />
