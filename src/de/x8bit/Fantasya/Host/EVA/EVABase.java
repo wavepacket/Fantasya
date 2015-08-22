@@ -600,14 +600,17 @@ abstract public class EVABase {
 		Datenbank.Disable();
 
 		new BefehlsCheckMeldungen(); // wird im normalen ZAT übersprungen.
-
+		
+		// old turn done, next turn now
+		GameRules.setRunde(GameRules.getRunde() + 1);
+		
 		// nur noch die Reporte schreiben
 		new Reporte();
 
 		// GameRules speichern (weil Runde oder so verändert wurde)
 		Datenbank.Enable();
 		if (!ZATMode.CurrentMode().isWorldReadOnly()) {
-			GameRules.setRunde(GameRules.getRunde() + 1);
+			GameRules.setRunde(GameRules.getRunde()); // only save turn
 			new Debug("Erhöhe Runde auf " + GameRules.getRunde() + ".");
 			GameRules.Save();
 		} else {

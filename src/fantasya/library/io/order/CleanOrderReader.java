@@ -131,7 +131,7 @@ public class CleanOrderReader {
 			if (i + 1 < order.length()) {
 				char firstChar = order.charAt(i);
 				char secondChar = order.charAt(i + 1);
-				// IMPORTANT: order has no tabs -> see line 59
+				// IMPORTANT: order has no tabs -> see line 71
 				// Because the order has no tabs, order has not substring(0, i-1) + " " + substring(i + 1); 
 				if (firstChar == ' ' && secondChar == ' ') {
 					order = removeMultipleWhitespace(order.substring(0, i) + order.substring(i + 1), i);

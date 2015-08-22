@@ -194,6 +194,53 @@ public class FileOrderReaderTest {
 			assertEquals(OrderStringArrayUV[i], orderUnit.Befehle.get(i));
 		}
 	}
+	
+	@Test
+	public void testDoubleOrdersToUnit() {
+		String[] orderStringArray = {"BEWACHE", "TARNE"};
+		String orders = "PARTEI 1 \"test\"\nEINHEIT uu\nBEWACHE\nTARNE\nEINHEIT uu\nGIB z 2 Schwert\nLERNE Ausdauer";
+		generateTestFactions();
+		FileOrderReader reader = generateReader(orders);
+		
+		reader.assignOrders();
+		
+		Partei faction = Partei.getPartei(1);
+		Set<Unit> factionUnitSet = faction.getEinheiten();
+		
+		Unit orderUnit = null;
+		
+		for (Unit unit : factionUnitSet) {
+			if (unit.getNummer() == 1110 /* uu */) {
+				orderUnit = unit;
+				break;
+			}
+		}
+		
+		assertEquals(orderStringArray.length, orderUnit.Befehle.size());
+	}
+	
+	@Test
+	public void testOrdersToNotFactionUnit() {
+		String orders = "PARTEI 1 \"test\"\nEINHEIT v5\nBEWACHE\nTARNE";
+		generateTestFactions();
+		FileOrderReader reader = generateReader(orders);
+		
+		reader.assignOrders();
+		
+		Partei faction = Partei.getPartei(2);
+		Set<Unit> factionUnitSet = faction.getEinheiten();
+		
+		Unit orderUnit = null;
+		
+		for (Unit unit : factionUnitSet) {
+			if (unit.getNummer() == 1121 /* v5 */) {
+				orderUnit = unit;
+				break;
+			}
+		}
+		
+		assertEquals(0, orderUnit.Befehle.size());
+	}
 }
 
 

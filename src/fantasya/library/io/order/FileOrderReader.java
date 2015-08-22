@@ -93,11 +93,13 @@ public class FileOrderReader {
 						String message = "Faction " + faction + " is not owner of unit " + orderTokenArray[1] + ".";
 						LOGGER.info(message);
 						new Fehler(message, faction);
+						unit = null;
 					}
 					else if (orderUnitSet.contains(unit)) {
 						String message = "Unit " + unit + " already has orders. First orders will be computed.";
 						LOGGER.info(message);
 						new Fehler(message, faction);
+						unit = null;
 					}
 					else {
 						orderUnitSet.add(unit);

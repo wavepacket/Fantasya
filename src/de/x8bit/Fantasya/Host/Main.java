@@ -507,7 +507,7 @@ public class Main
 		
 		// die ReporteSchreiben schreiben
 		new ZATMsg("erstelle Reporte");
-		GameRules.setRunde(GameRules.getRunde() - 1); // Report von der vorigen Runde erzeugen
+		GameRules.setRunde(GameRules.getRunde()); // -> turn of database is turn of report
         new de.x8bit.Fantasya.Host.EVA.Reporte();
 		new ReportXML(new Partei());	// "world.xml" erzeugen
 
