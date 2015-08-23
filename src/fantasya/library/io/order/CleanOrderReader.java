@@ -67,14 +67,8 @@ public class CleanOrderReader {
 		// trim the order
 		order = order.trim();
 		
-		// replaces all '\t' with  ' '
-		order = order.replace('\t', ' ');
-		
-		// delete all multiple whitespace
-		order = removeMultipleWhitespace(order, 0);
-		
-		// normalize german special characters
-		order = StringUtils.normalize(order);
+		// normalize order parts that is not quoted.
+		order = normalize(order);
 		
 		// return trimmed order
 		return (comment == null) ? order.trim() : order.trim() + " " + comment;
@@ -185,6 +179,73 @@ public class CleanOrderReader {
 		
 		// return order without comment
 		return orderString.substring(0, commentMark);
+	}
+	
+	public String normalize(String order) {
+		if (order.indexOf('\"') < 0) {
+			
+			// replaces all '\t' with  ' '
+			order = order.replace('\t', ' ');
+			
+			// delete all multiple whitespace
+			order = removeMultipleWhitespace(order, 0);
+			
+			// normalize german special characters
+			order = StringUtils.normalize(order);
+			
+			return order;
+		}
+		
+		String[] orderArray = { null, null, null };
+		
+		int firstQuote = order.indexOf('\"');
+		int lastQuote = order.lastIndexOf('\"');
+		
+		orderArray[0] = order.substring(0, firstQuote).trim();
+		
+		if (lastQuote <= firstQuote || lastQuote > order.length() - 2) {
+			orderArray[1] = order.substring(firstQuote).trim();
+		}
+		else {
+			orderArray[1] = order.substring(firstQuote, lastQuote + 1).trim();
+			orderArray[2] = order.substring(lastQuote + 1).trim();
+		}
+		
+		String orderPart;
+		
+		orderPart = orderArray[0];
+					
+		// replaces all '\t' with  ' '
+		orderPart = orderPart.replace('\t', ' ');
+					
+		// delete all multiple whitespace
+		orderPart = removeMultipleWhitespace(orderPart, 0);
+					
+		// normalize german special characters
+		orderPart = StringUtils.normalize(orderPart);
+		
+		orderArray[0] = orderPart;
+		
+		
+		orderPart = orderArray[2];
+		
+		if (orderPart != null && !orderPart.isEmpty()) {
+						
+			// replaces all '\t' with  ' '
+			orderPart = orderPart.replace('\t', ' ');
+						
+			// delete all multiple whitespace
+			orderPart = removeMultipleWhitespace(orderPart, 0);
+						
+			// normalize german special characters
+			orderPart = StringUtils.normalize(orderPart);
+			
+			orderArray[2] = orderPart;
+		}
+		
+		order = orderArray[0] + " " + orderArray[1];
+		
+		return (orderArray[2] == null || orderArray[2].isEmpty()) ? order : order + " " + orderArray[2];
 	}
 	
 	public void close() {

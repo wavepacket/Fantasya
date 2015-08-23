@@ -221,4 +221,15 @@ public class CleanOrderReaderTest {
 		
 		assertEquals(command, reader.readOrder());
 	}
+	
+	@Test
+	public void normalizeNotInQuotedText() {
+		String[] command = { "BENENNE REGION \"Ünterwald\"" , "ZAUBERE \"Hain der tausend Eichen\" 1" };
+		String input = "BENENNE REGION \"Ünterwald\"\nZAUBERE \"Hain der tausend Eichen\" 1";
+
+		CleanOrderReader reader = generateReader(input);
+		
+		assertEquals(command[0], reader.readOrder());
+		assertEquals(command[1], reader.readOrder());
+	}
 }

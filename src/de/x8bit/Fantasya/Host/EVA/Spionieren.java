@@ -32,9 +32,9 @@ public class Spionieren extends EVABase {
 		BefehlsMuster bm = null;
         List<BefehlsMuster> retval = new ArrayList<BefehlsMuster>();
 
-        // bm = new BefehlsMuster(Spionieren.class, 0, "^@?(spioniere)[n]? [a-z0-9]{1,4}([ ]+(\\/\\/).*)?", "s", Art.LANG);
-        // bm.setKeywords("spioniere", "spionieren");
-        // retval.add(bm);
+        bm = new BefehlsMuster(Spionieren.class, 0, "^@?(spioniere)[n]? [a-z0-9]{1,4}([ ]+(\\/\\/).*)?", "s", Art.LANG);
+        bm.setKeywords("spioniere", "spionieren");
+        retval.add(bm);
 
         return retval;
     }
@@ -52,38 +52,51 @@ public class Spionieren extends EVABase {
 			boolean successful = true;
 			
 			Unit agent = eb.getUnit();
+			
 			if (agent.Talentwert(Spionage.class) == 0) {
 				new Fehler("ich sollte schon wenigstens das Talent zum Agenten haben", agent);
-			} else {
-				Unit victim = Unit.Get(Codierung.fromBase36(eb.getTokens()[1]));
-				if (victim == null) {
-					new Fehler("konnte niemanden finden den ich Ausspionieren kann", agent);
-				} else {
-					Unit aufpasser = r.TopSkill(Wahrnehmung.class, victim.getOwner());
-					if (aufpasser == null) {
-						successful = true;
-					} else {
-						if (agent.Talentwert(Spionage.class) > aufpasser.Talentwert(Wahrnehmung.class)) {
-							successful = true;
-						} else {
-							if (agent.Talentwert(Spionage.class) == aufpasser.Talentwert(Wahrnehmung.class)) {
-								successful = (Random.rnd(0, 100) < 50);
-							} else {
-								successful = false;
-							}
-						}
-					}
-				}
-				
-				if (successful) {
-					spioniere(agent, victim);
-				} else {
-					new Fehler("ich wurden beim Spionieren erwischt", agent);
+				eb.setError();
+				continue;
+			}
+			
+			Unit victim = null;
+			
+			// Well, both unit in one region?
+			for (Unit possibleVictim : r.getUnits()) {
+				if (possibleVictim.getNummer() == Codierung.fromBase36(eb.getTokens()[1])) {
+					victim = possibleVictim;
 				}
 			}
 			
+			if (victim == null) {
+				new Fehler("konnte niemanden finden den ich Ausspionieren kann", agent);
+				eb.setError();
+				continue;
+			}
 			
-			eb.setPerformed();
+			Unit aufpasser = r.TopSkill(Wahrnehmung.class, victim.getOwner());
+			
+			if (aufpasser == null) {
+				successful = true;
+			}
+			
+			if (agent.Talentwert(Spionage.class) > aufpasser.Talentwert(Wahrnehmung.class)) {
+				successful = true;
+			}
+			else if (agent.Talentwert(Spionage.class) == aufpasser.Talentwert(Wahrnehmung.class)) {
+				successful = (Random.rnd(0, 100) < 50);
+			}
+			else {
+				successful = false;
+			}
+				
+			if (successful) {
+				spioniere(agent, victim);
+			} else {
+				new Fehler("ich wurden beim Spionieren erwischt", agent);
+			}	
+				
+			eb.setPerformed();				
         } // nächster Einzelbefehl
 	}
 

@@ -546,7 +546,7 @@ abstract public class EVABase {
 //		// -- lange Befehle
 		new Zaubern();
 		new Zerstoere();
-// 		new Spionieren(); -> has a bug, if unit is unknown for spy
+ 		new Spionieren(); // -> has a bug, if unit is unknown for spy
 		new Lehren();
 		new Lernen();
 		new Belagerung();
