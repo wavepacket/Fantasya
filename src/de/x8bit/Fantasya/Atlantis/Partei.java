@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Buildings.Leuchtturm;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
@@ -27,16 +30,22 @@ import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.FreieNummern;
 import de.x8bit.Fantasya.util.Random;
 import de.x8bit.Fantasya.util.UnitList;
+import fantasya.library.language.Language;
 
 /**
  * @author  mogel
  */
 public class Partei extends Atlantis {
-
+	
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Partei.class);
+	
+	public static final ArrayList<Partei> PROXY;
+	
 	static {
 		PROXY = new ArrayList<Partei>();
 	}
-	public static final ArrayList<Partei> PROXY;
+	
 	private String Rasse = "Mensch";
 	private String EMail = "";
 	private String Website = "";
@@ -52,6 +61,7 @@ public class Partei extends Atlantis {
 	
 	private int userId = 0;
 	private int factionId = 0;
+	private Language language = Language.getLanguage("de");
 
 	/** Muss noch mit Leben gefuellt werden... */
 	public Partei() {
@@ -826,5 +836,18 @@ public class Partei extends Atlantis {
 	
 	public void setFactionId(int factionId) {
 		this.factionId = factionId;
+	}
+	
+	public Language getLanguage() {
+		return language;
+	}
+	
+	public void setLanguage(Language language) {
+		if (language == null){
+			LOGGER.warn("Language to set for faction " + this + " is 'NULL'. Falling back to Defaultlanguage " + Language.getDefaultLanguage() + ".");
+			this.language = Language.getDefaultLanguage();
+			return;
+		}
+		this.language = language;
 	}
 }
