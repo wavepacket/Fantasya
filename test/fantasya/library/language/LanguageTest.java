@@ -2,6 +2,8 @@ package fantasya.library.language;
 
 import static org.junit.Assert.*;
 
+import java.text.MessageFormat;
+
 import org.junit.Test;
 
 public class LanguageTest {
@@ -53,5 +55,15 @@ public class LanguageTest {
 			assertEquals(valueArray[i], language.getTranslation(keyArray[i]));
 		}
 	}
-
+	
+	@Test
+	public void testGetTranslationWithriables() {
+		Language language = getLanguage();
+		String region = "Qadra (0, 0, 1)";
+		String unit = "Wanderer [w]";
+		String input = "library.command.goto.through";
+		String output = "Wanderer [w] wandert durch die Region Qadra (0, 0, 1).";
+		
+		assertEquals(output, MessageFormat.format(language.getTranslation(input), unit, region));
+	}
 }
