@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -37,6 +38,7 @@ import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.Codierung;
 import de.x8bit.Fantasya.util.io.EncodingDetector;
 import de.x8bit.Fantasya.util.net.IMAPConnector;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,7 +56,17 @@ public class BefehleEinlesen extends EVABase
 	{
 		super("lese Befehle der Spieler ein");
 
-        if (ZATMode.CurrentMode().isImapAbrufen()) {
+		LoadBefehle();
+
+				
+		for (BefehlsMuster pattern : getMuster()) {
+			addTemplate(pattern.getRegex());
+		}
+		
+		
+		// old code. new code temporary for game. new code testing. After test and ordercheck writing
+		// delete these code.
+        /* if (ZATMode.CurrentMode().isImapAbrufen()) {
             try {
                 IMAPConnector conn = new IMAPConnector();
                 int count = conn.befehleHolen();
@@ -120,7 +132,7 @@ public class BefehleEinlesen extends EVABase
 		
 		for (BefehlsMuster pattern : getMuster()) {
 			addTemplate(pattern.getRegex());
-		}
+		} */
 	}
 
     public static List<BefehlsMuster> getMuster() {
@@ -225,23 +237,24 @@ public class BefehleEinlesen extends EVABase
 
     /** liest alle Befehle ein */
 	private void LoadBefehle() {
-		File file[] = new File(befehleDirectory + "/" + GameRules.getRunde()).listFiles();
-		if (file == null)
-		{
+		FilenameFilter fileNameFilter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return (name.trim().toLowerCase().endsWith(".order"));
+			}
+		};
+		File fileArray[] = new File(befehleDirectory + "/" + GameRules.getRunde()).listFiles(fileNameFilter);
+		if (fileArray == null) {
 			new SysErr("keine Befehle für aktuelle Runde " + GameRules.getRunde() + " gefunden. (in " + befehleDirectory + "/" + GameRules.getRunde() + ")");
-			file = new File(befehleDirectory).listFiles();
-			if (file == null) {
+			fileArray = new File(befehleDirectory).listFiles(fileNameFilter);
+			if (fileArray == null) {
 				new SysErr("Auch in "+ befehleDirectory + " keine Dateien gefunden!");
 				return;
 			}
 		}
-		new SysMsg(4, " - " + file.length + " Dateien gefunden");
-		for(int i = 0; i < file.length; i++) {
-			// *.mail sind die alten Formate ... *.cmd ist für jede einzelne Einheit
-			if (file[i].toString().toLowerCase().endsWith(".mail") || file[i].toString().toLowerCase().endsWith(".cmd")) {
-                // Befehle ins Objekt-Modell einlesen:
-                readBefehle(file[i].toString());
-            }
+		new SysMsg(4, " - " + fileArray.length + " Dateien gefunden");
+		for(int i = 0; i < fileArray.length; i++) {
+			readBefehle(fileArray[i].toString());
 		}
 	}
 	

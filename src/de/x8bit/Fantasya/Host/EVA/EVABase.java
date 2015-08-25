@@ -486,8 +486,8 @@ abstract public class EVABase {
 		// das ist jetzt unabhängig von args_debug !
 		if (ZATMode.CurrentMode().isBefehleLesen()) {
 			Datenbank.Enable();
-			new DirectoryOrderReader("befehle").readOrderFiles();
-			// new BefehleEinlesen();	// TEST ... ok
+			// new DirectoryOrderReader("befehle").readOrderFiles();
+			new BefehleEinlesen();	// TEST ... ok
 			Datenbank.Disable();
 		}
 
