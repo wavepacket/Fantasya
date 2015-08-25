@@ -17,6 +17,13 @@ public class LanguageTest {
 		assertEquals(language.getLanguage(), "de");
 	}
 	
+	@Test
+	public void testToString() {
+		Language language = getLanguage();
+		
+		assertEquals(language.toString(), "de");
+	}
+	
 	@Test(expected = IllegalArgumentException.class)
 	public void testGetTranslationFail() {
 		Language language = getLanguage();
