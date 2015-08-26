@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fantasya.library.io.IOFactory;
-import fantasya.library.util.ExceptionFactory;
+import fantasya.library.util.StringFactory;
 
 /**
  * @author Michael Jahn
@@ -54,7 +54,7 @@ public abstract class Language {
 			inputStream.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			LOGGER.warn("Language " + locale.getLanguage() + " has proplems with property file " + propertyFile + ": \n" + ExceptionFactory.getExceptionDetails(ex));
+			LOGGER.warn("Language " + locale.getLanguage() + " has proplems with property file " + propertyFile + ": \n" + StringFactory.getExceptionDetails(ex));
 		}
 	}
 	
@@ -84,7 +84,7 @@ public abstract class Language {
 	public String getTranslation(String key) throws IllegalArgumentException {
 		if (key == null) {
 			IllegalArgumentException ex = new IllegalArgumentException("Key for a property of language " + toString() + " is 'NULL'.");
-			LOGGER.error(ExceptionFactory.getExceptionDetails(ex));
+			LOGGER.error(StringFactory.getExceptionDetails(ex));
 			throw ex;
 		}
 		String string = properties.getProperty(key);
@@ -109,7 +109,7 @@ public abstract class Language {
 	public static Language getLanguage(String languageString) {
 		if (languageString == null) {
 			IllegalArgumentException ex = new IllegalArgumentException("Language is 'NULL' and not supported. Change to default language: " + DEFAULT_LANGUAGE.toString());
-			LOGGER.warn(ExceptionFactory.getExceptionDetails(ex));
+			LOGGER.warn(StringFactory.getExceptionDetails(ex));
 			return Language.DEFAULT_LANGUAGE;
 		}
 		
@@ -120,7 +120,7 @@ public abstract class Language {
 		}
 		
 		IllegalArgumentException ex = new IllegalArgumentException("Language " + languageString + " is not supported. Change to default language: " + DEFAULT_LANGUAGE.toString());
-		LOGGER.warn(ExceptionFactory.getExceptionDetails(ex));
+		LOGGER.warn(StringFactory.getExceptionDetails(ex));
 		return Language.DEFAULT_LANGUAGE;
 	}
 	

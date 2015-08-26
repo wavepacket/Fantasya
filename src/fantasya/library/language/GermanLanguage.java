@@ -2,7 +2,7 @@ package fantasya.library.language;
 
 import java.util.Locale;
 
-import fantasya.library.util.ExceptionFactory;
+import fantasya.library.util.StringFactory;
 
 /**
  * @author Michael Jahn
@@ -23,12 +23,12 @@ public class GermanLanguage extends Language {
 	public String normalize(String notNormal) {
 		if (notNormal == null) {
 			IllegalArgumentException ex = new IllegalArgumentException("String to normalize for language " + locale.getLanguage() + "is 'NULL'.");
-			LOGGER.error(ExceptionFactory.getExceptionDetails(ex));
+			LOGGER.error(StringFactory.getExceptionDetails(ex));
 			throw ex;
 		}
 		else if (notNormal.trim().length() == 0) {
 			IllegalArgumentException ex = new IllegalArgumentException("String to normalize for language " + locale.getLanguage() + "is empty.");
-			LOGGER.error(ExceptionFactory.getExceptionDetails(ex));
+			LOGGER.error(StringFactory.getExceptionDetails(ex));
 			throw ex;
 		}
 		

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fantasya.library.language.Language;
-import fantasya.library.util.ExceptionFactory;
+import fantasya.library.util.StringFactory;
 
 public class CleanOrderReader {
 	
@@ -92,11 +92,11 @@ public class CleanOrderReader {
 				line = in.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
-				LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+				LOGGER.warn(StringFactory.getExceptionDetails(e));
 				return null;
 			} catch (NullPointerException e) {
 				e.printStackTrace();
-				LOGGER.warn("BufferedReader in is 'NULL'. CleanOrderReader needs a BufferedReader.\n" + ExceptionFactory.getExceptionDetails(e));
+				LOGGER.warn("BufferedReader in is 'NULL'. CleanOrderReader needs a BufferedReader.\n" + StringFactory.getExceptionDetails(e));
 				return null;
 			}
 
@@ -253,7 +253,7 @@ public class CleanOrderReader {
 			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+			LOGGER.warn(StringFactory.getExceptionDetails(e));
 			return;
 		}
 	}

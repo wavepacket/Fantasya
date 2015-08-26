@@ -11,7 +11,7 @@ import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.util.Codierung;
-import fantasya.library.util.ExceptionFactory;
+import fantasya.library.util.StringFactory;
 
 public class FileOrderReader {
 	
@@ -43,7 +43,7 @@ public class FileOrderReader {
 				if (faction != null) {
 					OrdersOfSeveralFactionsInOneFileException e = new OrdersOfSeveralFactionsInOneFileException("File has orders of more faction(s) than faction [" + faction.getNummerBase36() + "].");
 					e.printStackTrace();
-					LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+					LOGGER.warn(StringFactory.getExceptionDetails(e));
 					return;
 				}
 				// reset faction : Do not need, if one file can only have orders for one faction
@@ -63,7 +63,7 @@ public class FileOrderReader {
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					e.printStackTrace();
-					LOGGER.warn("Order " + orderTokenArray[0] + " has no token for faction id.\n" + ExceptionFactory.getExceptionDetails(e));
+					LOGGER.warn("Order " + orderTokenArray[0] + " has no token for faction id.\n" + StringFactory.getExceptionDetails(e));
 				}
 			}
 			// end of orders of a faction
@@ -103,7 +103,7 @@ public class FileOrderReader {
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					e.printStackTrace();
-					LOGGER.warn("Order " + orderTokenArray[0] + " has no token for unit id.\n" + ExceptionFactory.getExceptionDetails(e));
+					LOGGER.warn("Order " + orderTokenArray[0] + " has no token for unit id.\n" + StringFactory.getExceptionDetails(e));
 				}
 			}
 			// unit get the order

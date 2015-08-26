@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.x8bit.Fantasya.Host.GameRules;
-import fantasya.library.util.ExceptionFactory;
+import fantasya.library.util.StringFactory;
 
 public class DirectoryOrderReader {
 	
@@ -38,12 +38,12 @@ public class DirectoryOrderReader {
 		if (fileArray == null) {
 			NoOrdersFoundInDirectoryException e = new NoOrdersFoundInDirectoryException("No orders found for this turn in directory '" + orderDirectory + "/" + GameRules.getRunde() + "'.");
 			e.printStackTrace();
-			LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+			LOGGER.warn(StringFactory.getExceptionDetails(e));
 			fileArray = new File(orderDirectory).listFiles();
 			if (fileArray == null) {
 				e = new NoOrdersFoundInDirectoryException("No orders found in directory '" + orderDirectory + "'.");
 				e.printStackTrace();
-				LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+				LOGGER.warn(StringFactory.getExceptionDetails(e));
 				return;
 			}
 		}
@@ -56,10 +56,10 @@ public class DirectoryOrderReader {
 				reader.assignOrders();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+				LOGGER.warn(StringFactory.getExceptionDetails(e));
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
-				LOGGER.warn(ExceptionFactory.getExceptionDetails(e));
+				LOGGER.warn(StringFactory.getExceptionDetails(e));
 			}
 		}
 	}
