@@ -205,11 +205,11 @@ public class CleanOrderReaderTest {
 	@Test
 	public void normalizeSpecialGermanChars() {
 		String command = "HELFE 4 KAEMPFE";
-		String input = "HELFE 4 K" + "\u00c4" + "MPFE"; // KÄMPFE
+		String input = "HELFE 4 KÄMPFE"; // KÄMPFE
 
 		CleanOrderReader reader = generateReader(input);
 		
-		assertEquals(command, reader.readOrder());
+		assertEquals(command, reader.readOrder().toUpperCase());
 	}
 	
 	@Test

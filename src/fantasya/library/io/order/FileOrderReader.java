@@ -1,5 +1,6 @@
 package fantasya.library.io.order;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -83,22 +84,15 @@ public class FileOrderReader {
 				
 				try {
 					unit = Unit.Get(Codierung.fromBase36(orderTokenArray[1]));
-					/* if (unit == null) {
-						String message = "Unit " + orderTokenArray[1] + " for faction " + faction + " not found.";
-						LOGGER.info(message);
-						new Fehler(message, faction);
-					}
-					else if (unit.getOwner() != faction.getNummer()) { */
+					
 					if (unit == null || unit.getOwner() != faction.getNummer()) {
-						String message = "Faction " + faction + " is not owner of unit " + orderTokenArray[1] + ".";
-						LOGGER.info(message);
-						new Fehler(message, faction);
+						LOGGER.info("Faction " + faction + " is not owner of unit [" + orderTokenArray[1] + "].");
+						new Fehler(MessageFormat.format(faction.getLanguage().getTranslation("library.readorders.factionnotownerofunit"), faction, orderTokenArray[1]), faction);
 						unit = null;
 					}
 					else if (orderUnitSet.contains(unit)) {
-						String message = "Unit " + unit + " already has orders. First orders will be computed.";
-						LOGGER.info(message);
-						new Fehler(message, faction);
+						LOGGER.info("Unit " + unit + " already has orders. First orders will be computed.");
+						new Fehler(MessageFormat.format(faction.getLanguage().getTranslation("library.readorders.multipleordersforunit"), unit), faction);
 						unit = null;
 					}
 					else {

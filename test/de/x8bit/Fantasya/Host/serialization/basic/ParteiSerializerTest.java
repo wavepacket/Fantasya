@@ -35,8 +35,8 @@ public class ParteiSerializerTest {
 		serializedMap.put("cheats", "1");
 		serializedMap.put("monster", "3");
 		serializedMap.put("steuern", "15");
-		serializedMap.put("PlayerId", "10");
-		serializedMap.put("PlayerFactionId", "10005");
+		serializedMap.put("user_id", "10");
+		serializedMap.put("faction_id", "10005");
 	}
 
 	@Test
@@ -90,6 +90,10 @@ public class ParteiSerializerTest {
 				Integer.decode(serializedMap.get("monster")).intValue(), partei.getMonster());
 		assertEquals("Steuern was not properly set.",
 				Integer.decode(serializedMap.get("steuern")).intValue(), partei.getDefaultsteuer());
+		assertEquals("user_id was not set.",
+				Integer.decode(serializedMap.get("user_id")).intValue(), partei.getUserId());
+		assertEquals("faction_id was not set.",
+				Integer.decode(serializedMap.get("faction_id")).intValue(), partei.getFactionId());
 	}
 
 	@Test

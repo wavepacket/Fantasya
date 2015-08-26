@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.x8bit.Fantasya.util.StringUtils;
+import fantasya.library.language.Language;
 import fantasya.library.util.ExceptionFactory;
 
 public class CleanOrderReader {
@@ -190,8 +190,8 @@ public class CleanOrderReader {
 			// delete all multiple whitespace
 			order = removeMultipleWhitespace(order, 0);
 			
-			// normalize german special characters
-			order = StringUtils.normalize(order);
+			// normalize all special characters
+			order = Language.normalizeAll(order);
 			
 			return order;
 		}
@@ -221,8 +221,8 @@ public class CleanOrderReader {
 		// delete all multiple whitespace
 		orderPart = removeMultipleWhitespace(orderPart, 0);
 					
-		// normalize german special characters
-		orderPart = StringUtils.normalize(orderPart);
+		// normalize all special characters
+		orderPart = Language.normalizeAll(orderPart);
 		
 		orderArray[0] = orderPart;
 		
@@ -237,8 +237,8 @@ public class CleanOrderReader {
 			// delete all multiple whitespace
 			orderPart = removeMultipleWhitespace(orderPart, 0);
 						
-			// normalize german special characters
-			orderPart = StringUtils.normalize(orderPart);
+			// normalize all special characters
+			orderPart = Language.normalizeAll(orderPart);
 			
 			orderArray[2] = orderPart;
 		}

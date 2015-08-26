@@ -24,20 +24,21 @@ public abstract class Language {
 	
 	protected static StringBuilder build = new StringBuilder();
 	
-	private final static Language GERMAN_LANGUAGE;
-	
 	private final static Language DEFAULT_LANGUAGE;
+	
+	private final static Language[] LANGUAGES;
 
 	protected final static Logger LOGGER = LoggerFactory.getLogger(Language.class);
+	
+	static {
+		DEFAULT_LANGUAGE = new GermanLanguage();
+		LANGUAGES = new Language[1];
+		LANGUAGES[0] = DEFAULT_LANGUAGE;
+	}
 	
 	protected Locale locale;
 	protected String toString;
 	protected final Properties properties = new Properties();
-	
-	static {
-		GERMAN_LANGUAGE = new GermanLanguage();
-		DEFAULT_LANGUAGE = GERMAN_LANGUAGE;
-	}
 	
 	protected Language(Locale locale) {
 		LOGGER.debug("Initialize language: " + locale.getLanguage());
@@ -105,20 +106,22 @@ public abstract class Language {
 		return this.toString;
 	}
 	
-	public static Language getLanguage(String language) {
-		if (language == null) {
-			IllegalArgumentException ex = new IllegalArgumentException("Language " + language + " is not supported. Change to default language: " + DEFAULT_LANGUAGE.toString());
-			LOGGER.error(ExceptionFactory.getExceptionDetails(ex));
+	public static Language getLanguage(String languageString) {
+		if (languageString == null) {
+			IllegalArgumentException ex = new IllegalArgumentException("Language is 'NULL' and not supported. Change to default language: " + DEFAULT_LANGUAGE.toString());
+			LOGGER.warn(ExceptionFactory.getExceptionDetails(ex));
 			return Language.DEFAULT_LANGUAGE;
 		}
-		if (language.equalsIgnoreCase(GERMAN_LANGUAGE.toString())) {
-			return Language.GERMAN_LANGUAGE;
+		
+		for (Language language : LANGUAGES) {
+			if (language.toString().equalsIgnoreCase(languageString)) {
+				return language;
+			}
 		}
-		else {
-			IllegalArgumentException ex = new IllegalArgumentException("Language " + language + " is not supported. Change to default language: " + DEFAULT_LANGUAGE.toString());
-			LOGGER.error(ExceptionFactory.getExceptionDetails(ex));
-			return Language.DEFAULT_LANGUAGE;
-		}
+		
+		IllegalArgumentException ex = new IllegalArgumentException("Language " + languageString + " is not supported. Change to default language: " + DEFAULT_LANGUAGE.toString());
+		LOGGER.warn(ExceptionFactory.getExceptionDetails(ex));
+		return Language.DEFAULT_LANGUAGE;
 	}
 	
 	public static Language getDefaultLanguage() {
@@ -127,7 +130,9 @@ public abstract class Language {
 	
 	public static String normalizeAll(String notNormal) {
 		
-		notNormal = Language.GERMAN_LANGUAGE.normalize(notNormal);
+		for (Language language : LANGUAGES) {
+			notNormal = language.normalize(notNormal);
+		}
 		
 		return notNormal;
 	}
