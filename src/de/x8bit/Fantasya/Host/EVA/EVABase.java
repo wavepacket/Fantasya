@@ -33,6 +33,7 @@ import de.x8bit.Fantasya.Host.Main;
 import de.x8bit.Fantasya.Host.NeueSpieler;
 import de.x8bit.Fantasya.Host.Paket;
 import de.x8bit.Fantasya.Host.EVA.util.BefehleKlassifizieren;
+import de.x8bit.Fantasya.Host.EVA.util.BefehlsMuster;
 import de.x8bit.Fantasya.Host.EVA.util.EVAFastLoader;
 import de.x8bit.Fantasya.Host.EVA.util.EVAFastSaver;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
@@ -487,6 +488,9 @@ abstract public class EVABase {
 		if (ZATMode.CurrentMode().isBefehleLesen()) {
 			Datenbank.Enable();
 			new DirectoryOrderReader("befehle").readOrderFiles();
+			for (BefehlsMuster pattern : BefehleEinlesen.getMuster()) {
+				addTemplate(pattern.getRegex());
+			}
 			// new BefehleEinlesen();	// TEST ... ok
 			Datenbank.Disable();
 		}
