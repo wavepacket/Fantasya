@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
  * @author hapebe
  */
 public class RegionsSicht {
-	protected final Coords c;
+	protected final Coordinates c;
 	protected final boolean details;
 	protected final Class<? extends Atlantis> quelle;
     protected final int runde;
@@ -37,7 +37,7 @@ public class RegionsSicht {
      */
     protected final Set<Richtung> strassen = new HashSet<Richtung>();
 
-	public Coords getCoords() {
+	public Coordinates getCoords() {
 		return c;
 	}
 
@@ -49,7 +49,7 @@ public class RegionsSicht {
 		return quelle;
 	}
 
-	public RegionsSicht(int runde, Coords c, boolean details, Class<? extends Atlantis> quelle) {
+	public RegionsSicht(int runde, Coordinates c, boolean details, Class<? extends Atlantis> quelle) {
 		this.runde = runde;
         this.c = c;
 		this.details = details;
@@ -90,7 +90,7 @@ public class RegionsSicht {
     }
     
     public static RegionsSicht FromCode(String code) {
-        Coords c = null;
+        Coordinates c = null;
         int runde = -1;
         String name = null;
         String terrain = null;
@@ -113,7 +113,7 @@ public class RegionsSicht {
                 // (8,-10,1)
                 if ((!t.startsWith("(")) || (!t.endsWith(")"))) throw new IllegalArgumentException("Erwarte Koordinatenangabe in Klammern: " + t );
                 t = t.replaceAll(",", " ");
-                c = Coords.fromString(t); // new Debug(t + " -> " + c);
+                c = Coordinates.fromString(t); // new Debug(t + " -> " + c);
             } else if (i == 1) {
                 // 187
                 runde = Integer.parseInt(t);
@@ -199,7 +199,7 @@ public class RegionsSicht {
 		boolean hidden = !partei.canAccess(gegenwart); // wenn die Region zu jung ist, soll sie "versteckt" werden.
 		int grenzid = 0;
 		
-		Coords my = partei.getPrivateCoords(getCoords());
+		Coordinates my = partei.getPrivateCoords(getCoords());
         if (!hidden) {
             writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getWelt() + " ");
             

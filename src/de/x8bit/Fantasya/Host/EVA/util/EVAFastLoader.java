@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Effect;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -144,7 +144,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-        	Coords coords = Coords.fromRegionID(rs.getInt("id"));
+        	Coordinates coords = Coordinates.fromRegionID(rs.getInt("id"));
         	Region r = Region.Load(coords);
         	
             if (!(r instanceof Chaos))
@@ -261,7 +261,7 @@ public class EVAFastLoader {
         ResultSet rs = db.Select();
 		int cnt = 0;
         while (rs.next()) {
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			Coordinates c = new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 			String r = rs.getString("resource").toLowerCase();
 			//System.out.println(c.toString() + " -> " + r);
 			Class<? extends Item> item = Item.getFor(r);
@@ -284,7 +284,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			Coordinates c = new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 
             float nachfrage = rs.getFloat("nachfrage");
             // zur Umstellung bei Einführung von EVA:
@@ -310,7 +310,7 @@ public class EVAFastLoader {
 
 		int cnt = 0;
         while (rs.next()) {
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			Coordinates c = new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 			Richtung richtung = Richtung.getRichtung(rs.getString("richtung"));
 			Region.Load(c).setStrassensteine(richtung, rs.getInt("anzahl"));
 			cnt ++;

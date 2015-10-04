@@ -2,12 +2,12 @@ package de.x8bit.Fantasya.Host.Reports.util;
 
 import java.util.Comparator;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 
 /**
  * @author hb
  */
-public class CoordComparatorLNR implements Comparator<Coords> {
+public class CoordComparatorLNR implements Comparator<Coordinates> {
 
     /**
      *
@@ -16,7 +16,7 @@ public class CoordComparatorLNR implements Comparator<Coords> {
      * @return -1 wenn r1 < r2, 0 wenn r1 == r2, +1 wenn r1 > r2
      */
     @Override
-    public int compare(Coords c1, Coords c2) {
+    public int compare(Coordinates c1, Coordinates c2) {
 		// Oberwelt zuerst:
 		if (c1.getWelt() < c2.getWelt()) return +1;
 		if (c1.getWelt() > c2.getWelt()) return -1;

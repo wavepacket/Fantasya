@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Messages;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -17,7 +17,7 @@ public class Info extends Message
 		this(msg, u, u.getCoords());
 	}
 	
-	public Info(String msg, Unit u, Coords c)
+	public Info(String msg, Unit u, Coordinates c)
 	{
 		super();
 		print(0, msg, c, u);

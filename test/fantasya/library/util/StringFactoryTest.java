@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import fantasya.library.io.order.CleanOrderReader;
-
 public class StringFactoryTest {
 
 	@Test
@@ -14,7 +12,7 @@ public class StringFactoryTest {
 	}
 	
 	@Test
-	public void testIsNumber() {
+	public void testCheckValueForSQLStatement() {
 		String[] inputArray = {"0", "", null, "-1", "1375086", "-13F4", "Rok'All", "Rok\'All", "Rok\\'All"};
 		String[] outputArray = {"0", "", "", "-1", "1375086", "-13F4", "Rok\\'All", "Rok\\'All", "Rok\\'All"};
 		
@@ -28,8 +26,8 @@ public class StringFactoryTest {
 		for (int i = 0; i < inputArray.length && i < outputArray.length; i++) {
 			input = inputArray[i];
 			output = outputArray[i];
+			// System.out.println(output);
 			assertEquals("String " + input + " with index " + i + " has problems.", output, StringFactory.checkValueForSQLStatement(input));
 		}
 	}
-
 }

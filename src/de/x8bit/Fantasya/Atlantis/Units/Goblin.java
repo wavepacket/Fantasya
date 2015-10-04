@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Skill;
@@ -261,7 +261,7 @@ public class Goblin extends Monster
 	 * @param coords Wenn null, wird zufällig eine Region bestimmt. Ansonsten wird die Einheiten in coords ausgesetzt.
 	 * @return 
 	 */
-	private static Unit createGoblinEVA(int insel, Coords coords) {
+	private static Unit createGoblinEVA(int insel, Coordinates coords) {
 		List<Region> regionen = Region.getInselRegionen(insel, true);
 		Unit unit = null;
 		if (coords == null) {

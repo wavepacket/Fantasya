@@ -2,7 +2,7 @@ package de.x8bit.Fantasya.Atlantis.Units;
 
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -86,7 +86,7 @@ public class Dragonfly extends Monster {
 		}
 	}
 	
-	public static Unit spawn(Coords coords)
+	public static Unit spawn(Coordinates coords)
 	{
 		Unit fly = Unit.CreateUnit("Dragonfly", Codierung.fromBase36("tier"), coords);
 		fly.setPersonen(Random.rnd(GameRules.Monster.TIER.DragonFly.PersonsMin(), GameRules.Monster.TIER.DragonFly.PersonsMax()));

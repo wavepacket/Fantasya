@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -26,7 +26,7 @@ import java.util.Collections;
  * @author hapebe
  */
 public class Einzelbefehl {
-    final Coords coords;
+    final Coordinates coords;
 	final Unit unit;
 	final String befehl;
 	int sortRank;
@@ -66,7 +66,7 @@ public class Einzelbefehl {
         this(u, u.getCoords(), befehl, sortRank);
     }
 
-	public Einzelbefehl(Unit u, Coords c, String befehl, int sortRank) {
+	public Einzelbefehl(Unit u, Coordinates c, String befehl, int sortRank) {
 		if (befehl.trim().isEmpty()) {
 			new SysErr("Leerer String als Befehl für " + u + " in " + c + "?");
 		}
@@ -167,7 +167,7 @@ public class Einzelbefehl {
 		return unit;
 	}
 
-	public Coords getCoords() {
+	public Coordinates getCoords() {
 		return coords;
 	}
 

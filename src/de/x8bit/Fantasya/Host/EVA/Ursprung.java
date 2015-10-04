@@ -3,7 +3,7 @@ package de.x8bit.Fantasya.Host.EVA;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -51,9 +51,9 @@ public class Ursprung extends EVABase
             try	{
                 dx = Integer.parseInt(eb.getTokens()[1]);
                 dy = Integer.parseInt(eb.getTokens()[2]);
-                Coords c = p.getUrsprung();
+                Coordinates c = p.getUrsprung();
 
-                p.setUrsprung(new Coords(c.getX() + dx, c.getY() + dy, c.getWelt()));
+                p.setUrsprung(new Coordinates(c.getX() + dx, c.getY() + dy, c.getWelt()));
 
                 new Info("Ursprung wurde um X:" + dx + " / Y:" + dy + " verschoben.", u);
             } catch(Exception ex) {

@@ -328,7 +328,7 @@ public class Welt {
 
 					// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 					for (Region pReg : fantasya.alleRegionen()) {
-						Coords c = pReg.getCoords();
+						Coordinates c = pReg.getCoords();
 						Region r = Region.Create(pReg.getClass().getSimpleName(), c);
 						r.setInselKennung(pReg.getInselKennung());
 						r.setLuxus(pReg.getLuxus());
@@ -340,7 +340,7 @@ public class Welt {
 
 						// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 						for (Region maybe : neu.alleRegionen()) {
-							Coords c = maybe.getCoords();
+							Coordinates c = maybe.getCoords();
 							Region r = Region.Load(c);
 							if ((r == null) || (r instanceof Chaos)) {
 								// neu!
@@ -362,7 +362,7 @@ public class Welt {
 
 					// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 					for (Region pReg : unterwelt.alleRegionen()) {
-						Coords c = pReg.getCoords();
+						Coordinates c = pReg.getCoords();
 						Region r = Region.Create(pReg.getClass().getSimpleName(), c);
 						r.setInselKennung(pReg.getInselKennung());
 						r.setLuxus(pReg.getLuxus());
@@ -374,7 +374,7 @@ public class Welt {
 
 						// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 						for (Region maybe : neu.alleRegionen()) {
-							Coords c = maybe.getCoords();
+							Coordinates c = maybe.getCoords();
 							Region r = Region.Load(c);
 							if ((r == null) || (r instanceof Chaos)) {
 								// neu!
@@ -395,7 +395,7 @@ public class Welt {
 
 				// Alle Regionen anlegen, die es in der Echtwelt noch nicht gibt:
 				for (Region maybe : neu.alleRegionen()) {
-					Coords c = maybe.getCoords();
+					Coordinates c = maybe.getCoords();
 					Region r = Region.Load(c);
 					if ((r == null) || (r instanceof Chaos)) {
 						// neu!
@@ -416,18 +416,18 @@ public class Welt {
 
 	protected static ProtoInsel inselZuwachs(int welt) {
 		ProtoInsel vorhanden = new AltInsel(welt);
-		Coords m = vorhanden.getMittelpunkt(true);
+		Coordinates m = vorhanden.getMittelpunkt(true);
 		vorhanden.shift(-m.getX(), -m.getY());
 
 		InselGenerator ig = new InselGenerator();
 		ProtoInsel neu = ig.addNewInselTo(vorhanden);
 
 		// Ursprungsregion suchen und Koordinaten zurückverschieben:
-		Coords shift = null;
+		Coordinates shift = null;
 		for (Region r : neu.alleRegionen()) {
 			if (AltInsel.URSPRUNGS_MARKER.equals(r.getBeschreibung())) {
-				Coords now = r.getCoords();
-				shift = new Coords(-now.getX(), -now.getY(), 0);
+				Coordinates now = r.getCoords();
+				shift = new Coordinates(-now.getX(), -now.getY(), 0);
 				break;
 			}
 		}

@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.Terraforming;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.*;
 import de.x8bit.Fantasya.util.Random;
@@ -28,19 +28,19 @@ public class KleinMeer extends ProtoInsel {
 	public void create() {
 		// den "Keim" pflanzen:
 		Region keim = new Ozean();
-		keim.setCoords(new Coords(0, 0, this.getWelt()));
+		keim.setCoords(new Coordinates(0, 0, this.getWelt()));
 		this.putRegion(keim);
 		int loop = 0;
 		
 		while (alleRegionen().size() < getZielGroesse()) {
 			// alle leeren Regionen in Nachbarschaft der existierenden finden
 			// Nähe zum Ursprung bevorzugen
-			List<Coords> kandidaten = new ArrayList<Coords>();
+			List<Coordinates> kandidaten = new ArrayList<Coordinates>();
 			kandidaten.addAll(this.getAussenKontur());
 
 			Collections.shuffle(kandidaten, rnd);
 			// ...und einsetzen:
-			Coords c = kandidaten.get(0);
+			Coordinates c = kandidaten.get(0);
 
 			Region r = new Ozean();
 			r.setCoords(c);
@@ -54,7 +54,7 @@ public class KleinMeer extends ProtoInsel {
 		
 		// und der Mittelpunkt ist:
 		this.mittelpunkt = null;
-		Coords m = this.getMittelpunkt(true); // mit Ozean
+		Coordinates m = this.getMittelpunkt(true); // mit Ozean
 		if (this.getRegion(m.getX(), m.getY()) != null) {
 			Region r = this.getRegion(m.getX(), m.getY());
 			r.setName("M-" + r.getName());

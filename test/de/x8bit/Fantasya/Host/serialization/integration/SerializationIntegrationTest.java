@@ -2,7 +2,7 @@ package de.x8bit.Fantasya.Host.serialization.integration;
 
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Items.Eisen;
 import de.x8bit.Fantasya.Atlantis.Items.Seide;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -130,9 +130,9 @@ public class SerializationIntegrationTest {
 
 
 		// Three regions were loaded: Ebene, Ocean, and mountains
-		Coords coordEbene = new Coords(0,0,0);
-		Coords coordOzean = new Coords(0,1,0);
-		Coords coordBerge = new Coords(1,1,0);
+		Coordinates coordEbene = new Coordinates(0,0,0);
+		Coordinates coordOzean = new Coordinates(0,1,0);
+		Coordinates coordBerge = new Coordinates(1,1,0);
 
 		assertEquals("Wrong number of regions loaded.", 3, Region.CACHE.size());
 		assertEquals("Ebene not loaded.",

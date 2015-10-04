@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Units.Elf;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class SortedCacheTest {
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(1,2,3);
+		Coordinates coords = new Coordinates(1,2,3);
 
 		for (int i = 1; i < 10; i++) {
 			Unit entry = new Elf();

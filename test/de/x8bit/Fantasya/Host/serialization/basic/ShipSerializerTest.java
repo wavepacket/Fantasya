@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
@@ -21,7 +21,7 @@ public class ShipSerializerTest {
 
 	private Map<String, String> serializedMap = new HashMap<String,String>();
 
-	private Map<Coords, Region> regionMap = new HashMap<Coords,Region>();
+	private Map<Coordinates, Region> regionMap = new HashMap<Coordinates,Region>();
 	private MapCache<Unit> unitCache = new MapCache<Unit>();
 	private Region region = new Ebene();
 
@@ -29,7 +29,7 @@ public class ShipSerializerTest {
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(1,2,3);
+		Coordinates coords = new Coordinates(1,2,3);
 
 		Unit unit = new Elf();
 		unit.setNummer(638);

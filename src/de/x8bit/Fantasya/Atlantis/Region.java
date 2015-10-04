@@ -61,7 +61,7 @@ import de.x8bit.Fantasya.util.StringUtils;
 public abstract class Region extends Atlantis {
 
 	static {
-		CACHE = new TreeMap<Coords, Region>();
+		CACHE = new TreeMap<Coordinates, Region>();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public abstract class Region extends Atlantis {
 	 * @param coords - Koordinaten der neuen Region
 	 * @return eine neue Region
 	 */
-	public static Region Create(String typ, Coords coords) {
+	public static Region Create(String typ, Coordinates coords) {
 		return Create(typ, coords.getX(), coords.getY(), coords.getWelt());
 	}
 
@@ -89,7 +89,7 @@ public abstract class Region extends Atlantis {
 		try {
 			// pauschal anlegen
 			r = (Region) Class.forName("de.x8bit.Fantasya.Atlantis.Regions." + typ).newInstance();
-			r.setCoords(new Coords(x, y, welt));
+			r.setCoords(new Coordinates(x, y, welt));
 			r.setEnstandenIn(GameRules.getRunde() - 5); // vgl. Partei::cansee() wieso hier minus 5
 			r.RenameRegion();
 
@@ -116,7 +116,7 @@ public abstract class Region extends Atlantis {
 	 * @param coords - die Koordinaten
 	 * @return eine bekannte Region, ggf. Chaos wenn die Region noch nicht existiert
 	 */
-	public static Region Load(Coords coords) {
+	public static Region Load(Coordinates coords) {
 		return Load(coords.getX(), coords.getY(), coords.getWelt());
 	}
 
@@ -128,7 +128,7 @@ public abstract class Region extends Atlantis {
 	 * @return eine bekannte Region, ggf. Chaos wenn die Region (noch) nicht existiert
 	 */
 	public static Region Load(int x, int y, int welt) {
-		Coords c = new Coords(x, y, welt);
+		Coordinates c = new Coordinates(x, y, welt);
 
 		if (Region.CACHE.containsKey(c)) {
 			return Region.CACHE.get(c);
@@ -152,7 +152,7 @@ public abstract class Region extends Atlantis {
 			String typ = rs.getString("typ");
 			r = (Region) Class.forName("de.x8bit.Fantasya.Atlantis.Regions." + typ).newInstance();
 
-			Coords c = new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
+			Coordinates c = new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt"));
 			r.setCoords(c);
 
 			r.setBauern(rs.getInt("bauern"));
@@ -171,7 +171,7 @@ public abstract class Region extends Atlantis {
 		return r;
 	}
 	/** (EVA) Map ALLER Regionen, Schl��ssel sind ihre Koordinaten */
-	public final static Map<Coords, Region> CACHE;
+	public final static Map<Coordinates, Region> CACHE;
 	public static boolean USE_TOPTW_CACHE = false;
 
 	@Override
@@ -1248,7 +1248,7 @@ public abstract class Region extends Atlantis {
 	/** eine Liste aller Nachbar-Regionen. Gibt ggf. auch Chaos mit zur��ck, wo keine Regionen existieren. */
 	public List<Region> getNachbarn() {
 		List<Region> retval = new ArrayList<Region>();
-		for (Coords c : getCoords().getNachbarn()) {
+		for (Coordinates c : getCoords().getNachbarn()) {
 			retval.add(Region.Load(c));
 		}
 		return retval;
@@ -1278,7 +1278,7 @@ public abstract class Region extends Atlantis {
         if (zuJung) kurz = true;
 		if (omniszienz) kurz = false; // 0 sieht alles.
 
-		Coords my = partei.getPrivateCoords(getCoords());
+		Coordinates my = partei.getPrivateCoords(getCoords());
         if (!zuJung) {
             writer.wl("REGION " + my.getX() + " " + my.getY() + " " + my.getWelt() + " ");
             writer.wl(getName(), "Name");

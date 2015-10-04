@@ -43,7 +43,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 	
 	public static final ArrayList<Ship> PROXY = new ArrayList<Ship>();
 	
-	public static Ship Create(String type, Coords coords) {
+	public static Ship Create(String type, Coordinates coords) {
 		Ship s = null;
 
 		try	{
@@ -86,7 +86,7 @@ public abstract class Ship extends Dingens implements NamedItem {
 
             // die einfachen Dinge setzen
             s.setNummer(rs.getInt("nummer"));
-            s.setCoords(new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
+            s.setCoords(new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
             s.setName(rs.getString("name"));
             s.setBeschreibung(rs.getString("beschreibung"));
             s.setOwner(rs.getInt("kapitaen"));

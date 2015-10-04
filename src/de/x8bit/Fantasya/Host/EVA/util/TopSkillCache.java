@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.EVA.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Skill;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -18,7 +18,7 @@ import java.util.Map;
  * von Top-Talentwerten stattfinden: Tarnung und so...
  * @author hapebe
  */
-public final class TopSkillCache extends HashMap<Coords, Map<Class<? extends Skill>, Map<Integer, Unit>>> {
+public final class TopSkillCache extends HashMap<Coordinates, Map<Class<? extends Skill>, Map<Integer, Unit>>> {
 	private static final long serialVersionUID = -1440258234180998415L;
 	
 	final Map<Integer, Map<Class<? extends Skill>, Unit>> maxFuerPartei = new HashMap<Integer, Map<Class<? extends Skill>, Unit>>();
@@ -32,7 +32,7 @@ public final class TopSkillCache extends HashMap<Coords, Map<Class<? extends Ski
 			}
 			if (echteSkills.isEmpty()) continue;
 
-			Coords c = u.getCoords();
+			Coordinates c = u.getCoords();
 			if (!this.containsKey(c)) this.put(c, new HashMap<Class<? extends Skill>, Map<Integer, Unit>>());
 
 			for (Skill sk : echteSkills) {
@@ -117,7 +117,7 @@ public final class TopSkillCache extends HashMap<Coords, Map<Class<? extends Ski
 	 * @param skill Talent
 	 * @return Höchster Talentwert aller Parteien in Region(c)
 	 */
-	public int topTW(Coords c, Class<? extends Skill> skill) {
+	public int topTW(Coordinates c, Class<? extends Skill> skill) {
 		return topUnit(c, 0, skill).Talentwert(skill);
 	}
 
@@ -127,11 +127,11 @@ public final class TopSkillCache extends HashMap<Coords, Map<Class<? extends Ski
 	 * @param skill Talent
 	 * @return Höchster Talentwert von Partei(partei) in Region(c)
 	 */
-	public int topTW(Coords c, int partei, Class<? extends Skill> skill) {
+	public int topTW(Coordinates c, int partei, Class<? extends Skill> skill) {
 		return topUnit(c, partei, skill).Talentwert(skill);
 	}
 
-	public Unit topUnit(Coords c, int partei, Class<? extends Skill> skill) {
+	public Unit topUnit(Coordinates c, int partei, Class<? extends Skill> skill) {
 		if (!this.containsKey(c)) return null;
 		if (!this.get(c).containsKey(skill)) return null;
 		if (!this.get(c).get(skill).containsKey(partei)) return null;
@@ -143,7 +143,7 @@ public final class TopSkillCache extends HashMap<Coords, Map<Class<? extends Ski
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n\n").append(skill.getSimpleName().toUpperCase()).append("\n\n");
 		
-		for (Coords c : this.keySet()) {
+		for (Coordinates c : this.keySet()) {
 			if (!this.get(c).containsKey(skill)) continue;
 			
 			sb.append(Region.Load(c)).append(" ").append(c).append(":\n");

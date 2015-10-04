@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -33,7 +33,7 @@ import de.x8bit.Fantasya.util.StringUtils;
 public class ParteiInselAnker {
     final int parteiNr;
     
-    Coords anker;
+    Coordinates anker;
     
     int privateInselId = -1;
     int entdeckungsRunde = -1;
@@ -44,7 +44,7 @@ public class ParteiInselAnker {
         this.parteiNr = parteiNr;
     }
     
-    public static void Entfernen(Partei p, Coords c) {
+    public static void Entfernen(Partei p, Coordinates c) {
         Region r = Region.Load(c);
         r.removeProperty(GameRules.INSEL_ID_FUER_PARTEI + Codierung.toBase36(p.getNummer()));
         r.removeProperty(GameRules.INSEL_ENTDECKUNG_FUER_PARTEI + Codierung.toBase36(p.getNummer()));
@@ -60,7 +60,7 @@ public class ParteiInselAnker {
         BeschreibeInsel(Partei.getPartei(u.getOwner()), u.getCoords(), beschr);
     }
     
-    public static void BenenneInsel(Partei p, Coords c, String name) {
+    public static void BenenneInsel(Partei p, Coordinates c, String name) {
         ParteiInselAnker pia = FindOrCreateFor(p, c);
         
         // alten Anker lichten!
@@ -77,7 +77,7 @@ public class ParteiInselAnker {
         ParteiInselAnker.Initialisieren(p);
     }
     
-    public static void BeschreibeInsel(Partei p, Coords c, String beschr) {
+    public static void BeschreibeInsel(Partei p, Coordinates c, String beschr) {
         ParteiInselAnker pia = FindOrCreateFor(p, c);
         
         // alten Anker lichten!
@@ -94,7 +94,7 @@ public class ParteiInselAnker {
         ParteiInselAnker.Initialisieren(p);
     }
     
-    public static ParteiInselAnker FindOrCreateFor(Partei p, Coords c) {
+    public static ParteiInselAnker FindOrCreateFor(Partei p, Coordinates c) {
         if (c == null) return null;
         Region r = Region.Load(c);
         if (r == null) return null;
@@ -103,7 +103,7 @@ public class ParteiInselAnker {
         
         InselVerwaltung iv = InselVerwaltung.getInstance();
         int publicInselId = iv.getInselNummer(c);
-        Set<Coords> inselCoords = iv.getInselCoords(publicInselId);
+        Set<Coordinates> inselCoords = iv.getInselCoords(publicInselId);
         
         // alle existierenden berücksichtigen ...
         boolean gefunden = false;
@@ -113,9 +113,9 @@ public class ParteiInselAnker {
         pia.setEntdeckungsRunde(Integer.MAX_VALUE);
         SortedMap<Integer, String> namen = new TreeMap<Integer, String>();
         SortedMap<Integer, String> beschreibungen = new TreeMap<Integer, String>();
-        Set<Coords> alteAnker = new HashSet<Coords>();
+        Set<Coordinates> alteAnker = new HashSet<Coordinates>();
         
-        for (Coords alteAnkerC : p.getInselAnker().keySet()) {
+        for (Coordinates alteAnkerC : p.getInselAnker().keySet()) {
             if (inselCoords.contains(alteAnkerC)) {
                 gefunden = true;
                 alteAnker.add(alteAnkerC);
@@ -160,7 +160,7 @@ public class ParteiInselAnker {
             if (alteAnker.size() > 1) {
                 // au Backe - mehr als ein alter Anker auf der gleichen Insel:
                 // alle weg:
-                for (Coords alteC : alteAnker) {
+                for (Coordinates alteC : alteAnker) {
                     ParteiInselAnker.Entfernen(p, alteC);
                 }
                 // den neuen speichern:
@@ -201,7 +201,7 @@ public class ParteiInselAnker {
         int retval = 1; // 1 ist die erste ID
         
         Partei p = Partei.getPartei(parteiNr);
-        for (Coords c : p.getInselAnker().keySet()) {
+        for (Coordinates c : p.getInselAnker().keySet()) {
             ParteiInselAnker pia = p.getInselAnker().get(c);
             if (pia.getPrivateInselId() >= retval) retval = pia.getPrivateInselId() + 1;
         }
@@ -224,8 +224,8 @@ public class ParteiInselAnker {
             
             ParteiInselAnker pia = new ParteiInselAnker(p.getNummer());
             pia.setEntdeckungsRunde(Integer.MAX_VALUE);
-            Coords found = null;
-            for (Coords c : insel.getCoords()) {
+            Coordinates found = null;
+            for (Coordinates c : insel.getCoords()) {
                 Region r = Region.Load(c);
                 
                 int privateInselID = -1;
@@ -286,7 +286,7 @@ public class ParteiInselAnker {
 		}
     }
     
-    public void loadFromRegion(Coords anker) {
+    public void loadFromRegion(Coordinates anker) {
         if (anker == null) throw new NullPointerException("anker ist null.");
         
         String idKey = GameRules.INSEL_ID_FUER_PARTEI + Codierung.toBase36(parteiNr);
@@ -317,11 +317,11 @@ public class ParteiInselAnker {
         return parteiNr;
     }
     
-    public Coords getAnker() {
+    public Coordinates getAnker() {
         return anker;
     }
 
-    public void setAnker(Coords anker) {
+    public void setAnker(Coordinates anker) {
         this.anker = anker;
     }
 

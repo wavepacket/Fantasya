@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.EVA;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -61,7 +61,7 @@ public class Kartografieren extends EVABase implements NotACommand {
                 if (rs.hasDetails()) {
                     if (!Unit.CACHE.getAll(r.getCoords(),partei.getNummer()).isEmpty()) {
                         // dann auch die Nachbarn mit aufnehmen:
-                        for (Coords n : rs.getCoords().getNachbarn()) {
+                        for (Coordinates n : rs.getCoords().getNachbarn()) {
                             Region nr = Region.Load(n);
                             if (partei.canAccess(nr)) {
                                 RegionsSicht nrs = new RegionsSicht(runde, n, false, Region.class);

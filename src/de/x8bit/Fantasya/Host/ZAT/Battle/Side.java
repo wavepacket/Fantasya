@@ -2,7 +2,7 @@ package de.x8bit.Fantasya.Host.ZAT.Battle;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Burg;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.Kampfzauber;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -499,7 +499,7 @@ public class Side {
                 }
                 
                 Region r = getGefecht().getRegion();
-                Coords my = p.getPrivateCoords(r.getCoords());
+                Coordinates my = p.getPrivateCoords(r.getCoords());
                 new Botschaft(null, p, "In " + r + " " + my + " sind unsere Kämpfer (" + StringUtils.aufzaehlung(ehemalige) + ") komplett besiegt worden!");
             }
         }

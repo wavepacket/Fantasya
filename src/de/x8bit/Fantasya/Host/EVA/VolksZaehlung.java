@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.EVA;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Items.Silber;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -50,13 +50,13 @@ public class VolksZaehlung extends EVABase implements NotACommand {
 			int einkommen = 0;
 			int vermoegen = 0;
 
-			Map<Coords, Integer> bewohner = new HashMap<Coords, Integer>();
+			Map<Coordinates, Integer> bewohner = new HashMap<Coordinates, Integer>();
             Collection<Unit> units = Unit.CACHE.getAll(p.getNummer());
 			if (p.getNummer() == 0) {
 				units = Unit.CACHE;
 			}
 			for (Unit u : units) {
-				Coords c = u.getCoords();
+				Coordinates c = u.getCoords();
                 
                 nEinheiten ++;
 				nPersonen += u.getPersonen();
@@ -79,7 +79,7 @@ public class VolksZaehlung extends EVABase implements NotACommand {
             // Mittelpunkt / "Schwerpunkt" des Volkes bestimmen:
             double summeX = 0d; double summeY = 0d;
             // new Debug("Schwerpunkt von " + p);
-            for (Coords c : bewohner.keySet()) {
+            for (Coordinates c : bewohner.keySet()) {
                 // new Debug(bewohner.get(c) + " Bewohner bei " + c);
                 summeX += (double)(bewohner.get(c) * c.getX());
                 summeY += (double)(bewohner.get(c) * c.getY());
@@ -88,7 +88,7 @@ public class VolksZaehlung extends EVABase implements NotACommand {
             // new Debug("sx=" + summeX + "; sy=" + summeY + "; N=" + n);
             double mx = summeX / n;
             double my = summeY / n;
-            Coords mc = new Coords((int)Math.round(mx), (int)Math.round(my), 1);
+            Coordinates mc = new Coordinates((int)Math.round(mx), (int)Math.round(my), 1);
             daten.setSchwerpunkt(p, mc);
             // new Debug("mx=" + mx + "; my=" + my + "; c=" + daten.getSchwerpunkt(p));
 		}
@@ -121,13 +121,13 @@ public class VolksZaehlung extends EVABase implements NotACommand {
 		final Map<Integer, Integer> talentTage = new HashMap<Integer, Integer>();
 		final Map<Integer, Integer> einkommen = new HashMap<Integer, Integer>();
 		final Map<Integer, Integer> vermoegen = new HashMap<Integer, Integer>();
-		final Map<Integer, Coords> schwerpunkte = new HashMap<Integer, Coords>();
+		final Map<Integer, Coordinates> schwerpunkte = new HashMap<Integer, Coordinates>();
         
-        public Coords getSchwerpunkt(Partei p) {
+        public Coordinates getSchwerpunkt(Partei p) {
             return schwerpunkte.get(p.getNummer());
         }
 
-        public void setSchwerpunkt(Partei p, Coords schwerpunkt) {
+        public void setSchwerpunkt(Partei p, Coordinates schwerpunkt) {
             schwerpunkte.put(p.getNummer(), schwerpunkt);
         }
 

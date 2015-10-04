@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 
 import java.util.Collection;
 import java.util.Set;
@@ -16,8 +16,8 @@ public interface Cache<T> extends Collection<T> {
 	public Set<T> getAll(int p);
 
 	/** Returns all objects at a certain position. */
-	public Set<T> getAll(Coords coords);
+	public Set<T> getAll(Coordinates coords);
 
 	/** Returns all objects at a certain position and of a certain party id. */
-	public Set<T> getAll(Coords coords, int p);
+	public Set<T> getAll(Coordinates coords, int p);
 }

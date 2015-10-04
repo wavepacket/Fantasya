@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
 import de.x8bit.Fantasya.Host.serialization.util.DataAnalyzer;
@@ -54,7 +54,7 @@ public class RegionSerializerTest {
 		assertEquals("Wrong description loaded.",
 				serializedMap.get("Beschreibung"), r.getBeschreibung());
 
-		Coords coordinate = new Coords(
+		Coordinates coordinate = new Coordinates(
 				Integer.decode(serializedMap.get("koordx")),
 				Integer.decode(serializedMap.get("koordy")),
 				Integer.decode(serializedMap.get("welt")));

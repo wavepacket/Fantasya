@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.util.comparator.MessageComparator;
 import java.util.Collection;
@@ -35,7 +35,7 @@ public class MessageCache implements Cache<Message> {
 	
 	private Set<Message> allObjects = new TreeSet<Message>(new MessageComparator());
 	private Map<Integer, Set<Message>> playerMap = new HashMap<Integer, Set<Message>>();
-	private Map<Coords, Set<Message>> regionMap = new HashMap<Coords, Set<Message>>();
+	private Map<Coordinates, Set<Message>> regionMap = new HashMap<Coordinates, Set<Message>>();
 
 	/** Adds a message to the cache.
 	 * 
@@ -112,7 +112,7 @@ public class MessageCache implements Cache<Message> {
 	 * an empty set is returned.
 	 */
 	@Override
-	public Set<Message> getAll(Coords coords) {
+	public Set<Message> getAll(Coordinates coords) {
 		if (!regionMap.containsKey(coords)) {
 			return Collections.unmodifiableSet(new HashSet<Message>());
 		}
@@ -128,7 +128,7 @@ public class MessageCache implements Cache<Message> {
 	 * an empty set is returned.
 	 */
 	@Override
-	public Set<Message> getAll(Coords coords, int p) {
+	public Set<Message> getAll(Coordinates coords, int p) {
 		Set<Message> retval = new TreeSet<Message>(new MessageComparator());
 		
 		// we first request all messages at the given coordinate, then loop

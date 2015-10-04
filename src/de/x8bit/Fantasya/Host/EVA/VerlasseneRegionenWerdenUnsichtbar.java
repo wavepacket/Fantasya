@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.EVA;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -23,7 +23,7 @@ public class VerlasseneRegionenWerdenUnsichtbar extends EVABase implements NotAC
     public void PostAction() {
         // detaillierte Regions-Sichten aussortieren, die auf nicht mehr vorhandenen Einheiten beruhen:
         for (Partei partei : Partei.PROXY) {
-            Set<Coords> nichtMehrDetailliert = new HashSet<Coords>();
+            Set<Coordinates> nichtMehrDetailliert = new HashSet<Coordinates>();
             for (RegionsSicht rs : partei.getKnownRegions(false)) {
                 if (!rs.hasDetails()) continue; // das ist immer okay...
                 if (rs.getQuelle() != Unit.class) continue; // da mischen wir uns auch nicht ein.
@@ -40,7 +40,7 @@ public class VerlasseneRegionenWerdenUnsichtbar extends EVABase implements NotAC
                 if (!anwesend) nichtMehrDetailliert.add(rs.getCoords());
             }
 
-            for (Coords c : nichtMehrDetailliert) {
+            for (Coordinates c : nichtMehrDetailliert) {
                 partei.removeKnownRegion(c);
                 partei.addKnownRegion(c, false, Unit.class);
                 // war vorher ja auch Unit.class als Quelle,

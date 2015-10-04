@@ -14,7 +14,7 @@ import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Atlantis;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -247,7 +247,7 @@ public class ReportNR
 			sortiert.put(kat, new ArrayList<Message>());
 		}
 		// Messages holen und einsortieren
-		for (Message msg : Message.Retrieve(partei, (Coords)null, null)) {
+		for (Message msg : Message.Retrieve(partei, (Coordinates)null, null)) {
 			String kat = msg.getClass().getSimpleName();
 			if (!sortiert.containsKey(kat)) continue; // Debug und so - wollen wir nicht im Report.
 			sortiert.get(kat).add(msg);
@@ -360,7 +360,7 @@ public class ReportNR
 	
 	private void Region_Header(Region r)
 	{
-		Coords privateCoords = partei.getPrivateCoords(r.getCoords());
+		Coordinates privateCoords = partei.getPrivateCoords(r.getCoords());
 		Item resource = null;
 		
 		String msg = "";

@@ -7,7 +7,7 @@ import java.util.Map;
 import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Effect;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -393,7 +393,7 @@ public class EVAFastSaver {
 		db.DisableKeys(table);
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
-		Coords c = null;
+		Coordinates c = null;
 		for (Region r : Region.CACHE.values()) {
 			c = r.getCoords();
 			for (Item res : r.getResourcen()) {
@@ -428,7 +428,7 @@ public class EVAFastSaver {
 		db.DisableKeys(table);
 		int cnt = 1;
 		StringBuffer values = new StringBuffer();
-		Coords c = null;
+		Coordinates c = null;
 		for (Region r : Region.CACHE.values()) {
 			c = r.getCoords();
 			for (Nachfrage n : r.getLuxus()) {

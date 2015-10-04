@@ -8,7 +8,7 @@ import java.util.Set;
  * @author  mogel
  */
 @SuppressWarnings("rawtypes")
-public final class Coords implements Comparable {
+public final class Coordinates implements Comparable {
 
 	/**
 	 * @uml.property  name="x"
@@ -58,7 +58,7 @@ public final class Coords implements Comparable {
 		return "koordx=" + x + " AND koordy=" + y + " AND welt=" + welt;
 	}
 
-	public Coords(int x, int y, int welt) {
+	public Coordinates(int x, int y, int welt) {
 		if ((x < -8192) || (x > 8191)) {
 			throw new IllegalArgumentException("Der Koordinatenbereich für x ist -8192 bis 8191 - versucht " + x);
 		}
@@ -76,7 +76,7 @@ public final class Coords implements Comparable {
 		this.hashCode = asRegionID(true); // newMode - taugt auch als Standard-Sortierkriterium
 	}
 
-	public Coords(Coords coords) {
+	public Coordinates(Coordinates coords) {
 		this(coords.x, coords.y, coords.welt);
 	}
 
@@ -95,16 +95,16 @@ public final class Coords implements Comparable {
 	 * @param richtung - die Richtung in die verschoben werden soll
 	 * @return neuen Koordinaten
 	 */
-	public Coords shift(Richtung richtung) {
-		return new Coords(x + richtung.getDx(), y + richtung.getDy(), welt);
+	public Coordinates shift(Richtung richtung) {
+		return new Coordinates(x + richtung.getDx(), y + richtung.getDy(), welt);
 	}
 
 	/**
 	 * @return alle direkten Nachbarkoordinaten - also alle, für die
 	 * getDistance() 1 liefert.
 	 */
-	public Set<Coords> getNachbarn() {
-		Set<Coords> nachbarn = new HashSet<Coords>();
+	public Set<Coordinates> getNachbarn() {
+		Set<Coordinates> nachbarn = new HashSet<Coordinates>();
 
 		for (Richtung ri : Richtung.values()) {
 			nachbarn.add(shift(ri));
@@ -113,7 +113,7 @@ public final class Coords implements Comparable {
 		return nachbarn;
 	}
 
-	public Richtung getRichtungNach(Coords ziel) {
+	public Richtung getRichtungNach(Coordinates ziel) {
 		if (ziel.getWelt() != this.getWelt()) {
 			throw new UnsupportedOperationException("Die Koordinaten liegen nicht in der gleichen Welt - getRichtungNach() ist damit derzeit nicht möglich.");
 		}
@@ -164,8 +164,8 @@ public final class Coords implements Comparable {
 		if (obj == null) {
 			return false;
 		}
-		if (obj instanceof Coords) {
-			final Coords that = (Coords) obj;
+		if (obj instanceof Coordinates) {
+			final Coordinates that = (Coordinates) obj;
 			if (this.hashCode == that.hashCode) {
 				return true;
 			}
@@ -173,7 +173,7 @@ public final class Coords implements Comparable {
 		return false;
 	}
 
-	public int getDistance(Coords ziel) {
+	public int getDistance(Coordinates ziel) {
 		int dx = ziel.getX() - this.getX();
 		int dy = ziel.getY() - this.getY();
 
@@ -207,7 +207,7 @@ public final class Coords implements Comparable {
 		return this.hashCode;
 	}
 
-	public int compareTo(Coords other) {
+	public int compareTo(Coordinates other) {
 		if (this.hashCode() < other.hashCode()) {
 			return -1;
 		}
@@ -227,14 +227,14 @@ public final class Coords implements Comparable {
 			throw new UnsupportedOperationException("Kann Coords nicht mit " + o.getClass().getSimpleName() + " vergleichen.");
 		}
 
-		return compareTo((Coords) o);
+		return compareTo((Coordinates) o);
 	}
 
 	/**
 	 * @param map
 	 * @return den Mittelpunkt des Koordinaten-Sets - kann eine Koordinate sein, die nicht in map enthalten ist.
 	 */
-	public static Coords Mittelpunkt(Set<Coords> map) {
+	public static Coordinates Mittelpunkt(Set<Coordinates> map) {
 		if (map.isEmpty()) {
 			throw new IllegalArgumentException("Die Koordinaten-Menge darf nicht leer sein.");
 		}
@@ -243,29 +243,29 @@ public final class Coords implements Comparable {
 		double sumY = 0;
 		double sumZ = 0;
 
-		for (Coords c : map) {
+		for (Coordinates c : map) {
 			sumX += c.getX();
 			sumY += c.getY();
 			sumZ += c.getWelt();
 		}
 		double n = map.size();
-		return new Coords(
+		return new Coordinates(
 				(int) Math.round(sumX / n),
 				(int) Math.round(sumY / n),
 				(int) Math.round(sumZ / n));
 	}
 
-	public static Coords fromRegionID(int id) {
+	public static Coordinates fromRegionID(int id) {
 		int w1 = ((id & 0x70000000) >> 28) - 4;
 		int y1 = ((id & 0x0fffc000) >> 14) - 8192;
 		int x1 = (id & 0x3fff) - 8192;
 
-		return new Coords(x1, y1, w1);
+		return new Coordinates(x1, y1, w1);
 	}
 
-	public static Coords fromString(String s) {
+	public static Coordinates fromString(String s) {
 		String src = s.replaceAll("\\(", "").replaceAll("\\)", "");
-		Coords c = null;
+		Coordinates c = null;
 		try {
 			String[] coords = src.split("\\s");
 			if (coords.length < 2) {
@@ -280,7 +280,7 @@ public final class Coords implements Comparable {
 				z = Integer.parseInt(coords[2]);
 			}
 
-			c = new Coords(x, y, z);
+			c = new Coordinates(x, y, z);
 
 		} catch (NumberFormatException ex) {
 			throw new IllegalArgumentException("Coords aus '" + s + "' ist nicht möglich - " + ex.getMessage());

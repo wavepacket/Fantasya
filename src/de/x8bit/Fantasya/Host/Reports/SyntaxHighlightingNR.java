@@ -19,7 +19,7 @@ import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Buildings.Burg;
 import de.x8bit.Fantasya.Atlantis.Buildings.Leuchtturm;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.Kampfzauber;
 import de.x8bit.Fantasya.Atlantis.Helper.Nachfrage;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
@@ -640,7 +640,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 			sortiert.put(kat, new ArrayList<Message>());
 		}
 		// Messages holen und einsortieren
-		for (Message msg : Message.Retrieve(partei, (Coords)null, null)) {
+		for (Message msg : Message.Retrieve(partei, (Coordinates)null, null)) {
 			String kat = msg.getClass().getSimpleName();
 			if (!sortiert.containsKey(kat)) continue; // Debug und so - wollen wir nicht im Report.
 			sortiert.get(kat).add(msg);
@@ -775,7 +775,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 	private void Regionen() {
         InselVerwaltung iv = InselVerwaltung.getInstance();
         InselVerwaltung.ParteiReportDaten prd = iv.getParteiReportDaten(partei);
-        Set<Coords> nurHistorische = new HashSet<Coords>();
+        Set<Coordinates> nurHistorische = new HashSet<Coordinates>();
         for (RegionsSicht rs : prd.getHistorische()) {
             nurHistorische.add(rs.getCoords());
         }
@@ -795,12 +795,12 @@ public class SyntaxHighlightingNR extends ReportNR {
                 writer.wl("");
             }
             
-            List<Coords> sortiert = new ArrayList<Coords>();
+            List<Coordinates> sortiert = new ArrayList<Coordinates>();
             sortiert.addAll(prd.getRegionenAufInsel(i.getPublicId()));
             Collections.sort(sortiert, new CoordComparatorLNR());
 
             // List<String> echo = new ArrayList<String>();
-            for (Coords c : sortiert) {
+            for (Coordinates c : sortiert) {
                 RegionsSicht rs = partei.getRegionsSicht(c);
                 // echo.add(rs+"");
                 
@@ -819,21 +819,21 @@ public class SyntaxHighlightingNR extends ReportNR {
             writeSectionEnd();
         }
         
-        List<Coords> regionenOhneInsel = prd.getRegionenOhneInsel();
+        List<Coordinates> regionenOhneInsel = prd.getRegionenOhneInsel();
         if (!regionenOhneInsel.isEmpty()) {
             WriteTheLine();
             writer.wl("");
             writeSectionStart("Auf unbekannten Inseln", true);
-            for (Coords c : regionenOhneInsel) {
+            for (Coordinates c : regionenOhneInsel) {
                 Region(Region.Load(c));
             }
             writeSectionEnd();
         }
 	}
 	
-    private void AtlasRegion(Coords c) {
+    private void AtlasRegion(Coordinates c) {
         RegionsSicht rs = partei.atlas.get(c);
-        Coords privateCoords = partei.getPrivateCoords(c);
+        Coordinates privateCoords = partei.getPrivateCoords(c);
 		String terrain = rs.getTerrain();
         String name = rs.getName();
         int sichtung = rs.getRunde();
@@ -886,7 +886,7 @@ public class SyntaxHighlightingNR extends ReportNR {
 	private void Region_Header(Region r, boolean details) {
 		StringBuilder msg = new StringBuilder();
 
-        Coords privateCoords = partei.getPrivateCoords(r.getCoords());
+        Coordinates privateCoords = partei.getPrivateCoords(r.getCoords());
 		String terrain = r.getClass().getSimpleName();
         if (!details) {
 			if (!r.istBetretbar(null) || r instanceof Chaos) {
@@ -1671,7 +1671,7 @@ public class SyntaxHighlightingNR extends ReportNR {
             }
 
 			// Meldungen
-			List<Message> unitMessages = Message.Retrieve(null, (Coords)null, u);
+			List<Message> unitMessages = Message.Retrieve(null, (Coordinates)null, u);
 			if (!unitMessages.isEmpty()) {
 				writer.wl(msg.toString());
 				writer.NRFront += 3;

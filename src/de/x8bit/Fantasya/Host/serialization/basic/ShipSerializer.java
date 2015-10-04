@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -31,14 +31,14 @@ public class ShipSerializer implements ObjectSerializer<Ship> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Map<Coords, Region> regionMap;
+	private Map<Coordinates, Region> regionMap;
 	private MapCache<Unit> unitCache;
 
 	/** Constructs a new serializer.
 	 *
 	 * @param regionMap a map of all regions, so that ships can be attached there.
 	 */
-	public ShipSerializer(Map<Coords, Region> regionMap, MapCache<Unit> unitCache) {
+	public ShipSerializer(Map<Coordinates, Region> regionMap, MapCache<Unit> unitCache) {
 		if (regionMap == null) {
 			throw new IllegalArgumentException("Need a valid region map.");
 		}
@@ -78,7 +78,7 @@ public class ShipSerializer implements ObjectSerializer<Ship> {
 			return null;
 		}
 
-		Coords coords = new Coords(
+		Coordinates coords = new Coordinates(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));

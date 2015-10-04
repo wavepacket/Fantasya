@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
@@ -80,7 +80,7 @@ public class Kontinent extends ProtoInsel {
 
 		// und der Mittelpunkt (ohne Berücksichtigung von Ozean) ist:
 		this.mittelpunkt = null;
-		Coords m = this.getMittelpunkt(false); // ohne Ozean
+		Coordinates m = this.getMittelpunkt(false); // ohne Ozean
 		if (this.getRegion(m.getX(), m.getY()) != null) {
 			Region r = this.getRegion(m.getX(), m.getY());
 			r.setName("M-" + r.getName());
@@ -99,13 +99,13 @@ public class Kontinent extends ProtoInsel {
 			int d23 = W(3) + 3 + getKategorie(); // 4 .. 6 + KAT
 			int d13 = d12 + d23 - 3;
 
-			Coords c1 = new Coords(0, 0, 1);
+			Coordinates c1 = new Coordinates(0, 0, 1);
 			Region r = Gletscher.class.newInstance(); r.setCoords(c1); this.putRegion(r);
 
 			MapSelection ms = new MapSelection();
 			ms.add(c1);
 			ms.wachsen(d12);
-			Coords c2 = ms.getInnenKontur().zufaelligeKoordinate();
+			Coordinates c2 = ms.getInnenKontur().zufaelligeKoordinate();
 			r = Gletscher.class.newInstance(); r.setCoords(c2); this.putRegion(r);
 
 			ms = new MapSelection();
@@ -113,18 +113,18 @@ public class Kontinent extends ProtoInsel {
 			ms.wachsen(d23);
 			MapSelection moeglichFuer3 = ms.getInnenKontur();
 			MapSelection okayFuer3 = new MapSelection();
-			for (Coords c : moeglichFuer3) {
+			for (Coordinates c : moeglichFuer3) {
 				int d = c1.getDistance(c);
 				if (Math.abs(d - d13) <= 1) okayFuer3.add(c);
 			}
 			if (okayFuer3.isEmpty()) new BigError("Kein Kandidat für die 3. Urgebirgs-Region des Kontinents gefunden.");
-			Coords c3 = okayFuer3.zufaelligeKoordinate();
+			Coordinates c3 = okayFuer3.zufaelligeKoordinate();
 			r = Gletscher.class.newInstance(); r.setCoords(c3); this.putRegion(r);
 
 			new Debug("Urgebirge: " + c1.xy() + ", " + c2.xy() + ", " + c3.xy());
 
 			// Bergkette bilden
-			Coords cursor = c1;
+			Coordinates cursor = c1;
 			do {
 				Richtung ri = cursor.getRichtungNach(c2);
 				cursor = cursor.shift(ri);
@@ -150,7 +150,7 @@ public class Kontinent extends ProtoInsel {
 	private void urgebirgeWaechst() {
 		try {
 			for (int i=0; i < 4 + getKategorie(); i++) {
-				List<Coords> kandidaten = new ArrayList<Coords>();
+				List<Coordinates> kandidaten = new ArrayList<Coordinates>();
 				kandidaten.addAll(this.getAussenKontur());
 				Collections.sort(kandidaten, new EntfernungZuAllenComparator(this));
 
@@ -158,28 +158,28 @@ public class Kontinent extends ProtoInsel {
 				// die X nächsten,
 				int x = W(4);
 				for (int j=0; j<x; j++) {
-					Coords c = kandidaten.get(j);
+					Coordinates c = kandidaten.get(j);
 					Region r = Wueste.class.newInstance(); r.setCoords(c); this.putRegion(r);
 				}
 				//  die X "mittelsten",
 				x = W(3) + 1;
 				for (int j=0; j<x; j++) {
 					int idx = kandidaten.size()/2 + j;
-					Coords c = kandidaten.get(idx);
+					Coordinates c = kandidaten.get(idx);
 					Region r = Wueste.class.newInstance(); r.setCoords(c); this.putRegion(r);
 				}
 				//  und die 1 entferntesten Regionen.
 				x = 1;
 				for (int j=0; j<x; j++) {
 					int idx = kandidaten.size() - (j+1);
-					Coords c = kandidaten.get(idx);
+					Coordinates c = kandidaten.get(idx);
 					Region r = Wueste.class.newInstance(); r.setCoords(c); this.putRegion(r);
 				}
 
 				// und noch X völlig zufällige:
 				x = W(3) - 1;
 				for (int j=0; j<x; j++) {
-					Coords c = this.getAussenKontur().zufaelligeKoordinate();
+					Coordinates c = this.getAussenKontur().zufaelligeKoordinate();
 					Region r = Wueste.class.newInstance(); r.setCoords(c); this.putRegion(r);
 				}
 
@@ -199,7 +199,7 @@ public class Kontinent extends ProtoInsel {
 			// alle Wüsten zu Hochländern
 			for (Region r : this.alleRegionen()) {
 				if (r instanceof Wueste) {
-					Coords c = r.getCoords();
+					Coordinates c = r.getCoords();
 					this.remove(c.getX(), c.getY());
 					
 					Region newR = Hochland.class.newInstance();
@@ -212,7 +212,7 @@ public class Kontinent extends ProtoInsel {
 			MapSelection alle = new MapSelection();
 			alle.addAll(this.alleKoordinaten());
 			MapSelection grenzen = alle.getInnenKontur();
-			for (Coords c : alle) {
+			for (Coordinates c : alle) {
 				if (grenzen.contains(c)) continue;
 
 				Region r = this.getRegion(c.getX(), c.getY());
@@ -240,7 +240,7 @@ public class Kontinent extends ProtoInsel {
 			new Debug("Berg-Chance für Hochländer: " + anteil + "%, " + letzterBerg + " von " + kandidaten.size() + " werden zu Bergen.");
 			for (int i=0; i < letzterBerg; i++) {
 				Region r = kandidaten.get(i);
-				Coords c = r.getCoords();
+				Coordinates c = r.getCoords();
 				this.remove(c.getX(), c.getY());
 
 				Region newR = Berge.class.newInstance();
@@ -260,7 +260,7 @@ public class Kontinent extends ProtoInsel {
 	private void landGewinnung(int n, boolean exzentrisch) {
 		try {
 			for (int i=0; i < n; i++) {
-				List<Coords> kandidaten = this.getAussenKontur().asList();
+				List<Coordinates> kandidaten = this.getAussenKontur().asList();
 				Collections.sort(kandidaten, new EntfernungZuAllenComparator(this));
 				Region r = null;
 				if (exzentrisch) {
@@ -271,7 +271,7 @@ public class Kontinent extends ProtoInsel {
 				}
 				double x = rnd.nextDouble();
 				double pointer = x * x * (double)kandidaten.size();
-				Coords c = kandidaten.get((int)Math.floor(pointer));
+				Coordinates c = kandidaten.get((int)Math.floor(pointer));
 				r.setCoords(c);
 				this.putRegion(r);
 			}
@@ -291,7 +291,7 @@ public class Kontinent extends ProtoInsel {
 		try {
 			for (Region r : this.alleRegionen()) {
 				if (r instanceof Ozean) {
-					Coords c = r.getCoords();
+					Coordinates c = r.getCoords();
 					this.remove(c.getX(), c.getY());
 
 					Region newR = Ebene.class.newInstance();
@@ -310,7 +310,7 @@ public class Kontinent extends ProtoInsel {
 	}
 
 	private void fluesse() {
-		Map<Coords, Integer> kEntfernungen = new HashMap<Coords, Integer>();
+		Map<Coordinates, Integer> kEntfernungen = new HashMap<Coordinates, Integer>();
 
 		int maxE = Integer.MIN_VALUE;
 		for (Region r : alleRegionen()) {
@@ -321,7 +321,7 @@ public class Kontinent extends ProtoInsel {
 				nachbarn.wachsen(d + 1);
 				nachbarn = nachbarn.getInnenKontur();
 
-				for (Coords c : nachbarn) {
+				for (Coordinates c : nachbarn) {
 					if (this.getRegion(c.getX(), c.getY()) == null) {
 						found = true;
 						r.setName("D" + d);
@@ -341,12 +341,12 @@ public class Kontinent extends ProtoInsel {
 			if (maxE >= 3) {
 				MapSelection fluss = new MapSelection();
 
-				List<Coords> startKandidaten = new ArrayList<Coords>();
-				for (Coords c : kEntfernungen.keySet()) {
+				List<Coordinates> startKandidaten = new ArrayList<Coordinates>();
+				for (Coordinates c : kEntfernungen.keySet()) {
 					if (kEntfernungen.get(c) == (maxE - 1)) startKandidaten.add(c);
 				}
 				Collections.shuffle(startKandidaten);
-				Coords start = startKandidaten.get(0);
+				Coordinates start = startKandidaten.get(0);
 				fluss.add(start);
 
 				// alle Nachbarn der Quelle werden mindestens zu Hochländern erhöht:
@@ -355,14 +355,14 @@ public class Kontinent extends ProtoInsel {
 					if (n instanceof Berge) continue;
 					if (n instanceof Hochland) continue;
 
-					Coords c = n.getCoords();
+					Coordinates c = n.getCoords();
 					this.remove(c.getX(), c.getY());
 					Region newR = Hochland.class.newInstance();
 					newR.setCoords(c);
 					this.putRegion(newR);
 				}
 
-				Coords cursor = start;
+				Coordinates cursor = start;
 				boolean gemuendet = false;
 				int currentD = kEntfernungen.get(start);
 				while (!gemuendet) {
@@ -373,7 +373,7 @@ public class Kontinent extends ProtoInsel {
 					List<Region> nichtGut = new ArrayList<Region>();
 					for (Region r : kandidaten) {
 						int nachbarn = 0;
-						for (Coords c : r.getCoords().getNachbarn()) {
+						for (Coordinates c : r.getCoords().getNachbarn()) {
 							if (fluss.contains(c)) nachbarn ++;
 						}
 						if (nachbarn > 1) nichtGut.add(r);
@@ -387,7 +387,7 @@ public class Kontinent extends ProtoInsel {
 						if (d > maxD) maxD = d;
 					}
 
-					List<Coords> ersteWahl = new ArrayList<Coords>();
+					List<Coordinates> ersteWahl = new ArrayList<Coordinates>();
 					if (maxD > currentD) {
 						// es gibt Richtungen, die weiter ins Landesinnere gehen!
 						for (Region r : kandidaten) {
@@ -396,19 +396,19 @@ public class Kontinent extends ProtoInsel {
 						}
 					}
 					// alle anderen:
-					List<Coords> zweiteWahl = new ArrayList<Coords>();
+					List<Coordinates> zweiteWahl = new ArrayList<Coordinates>();
 					for (Region r : kandidaten) {
 						if (!ersteWahl.contains(r.getCoords())) zweiteWahl.add(r.getCoords());
 					}
 
 					if (!ersteWahl.isEmpty()) {
 						Collections.shuffle(ersteWahl);
-						Coords nach = ersteWahl.get(0);
+						Coordinates nach = ersteWahl.get(0);
 						fluss.add(nach);
 						cursor = nach;
 					} else {
 						Collections.shuffle(zweiteWahl);
-						Coords nach = zweiteWahl.get(0);
+						Coordinates nach = zweiteWahl.get(0);
 						fluss.add(nach);
 						cursor = nach;
 					}
@@ -420,7 +420,7 @@ public class Kontinent extends ProtoInsel {
 
 
 				// fließen:
-				for (Coords c : fluss) {
+				for (Coordinates c : fluss) {
 					this.remove(c.getX(), c.getY());
 
 					Region newR = Ozean.class.newInstance();
@@ -441,7 +441,7 @@ public class Kontinent extends ProtoInsel {
 	}
 
 	private void wuesten() {
-		Map<Coords, Integer> kEntfernungen = new HashMap<Coords, Integer>();
+		Map<Coordinates, Integer> kEntfernungen = new HashMap<Coordinates, Integer>();
 
 		int maxE = Integer.MIN_VALUE;
 		for (Region r : alleRegionen()) {
@@ -452,7 +452,7 @@ public class Kontinent extends ProtoInsel {
 				nachbarn.wachsen(d + 1);
 				nachbarn = nachbarn.getInnenKontur();
 
-				for (Coords c : nachbarn) {
+				for (Coordinates c : nachbarn) {
 					Region maybe = this.getRegion(c.getX(), c.getY());
 					if ((maybe == null) || (maybe instanceof Ozean)) {
 						found = true;
@@ -482,7 +482,7 @@ public class Kontinent extends ProtoInsel {
 					}
 				}
 				if (verwuesten) {
-					Coords c = r.getCoords();
+					Coordinates c = r.getCoords();
 					this.remove(c.getX(), c.getY());
 
 					Region newR = Wueste.class.newInstance();
@@ -506,7 +506,7 @@ public class Kontinent extends ProtoInsel {
 			for (Region r : alleRegionen()) {
 				if (!(r instanceof Gletscher)) continue;
 				int nachbarBerge = 0;
-				for (Coords n : r.getCoords().getNachbarn()) {
+				for (Coordinates n : r.getCoords().getNachbarn()) {
 					if (getRegion(n.getX(), n.getY()) == null) continue;
 					if (getRegion(n.getX(), n.getY()) instanceof Gletscher) nachbarBerge ++;
 					if (getRegion(n.getX(), n.getY()) instanceof Berge) nachbarBerge ++;
@@ -529,7 +529,7 @@ public class Kontinent extends ProtoInsel {
 			for (Region r : alleRegionen()) {
 				if (!(r instanceof Berge)) continue;
 				int nachbarBerge = 0;
-				for (Coords n : r.getCoords().getNachbarn()) {
+				for (Coordinates n : r.getCoords().getNachbarn()) {
 					if (getRegion(n.getX(), n.getY()) == null) continue;
 					if (getRegion(n.getX(), n.getY()) instanceof Gletscher) nachbarBerge ++;
 					if (getRegion(n.getX(), n.getY()) instanceof Berge) nachbarBerge ++;
@@ -566,7 +566,7 @@ public class Kontinent extends ProtoInsel {
 			for (Region r : alleRegionen()) {
 				if (!(r instanceof Sumpf)) continue;
 				boolean ueppig = false;
-				for (Coords n : r.getCoords().getNachbarn()) {
+				for (Coordinates n : r.getCoords().getNachbarn()) {
 					if (getRegion(n.getX(), n.getY()) == null) continue;
 					if (!(getRegion(n.getX(), n.getY()) instanceof Sumpf)) { ueppig = true; break; }
 				}
@@ -594,7 +594,7 @@ public class Kontinent extends ProtoInsel {
 			for (Region r : alleRegionen()) {
 				if (!(r instanceof Ebene)) continue;
 				boolean amWasser = false;
-				for (Coords n : r.getCoords().getNachbarn()) {
+				for (Coordinates n : r.getCoords().getNachbarn()) {
 					if (getRegion(n.getX(), n.getY()) == null) { amWasser = true; break; }
 					if (getRegion(n.getX(), n.getY()) instanceof Ozean) { amWasser = true; break; }
 				}

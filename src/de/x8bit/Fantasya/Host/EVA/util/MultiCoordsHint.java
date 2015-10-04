@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.EVA.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 
 /**
  *
@@ -14,7 +14,7 @@ public class MultiCoordsHint implements ParamHint {
 
 	@SuppressWarnings("rawtypes")
 	public Class getType() {
-		return Coords.class;
+		return Coordinates.class;
 	}
 
 	public int getPosition() {

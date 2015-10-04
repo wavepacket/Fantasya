@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Spells;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Spell;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -57,7 +57,7 @@ public class Luftreise extends Spell {
 		try { destinationY = Integer.parseInt(param[3]); } catch(Exception ex) { new Fehler("Die Zielregion konnte nicht gefunden werden.", mage); return 0; }
 
         Partei p = Partei.getPartei(mage.getOwner());
-		Coords here = mage.getCoords();
+		Coordinates here = mage.getCoords();
 		Region r = Region.Load(here.getX() + destinationX, here.getY() + destinationY, here.getWelt());
 		if (r instanceof Chaos) {
 			new Fehler(mage + " vermutet, dass dort " + GameRules.TERRAIN_UNSICHTBARER_REGIONEN + " ist und will nicht zaubern.", mage);

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -200,7 +200,7 @@ public class CleanUp extends EVABase implements NotACommand
 			}
 		}
 
-		for (Coords c : rundum) {
+		for (Coordinates c : rundum) {
 			Region nachbar = Region.Load(c);
 			if (nachbar != null) {
 				Class<? extends Item> ware = nachbar.getProduce();

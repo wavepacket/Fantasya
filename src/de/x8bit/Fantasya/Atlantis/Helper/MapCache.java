@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Messages.SysErr;
 
 import java.util.Collection;
@@ -32,7 +32,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 	/** A mapping from player id to all elements. */
 	private Map<Integer, Set<T>> playerMap = new HashMap<Integer, Set<T>>();
 	/** A mapping from region id to all elements. */
-	private Map<Coords, Set<T>> regionMap = new HashMap<Coords, Set<T>>();
+	private Map<Coordinates, Set<T>> regionMap = new HashMap<Coordinates, Set<T>>();
 
 	/** Adds another element to the cache.
 	 *
@@ -115,7 +115,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 
 	/** Get a set of all elements at a certain coordinate. */
 	@Override
-	public Set<T> getAll(Coords coords) {
+	public Set<T> getAll(Coordinates coords) {
 		if (!regionMap.containsKey(coords)) {
 			return Collections.unmodifiableSet(new HashSet<T>());
 		}
@@ -124,7 +124,7 @@ public class MapCache<T extends Atlantis> implements Cache<T> {
 
 	/** Get the set of all elements at a certain coordinate belonging to a certain player.*/
 	@Override
-	public Set<T> getAll(Coords coords, int owner) {
+	public Set<T> getAll(Coordinates coords, int owner) {
 		// fish out the elements owned by the specified player by hand.
 		Set<T> retval = new HashSet<T>();
 

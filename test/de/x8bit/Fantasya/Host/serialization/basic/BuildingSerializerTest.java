@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.Cache;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -21,14 +21,14 @@ public class BuildingSerializerTest {
 
 	private Map<String,String> serializedMap = new HashMap<String,String>();
 
-	private HashSet<Coords> coordSet = new HashSet<Coords>();
+	private HashSet<Coordinates> coordSet = new HashSet<Coordinates>();
 	private MapCache<Unit> unitCache = new MapCache<Unit>();
 
 	private BuildingSerializer serializer = new BuildingSerializer(coordSet, unitCache);
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(15,14,-2);
+		Coordinates coords = new Coordinates(15,14,-2);
 		coordSet.add(coords);
 
 		// a unit with the id of the owning unit.
@@ -74,7 +74,7 @@ public class BuildingSerializerTest {
 
 	@Test
 	public void loadingBasicallyWorks() {
-		Coords coords = new Coords(
+		Coordinates coords = new Coordinates(
 				Integer.decode(serializedMap.get("koordx")),
 				Integer.decode(serializedMap.get("koordy")),
 				Integer.decode(serializedMap.get("welt")));

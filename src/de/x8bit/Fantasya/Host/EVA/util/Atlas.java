@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.EVA.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
 import de.x8bit.Fantasya.util.StringUtils;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
  * @author hapebe
  */
 @SuppressWarnings("serial")
-public class Atlas extends HashMap<Coords, RegionsSicht> {
+public class Atlas extends HashMap<Coordinates, RegionsSicht> {
 
     /**
      * nimmt die RegionsSicht nur dann auf, wenn sie neu ist; oder neuer als die vorhandene.
@@ -21,7 +21,7 @@ public class Atlas extends HashMap<Coords, RegionsSicht> {
      * @return (siehe HashMap; gibt aber auch den vorhandenen Wert zurück, wenn der NICHT verdrängt wurde)
      */
     @Override
-    public RegionsSicht put(Coords key, RegionsSicht value) {
+    public RegionsSicht put(Coordinates key, RegionsSicht value) {
         if (containsKey(key)) {
             if (value.getRunde() > get(key).getRunde()) {
                 return super.put(key, value);

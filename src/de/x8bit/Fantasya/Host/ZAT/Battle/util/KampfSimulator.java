@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.ZAT.Battle.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Items.Pegasus;
 import de.x8bit.Fantasya.Atlantis.Items.Schwert;
@@ -499,7 +499,7 @@ public class KampfSimulator implements CommandLineArg {
 
         Region r = new Ebene();
         r.setName("KampfSimulatorenland");
-        r.setCoords(new Coords(0, 0, 1));
+        r.setCoords(new Coordinates(0, 0, 1));
         r.Init();
         Region.CACHE.put(r.getCoords(), r);
 

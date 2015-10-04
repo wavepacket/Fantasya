@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Berge;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
@@ -39,21 +39,21 @@ public class KleinInsel extends ProtoInsel {
 		Map<Class<? extends Atlantis>, Double> chances = getTerrainProbabilities();
 		// den "Keim" pflanzen:
 		Region keim = this.randomRegion(chances);
-		keim.setCoords(new Coords(0, 0, this.getWelt()));
+		keim.setCoords(new Coordinates(0, 0, this.getWelt()));
 		this.putRegion(keim);
 		int loop = 0;
 		
 		while (alleRegionen().size() < getZielGroesse()) {
 			// alle leeren Regionen in Nachbarschaft der existierenden finden
 			// Nähe zum Ursprung bevorzugen
-			List<Coords> kandidaten = new ArrayList<Coords>();
+			List<Coordinates> kandidaten = new ArrayList<Coordinates>();
 			kandidaten.addAll(this.getAussenKontur());
-			Coords c = null;
+			Coordinates c = null;
 			while (c == null) {
 				Collections.shuffle(kandidaten, rnd);
 				// ...und einsetzen:
 				c = kandidaten.get(0);
-				int distanceToZero = c.getDistance(new Coords(0,0,c.getWelt()));
+				int distanceToZero = c.getDistance(new Coordinates(0,0,c.getWelt()));
 				double pAccept = 1d / (double)distanceToZero;
 				pAccept *= pAccept;
 				if (rnd.nextDouble() > pAccept) c = null;
@@ -82,7 +82,7 @@ public class KleinInsel extends ProtoInsel {
 		binnenSeenFuellen();
 		// und der Mittelpunkt (ohne Berücksichtigung von Ozean) ist:
 		this.mittelpunkt = null;
-		Coords m = this.getMittelpunkt(false); // ohne Ozean
+		Coordinates m = this.getMittelpunkt(false); // ohne Ozean
 		if (this.getRegion(m.getX(), m.getY()) != null) {
 			Region r = this.getRegion(m.getX(), m.getY());
 			r.setName("M-" + r.getName());

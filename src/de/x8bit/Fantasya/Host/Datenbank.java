@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.Stack;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Welt;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
@@ -309,7 +309,7 @@ public class Datenbank
 		String nummern[] = { "t", "te", "tem", "temp", "b", "ba", "bau", "baue" };
 
 		for(int i = 0; i < nummern.length; i++)	{
-			Unit u = Unit.CreateUnit("Mensch", 0, new Coords(0, 0, 0));
+			Unit u = Unit.CreateUnit("Mensch", 0, new Coordinates(0, 0, 0));
 
 			Unit.CACHE.remove(u);
 			u.setNummer(Codierung.fromBase36(nummern[i]));

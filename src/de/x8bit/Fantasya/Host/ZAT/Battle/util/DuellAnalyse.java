@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.ZAT.Battle.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -50,7 +50,7 @@ public class DuellAnalyse implements CommandLineArg {
     public DuellAnalyse() {
         r = new Ebene();
         r.setName("Arena");
-        r.setCoords(new Coords(0,0,0));
+        r.setCoords(new Coordinates(0,0,0));
         r.Init();
 
         einheitA = -1;

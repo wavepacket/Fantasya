@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Regions.Sandstrom;
@@ -34,11 +34,11 @@ public class KleinerSandstrom extends ProtoInsel {
 		if (Random.W(6) > 1) fuellTyp = Ozean.class;
 		
 		// zwei Keime pflanzen:
-		Coords c1 = new Coords(0, 0, this.getWelt());
+		Coordinates c1 = new Coordinates(0, 0, this.getWelt());
 		MapSelection endpunktSuche = new MapSelection();
 		endpunktSuche.add(c1);
 		endpunktSuche.wachsen(this.getZielGroesse());
-		Coords c2 = endpunktSuche.getInnenKontur().zufaelligeKoordinate();
+		Coordinates c2 = endpunktSuche.getInnenKontur().zufaelligeKoordinate();
 		
 		MapSelection ma = new MapSelection();
 		ma.add(c1);
@@ -55,18 +55,18 @@ public class KleinerSandstrom extends ProtoInsel {
 		for (int loop = 0; loop < 10000; loop++) {
 			// von c1 in eine beliebige Richtung wachsen:
 			MapSelection kontur = ma.getAussenKontur();
-			Coords wachsen1 = kontur.zufaelligeKoordinate();
+			Coordinates wachsen1 = kontur.zufaelligeKoordinate();
 			// new Debug("ma wächst: " + wachsen1 + " / " + kontur.toString());
 			if (mb.contains(wachsen1)) break;
 			ma.add(wachsen1);
 			
 			// von c2 nur mit gleichem oder geringeren Abstand zu c1 wachsen:
 			int minDistance = Integer.MAX_VALUE;
-			for (Coords c : mb)	if (c.getDistance(c1) < minDistance) minDistance = c.getDistance(c1);
-			List<Coords> kandidaten = new ArrayList<Coords>();
-			for (Coords c : mb.getAussenKontur()) if (c.getDistance(c1) <= minDistance) kandidaten.add(c);
+			for (Coordinates c : mb)	if (c.getDistance(c1) < minDistance) minDistance = c.getDistance(c1);
+			List<Coordinates> kandidaten = new ArrayList<Coordinates>();
+			for (Coordinates c : mb.getAussenKontur()) if (c.getDistance(c1) <= minDistance) kandidaten.add(c);
 			Collections.shuffle(kandidaten);
-			Coords wachsen2 = kandidaten.get(0);
+			Coordinates wachsen2 = kandidaten.get(0);
 			if (ma.contains(wachsen2)) break;
 			mb.add(wachsen2);
 			
@@ -84,7 +84,7 @@ public class KleinerSandstrom extends ProtoInsel {
 		
 		// und der Mittelpunkt ist:
 		this.mittelpunkt = null;
-		Coords m = this.getMittelpunkt(true); // mit Ozean
+		Coordinates m = this.getMittelpunkt(true); // mit Ozean
 		if (this.getRegion(m.getX(), m.getY()) != null) {
 			r = this.getRegion(m.getX(), m.getY());
 			r.setName("M-" + r.getName());

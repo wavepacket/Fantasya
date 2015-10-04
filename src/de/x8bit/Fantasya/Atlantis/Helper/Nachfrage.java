@@ -3,7 +3,7 @@ package de.x8bit.Fantasya.Atlantis.Helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 
@@ -59,7 +59,7 @@ public class Nachfrage
 	/**
 	 * @return Eine Map Feldname =&gt; Wert, die den Feldern der entsprechenden Datenbank-Tabelle (Regions-Resourcen) entspricht
 	 */
-	public Map<String, Object> getDBValues(Coords c) {
+	public Map<String, Object> getDBValues(Coordinates c) {
 		Map<String, Object> fields = new HashMap<String, Object>();
 
 		fields.put("koordx", c.getX());

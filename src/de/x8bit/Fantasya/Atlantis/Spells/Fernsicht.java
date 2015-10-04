@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Spells;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.Elementar;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
 import de.x8bit.Fantasya.Atlantis.Messages.Magie;
@@ -37,7 +37,7 @@ public class Fernsicht extends Spell {
 	public String getCRSyntax() { return "r"; }
 
 	public int ExecuteSpell(Unit mage, String[] param) {
-		Coords globalTarget = null;
+		Coordinates globalTarget = null;
 
 		try {
 			param[2] = param[2].replaceAll("\\+", "");
@@ -46,7 +46,7 @@ public class Fernsicht extends Spell {
 			int privateX = Integer.parseInt(param[2]);
 			int privateY = Integer.parseInt(param[3]);
 			
-			Coords privateTarget = new Coords(privateX, privateY, mage.getCoords().getWelt());
+			Coordinates privateTarget = new Coordinates(privateX, privateY, mage.getCoords().getWelt());
 
 			Partei p = Partei.getPartei(mage.getOwner());
 

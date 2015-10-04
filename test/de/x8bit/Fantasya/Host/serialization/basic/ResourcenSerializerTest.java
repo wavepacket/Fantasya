@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
@@ -19,11 +19,11 @@ public class ResourcenSerializerTest {
 	private ResourcenSerializer serializer;
 
 	private Region region = new Ebene();
-	private Map<Coords, Region> regionMap = new HashMap<Coords, Region>();
+	private Map<Coordinates, Region> regionMap = new HashMap<Coordinates, Region>();
 
 	@Before
 	public void setup() {
-		Coords coords = new Coords(15,13,1);
+		Coordinates coords = new Coordinates(15,13,1);
 		region.setCoords(coords);
 		regionMap.put(coords, region);
 

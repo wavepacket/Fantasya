@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 import java.util.HashMap;
@@ -53,7 +53,7 @@ public class RegionSerializer implements ObjectSerializer<Region> {
 
 		region.setName(mapping.get("name"));
 		region.setBeschreibung(mapping.get("Beschreibung"));
-		region.setCoords(new Coords(
+		region.setCoords(new Coordinates(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt"))));

@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.serialization.complex;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Host.serialization.basic.ObjectSerializer;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 import java.util.Map;
@@ -19,14 +19,14 @@ public class MapCacheHandler<T extends Atlantis> implements ComplexHandler {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private ObjectSerializer<T> serializer;
-	private Map<Coords, T> cache;
+	private Map<Coordinates, T> cache;
 
 	/** Creates a new handler.
 	 *
 	 * @param serializer  the serializer that does the basic work.
 	 * @param cache       the map that we write to or save items from.
 	 */
-	public MapCacheHandler(ObjectSerializer<T> serializer, Map<Coords, T> cache) {
+	public MapCacheHandler(ObjectSerializer<T> serializer, Map<Coordinates, T> cache) {
 		if (serializer == null) {
 			throw new IllegalArgumentException("Need a valid serializer.");
 		}
@@ -70,7 +70,7 @@ public class MapCacheHandler<T extends Atlantis> implements ComplexHandler {
 	public SerializedData saveAll() {
 		SerializedData output = new SerializedData();
 
-		for (Coords c : cache.keySet()) {
+		for (Coordinates c : cache.keySet()) {
 			T item = cache.get(c);
 			if (item.getCoords() != c) {
 				logger.warn("Coordinates {} of object \"{}\" differ from sorting key {}.",

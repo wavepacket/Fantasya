@@ -224,8 +224,8 @@ public class CleanOrderReaderTest {
 	
 	@Test
 	public void normalizeNotInQuotedText() {
-		String[] command = { "BENENNE REGION \"Ünterwald\"" , "ZAUBERE \"Hain der tausend Eichen\" 1" };
-		String input = "BENENNE REGION \"Ünterwald\"\nZAUBERE \"Hain der tausend Eichen\" 1";
+		String[] command = { "BENENNE REGION \"Ünterwald\"" , "ZAUBERE \"Hün der tausend Eichen\" 1" };
+		String input = "BENENNE REGION \"Ünterwald\"\nZAUBERE \"Hün der tausend Eichen\" 1";
 
 		CleanOrderReader reader = generateReader(input);
 		

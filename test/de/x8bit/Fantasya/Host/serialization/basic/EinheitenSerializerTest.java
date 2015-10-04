@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Kampfposition;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -19,14 +19,14 @@ import org.junit.Test;
 public class EinheitenSerializerTest {
 
 	private Map<String,String> serializedMap = new HashMap<String,String>();
-	private Set<Coords> regionList = new HashSet<Coords>();
+	private Set<Coordinates> regionList = new HashSet<Coordinates>();
 	private Collection<Partei> partyList = new HashSet<Partei>();
 
 	private EinheitenSerializer serializer = new EinheitenSerializer(partyList, regionList);
 
 	@Before
 	public void setup() {
-		regionList.add(new Coords(1, 2, 3));
+		regionList.add(new Coordinates(1, 2, 3));
 
 		Partei p = new Partei();
 		p.setNummer(42);

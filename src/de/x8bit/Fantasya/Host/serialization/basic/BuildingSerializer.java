@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
@@ -16,10 +16,10 @@ public class BuildingSerializer implements ObjectSerializer<Building> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private Set<Coords> regionCoords;
+	private Set<Coordinates> regionCoords;
 	private MapCache<Unit> unitList;
 	
-	public BuildingSerializer(Set<Coords> regionCoords, MapCache<Unit> unitList) {
+	public BuildingSerializer(Set<Coordinates> regionCoords, MapCache<Unit> unitList) {
 		if (regionCoords == null) {
 			throw new IllegalArgumentException("List of region coordinates must not be null.");
 		}
@@ -60,7 +60,7 @@ public class BuildingSerializer implements ObjectSerializer<Building> {
 		}
 
 		// fail on bad coordinates
-		Coords coord = new Coords(
+		Coordinates coord = new Coordinates(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));

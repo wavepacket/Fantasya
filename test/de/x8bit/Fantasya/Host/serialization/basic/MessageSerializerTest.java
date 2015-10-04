@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.MapCache;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
@@ -22,11 +22,11 @@ public class MessageSerializerTest {
 	Map<String,String> serializedMapWoRefs;
 	
 	private Collection<Partei> parteiList = new ArrayList<Partei>();
-	private Collection<Coords> coordsList = new ArrayList<Coords>();
+	private Collection<Coordinates> coordsList = new ArrayList<Coordinates>();
 	private MapCache<Unit> unitList = new MapCache<Unit>();
 	
 	Partei partei = new Partei();
-	Coords coords = new Coords(1,2,3);
+	Coordinates coords = new Coordinates(1,2,3);
 	Unit unit = new Elf();
 	
 	private MessageSerializer serializer = new MessageSerializer(

@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.Nachfrage;
 import de.x8bit.Fantasya.Atlantis.Items.Juwel;
 import de.x8bit.Fantasya.Atlantis.Items.Pelz;
@@ -18,14 +18,14 @@ public class LuxusSerializerTest {
 
 	private Map<String,String> serializedMap = new HashMap<String,String>();
 
-	private Map<Coords,Region> regionMap = new HashMap<Coords,Region>();
+	private Map<Coordinates,Region> regionMap = new HashMap<Coordinates,Region>();
 	private Region region = new Ebene();
 
 	private LuxusSerializer serializer;
 	
 	@Before
 	public void setup() {
-		Coords coords= new Coords(15,13,1);
+		Coordinates coords= new Coordinates(15,13,1);
 		serializedMap.put("koordx", String.valueOf(coords.getX()));
 		serializedMap.put("koordy", String.valueOf(coords.getY()));
 		serializedMap.put("welt", String.valueOf(coords.getWelt()));

@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Messages;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 
 public class DeepDebug extends Message
@@ -10,7 +10,7 @@ public class DeepDebug extends Message
 	 */
 	public DeepDebug() {}
 
-	public DeepDebug(String msg, Coords c)
+	public DeepDebug(String msg, Coordinates c)
 	{
 		super();
 		print(0, msg, null, c);

@@ -1602,7 +1602,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 	 * @param c - Koordinaten
 	 * @return eine neue Einheit ohne irgendwas
 	 */
-	public static Unit CreateUnit(String rasse, int owner, Coords c) {
+	public static Unit CreateUnit(String rasse, int owner, Coordinates c) {
 		return CreateUnit(rasse, owner, c.getX(), c.getY(), c.getWelt());
 	}
 
@@ -1630,7 +1630,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		u.setName("Einheit " + u.getNummerBase36());
 		u.setOwner(owner);
 		u.setTarnPartei(owner);
-		u.setCoords(new Coords(x, y, welt));
+		u.setCoords(new Coordinates(x, y, welt));
 		u.setLebenspunkte(0);
 
 		// zum Proxy
@@ -1658,7 +1658,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		try	{
 			u = (Unit) Class.forName("de.x8bit.Fantasya.Atlantis.Units." + rs.getString("rasse")).newInstance();
 			u.setNummer(rs.getInt("nummer"));
-			u.setCoords(new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
+			u.setCoords(new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")));
 			u.setName(rs.getString("name"));
 			u.setBeschreibung(rs.getString("beschreibung"));
 			u.setPersonen(rs.getInt("person"));
@@ -2489,7 +2489,7 @@ public abstract class Unit extends Atlantis implements Comparable {
 		if (bewegung.size() > 0) {
             String rPrint = bewegung.get(0).toString();
             if (bewegung.get(0).getClass() == Ozean.class) {
-                Coords my = p.getPrivateCoords(bewegung.get(0).getCoords());
+                Coordinates my = p.getPrivateCoords(bewegung.get(0).getCoords());
                 rPrint += " " + my.xy();
             }
             msg = this + " " + reiseVerb + " von " + rPrint;
@@ -2519,7 +2519,7 @@ public abstract class Unit extends Atlantis implements Comparable {
                 // Region auflisten,
                 String rPrint = r.toString();
                 if (r.getClass() == Ozean.class) {
-                    Coords my = p.getPrivateCoords(r.getCoords());
+                    Coordinates my = p.getPrivateCoords(r.getCoords());
                     rPrint += " " + my.xy();
                 }
 				msg += rPrint;
@@ -2538,7 +2538,7 @@ public abstract class Unit extends Atlantis implements Comparable {
             r = Region.Load(this.getCoords());
             String rPrint = r.toString();
             if (r.getClass() == Ozean.class) {
-                Coords my = p.getPrivateCoords(r.getCoords());
+                Coordinates my = p.getPrivateCoords(r.getCoords());
                 rPrint += " " + my.xy();
             }
 			msg += " nach " + rPrint + ".";

@@ -196,7 +196,7 @@ public abstract class Item extends Dingens implements NamedItem {
 	/**
 	 * @return Eine Map Feldname =&gt; Wert, die den Feldern der entsprechenden Datenbank-Tabelle (Regions-Resourcen) entspricht
 	 */
-	public Map<String, Object> getResourceDBValues(Coords c) {
+	public Map<String, Object> getResourceDBValues(Coordinates c) {
 		Map<String, Object> fields = new HashMap<String, Object>();
 
 		fields.put("koordx", c.getX());

@@ -6,7 +6,7 @@ import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Cave;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Skill;
@@ -198,7 +198,7 @@ public class Hoellenhund extends Monster
 	 * @param coords Die Einheiten wird bei coords ausgesetzt.
 	 * @return 
 	 */
-	private static Unit createHoellenhunde(Coords coords) {
+	private static Unit createHoellenhunde(Coordinates coords) {
 		Unit unit = null;
 		unit = Unit.CreateUnit("Hoellenhund", Codierung.fromBase36("dark"), coords);
         

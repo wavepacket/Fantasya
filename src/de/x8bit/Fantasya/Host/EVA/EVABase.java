@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -88,7 +88,7 @@ abstract public class EVABase {
 	 */
 	public EVABase(String befehl, String message) {
 		if (!ZATMode.CurrentMode().getSkip(this.getClass())) {
-			Set<Coords> regionen = BefehlsSpeicher.getInstance().getCoords(this.getClass());
+			Set<Coordinates> regionen = BefehlsSpeicher.getInstance().getCoords(this.getClass());
 
 			if (message != null) new ZATMsg(message + " in " + regionen.size() + " Regionen.");
 
@@ -108,7 +108,7 @@ abstract public class EVABase {
 			} else {
 
 				// der klassische Normalfall:
-				for (Coords c : regionen) {
+				for (Coordinates c : regionen) {
 					if (c.getWelt() == 0) {
 						continue; // virtuelle Einheiten machen nix! (t, te, tem ...)
 					}					// new SysMsg("Region " + Region.Load(c) + "...");

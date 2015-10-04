@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,19 +19,19 @@ import java.util.TreeSet;
  *
  * @author hb
  */
-public class MapSelection extends TreeSet<Coords> {
+public class MapSelection extends TreeSet<Coordinates> {
 	private static final long serialVersionUID = 8824892696365664390L;
 
-    public Coords getMittelpunkt() {
+    public Coordinates getMittelpunkt() {
         int sx = 0; int sy = 0;
         int swelt = 0;
-        for (Coords c : this) {
+        for (Coordinates c : this) {
             sx += c.getX();
             sy += c.getY();
             swelt += c.getWelt();
         }
 
-        return new Coords(
+        return new Coordinates(
                 (int)Math.round((double)sx / (double)this.size()),
                 (int)Math.round((double)sy / (double)this.size()),
                 (int)Math.round((double)swelt / (double)this.size())
@@ -44,7 +44,7 @@ public class MapSelection extends TreeSet<Coords> {
         try {
             out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF8"));
 
-            for (Coords c : this) {
+            for (Coordinates c : this) {
                 out.write(c.getX() + " " + c.getY() + " " + c.getWelt() + "\n");
             }
 
@@ -60,31 +60,31 @@ public class MapSelection extends TreeSet<Coords> {
 
 	public void wachsen(int schritte) {
         for (int i=0; i<schritte; i++) {
-            List<Coords> zuwachs = new ArrayList<Coords>();
-            for (Coords c : this) {
-                for (Coords n : c.getNachbarn()) {
+            List<Coordinates> zuwachs = new ArrayList<Coordinates>();
+            for (Coordinates c : this) {
+                for (Coordinates n : c.getNachbarn()) {
                     if (!this.contains(n)) {
                         zuwachs.add(n);
                     }
                 }
             }
 
-            for (Coords neu : zuwachs) this.add(neu);
+            for (Coordinates neu : zuwachs) this.add(neu);
         }
     }
 
     public void schrumpfen(int schritte) {
         for (int i=0; i<schritte; i++) {
-            List<Coords> wegfall = new ArrayList<Coords>();
-            for (Coords c : this) {
-                for (Coords n : c.getNachbarn()) {
+            List<Coordinates> wegfall = new ArrayList<Coordinates>();
+            for (Coordinates c : this) {
+                for (Coordinates n : c.getNachbarn()) {
                     if (!this.contains(n)) {
                         wegfall.add(c);
                     }
                 }
             }
 
-            for (Coords raus : wegfall) this.remove(raus);
+            for (Coordinates raus : wegfall) this.remove(raus);
         }
     }
 
@@ -94,8 +94,8 @@ public class MapSelection extends TreeSet<Coords> {
 	public MapSelection getAussenKontur() {
 		// TODO mglw. alternative Implementierung: b = a.clone, b.wachsen(1), b.subtrahieren(a)
 		MapSelection sel = new MapSelection();
-		for (Coords c : this) {
-			for (Coords n : c.getNachbarn()) {
+		for (Coordinates c : this) {
+			for (Coordinates n : c.getNachbarn()) {
 				if (!this.contains(n)) sel.add(n);
 			}
 		}
@@ -107,8 +107,8 @@ public class MapSelection extends TreeSet<Coords> {
 	 */
 	public MapSelection getInnenKontur() {
 		MapSelection sel = new MapSelection();
-		for (Coords c : this) {
-			for (Coords n : c.getNachbarn()) {
+		for (Coordinates c : this) {
+			for (Coordinates n : c.getNachbarn()) {
 				if (!this.contains(n)) {
 					sel.add(c);
 					break;
@@ -118,20 +118,20 @@ public class MapSelection extends TreeSet<Coords> {
 		return sel;
 	}
 
-	public List<Coords> asList() {
-		List<Coords> retval = new ArrayList<Coords>();
-		for (Coords c : this) retval.add(c);
+	public List<Coordinates> asList() {
+		List<Coordinates> retval = new ArrayList<Coordinates>();
+		for (Coordinates c : this) retval.add(c);
 		return retval;
 	}
 
 	/**
 	 * @return eine zufällige ausgewählte Koordinate dieser MapSelection - oder null, wenn es hier gar keine Coords gibt.
 	 */
-	public Coords zufaelligeKoordinate() {
+	public Coordinates zufaelligeKoordinate() {
 		if (this.size() == 0) return null;
 		if (this.size() == 1) return this.first();
 
-		List<Coords> alle = new ArrayList<Coords>();
+		List<Coordinates> alle = new ArrayList<Coordinates>();
 		alle.addAll(this);
 		Collections.shuffle(alle);
 		return alle.get(0);

@@ -32,7 +32,7 @@ public class Atlantis {
 	/** Beschreibung des Objektes ("sammelt Beeren") */
 	private String Beschreibung = "";
 	/** Koordinaten für dieses Objekt. */
-	private Coords coords = new Coords(0,0,0);
+	private Coordinates coords = new Coordinates(0,0,0);
 	/** Eigentümer des Objectes (genauer: dessen ID); 0 fuer keinen Besitzer. */
 	private int Owner;
 	/** Nummer (Id) des Objektes */
@@ -81,12 +81,12 @@ public class Atlantis {
         return (this.getOwner() == p.getNummer());
     }
 
-	public Coords getCoords() {
+	public Coordinates getCoords() {
 		return coords;
 	}
 
-	public void setCoords(Coords value) {
-		coords = new Coords(value);
+	public void setCoords(Coordinates value) {
+		coords = new Coordinates(value);
 	}
 
 	/** Gibt die Nummer (Id) des Objektes zurueck. */

@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -37,12 +37,12 @@ public class SortedCache<T extends Atlantis> extends MapCache<T> {
 	}
 
 	@Override
-	public Set<T> getAll(Coords coords) {
+	public Set<T> getAll(Coordinates coords) {
 		return new TreeSet<T>(super.getAll(coords));
 	}
 
 	@Override
-	public Set<T> getAll(Coords coords, int owner) {
+	public Set<T> getAll(Coordinates coords, int owner) {
 		return new TreeSet<T>(super.getAll(coords, owner));
 	}
 }

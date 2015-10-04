@@ -1,7 +1,7 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,8 +24,8 @@ public class MapCacheTest {
 
 	@Before
 	public void setup() {
-		Coords c1 = new Coords(1, 2, 1);
-		Coords c2 = new Coords(5, 4, 1);
+		Coordinates c1 = new Coordinates(1, 2, 1);
+		Coordinates c2 = new Coordinates(5, 4, 1);
 
 		object.setNummer(1);
 		object2.setNummer(2);

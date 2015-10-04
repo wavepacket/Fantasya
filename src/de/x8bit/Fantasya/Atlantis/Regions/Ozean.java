@@ -3,7 +3,7 @@ package de.x8bit.Fantasya.Atlantis.Regions;
 import java.awt.image.BufferedImage;
 
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
@@ -87,7 +87,7 @@ public class Ozean extends Region
 			Ozean o = (Ozean) r;
 			if (o.getSturmValue() != -1) continue;	// Wert schon gesetzt
 			int count = 0;
-			for(Coords c : o.getCoords().getNachbarn()) count += (Region.Load(c).istBetretbar(null) ? 1 : 0);
+			for(Coordinates c : o.getCoords().getNachbarn()) count += (Region.Load(c).istBetretbar(null) ? 1 : 0);
 			if (count > 0) o.setSturmValue(0);
 		}
 	}
@@ -101,7 +101,7 @@ public class Ozean extends Region
 			if (o.getSturmValue() != -1) 
 				continue;	// Wert schon gesetzt
 			int count = 0;
-			for(Coords c : o.getCoords().getNachbarn())
+			for(Coordinates c : o.getCoords().getNachbarn())
 			{
 				Region region = Region.Load(c);
 				if (!(region instanceof Ozean)) continue;

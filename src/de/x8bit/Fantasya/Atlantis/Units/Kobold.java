@@ -3,7 +3,7 @@ package de.x8bit.Fantasya.Atlantis.Units;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Skill;
@@ -504,7 +504,7 @@ public class Kobold extends Monster {
 		kobold.Befehle.add("LERNE Tarnung");
 	}
 
-	private static Unit createKoboldEVA(int insel, Coords coords) {
+	private static Unit createKoboldEVA(int insel, Coordinates coords) {
 		List<Region> regionen = Region.getInselRegionen(insel, true);
 		Unit unit = null;
 		if (coords == null)	{
@@ -609,7 +609,7 @@ public class Kobold extends Monster {
 
     @Override
     public void meldungenAuswerten() {
-        List<Message> messages = Message.Retrieve(null, (Coords)null, this);
+        List<Message> messages = Message.Retrieve(null, (Coordinates)null, this);
         for (Message msg : messages) {
             String txt = msg.getText().toLowerCase();
             

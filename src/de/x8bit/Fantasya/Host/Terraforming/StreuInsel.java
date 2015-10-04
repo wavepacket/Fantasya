@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
@@ -93,25 +93,25 @@ public class StreuInsel extends ProtoInsel {
 		return (d > 1?d:1);
 	}
 
-	private void createEinzelhaufen(List<Coords> kandidaten, int size) {
+	private void createEinzelhaufen(List<Coordinates> kandidaten, int size) {
 		Map<Class<? extends Atlantis>, Double> chances = getTerrainProbabilities();
 
 		Collections.shuffle(kandidaten);
 
-		Set<Coords> me = new HashSet<Coords>();
+		Set<Coordinates> me = new HashSet<Coordinates>();
 
 		// den "Keim" suchen:
 		// Eine Region suchen, die an einen Kandidaten grenzt
 		// UND nicht neben einer existierenden Region liegt.
-		Coords keim = null;
-		for (Coords c : kandidaten) {
-			for (Coords n : c.getNachbarn()) {
+		Coordinates keim = null;
+		for (Coordinates c : kandidaten) {
+			for (Coordinates n : c.getNachbarn()) {
 				if (this.getRegion(n.getX(), n.getY()) != null) continue; // nope, mich gibt es schon
 
 				// so, hat dieser Nachbar eines Kandidaten nun selbst schon
 				// richtige Nachbarn?
 				boolean okay = true;
-				for (Coords nn : n.getNachbarn()) {
+				for (Coordinates nn : n.getNachbarn()) {
 					Region nachbarsNachbar = this.getRegion(nn.getX(), nn.getY());
 					if (nachbarsNachbar != null) {
 						okay = false;
@@ -138,8 +138,8 @@ public class StreuInsel extends ProtoInsel {
 		// Regionen suchen, die jeweils an "me" grenzen, aber nicht an bestehende Regionen
 		while (me.size() < size) {
 			kandidaten.clear();
-			for (Coords c : me) {
-				for (Coords n : c.getNachbarn()) {
+			for (Coordinates c : me) {
+				for (Coordinates n : c.getNachbarn()) {
 					if (me.contains(n)) continue;
 					// ist noch nicht in me.
 
@@ -147,7 +147,7 @@ public class StreuInsel extends ProtoInsel {
 					// existiert noch nicht
 
 					boolean okay = true;
-					for (Coords nn : n.getNachbarn()) {
+					for (Coordinates nn : n.getNachbarn()) {
 						if (this.getRegion(nn.getX(), nn.getY()) != null) okay = false;
 					}
 					if (!okay) continue;
@@ -165,7 +165,7 @@ public class StreuInsel extends ProtoInsel {
 
 			Collections.shuffle(kandidaten);
 			// nur den ersten anwachsen lassen:
-			for (Coords c : kandidaten) {
+			for (Coordinates c : kandidaten) {
 				me.add(c);
 				break;
 			}
@@ -173,7 +173,7 @@ public class StreuInsel extends ProtoInsel {
 
 		// so, jetzt ernst machen und die Regionen erzeugen:
 		int i = 1;
-		for (Coords c : me) {
+		for (Coordinates c : me) {
 			Region r = this.randomRegion(chances);
 			r.setCoords(c);
 			r.setName(" (Haufen: " + i + "/" + size + "R)");
@@ -185,8 +185,8 @@ public class StreuInsel extends ProtoInsel {
 	@Override
 	public void create() {
 		// den "Keim" vorbereiten:
-		List<Coords> kandidaten = new ArrayList<Coords>();
-		kandidaten.add(new Coords(0, 0, this.getWelt()));
+		List<Coordinates> kandidaten = new ArrayList<Coordinates>();
+		kandidaten.add(new Coordinates(0, 0, this.getWelt()));
 		int einzelGroesse = 1;
 
 		while (alleRegionen().size() < getZielGroesse()) {
@@ -208,7 +208,7 @@ public class StreuInsel extends ProtoInsel {
 		
 		// und der Mittelpunkt (ohne Berücksichtigung von Ozean) ist:
 		this.mittelpunkt = null;
-		Coords m = this.getMittelpunkt(false); // ohne Ozean
+		Coordinates m = this.getMittelpunkt(false); // ohne Ozean
 		if (this.getRegion(m.getX(), m.getY()) != null) {
 			Region r = this.getRegion(m.getX(), m.getY());
 			r.setName("M-" + r.getName());

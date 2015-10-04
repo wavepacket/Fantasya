@@ -44,7 +44,9 @@ public abstract class Language {
 		LOGGER.debug("Initialize language: " + locale.getLanguage());
 		this.locale = locale;
 		this.toString = locale.getLanguage().toLowerCase(locale);
-		String propertyFile = IOFactory.PROPERTIES_DIR + "properties_" + this.toString + ".properties";
+		
+		String propertyFile = IOFactory.CONFIG_DIR + "properties_" + this.toString + ".properties";
+		
 		try {
 			LOGGER.debug("Loading property file: " + propertyFile);
 			InputStream inputStream = new FileInputStream(propertyFile);
@@ -52,9 +54,19 @@ public abstract class Language {
 			properties.load(reader);
 			reader.close();
 			inputStream.close();
+			
+			propertyFile = IOFactory.RULES_DIR + "properties_" + this.toString + ".properties";
+			
+			LOGGER.debug("Loading property file: " + propertyFile);
+			inputStream = new FileInputStream(propertyFile);
+			reader = new InputStreamReader(inputStream, "UTF-8");
+			properties.load(reader);
+			reader.close();
+			inputStream.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			LOGGER.warn("Language " + locale.getLanguage() + " has proplems with property file " + propertyFile + ": \n" + StringFactory.getExceptionDetails(ex));
+			// Datenbank-Config laden
 		}
 	}
 	
@@ -84,6 +96,7 @@ public abstract class Language {
 	public String getTranslation(String key) throws IllegalArgumentException {
 		if (key == null) {
 			IllegalArgumentException ex = new IllegalArgumentException("Key for a property of language " + toString() + " is 'NULL'.");
+			
 			LOGGER.error(StringFactory.getExceptionDetails(ex));
 			throw ex;
 		}

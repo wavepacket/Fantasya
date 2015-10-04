@@ -8,7 +8,7 @@ import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -107,7 +107,7 @@ public class Nummer extends EVABase
 				if (!geaenderte.contains(unit)) {
 					Unit.CACHE.remove(unit);
 
-					List<Message> my = Message.Retrieve(null, (Coords)null, u);
+					List<Message> my = Message.Retrieve(null, (Coordinates)null, u);
 					for (Message msg : my) {
 						Message.Cache().remove(msg);
 						betroffeneMessages.add(msg);
@@ -204,7 +204,7 @@ public class Nummer extends EVABase
 			infoMsg = "NUMMER EINHEIT - ändere von [" + Codierung.toBase36(alt) + "] auf [" + Codierung.toBase36(nummer) + "].";
 		}
 
-		List<Message> my = Message.Retrieve(null, (Coords)null, u);
+		List<Message> my = Message.Retrieve(null, (Coordinates)null, u);
 		Set<Message> betroffeneMessages = new HashSet<Message>();
 		for (Message msg : my) {
 			Message.Cache().remove(msg);

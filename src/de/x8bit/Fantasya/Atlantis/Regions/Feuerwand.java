@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Regions;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Unit;
 
@@ -15,7 +15,7 @@ public class Feuerwand extends Region {
 
 	public Feuerwand(int x, int y, int welt) {
 		this();
-        this.setCoords(new Coords(x, y, welt));
+        this.setCoords(new Coordinates(x, y, welt));
 	}
 
 	@Override

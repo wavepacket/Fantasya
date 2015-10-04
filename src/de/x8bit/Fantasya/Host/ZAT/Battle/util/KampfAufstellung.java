@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.ZAT.Battle.util;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Kampfposition;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
@@ -137,7 +137,7 @@ public class KampfAufstellung {
 
                             u.setNummer(aktuelleEinheit);
                             u.setName("Krieger " + Codierung.toBase36(aktuelleEinheit));
-                            u.setCoords(new Coords(0, 0, 1));
+                            u.setCoords(new Coordinates(0, 0, 1));
                             u.setPersonen(1);
                             u.setKampfposition(Kampfposition.Vorne);
 

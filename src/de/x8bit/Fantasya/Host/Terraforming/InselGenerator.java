@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.Terraforming;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.StartPosition;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.SysMsg;
@@ -60,7 +60,7 @@ public class InselGenerator {
 		for (Region r : vorhanden.alleRegionen()) {
 			if (r.getInselKennung() == alteInselKennung) juengsteAlte.add(r.getCoords());
 		}
-		Coords anlegePunkt = juengsteAlte.getMittelpunkt();
+		Coordinates anlegePunkt = juengsteAlte.getMittelpunkt();
 
 		// muss nachher wieder zurückverschoben werden, zumindest für die neue Insel!
 		vorhanden.shift(0 - anlegePunkt.getX(), 0 - anlegePunkt.getY());
@@ -115,7 +115,7 @@ public class InselGenerator {
 		String wasIsses = neu.getClass().getSimpleName();
 		new SysMsg("Neu: " + wasIsses + " #" + inselKennung + " mit " + neu.alleRegionen().size() + " eigenen Regionen, " + abstand + " von der nächsten bekannten Region.");
 
-		Coords m = neu.getMittelpunkt(true); // Ozean mit einbeziehen
+		Coordinates m = neu.getMittelpunkt(true); // Ozean mit einbeziehen
 
 		// den Mittelpunkt einzeichnen:
 		Region r = neu.getRegion(m.getX(), m.getY());
@@ -162,7 +162,7 @@ public class InselGenerator {
 
 			// den Ursprung (0;0) der kombinierten Insel in die neue Mitte verschieben.
 			insel.mittelpunkt = null;
-			Coords m = insel.getMittelpunkt(false);
+			Coordinates m = insel.getMittelpunkt(false);
 			insel.shift(0 - m.getX(), 0 - m.getY());
 			Region mr = insel.getRegion(0, 0);
 			if (mr != null) mr.setBeschreibung(mr.getBeschreibung()+" - Mittelpunkt der Welt nach Insel " + (i+1));
@@ -170,7 +170,7 @@ public class InselGenerator {
 			insel.saveCR("./temp/gesamtwelt-" + (i+1) + ".cr");
 		}
 
-		Coords m = insel.getMittelpunkt(false);
+		Coordinates m = insel.getMittelpunkt(false);
 		insel.shift(0 - m.getX(), 0 - m.getY());
 
         // insel.konturieren(1);
@@ -178,7 +178,7 @@ public class InselGenerator {
 
 		int i = 1;
 		for (StartPosition sp : insel.findeStartPositionen()) {
-			for (Coords c : sp) {
+			for (Coordinates c : sp) {
 				Region r = insel.getRegion(c.getX(), c.getY());
 				String name = r.getName();
 				r = Gletscher.class.newInstance();
@@ -200,7 +200,7 @@ public class InselGenerator {
 			int cnt = 0;
 			for (WeltPartition p : partitionen) {
 				if (cnt == 0) { cnt++; continue; }
-				for (Coords c : p.getCoords()) {
+				for (Coordinates c : p.getCoords()) {
 					Region temp = insel.getRegion(c.getX(), c.getY());
 					temp.setBeschreibung(temp.getBeschreibung() + " - Partition " + (cnt + 1));
 				}
@@ -208,15 +208,15 @@ public class InselGenerator {
 			}
 
 			// alle Partitionen wachsen auf Partition #1 zu:
-			Coords zentrum = partitionen.get(0).getMittelpunkt();
+			Coordinates zentrum = partitionen.get(0).getMittelpunkt();
 			for (int j=1 ; j<partitionen.size(); j++) {
 				WeltPartition satellit = partitionen.get(j);
 
 				// wir suchen diejenige Grenzregion, die am nähesten zum
 				// Welt-Mittelpunkt (der anderen Partition) liegt:
-				Coords bridge = null;
+				Coordinates bridge = null;
 				int minDistance = Integer.MAX_VALUE;
-				for (Coords c : satellit.getGrenzen()) {
+				for (Coordinates c : satellit.getGrenzen()) {
 					int d = c.getDistance(zentrum);
 					if (d < minDistance) {
 						bridge = c;
@@ -225,7 +225,7 @@ public class InselGenerator {
 				}
 
 				if (bridge != null) {
-					Coords extendCoords = bridge.shift(bridge.getRichtungNach(zentrum));
+					Coordinates extendCoords = bridge.shift(bridge.getRichtungNach(zentrum));
 
 					Region extend;
 					try {
@@ -396,7 +396,7 @@ public class InselGenerator {
 			for (InselKombinationsScore iks : scores) {
 				// die Debug-Regionen auf jeden Fall eintragen:
 				String beschreibung = "iks #" + (cnt + 1);
-				Coords thisShift = new Coords(iks.getDx(), iks.getDy(), stator.getWelt());
+				Coordinates thisShift = new Coordinates(iks.getDx(), iks.getDy(), stator.getWelt());
 				Region r = null;
 				if (cnt < 3) {
 					r = Feuerwand.class.newInstance();

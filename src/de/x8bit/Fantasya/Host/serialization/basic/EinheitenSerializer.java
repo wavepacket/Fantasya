@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Kampfposition;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -27,9 +27,9 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private Collection<Partei> partyList;
-	private Set<Coords> regionList;
+	private Set<Coordinates> regionList;
 
-	public EinheitenSerializer(Collection<Partei> partyList, Set<Coords> regionList) {
+	public EinheitenSerializer(Collection<Partei> partyList, Set<Coordinates> regionList) {
 		if (partyList == null) {
 			throw new IllegalArgumentException("Require a valid list of parties for unit serialization.");
 		}
@@ -84,7 +84,7 @@ public class EinheitenSerializer implements ObjectSerializer<Unit> {
 		}
 
 		unit.setNummer(Integer.decode(mapping.get("nummer")));
-		unit.setCoords(new Coords(
+		unit.setCoords(new Coordinates(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt"))));

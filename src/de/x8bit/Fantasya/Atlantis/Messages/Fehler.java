@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Messages;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -20,7 +20,7 @@ public class Fehler extends Message
 		this(msg, u, u.getCoords());
 	}
 	
-	public Fehler(String msg, Unit u, Coords c)
+	public Fehler(String msg, Unit u, Coordinates c)
 	{
 		super();
 		print(0, msg, c, u);

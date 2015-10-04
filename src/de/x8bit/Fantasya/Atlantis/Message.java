@@ -42,7 +42,7 @@ public class Message {
 	private Partei partei = null;
 	private Unit unit = null;
 	private String text = "";
-	private Coords coords = null;
+	private Coordinates coords = null;
     private Date timestamp = null;
 	private int evaId = -1;
 
@@ -130,12 +130,12 @@ public class Message {
 	}
 
 	/** Liefert Messages ohne Beruecksichtigung der Kategorie zurueck. */
-    public static List<Message> Retrieve(Partei p, Coords c, Unit u) {
+    public static List<Message> Retrieve(Partei p, Coordinates c, Unit u) {
 		// Kategorie ignorieren
 		return Retrieve(p, c, u, null);
     }
 
-	public static List<Message> Retrieve(Partei p, Coords c, Unit u, String kategorie) {		
+	public static List<Message> Retrieve(Partei p, Coordinates c, Unit u, String kategorie) {		
 		Collection<Message> candidateMessages = Messages;
 		
 		if (p != null && c != null) {
@@ -205,7 +205,7 @@ public class Message {
 	public Map<String, Object> getDBValues() {
 		Map<String, Object> fields = new HashMap<String, Object>();
 
-		Coords c = this.getCoords();
+		Coordinates c = this.getCoords();
 		fields.put("partei", getPartei() == null? 0 : getPartei().getNummer());
 		fields.put("kategorie", getClass().getSimpleName());
 		fields.put("text", getText());
@@ -263,7 +263,7 @@ public class Message {
 			int koordy = rs.getInt("koordy");
 			int welt = rs.getInt("welt");
 			if ((koordx != 0) || (koordy != 0) || (welt != 0)) {
-				retval.setCoords(new Coords(koordx, koordy, welt));
+				retval.setCoords(new Coordinates(koordx, koordy, welt));
 			}
 
 		} catch (SQLException ex) {
@@ -286,7 +286,7 @@ public class Message {
 	 * @param coords The coordinates of the region that the message refers to.
 	 * @param unit The unit that the message refers to.
 	 */
-	protected void print(int level, String msg, Partei partei, Coords coords, Unit unit) {
+	protected void print(int level, String msg, Partei partei, Coordinates coords, Unit unit) {
 		// first, some sanity checks.
 		if (msg == null || msg.trim().isEmpty()) {
 			throw new IllegalArgumentException("Messages must have a text!");
@@ -312,7 +312,7 @@ public class Message {
 	}
 	
 	/** Convenience function if only the party and the coordinates are set. */
-	protected void print(int level, String msg, Partei partei, Coords coords) {
+	protected void print(int level, String msg, Partei partei, Coordinates coords) {
 		this.print(level, msg, partei, coords, null);
 	}
 
@@ -320,7 +320,7 @@ public class Message {
 	 * 
 	 * The party is taken from the unit's owner. The unit must not be null.
 	 */
-	protected void print(int level, String msg, Coords coords, Unit u) {
+	protected void print(int level, String msg, Coordinates coords, Unit u) {
 		this.print(level, msg, Partei.getPartei(u.getOwner()), coords, u);
 	}
 	
@@ -392,10 +392,10 @@ public class Message {
 		return text;
 	}
 
-	public void setCoords(Coords coords) {
+	public void setCoords(Coordinates coords) {
 		this.coords = coords;
 	}
-	public Coords getCoords() {
+	public Coordinates getCoords() {
 		return coords;
 	}
 

@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Atlantis.Helper;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import java.util.Collections;
@@ -21,7 +21,7 @@ public class MessageCacheTest {
 	private Message msgWithPlayerAndCoords = new Message();
 	
 	private Partei partei = new Partei();
-	private Coords coords = new Coords(1,1,1);
+	private Coordinates coords = new Coordinates(1,1,1);
 	
 	@Before
 	public void setup() {
@@ -118,7 +118,7 @@ public class MessageCacheTest {
 	
 	@Test
 	public void returnEmptySetForInvalidCoordinate() {
-		Set<Message>  locatedMessages = cache.getAll(new Coords(7,7,0));
+		Set<Message>  locatedMessages = cache.getAll(new Coordinates(7,7,0));
 		
 		assertTrue("No empty set returned.", locatedMessages.isEmpty());
 	}

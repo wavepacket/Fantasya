@@ -19,6 +19,17 @@ public class StringFactory {
 		return sw.toString();
 	}
 	
+	public static String only8bit(String s) {
+		  StringBuffer r = new StringBuffer( s.length() );
+		  r.setLength( s.length() );
+		  int current = 0;
+		  for (int i = 0; i < s.length(); i ++) {
+			 char cur = s.charAt(i);
+			 if (cur < 256) r.setCharAt( current++, cur );
+		  }
+		  return r.toString();
+	}
+	
 	/**
 	 * check for ' to get a valid sql-statement
      * @param value to check

@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.postprocess;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +25,9 @@ public class RegionInitHandelProcessorTest {
 		final Region r1 = context.mock(Region.class, "region 1");
 		final Region r2 = context.mock(Region.class, "region 2");
 
-		Map<Coords, Region> regionMap = new HashMap<Coords, Region>();
-		regionMap.put(new Coords(2,3,1), r1);
-		regionMap.put(new Coords(2,2,1), r2);
+		Map<Coordinates, Region> regionMap = new HashMap<Coordinates, Region>();
+		regionMap.put(new Coordinates(2,3,1), r1);
+		regionMap.put(new Coordinates(2,2,1), r2);
 
 		context.checking(new Expectations() {{
 			oneOf(r1).Init_Handel();

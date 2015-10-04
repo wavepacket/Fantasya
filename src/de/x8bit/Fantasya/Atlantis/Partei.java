@@ -51,7 +51,7 @@ public class Partei extends Atlantis {
 	private String Website = "";
 	private String Password = "empty";
 	private int NMR = 0;
-	private Coords Ursprung = new Coords(0, 0, 0);
+	private Coordinates Ursprung = new Coordinates(0, 0, 0);
 	private int Alter = 0;
 	private int Defaultsteuer = 0;
 	private int Monster = 0;
@@ -60,7 +60,7 @@ public class Partei extends Atlantis {
 	private int cheats = 0;
 	
 	private int userId = 0;
-	private int factionId = 0;
+	private int ownerId = 0;
 	private Language language = Language.getLanguage("de");
 
 	/** Muss noch mit Leben gefuellt werden... */
@@ -84,7 +84,7 @@ public class Partei extends Atlantis {
 	 * für die Partei sichtbar sind.
 	 * Verwendung für die Reporte (CR, XML ?)
 	 */
-	final protected Map<Coords, RegionsSicht> knownRegions = new HashMap<Coords, RegionsSicht>();
+	final protected Map<Coordinates, RegionsSicht> knownRegions = new HashMap<Coordinates, RegionsSicht>();
 	/**
 	 * speichert(Koordinaten der) Regionen, die DER VERGANGENHEIT 
 	 * für die Partei sichtbar waren.
@@ -98,9 +98,9 @@ public class Partei extends Atlantis {
 	/**
 	 * speichert das Wissen / die Namen und IDs der Inseln, die dieser Partei bekannt sind.
 	 */
-	final protected Map<Coords, ParteiInselAnker> inselAnker = new HashMap<Coords, ParteiInselAnker>();
+	final protected Map<Coordinates, ParteiInselAnker> inselAnker = new HashMap<Coordinates, ParteiInselAnker>();
 
-	public Map<Coords, ParteiInselAnker> getInselAnker() {
+	public Map<Coordinates, ParteiInselAnker> getInselAnker() {
 		return inselAnker;
 	}
 
@@ -168,11 +168,11 @@ public class Partei extends Atlantis {
 		NMR = nmr;
 	}
 
-	public void setUrsprung(Coords value) {
-		Ursprung = new Coords(value);
+	public void setUrsprung(Coordinates value) {
+		Ursprung = new Coordinates(value);
 	}
 
-	public Coords getUrsprung() {
+	public Coordinates getUrsprung() {
 		return Ursprung;
 	}
 
@@ -574,7 +574,7 @@ public class Partei extends Atlantis {
 			p.Website = rs.getString("website");
 			p.NMR = rs.getInt("nmr");
 			// TODO Eigentlich müsste der Parteien-Ursprung auch die Welt bezeichnen - oder?
-			p.setUrsprung(new Coords(rs.getInt("originx"), rs.getInt("originy"), 1));
+			p.setUrsprung(new Coordinates(rs.getInt("originx"), rs.getInt("originy"), 1));
 			p.setCheats(rs.getInt("cheats"));
 			p.Monster = rs.getInt("monster");
 			p.setRasse(rs.getString("rasse"));
@@ -689,7 +689,7 @@ public class Partei extends Atlantis {
 
 		// Inselnamen und -beschreibungen:
 		ParteiInselAnker.Initialisieren(this);
-		for (Coords c : this.getInselAnker().keySet()) {
+		for (Coordinates c : this.getInselAnker().keySet()) {
 			ParteiInselAnker.Entfernen(this, c);
 		}
 		ParteiInselAnker.Initialisieren(this);
@@ -709,7 +709,7 @@ public class Partei extends Atlantis {
 	 * @param c globale Koordinaten
 	 * @param details
 	 */
-	public void addKnownRegion(Coords c, boolean details, Class<? extends Atlantis> quelle) {
+	public void addKnownRegion(Coordinates c, boolean details, Class<? extends Atlantis> quelle) {
 		RegionsSicht rs = new RegionsSicht(GameRules.getRunde(), c, details, quelle);
 
 		// wenn diese Region schon bekannt ist, wird sie nur aufgenommen, wenn sie detailliert ist.
@@ -733,7 +733,7 @@ public class Partei extends Atlantis {
 	 * eine Regionssicht vollständig entfernen
 	 * @param c
 	 */
-	public void removeKnownRegion(Coords c) {
+	public void removeKnownRegion(Coordinates c) {
 		this.knownRegions.remove(c);
 	}
 
@@ -743,7 +743,7 @@ public class Partei extends Atlantis {
 	 */
 	public Set<RegionsSicht> getKnownRegions(boolean mitUnsichtbaren) {
 		Set<RegionsSicht> retval = new HashSet<RegionsSicht>();
-		for (Coords c : knownRegions.keySet()) {
+		for (Coordinates c : knownRegions.keySet()) {
 			if (!mitUnsichtbaren) {
 				Region r = Region.Load(knownRegions.get(c).getCoords());
 				if (!this.canAccess(r)) {
@@ -759,7 +759,7 @@ public class Partei extends Atlantis {
 	 * @param c
 	 * @return Das RegionsSicht-Objekt dieser Partei an Coords c - oder null, wenn keinerlei Sicht
 	 */
-	public RegionsSicht getRegionsSicht(Coords c) {
+	public RegionsSicht getRegionsSicht(Coordinates c) {
 		if (!knownRegions.containsKey(c)) {
 			return null;
 		}
@@ -797,25 +797,25 @@ public class Partei extends Atlantis {
 	}
 
 	@Override
-	public Coords getCoords() {
+	public Coordinates getCoords() {
 		throw new UnsupportedOperationException("Partei.getCoords() sollte niemals ausgewertet werden.");
 	}
 
 	@Override
-	public void setCoords(Coords value) {
+	public void setCoords(Coordinates value) {
 		throw new UnsupportedOperationException("Partei.setCoords() sollte niemals verwendet werden.");
 	}
 
-	public Coords getPrivateCoords(Coords global) {
-		return new Coords(
+	public Coordinates getPrivateCoords(Coordinates global) {
+		return new Coordinates(
 				global.getX() - this.getUrsprung().getX(),
 				global.getY() - this.getUrsprung().getY(),
 				global.getWelt());
 
 	}
 
-	public Coords getGlobalCoords(Coords privat) {
-		return new Coords(
+	public Coordinates getGlobalCoords(Coordinates privat) {
+		return new Coordinates(
 				privat.getX() + this.getUrsprung().getX(),
 				privat.getY() + this.getUrsprung().getY(),
 				privat.getWelt());
@@ -830,12 +830,12 @@ public class Partei extends Atlantis {
 		this.userId = userId;
 	}
 	
-	public int getFactionId() {
-		return factionId;
+	public int getOwnerId() {
+		return ownerId;
 	}
 	
-	public void setFactionId(int factionId) {
-		this.factionId = factionId;
+	public void setOwnerId(int ownerId) {
+		this.ownerId = ownerId;
 	}
 	
 	public Language getLanguage() {

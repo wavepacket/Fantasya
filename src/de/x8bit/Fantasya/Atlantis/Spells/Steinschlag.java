@@ -3,7 +3,7 @@ package de.x8bit.Fantasya.Atlantis.Spells;
 import java.util.ArrayList;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Spell;
 import de.x8bit.Fantasya.Atlantis.Unit;
@@ -89,7 +89,7 @@ public class Steinschlag extends Spell implements ConfusionSpell {
 	 * @param stufe - auf dieser Stufe wurde gezaubert
 	 * @param coords - Koordinaten der Region die das Erdbeben erhält
 	 */
-	private void makeRockfall(int stufe, Coords coords)
+	private void makeRockfall(int stufe, Coordinates coords)
 	{
 		Region region = Region.Load(coords);
 		for(Building b : region.getBuildings()) {

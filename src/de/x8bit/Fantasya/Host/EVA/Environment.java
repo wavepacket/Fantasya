@@ -5,7 +5,7 @@ import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Cave;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
@@ -560,7 +560,7 @@ public class Environment extends EVABase implements NotACommand {
         Set<Integer> loeschSet = new HashSet<Integer>();
         // Unterwelt und Ozeane etc. aussortieren:
         for (int inselId : inselnOhneHoehlen) {
-            for (Coords c : iv.getInselCoords(inselId)) {
+            for (Coordinates c : iv.getInselCoords(inselId)) {
                 if (c.getWelt() < 0) { 
                     loeschSet.add(inselId);
                     continue;
@@ -590,9 +590,9 @@ public class Environment extends EVABase implements NotACommand {
             
             new ZATMsg(" - Grabe neues Höhlenpaar...");
             
-            Map<Coords, Integer> hoehlenChanceOberwelt = new HashMap<Coords, Integer>();
+            Map<Coordinates, Integer> hoehlenChanceOberwelt = new HashMap<Coordinates, Integer>();
             for (Region r : Region.CACHE.values()) {
-                Coords c = r.getCoords();
+                Coordinates c = r.getCoords();
                 if (c.getWelt() <= 0) continue;
                 if (!r.istBetretbar(null)) continue;
 
@@ -617,9 +617,9 @@ public class Environment extends EVABase implements NotACommand {
             // Entstehungs-Wahrscheinlichkeiten von Höhlen für alle Oberwelt-Regionen berechnet
             if (hoehlenChanceOberwelt.isEmpty()) throw new IllegalStateException("Keine geeignete Oberwelt-Region für neue Höhlen gefunden.");
             
-            Map<Coords, Integer> hoehlenChanceUnterwelt = new HashMap<Coords, Integer>();
+            Map<Coordinates, Integer> hoehlenChanceUnterwelt = new HashMap<Coordinates, Integer>();
             for (Region r : Region.CACHE.values()) {
-                Coords c = r.getCoords();
+                Coordinates c = r.getCoords();
                 if (c.getWelt() >= 0) continue;
                 if (!r.istBetretbar(null)) continue;
                 if (r instanceof Sandstrom) continue;
@@ -639,15 +639,15 @@ public class Environment extends EVABase implements NotACommand {
             if (hoehlenChanceUnterwelt.isEmpty()) throw new IllegalStateException("Keine geeignete Unterwelt-Region für neue Höhlen gefunden.");
             
             int summeOberweltChancen = 0; int summeUnterweltChancen = 0; 
-            for (Coords c : hoehlenChanceOberwelt.keySet()) summeOberweltChancen += hoehlenChanceOberwelt.get(c);
-            for (Coords c : hoehlenChanceUnterwelt.keySet()) summeUnterweltChancen += hoehlenChanceUnterwelt.get(c);
+            for (Coordinates c : hoehlenChanceOberwelt.keySet()) summeOberweltChancen += hoehlenChanceOberwelt.get(c);
+            for (Coordinates c : hoehlenChanceUnterwelt.keySet()) summeUnterweltChancen += hoehlenChanceUnterwelt.get(c);
             
             StringBuilder sb = new StringBuilder();
             sb.append("Höhlenpaar: ");
             
             // die "Gewinner" in Ober- und Unterwelt bestimmen:
-            Coords ausgangOben = null; Coords ausgangUnten = null;
-            List<Coords> kandidatenOben = new ArrayList<Coords>(hoehlenChanceOberwelt.keySet());
+            Coordinates ausgangOben = null; Coordinates ausgangUnten = null;
+            List<Coordinates> kandidatenOben = new ArrayList<Coordinates>(hoehlenChanceOberwelt.keySet());
             Collections.shuffle(kandidatenOben);
             while (Random.W(summeOberweltChancen) > hoehlenChanceOberwelt.get(kandidatenOben.get(0))) {
                 Collections.shuffle(kandidatenOben);
@@ -655,7 +655,7 @@ public class Environment extends EVABase implements NotACommand {
             ausgangOben = kandidatenOben.get(0);
             sb.append("p-Level(oben) = ").append(hoehlenChanceOberwelt.get(kandidatenOben.get(0)));
             sb.append(", ");
-            List<Coords> kandidatenUnten = new ArrayList<Coords>(hoehlenChanceUnterwelt.keySet());
+            List<Coordinates> kandidatenUnten = new ArrayList<Coordinates>(hoehlenChanceUnterwelt.keySet());
             Collections.shuffle(kandidatenUnten);
             while (Random.W(summeUnterweltChancen) > hoehlenChanceUnterwelt.get(kandidatenUnten.get(0))) {
                 Collections.shuffle(kandidatenUnten);

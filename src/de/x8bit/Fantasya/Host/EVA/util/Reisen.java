@@ -3,7 +3,7 @@ package de.x8bit.Fantasya.Host.EVA.util;
 import de.x8bit.Fantasya.Atlantis.Allianz.AllianzOption;
 import de.x8bit.Fantasya.Atlantis.Building;
 import de.x8bit.Fantasya.Atlantis.Buildings.Seehafen;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Messages.Bewegung;
 import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
@@ -310,7 +310,7 @@ public class Reisen {
 
 		Unit u = eb.getUnit();
 		Partei p = Partei.getPartei(u.getOwner());
-		Coords cursor = u.getCoords();
+		Coordinates cursor = u.getCoords();
 
 		// alle Zielangaben (Coords / "PAUSE") einsammeln:
 		List<String> zielAngaben = new ArrayList<String>();
@@ -324,14 +324,14 @@ public class Reisen {
 				continue;
 			}
 
-			Coords pvtEtappenZiel = Coords.fromString(token);
+			Coordinates pvtEtappenZiel = Coordinates.fromString(token);
 			if (pvtEtappenZiel == null) {
 				eb.setError();
 				new Fehler(u + " - habe die Koordinaten " + token + " nicht verstanden.", u);
 				return schritte;
 			}
 			// pvtEtappenZeil kann jetzt (nicht mehr null sein, wenn wir überhaupt hier landen:
-			Coords etappenZiel = p.getGlobalCoords(pvtEtappenZiel);
+			Coordinates etappenZiel = p.getGlobalCoords(pvtEtappenZiel);
 
 			int loops = 0;
 			while(!(cursor.equals(etappenZiel))) {
@@ -358,8 +358,8 @@ public class Reisen {
 		sb.append("NACH");
 
 		for (int i=1; i<reise.size(); i++) {
-			Coords from = reise.get(i - 1).getCoords();
-			Coords to = reise.get(i).getCoords();
+			Coordinates from = reise.get(i - 1).getCoords();
+			Coordinates to = reise.get(i).getCoords();
 			sb.append(" ").append(from.getRichtungNach(to).getShortcut());
 		}
 
@@ -401,7 +401,7 @@ public class Reisen {
 		if (eb.getTokens().length == 1) throw new RuntimeException("Hier ist ein Bewegungsbefehl ohne Parameter angekommen: " + eb);
 
 		// hier ist die betreffende Einheit gerade:
-		Coords aufenthalt = eb.getUnit().getCoords();
+		Coordinates aufenthalt = eb.getUnit().getCoords();
 
 		String debug = "ZieleRotieren: " + eb.getBefehlCanonical() + " >>> ";
 
@@ -425,7 +425,7 @@ public class Reisen {
 		} else if ((eb.getVariante() == NachUndRoute.BEFEHL_NACH_KOORDS)
 			|| (eb.getVariante() == NachUndRoute.BEFEHL_ROUTE_KOORDS)) {
 			// bei Zielkoordinaten nur dann verschieben, falls wir das erste Ziel erreicht haben:
-			Coords ziel = Coords.fromString(erstesZiel);
+			Coordinates ziel = Coordinates.fromString(erstesZiel);
 			Partei p = Partei.getPartei(eb.getUnit().getOwner());
 			ziel = p.getGlobalCoords(ziel);
 			if (aufenthalt.equals(ziel)) {
@@ -473,15 +473,15 @@ public class Reisen {
 
 
 	public class DurchreiseRecord {
-		final Coords c;
+		final Coordinates c;
 		final int unitId;
 
-		public DurchreiseRecord(Coords c, int unitId) {
+		public DurchreiseRecord(Coordinates c, int unitId) {
 			this.c = c;
 			this.unitId = unitId;
 		}
 
-		public Coords getCoords() {
+		public Coordinates getCoords() {
 			return c;
 		}
 

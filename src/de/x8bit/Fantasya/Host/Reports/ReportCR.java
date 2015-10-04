@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.x8bit.Fantasya.Atlantis.Allianz;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
 import de.x8bit.Fantasya.Atlantis.Message;
 import de.x8bit.Fantasya.Atlantis.Partei;
@@ -186,14 +186,14 @@ public class ReportCR
 		
         List<Message> messages = new ArrayList<Message>();
 		if (partei.getNummer() == 0) {
-			messages = Message.Retrieve(null, (Coords)null, null);
+			messages = Message.Retrieve(null, (Coordinates)null, null);
 		} else {
             // Regionsmeldungen (ohne Parteiangabe):
-            Set<Coords> beobachtete = new HashSet<Coords>();
+            Set<Coordinates> beobachtete = new HashSet<Coordinates>();
             for (RegionsSicht rs : partei.getKnownRegions(false)) {
                 if (rs.hasDetails()) beobachtete.add(rs.getCoords());
             }
-            for (Message regionsMsg : Message.Retrieve(null, (Coords)null, null)) {
+            for (Message regionsMsg : Message.Retrieve(null, (Coordinates)null, null)) {
                 if (regionsMsg.getCoords() == null) continue;
                 if (regionsMsg.getPartei() != null) continue;
                 if (regionsMsg.getUnit() != null) continue;
@@ -207,16 +207,16 @@ public class ReportCR
                 writer.wl("MESSAGE " + ++meldung);
                 writer.wl(cleanMessageText(m.getText()), "rendered");
                 writer.wl(4000, "type");
-                Coords c = partei.getPrivateCoords(m.getCoords());
+                Coordinates c = partei.getPrivateCoords(m.getCoords());
                 writer.wl(c.getX() + " " + c.getY() + " " + c.getWelt(), "region");
             }
             
             
             messages.clear();
-			messages.addAll(Message.Retrieve(partei, (Coords)null, null));
+			messages.addAll(Message.Retrieve(partei, (Coordinates)null, null));
             
 			// Mantis #326:
-			for (Message botschaft : Message.Retrieve(null, (Coords)null, null, "Botschaft")) {
+			for (Message botschaft : Message.Retrieve(null, (Coordinates)null, null, "Botschaft")) {
 				if (botschaft.getPartei() != null) continue; // entweder sind dann nicht wir gemeint, oder die Botschaft wurde schon mit den normalen Meldungen verarbeitet.
 				if (botschaft.getCoords() == null) { messages.add(botschaft); continue; }
 				if (Region.Load(botschaft.getCoords()).anwesendeParteien().contains(partei)) {
@@ -229,7 +229,7 @@ public class ReportCR
             writer.wl(cleanMessageText(m.getText()), "rendered");
             writer.wl(3000, "type");
             if (m.getCoords() != null) {
-                Coords c = partei.getPrivateCoords(m.getCoords());
+                Coordinates c = partei.getPrivateCoords(m.getCoords());
                 writer.wl(c.getX() + " " + c.getY() + " " + c.getWelt(), "region");
             }
             if (m.getUnit() != null) {
@@ -309,8 +309,8 @@ public class ReportCR
 	private void SaveRegionen() {
         InselVerwaltung iv = InselVerwaltung.getInstance();
         
-        Map<Coords, Region> bekannteRegionen = new HashMap<Coords, Region>();
-        SortedSet<Coords> bekannteCoords = new TreeSet<Coords>(new CoordComparatorLNR());
+        Map<Coordinates, Region> bekannteRegionen = new HashMap<Coordinates, Region>();
+        SortedSet<Coordinates> bekannteCoords = new TreeSet<Coordinates>(new CoordComparatorLNR());
         
         for (Region r : iv.getParteiReportDaten(partei).getRegionen()) {
             bekannteCoords.add(r.getCoords());
@@ -324,7 +324,7 @@ public class ReportCR
             bekannteCoords.add(rs.getCoords());
         }
         
-        for (Coords c : bekannteCoords) {
+        for (Coordinates c : bekannteCoords) {
             if (bekannteRegionen.containsKey(c)) {
                 Region r = bekannteRegionen.get(c);
                 r.SaveCR(writer, partei, partei.getRegionsSicht(c));

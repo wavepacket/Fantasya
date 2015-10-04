@@ -5,7 +5,7 @@ import de.x8bit.Fantasya.Atlantis.Building;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Items.AnimalResource;
 import de.x8bit.Fantasya.Atlantis.Message;
@@ -61,7 +61,7 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 					if (u.canSwim()) continue; // Einheit kann schwimmen
 					if (u.getSchiff() == 0) {
 						Partei p = Partei.getPartei(u.getOwner());
-						Coords c = p.getPrivateCoords(r.getCoords());
+						Coordinates c = p.getPrivateCoords(r.getCoords());
 
 						StringBuilder meldung = new StringBuilder();
 						meldung.append(u).append(" ertrinkt in " + r + " " + c.xy() + "!");
@@ -96,7 +96,7 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 				if (r instanceof Lavastrom) {
 					for(Unit u : anwesende) {
 						Partei p = Partei.getPartei(u.getOwner());
-						Coords c = p.getPrivateCoords(r.getCoords());
+						Coordinates c = p.getPrivateCoords(r.getCoords());
 
 						StringBuilder meldung = new StringBuilder();
 						meldung.append(u).append(" verbrennt in ").append(r).append(" ").append(c.xy()).append("!");
@@ -147,7 +147,7 @@ public class SpielerLoeschen extends EVABase implements NotACommand
 			if (anzahl > 0) continue; // hat noch Einheiten
 
             boolean keep = false;
-            for (Message m : Message.Retrieve(partei, (Coords)null, null)) {
+            for (Message m : Message.Retrieve(partei, (Coordinates)null, null)) {
                 if (m instanceof Battle) {
                     keep = true;
                     break;

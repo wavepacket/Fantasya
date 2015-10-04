@@ -2,7 +2,7 @@ package de.x8bit.Fantasya.Atlantis.Units;
 
 import java.util.List;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Atlantis.Ship;
@@ -56,7 +56,7 @@ public class Krake extends Monster {
 	public void planMonster() {
 		Befehle.clear();	// alten Befehle löschen
 		
-		Coords coords = this.getCoords();
+		Coordinates coords = this.getCoords();
 		
 //		new SysMsg(" - Bewegung für Krake " + this);
 		// Kraken schwimmen immer gerade aus - bis sie auf Festland treffen ... dann

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.x8bit.Fantasya.Atlantis.Building;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Item;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -559,7 +559,7 @@ public class Produktion extends EVABase {
 
 
 	private class ResourceRecord {
-		Coords coords;
+		Coordinates coords;
 		int anzahl;
 		Class<? extends Item> resource;
 
@@ -567,7 +567,7 @@ public class Produktion extends EVABase {
 			return anzahl;
 		}
 
-		public Coords getCoords() {
+		public Coordinates getCoords() {
 			return coords;
 		}
 
@@ -575,7 +575,7 @@ public class Produktion extends EVABase {
 			return resource;
 		}
 		
-		public ResourceRecord(Coords coords, int anzahl, Class<? extends Item> resource) {
+		public ResourceRecord(Coordinates coords, int anzahl, Class<? extends Item> resource) {
 			this.coords = coords;
 			this.anzahl = anzahl;
 			this.resource = resource;

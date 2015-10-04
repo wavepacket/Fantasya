@@ -1,6 +1,6 @@
 package de.x8bit.Fantasya.Host.serialization.basic;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
@@ -16,13 +16,13 @@ import org.slf4j.LoggerFactory;
 public class StrassenSerializer implements ObjectSerializer<Region> {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private Map<Coords, Region> map;
+	private Map<Coordinates, Region> map;
 
 	/** Constructs a new serializer.
 	 *
 	 * @param map a mapping from coordinates to regions to look up regions.
 	 */
-	public StrassenSerializer(Map<Coords,Region> map) {
+	public StrassenSerializer(Map<Coordinates,Region> map) {
 		if (map == null) {
 			throw new IllegalArgumentException("Need a valid region map.");
 		}
@@ -42,7 +42,7 @@ public class StrassenSerializer implements ObjectSerializer<Region> {
 	@Override
 	public Region load(Map<String, String> mapping) {
 		// check that the region exists
-		Coords coords = new Coords(
+		Coordinates coords = new Coordinates(
 				Integer.decode(mapping.get("koordx")),
 				Integer.decode(mapping.get("koordy")),
 				Integer.decode(mapping.get("welt")));
@@ -91,7 +91,7 @@ public class StrassenSerializer implements ObjectSerializer<Region> {
 	@Override
 	public SerializedData save(Region object) {
 		SerializedData data = new SerializedData();
-		Coords coords = object.getCoords();
+		Coordinates coords = object.getCoords();
 
 		for (Richtung dir : Richtung.values()) {
 			if (object.getStrassensteine(dir) > 0) {

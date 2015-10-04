@@ -89,7 +89,7 @@ public abstract class Building extends Dingens implements NamedItem
             b = (Building) Class.forName("de.x8bit.Fantasya.Atlantis.Buildings." + typ).newInstance();
 
             b.setNummer(rs.getInt("nummer"));
-			b.setCoords( new Coords(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")) );
+			b.setCoords( new Coordinates(rs.getInt("koordx"), rs.getInt("koordy"), rs.getInt("welt")) );
             b.setName(rs.getString("name"));
             b.setBeschreibung(rs.getString("beschreibung"));
             b.setSize(rs.getInt("size"));
@@ -102,7 +102,7 @@ public abstract class Building extends Dingens implements NamedItem
 		return b;
     }
 
-    public static Building Create(String type, Coords coords) {
+    public static Building Create(String type, Coordinates coords) {
 		Building b = null;
 		
 		try	{

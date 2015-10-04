@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 				&& keys.contains("monster")
 				&& keys.contains("steuern")
 				&& keys.contains("user_id")
-				&& keys.contains("faction_id");
+				&& keys.contains("owner_id");
 	}
 
 	/** Creates the new partei from the mapping. */
@@ -51,13 +51,13 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 			object.setPassword(mapping.get("password"));
 			object.setWebsite(mapping.get("website"));
 			object.setNMR(Integer.decode(mapping.get("nmr")));
-			object.setUrsprung(new Coords(Integer.decode(mapping.get("originx")),
+			object.setUrsprung(new Coordinates(Integer.decode(mapping.get("originx")),
 					Integer.decode(mapping.get("originy")), 1));
 			object.setCheats(Integer.decode(mapping.get("cheats")));
 			object.setMonster(Integer.decode(mapping.get("monster")));
 			object.setDefaultsteuer(Integer.decode(mapping.get("steuern")));
 			object.setUserId(Integer.decode(mapping.get("user_id")));
-			object.setFactionId(Integer.decode(mapping.get("faction_id")));
+			object.setOwnerId(Integer.decode(mapping.get("owner_id")));
 
 			logger.debug("Loaded Partei \"{}\" with id \"{}\"",
 					object.getName(), object.getNummer());
@@ -91,7 +91,7 @@ public class ParteiSerializer implements ObjectSerializer<Partei> {
 		results.put("monster", String.valueOf(object.getMonster()));
 		results.put("steuern", String.valueOf(object.getDefaultsteuer()));
 		results.put("user_id", String.valueOf(object.getUserId()));
-		results.put("faction_id", String.valueOf(object.getFactionId()));
+		results.put("owner_id", String.valueOf(object.getOwnerId()));
 
 		return new SerializedData(results);
 	}

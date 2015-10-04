@@ -3,7 +3,7 @@ package de.x8bit.Fantasya.Host;
 import java.util.ArrayList;
 
 import de.x8bit.Fantasya.Atlantis.Atlantis;
-import de.x8bit.Fantasya.Atlantis.Coords;
+import de.x8bit.Fantasya.Atlantis.Coordinates;
 import de.x8bit.Fantasya.Atlantis.Partei;
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Richtung;
@@ -67,7 +67,7 @@ public class NeueSpieler
 			f.setNMR(GameRules.getRunde());
 			f.setDefaultsteuer(10);
 			f.setUserId(n.getUserId());
-			f.setFactionId(n.getUserId() * 10000 + f.getAlter());
+			f.setOwnerId(n.getUserId() * 10000 + f.getAlter());
 			if (n.getPassword() != null && n.getPassword().length() > 0) {
 				f.setPassword(n.getPassword());
 			}
@@ -207,7 +207,7 @@ public class NeueSpieler
 		
 		n = (int) (Math.pow(faktor, 0.3333333d) * 3d); // 
         for (int i = 0; i < n; i++)	{
-			Coords c = null;
+			Coordinates c = null;
 			boolean ende = false;
 
 			// zufällige Region auswählen
@@ -258,7 +258,7 @@ public class NeueSpieler
 	 * @param personen - Anzahl der Person für diese Einheit
 	 * @return neue Einheit die Erzeugt wurde
 	 */
-	private static Unit NeueEinheitErzeugen(Coords coords, Partei volk, String tarnung, int personen)
+	private static Unit NeueEinheitErzeugen(Coordinates coords, Partei volk, String tarnung, int personen)
 	{
 		Unit u;
 		u = Unit.CreateUnit(volk.getRasse(), volk.getNummer(), coords);
