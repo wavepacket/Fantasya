@@ -36,7 +36,7 @@ public class ParteiSerializerTest {
 		serializedMap.put("monster", "3");
 		serializedMap.put("steuern", "15");
 		serializedMap.put("user_id", "10");
-		serializedMap.put("faction_id", "10005");
+		serializedMap.put("owner_id", "100005");
 	}
 
 	@Test
@@ -92,8 +92,8 @@ public class ParteiSerializerTest {
 				Integer.decode(serializedMap.get("steuern")).intValue(), partei.getDefaultsteuer());
 		assertEquals("user_id was not set.",
 				Integer.decode(serializedMap.get("user_id")).intValue(), partei.getUserId());
-		assertEquals("faction_id was not set.",
-				Integer.decode(serializedMap.get("faction_id")).intValue(), partei.getFactionId());
+		assertEquals("owner_id was not set.",
+				Integer.decode(serializedMap.get("owner_id")).intValue(), partei.getOwnerId());
 	}
 
 	@Test
