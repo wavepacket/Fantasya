@@ -67,7 +67,7 @@ public class NeueSpieler
 			f.setNMR(GameRules.getRunde());
 			f.setDefaultsteuer(10);
 			f.setUserId(n.getUserId());
-			f.setFactionId(n.getUserId() * 1000 + f.getAlter());
+			f.setOwnerId(n.getUserId() * 10000 + f.getAlter());
 			if (n.getPassword() != null && n.getPassword().length() > 0) {
 				f.setPassword(n.getPassword());
 			}
