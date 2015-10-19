@@ -20,7 +20,9 @@ public interface Identifiable extends Comparable<Object>, Cloneable {
 	 * 
 	 * @throws CloneNotSupportedException
 	 */
-	public Object clone() throws CloneNotSupportedException;
+	default Object clone() throws CloneNotSupportedException {
+		return this;
+	}
 	
 	/**
 	 * 	Equation of id's. First integer id otherwise String id.

@@ -32,9 +32,6 @@ public class GermanLanguage extends Language {
 			throw ex;
 		}
 		
-		
-		// notNormal = notNormal.replace("=C4", "\u00c4");
-		// notNormal = notNormal.replace("=C3", "\u00fc"); //  ü
 		notNormal = notNormal.replace("\u00e4", "ae"); // ä
 		notNormal = notNormal.replace("\u00f6", "oe"); // ö
 		notNormal = notNormal.replace("\u00fc", "ue"); // ü

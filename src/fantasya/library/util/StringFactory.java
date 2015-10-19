@@ -3,7 +3,11 @@ package fantasya.library.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import fantasya.library.id.Identifiable;
+
 public class StringFactory {
+	
+	private static final StringBuilder BUILD = new StringBuilder();
 	
 	/**
 	 * 
@@ -17,6 +21,18 @@ public class StringFactory {
 		StringWriter sw = new StringWriter();
 		ex.printStackTrace(new PrintWriter(sw));
 		return sw.toString();
+	}
+	
+
+	
+	public static String getIDObjectLogMessage(Identifiable object, String messageStart) {
+		BUILD.setLength(0);
+		BUILD.append(messageStart);
+		BUILD.append(object.getClass().getSimpleName());
+		BUILD.append(" with id: ");
+		BUILD.append(object.getId());
+		BUILD.append(".");
+		return BUILD.toString();
 	}
 	
 	public static String only8bit(String s) {
@@ -54,6 +70,7 @@ public class StringFactory {
 				continue;
 			}
 			isNumber = false;
+			break;
 		}
 		
 		if (isNumber) {
