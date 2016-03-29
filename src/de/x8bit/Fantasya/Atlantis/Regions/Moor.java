@@ -27,6 +27,6 @@ public class Moor extends Region
 
 	@Override
 	public int freieArbeitsplaetze() {
-		return 500;
+		return 500 - super.benutzteArbeitsplaetze();
 	}
 }

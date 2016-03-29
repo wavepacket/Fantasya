@@ -2,6 +2,7 @@ package de.x8bit.Fantasya.Host.EVA;
 
 import de.x8bit.Fantasya.Atlantis.Allianz;
 import de.x8bit.Fantasya.Atlantis.Building;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import de.x8bit.Fantasya.Host.BefehlsSpeicher;
 import de.x8bit.Fantasya.Host.EVA.util.Einzelbefehl;
 import de.x8bit.Fantasya.util.StringUtils;
 import de.x8bit.Fantasya.util.UnitList;
+
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -192,10 +195,8 @@ public class SpielerLoeschen extends EVABase implements NotACommand
                     // die Befehle stören und liefern Fehler in EVABase::Action()
                     BefehlsSpeicher.getInstance().remove(eb);
                 }
-
-				for (String key : u.getProperties()) {
-					u.removeProperty(key);
-				}
+                
+                u.clearProperties();
 
                 // gibt es einen Empfänger für Hab und Gut?
                 Set<Unit> hinterbliebene = Region.Load(u.getCoords()).getUnits();

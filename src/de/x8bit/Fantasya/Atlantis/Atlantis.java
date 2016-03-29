@@ -155,6 +155,11 @@ public class Atlantis {
 	public void removeProperty(String key) {
 		properties.remove(key);
 	}
+	
+	/** Clears properties. */
+	public void clearProperties() {
+		properties.clear();
+	}
 
 	/** Returns a property as string.
 	  *
