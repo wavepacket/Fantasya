@@ -2,6 +2,8 @@ package de.x8bit.Fantasya.Host.serialization.db;
 
 import de.x8bit.Fantasya.Host.serialization.Adapter;
 import de.x8bit.Fantasya.Host.serialization.util.SerializedData;
+import de.x8bit.Fantasya.util.StringUtils;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -128,7 +130,8 @@ public class DatabaseAdapter implements Adapter {
 				vals.delete(0, vals.length());
 
 				for (String key : item.keySet()) {
-					String valString = item.get(key).replace("'", "\\'");
+//					String valString = item.get(key).replace("'", "\\'");
+					String valString = StringUtils.checkValue(item.get(key));
 					keys.append(",").append(key);
 					vals.append(",'").append(valString).append("'");
 				}

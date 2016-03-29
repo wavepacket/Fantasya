@@ -110,6 +110,39 @@ public final class StringUtils {
 	public static String ucfirst(String str) {
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
+	
+	/**
+	 * check for ' to get a valid sql-statement
+     * @param value
+     * @return
+     */
+	public static String checkValue(String value) {
+		if (value.indexOf("'") == -1) { return value; }
+		
+		StringBuilder build = new StringBuilder();
+		
+		for (int i = 0; i < value.length(); i++) {
+			boolean add = true;
+			char thisChar = value.charAt(i);
+			if (thisChar == '\'') {
+				build.append('\\');
+			}
+			else if (thisChar == '\\' 
+					&& i + 1 < value.length()
+					&& value.charAt(i + 1) == '\'') {
+					add = false;
+			}
+			/* if (!insert) {
+                if (value.charAt(i) == '%') sb.append('\\');
+                if (value.charAt(i) == '+') sb.append('\\');
+            } */
+			if (add) {
+				build.append(thisChar);
+			}
+		}
+		
+		return build.toString();
+	}
 
 	public static String only7bit(String s) {
 	  StringBuffer r = new StringBuffer( s.length() );
