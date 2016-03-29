@@ -447,13 +447,16 @@ public class BefehleEinlesen extends EVABase
 				
 				// Befehl in DB kopieren ... gut man könnte auch die Befehle hinzufügen und
 				// dann die Einheit erneut speichern ... aber der Verwaltungsaufwand ist größer
+				// Nicht mehr Notwendig, weil alles während der AW im Arbeitsspeicher verbleibt. 
 				if ((partei != null) && (unit != null) && (hs.length() != 0) && (!hs.toLowerCase().startsWith("einheit")) && 
 						(!hs.toLowerCase().startsWith("naechster")) && (!hs.toLowerCase().startsWith("faulenze")))
 				{
 					try {
-						unit.BefehleExperimental.add(unit, Datenbank.CheckValue(hs, true));
+						// unit.BefehleExperimental.add(unit, Datenbank.CheckValue(hs, true));
+						unit.BefehleExperimental.add(unit, hs);
 						// TODO: Das kann dann irgendwann raus (?)
-						unit.Befehle.add(Datenbank.CheckValue(hs, true));
+						// unit.Befehle.add(Datenbank.CheckValue(hs, true));
+						unit.Befehle.add(hs);
 					} catch (IllegalArgumentException ex) {
 						// ex.printStackTrace();
 						new Debug(unit + ": " + ex.getMessage());
