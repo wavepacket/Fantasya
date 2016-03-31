@@ -55,7 +55,7 @@ public class Elefant extends Item implements AnimalResource {
 	public void actionWachstum(Region r)
 	{
 		// kein Wachstum in der Unterwelt:
-		if (r.getCoords().getWelt() < 1) return;
+		if (r.getCoords().getWelt() < 0) return;
 		
 		int rnd = Random.rnd(-2, 2);
 		int jz[] = new int[] { rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd, rnd };

@@ -6,6 +6,7 @@ import de.x8bit.Fantasya.Atlantis.Buildings.Saegewerk;
 import de.x8bit.Fantasya.Atlantis.Helper.ConstructionCheats;
 import de.x8bit.Fantasya.Atlantis.Helper.ConstructionContainer;
 import de.x8bit.Fantasya.Atlantis.Regions.Gletscher;
+import de.x8bit.Fantasya.Atlantis.Regions.Trockenwald;
 import de.x8bit.Fantasya.Atlantis.Regions.Wald;
 import de.x8bit.Fantasya.Atlantis.Skills.Holzfaellen;
 import de.x8bit.Fantasya.Host.GameRules;
@@ -44,8 +45,8 @@ public class Holz extends Item implements Resource {
 		int jz[] = new int[] { 0, 0, 2, 3, 4, 6, 9, 8, 6, 4, 2, 1 }; // Prozente pro Monat
 		int wachstum = jz[GameRules.getJahreszeit()];
 		
-		// Bäume wachsen im Wald besser
-		if (r.getClass().equals(Wald.class)) wachstum += 2;	// im Wald 2% extra
+		// Bäume wachsen im Wald/Trockenwald besser
+		if (r.getClass().equals(Wald.class) || r.getClass().equals(Trockenwald.class)) wachstum += 2;	// im Wald/Trockenwald 2% extra
 		// im Winter schrupfen die Bäume im Gletscher
 		if (r.getClass().equals(Gletscher.class)) wachstum -= 2;
 		

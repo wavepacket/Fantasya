@@ -18,12 +18,14 @@ import de.x8bit.Fantasya.Atlantis.Messages.Debug;
 import de.x8bit.Fantasya.Atlantis.Messages.Info;
 import de.x8bit.Fantasya.Atlantis.Messages.ZATMsg;
 import de.x8bit.Fantasya.Atlantis.Regions.Ebene;
+import de.x8bit.Fantasya.Atlantis.Regions.Geroellebene;
 import de.x8bit.Fantasya.Atlantis.Regions.Gletscher;
 import de.x8bit.Fantasya.Atlantis.Regions.Lavastrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Moor;
 import de.x8bit.Fantasya.Atlantis.Regions.Ozean;
 import de.x8bit.Fantasya.Atlantis.Regions.Sandstrom;
 import de.x8bit.Fantasya.Atlantis.Regions.Sumpf;
+import de.x8bit.Fantasya.Atlantis.Regions.Trockenwald;
 import de.x8bit.Fantasya.Atlantis.Regions.Vulkan;
 import de.x8bit.Fantasya.Atlantis.Regions.Wald;
 import de.x8bit.Fantasya.Atlantis.Regions.Wueste;
@@ -40,6 +42,7 @@ import de.x8bit.Fantasya.Host.EVA.util.InselVerwaltung;
 import de.x8bit.Fantasya.Host.EVA.util.ZATMode;
 import de.x8bit.Fantasya.util.Random;
 import de.x8bit.Fantasya.util.StringUtils;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -124,6 +127,7 @@ public class Environment extends EVABase implements NotACommand {
 //		new BaumAussaat();
 
 		// Wald wird zu Ebene ab weniger als 600 Bäumen (und umgekehrt)
+		// Trockenwald wird zu Geroellebene ab weniger als 150 Bäumen (und umgekehrt)
 		Wald2Ebene();
 		
 		Cave.NeueRunde(); // Höhlen "altern" - ggf. ändert sich ihr Ausgang auf der anderen Ebene...
@@ -215,6 +219,9 @@ public class Environment extends EVABase implements NotACommand {
 	public final void Wald2Ebene() {
 		List<Region> wald2ebene = new ArrayList<Region>();
 		List<Region> ebene2wald = new ArrayList<Region>();
+		
+		List<Region> trocken2geroell = new ArrayList<Region>();
+		List<Region> geroell2trocken = new ArrayList<Region>();
 
 
 		// Kandidaten suchen:
@@ -230,6 +237,20 @@ public class Environment extends EVABase implements NotACommand {
 			if (region.getClass() == Ebene.class) {
 				if (region.getResource(Holz.class).getAnzahl() >= 600) {
 					ebene2wald.add(region);
+				}
+			}
+			
+			// Trockenwald zu Geroellebene
+			if (region.getClass() == Trockenwald.class) {
+				if (region.getResource(Holz.class).getAnzahl() < 150) {
+					trocken2geroell.add(region);
+				}
+			}
+			
+			// Geroellebene zu Trockenwald
+			if (region.getClass() == Geroellebene.class) {
+				if (region.getResource(Holz.class).getAnzahl() >= 150) {
+					geroell2trocken.add(region);
 				}
 			}
 		}
@@ -250,7 +271,21 @@ public class Environment extends EVABase implements NotACommand {
 			Region.CACHE.put(wald.getCoords(), wald);
 		}
 
+		// Umwandeln - Trockenwald -> Geroellebene
+		for (Region region : trocken2geroell) {
+			Region ebene = region.cloneAs(Geroellebene.class);
 
+			Region.CACHE.remove(region.getCoords());
+			Region.CACHE.put(ebene.getCoords(), ebene);
+		}
+		
+		// Umwandeln - Geroellebene -> Trockenwald
+		for (Region region : geroell2trocken) {
+			Region wald = region.cloneAs(Trockenwald.class);
+
+			Region.CACHE.remove(region.getCoords());
+			Region.CACHE.put(wald.getCoords(), wald);
+		}
 	}
 
 	/**

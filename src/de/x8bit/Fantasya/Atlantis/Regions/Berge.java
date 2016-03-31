@@ -7,6 +7,7 @@ import de.x8bit.Fantasya.Atlantis.Items.Eisen;
 import de.x8bit.Fantasya.Atlantis.Items.Holz;
 import de.x8bit.Fantasya.Atlantis.Items.Pferd;
 import de.x8bit.Fantasya.Atlantis.Items.Stein;
+import de.x8bit.Fantasya.Atlantis.Items.Zotte;
 import de.x8bit.Fantasya.util.Random;
 
 public class Berge extends Region
@@ -25,7 +26,12 @@ public class Berge extends Region
 		if (getBaum() != 0) setResource(Holz.class, getBaum()); else setResource(Holz.class, Random.rnd(0, 100));
 		if (getSilber() == 0) setSilber(getBauern() * Random.rnd(11, 16));
 		this.InitMinerals();
-		setResource(Pferd.class, Random.rnd(0, 50));
+		if (this.getCoords().getWelt() > 0) {
+			setResource(Pferd.class, Random.rnd(0, 50));
+		}
+		else {
+			setResource(Zotte.class, Random.rnd(0, 50));
+		}
 	}
 
 	/**

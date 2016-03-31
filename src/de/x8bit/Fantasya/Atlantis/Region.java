@@ -20,12 +20,15 @@ import de.x8bit.Fantasya.Atlantis.Buildings.Seehafen;
 import de.x8bit.Fantasya.Atlantis.Buildings.Steg;
 import de.x8bit.Fantasya.Atlantis.Helper.Nachfrage;
 import de.x8bit.Fantasya.Atlantis.Helper.RegionsSicht;
+import de.x8bit.Fantasya.Atlantis.Items.Alpaka;
 import de.x8bit.Fantasya.Atlantis.Items.Elefant;
 import de.x8bit.Fantasya.Atlantis.Items.Holz;
 import de.x8bit.Fantasya.Atlantis.Items.Kamel;
 import de.x8bit.Fantasya.Atlantis.Items.LuxusGood;
+import de.x8bit.Fantasya.Atlantis.Items.Mastodon;
 import de.x8bit.Fantasya.Atlantis.Items.Pferd;
 import de.x8bit.Fantasya.Atlantis.Items.Silber;
+import de.x8bit.Fantasya.Atlantis.Items.Zotte;
 import de.x8bit.Fantasya.Atlantis.Messages.Bewegung;
 import de.x8bit.Fantasya.Atlantis.Messages.BigError;
 import de.x8bit.Fantasya.Atlantis.Messages.Fehler;
@@ -953,6 +956,10 @@ public abstract class Region extends Atlantis {
 		used += getResource(Pferd.class).getAnzahl();
 		used += getResource(Kamel.class).getAnzahl();
 		used += getResource(Elefant.class).getAnzahl() * 5;
+		
+		used += getResource(Zotte.class).getAnzahl();
+		used += getResource(Alpaka.class).getAnzahl();
+		used += getResource(Mastodon.class).getAnzahl() * 5;
 
 		return used;
 	}
@@ -969,9 +976,14 @@ public abstract class Region extends Atlantis {
 		BauernUnterhalt();
 
 		getResource(Holz.class).actionWachstum(this);
+		
 		getResource(Pferd.class).actionWachstum(this);
 		getResource(Elefant.class).actionWachstum(this);
 		getResource(Kamel.class).actionWachstum(this);
+		
+		getResource(Zotte.class).actionWachstum(this);
+		getResource(Mastodon.class).actionWachstum(this);
+		getResource(Alpaka.class).actionWachstum(this);
 
 		Wachstum_Kraeuter();
 	}
