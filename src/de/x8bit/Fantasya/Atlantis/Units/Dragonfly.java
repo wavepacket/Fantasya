@@ -108,5 +108,4 @@ public class Dragonfly extends Monster {
     public void meldungenAuswerten() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

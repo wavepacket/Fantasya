@@ -103,7 +103,8 @@ public class ReportCR
 		writer.wl(36, "Basis");
 		writer.wl(GameRules.getRunde(), "Runde");
 		writer.wl(2, "Zeitalter");
-		writer.wl(Main.GameID + "@fantasya-pbem.de", "mailto");
+		writer.wl("befehle@fantasya-pbem.de", "mailto");
+		// writer.wl(Main.GameID + "@fantasya-pbem.de", "mailto");
 		writer.wl("Fantasya Befehle", "mailcmd");
 		
 		// Partei-Header ... diese Partei erhält den Report

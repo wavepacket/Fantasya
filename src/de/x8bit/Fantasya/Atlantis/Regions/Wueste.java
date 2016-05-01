@@ -2,12 +2,10 @@ package de.x8bit.Fantasya.Atlantis.Regions;
 
 import de.x8bit.Fantasya.Atlantis.Items.Alpaka;
 import de.x8bit.Fantasya.Atlantis.Items.Holz;
-
-
 import de.x8bit.Fantasya.Atlantis.Region;
 import de.x8bit.Fantasya.Atlantis.Items.Kamel;
-import de.x8bit.Fantasya.Atlantis.Items.Mastodon;
 import de.x8bit.Fantasya.Atlantis.Items.Pferd;
+import de.x8bit.Fantasya.Atlantis.Items.Zotte;
 import de.x8bit.Fantasya.util.Random;
 
 public class Wueste extends Region
@@ -43,7 +41,7 @@ public class Wueste extends Region
 			int baeume = Random.W(20) - 15;
 			setResource(Holz.class, (baeume > 0) ? baeume : 0);
 			
-			setResource(Mastodon.class, Random.rnd(0, 10));
+			setResource(Zotte.class, Random.rnd(0, 10));
 			setResource(Alpaka.class, Random.rnd(0, 30));
 		}
 		
